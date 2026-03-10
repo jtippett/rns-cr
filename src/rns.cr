@@ -21,6 +21,7 @@ require "./rns/destination"
 require "./rns/identity"
 require "./rns/packet"
 require "./rns/channel"
+require "./rns/link"
 
 module RNS
   def self.version : String

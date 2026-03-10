@@ -572,3 +572,57 @@
     - Send/receive roundtrip: TestMessage, AnotherMessage
     - Stress: 50 messages with delivery ack, 30 in-order receives, 20 random roundtrips
   - Ran crystal spec — 934 examples, 0 failures
+
+2026-03-10 — Task 5.2: Link module — establishment and encryption
+  - Created src/rns/link.cr (~800 LOC) with full Link class implementation
+  - Link class implements both LinkLike (Transport integration) and DestinationInterface (Packet creation)
+  - All constants matching Python RNS.Link exactly: ECPUBSIZE=64, KEYSIZE=32, modes (AES256_CBC, AES256_GCM),
+    states (PENDING, HANDSHAKE, ACTIVE, STALE, CLOSED), timeouts, keepalive intervals, stale times
+  - 3-step ECDH handshake: initiator sends X25519+Ed25519 pub keys + signalling bytes,
+    responder validates/derives shared secret/sends proof, initiator verifies proof
+  - Key derivation via HKDF from shared secret → derived_key for encrypt/decrypt
+  - encrypt_data/decrypt_data using Identity.encrypt/decrypt with derived key + token
+  - sign/validate using Ed25519 with link-specific key derivation
+  - identify(identity) sends signed identification over established link
+  - request(path, data, ...) with MessagePack serialization and RequestReceipt tracking
+  - Static helpers: signalling_bytes, mtu_from_lr_packet, mtu_from_lp_packet, mode_from_lr_packet,
+    mode_from_lp_packet, link_id_from_lr_packet, validate_request
+  - LinkCallbacks class with 7 callback properties (established, closed, packet, resource_started, etc.)
+  - RequestReceipt class with states (FAILED, SENT, DELIVERED, RECEIVING, READY) and callbacks
+  - RequestReceiptCallbacks class matching Python interface
+  - LinkChannelOutlet class extending ChannelOutletBase(Packet) — deferred integration due to Crystal
+    compiler codegen bug with non-generic class inheriting from generic instantiation
+  - Watchdog fiber for link timeout management (keepalive, stale detection, establishment timeout)
+  - MTU signalling bytes encoding (3 bytes: mode in upper bits, MTU in lower 21 bits)
+  - Fixed LinkLike::ECPUBSIZE from 32*8 (256 bits, wrong) to 32+32 (64 bytes, matching Python)
+  - Fixed Transport.cr ecpub_half calculation (removed extra //8 since ECPUBSIZE is now bytes)
+  - Updated src/rns.cr to require link module
+  - Created spec/rns/link_spec.cr with 89 tests (84 passing, 5 pending for Channel outlet):
+    - Constants verification (11 tests)
+    - Signalling bytes encoding/decoding (4 tests)
+    - Responder construction (3 tests)
+    - ECDH handshake with simulated key exchange (4 tests)
+    - Encrypt/decrypt roundtrip with derived keys (6 tests)
+    - Sign/validate (1 test)
+    - State transitions and teardown (5 tests)
+    - Timing helpers: inactive_for, no_inbound_for, etc. (5 tests)
+    - Keepalive tracking (4 tests)
+    - Callbacks (4 tests)
+    - Resource strategy (3 tests)
+    - Phy stats tracking (2 tests)
+    - Status-gated getters (4 tests)
+    - DestinationInterface compliance (2 tests)
+    - LinkLike compliance (2 tests)
+    - link_id_from_lr_packet (2 tests)
+    - MTU/mode extraction from packets (4 tests)
+    - validate_request (3 tests)
+    - Full handshake simulation (1 test)
+    - identify method (2 tests)
+    - update_mdu (1 test)
+    - to_s, get_mode, get_remote_identity (3 tests)
+    - LinkChannelOutlet (5 pending due to Crystal codegen bug)
+    - RequestReceipt (6 tests)
+    - RequestReceiptCallbacks (1 test)
+    - LinkCallbacks (1 test)
+    - Stress tests: 100 encrypt/decrypt cycles, concurrent link creation (2 tests)
+  - Ran crystal spec — 1023 examples, 0 failures, 5 pending

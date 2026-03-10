@@ -1076,7 +1076,7 @@ module RNS
                 if interface_hash == link_entry.next_hop_interface
                   # Validate signature for transport
                   sig_length = Identity::SIGLENGTH // 8
-                  ecpub_half = LinkLike::ECPUBSIZE // 2 // 8
+                  ecpub_half = LinkLike::ECPUBSIZE // 2
 
                   if packet.data.size == sig_length + ecpub_half || packet.data.size == sig_length + ecpub_half + 2
                     peer_pub_bytes = packet.data[sig_length, ecpub_half]

@@ -16,8 +16,8 @@ module RNS
     # Establishment timeout per hop (matching Python RNS.Link.ESTABLISHMENT_TIMEOUT_PER_HOP)
     ESTABLISHMENT_TIMEOUT_PER_HOP = 6.0
 
-    # ECPUBSIZE (matching Python RNS.Link.ECPUBSIZE)
-    ECPUBSIZE = 32 * 8 # 256 bits
+    # ECPUBSIZE (matching Python RNS.Link.ECPUBSIZE = 32+32 = 64 bytes)
+    ECPUBSIZE = 32 + 32 # 64 bytes: 32 X25519 + 32 Ed25519
 
     abstract def link_id : Bytes
     abstract def initiator? : Bool

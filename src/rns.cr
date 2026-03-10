@@ -25,6 +25,7 @@ require "./rns/channel"
 require "./rns/link"
 require "./rns/resource"
 require "./rns/buffer"
+require "./rns/resolver"
 
 module RNS
   def self.version : String

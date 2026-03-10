@@ -720,5 +720,16 @@ module RNS
     def self.exit_handler(storage_path : String? = nil)
       persist_data(storage_path)
     end
+
+    # Clean expired ratchets
+    def self.try_clean_ratchets
+      # Stub — removes expired ratchets from @@known_ratchets
+      now = Time.utc.to_unix_f
+      expired = [] of Bytes
+      @@known_ratchets.each do |hash, _ratchet|
+        # Full implementation would check ratchet expiry timestamps
+      end
+      expired.each { |h| @@known_ratchets.delete(h) }
+    end
   end
 end

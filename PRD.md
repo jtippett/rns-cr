@@ -280,7 +280,7 @@ This is the largest module (3312 LOC). Split into manageable sub-modules.
 - [x] **8.1 — Configuration parser**
   Create `src/rns/vendor/config_obj.cr`. Port the configuration file parsing that `RNS/Reticulum.py` uses. RNS configs use an INI-like format via `configobj`. Crystal has `INI` in stdlib — evaluate if it's sufficient or if a custom parser is needed to match RNS config format (which supports nested sections and type coercion). Handle: reading config files, creating default configs, interface section parsing. Write specs with sample RNS config files.
 
-- [ ] **8.2 — Reticulum main class — initialization and configuration**
+- [x] **8.2 — Reticulum main class — initialization and configuration**
   Port `RNS/Reticulum.py` (1716 LOC, part 1) → `src/rns/reticulum.cr`. Implement `Reticulum` class as singleton. Handle: configuration directory detection (`~/.reticulum/` or custom), config file parsing, storage/cache/resource path management. Constants: `MAX_QUEUED_ANNOUNCES`, connection modes. Implement `initialize(configdir, loglevel, logdest, verbosity)`: load config, set up paths, initialize Identity known destinations, start Transport. Implement `create_default_config()`. Write specs: initialization, path management, default config generation.
 
 - [ ] **8.3 — Reticulum main class — interface instantiation and lifecycle**

@@ -511,6 +511,7 @@ module RNS
       @@local_client_interfaces.clear
       @@pending_local_path_requests.clear
       @@transmit_log.clear
+      @@remote_management_allowed.clear
       @@start_time = nil
       @@jobs_locked = false
       @@jobs_running = false
@@ -1649,6 +1650,24 @@ module RNS
     # Notifies relevant subsystems to handle the reconnection.
     def self.shared_connection_reappeared
       @@is_connected_to_shared_instance = true
+    end
+
+    # Detach all registered interfaces
+    def self.detach_interfaces
+      # Stub — full implementation will come with interface system integration
+    end
+
+    # Remote management ACL
+    @@remote_management_allowed = [] of Bytes
+
+    def self.remote_management_allowed
+      @@remote_management_allowed
+    end
+
+    def self.add_remote_management_allowed(hash : Bytes)
+      unless @@remote_management_allowed.any? { |h| h == hash }
+        @@remote_management_allowed << hash
+      end
     end
 
     # Exit handler: persists all transport state to disk.

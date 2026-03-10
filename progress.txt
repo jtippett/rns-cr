@@ -1427,3 +1427,142 @@
     - Connectable property (2 tests), b32 property (1 test)
     - Stress: 20 create/teardown (1), 10 incoming connections (1)
   - Ran crystal spec — 1909 examples, 0 failures, 5 pending (pre-existing)
+
+2026-03-11 — Task 7.11: RNode interface (LoRa)
+  - Created src/rns/interfaces/rnode_interface.cr (~850 LOC)
+    porting RNS/Interfaces/RNodeInterface.py (1558 LOC)
+  - RNodeKISS module with all RNode-specific KISS command constants:
+    - Frame delimiters: FEND (0xC0), FESC (0xDB), TFEND (0xDC), TFESC (0xDD)
+    - Radio config commands: CMD_FREQUENCY (0x01), CMD_BANDWIDTH (0x02),
+      CMD_TXPOWER (0x03), CMD_SF (0x04), CMD_CR (0x05)
+    - Device commands: CMD_RADIO_STATE (0x06), CMD_RADIO_LOCK (0x07),
+      CMD_DETECT (0x08), CMD_LEAVE (0x0A), CMD_READY (0x0F),
+      CMD_ST_ALOCK (0x0B), CMD_LT_ALOCK (0x0C)
+    - Statistics commands: CMD_STAT_RX (0x21), CMD_STAT_TX (0x22),
+      CMD_STAT_RSSI (0x23), CMD_STAT_SNR (0x24), CMD_STAT_CHTM (0x25),
+      CMD_STAT_PHYPRM (0x26), CMD_STAT_BAT (0x27), CMD_STAT_CSMA (0x28),
+      CMD_STAT_TEMP (0x29)
+    - Display/framebuffer: CMD_BLINK (0x30), CMD_RANDOM (0x40),
+      CMD_FB_EXT (0x41), CMD_FB_READ (0x42), CMD_FB_WRITE (0x43),
+      CMD_DISP_READ (0x66)
+    - Device management: CMD_BT_CTRL (0x46), CMD_PLATFORM (0x48),
+      CMD_MCU (0x49), CMD_FW_VERSION (0x50), CMD_ROM_READ (0x51),
+      CMD_RESET (0x55)
+    - Detection: DETECT_REQ (0x73), DETECT_RESP (0x46)
+    - Radio states: RADIO_STATE_OFF (0x00), RADIO_STATE_ON (0x01),
+      RADIO_STATE_ASK (0xFF)
+    - Error codes: CMD_ERROR (0x90), ERROR_INITRADIO through ERROR_MODEM_TIMEOUT
+    - Platform types: PLATFORM_AVR (0x90), PLATFORM_ESP32 (0x80),
+      PLATFORM_NRF52 (0x70)
+  - RNodeTCPConnection class for TCP network connections to RNode:
+    - Constants: TARGET_PORT=7633, CONNECT_TIMEOUT=5.0, RECONNECT_WAIT=4.0,
+      ACTIVITY_TIMEOUT=6.0, ACTIVITY_KEEPALIVE=3.5
+    - TCP keepalive: TCP_USER_TIMEOUT=24, TCP_PROBE_AFTER=5,
+      TCP_PROBE_INTERVAL=2, TCP_PROBES=12
+    - connect: TCP connection with timeout, TCP_NODELAY, platform-specific
+      keepalive (Linux: TCP_USER_TIMEOUT/KEEPIDLE/KEEPINTVL/KEEPCNT,
+      macOS: TCP_KEEPALIVE)
+    - initial_connect: spawns read_loop fiber on success
+    - read_loop: fiber-based async reading, feeds data to owner
+    - write: sends directly when connected, queues when disconnected
+    - read: mutex-protected byte queue consumption
+    - close/cleanup: graceful shutdown
+  - RNodeInterface class inheriting from Interface:
+    - Constants: MAX_CHUNK=32768, DEFAULT_IFAC_SIZE=8, HW_MTU=508,
+      FREQ_MIN=137MHz, FREQ_MAX=3GHz, RSSI_OFFSET=157,
+      CALLSIGN_MAX_LEN=32, REQUIRED_FW_VER_MAJ=1, REQUIRED_FW_VER_MIN=52,
+      RECONNECT_WAIT=5
+    - Signal quality: Q_SNR_MIN_BASE=-9, Q_SNR_MAX=6, Q_SNR_STEP=2
+    - Battery states: BATTERY_STATE_UNKNOWN/DISCHARGING/CHARGING/CHARGED
+    - Display: FB_PIXEL_WIDTH=64, FB_BYTES_PER_LINE=8, DISPLAY_READ_INTERVAL=1.0
+    - Two constructors: config Hash (full with port parsing) and explicit params
+      (for testing without hardware)
+    - Port URI parsing: serial (/dev/...), tcp:// (RNodeTCPConnection),
+      ble:// (stub, logged as unsupported)
+    - Configuration validation: frequency (137MHz-3GHz), txpower (0-37),
+      bandwidth (7.8kHz-1.625MHz), spreading factor (5-12), coding rate (5-8),
+      airtime limits (0-100%), callsign length (<=32 bytes)
+    - Radio parameter commands: set_frequency (4-byte BE), set_bandwidth (4-byte BE),
+      set_tx_power (1 byte), set_spreading_factor (1 byte), set_coding_rate (1 byte),
+      set_st_alock/set_lt_alock (2-byte xx.xx format), set_radio_state
+    - init_radio: sends all configuration in Python-matching order
+    - detect: sends DETECT_REQ + FW_VERSION + PLATFORM + MCU requests
+    - configure_device: reset_radio_state, start read_loop, detect, init_radio,
+      validate_radio_state, set online — with TCP/BLE/serial detect timeouts
+    - validate_firmware: checks maj_version/min_version >= 1.52, panics if not
+    - validate_radio_state: compares configured vs reported parameters with tolerances
+    - update_bitrate: SF * ((4.0/CR) / (2^SF / (BW/1000))) * 1000
+    - read_loop: complete KISS state machine with escape handling for all command types:
+      - CMD_DATA: data frame → process_incoming
+      - CMD_FREQUENCY/CMD_BANDWIDTH: 4-byte BE → update r_frequency/r_bandwidth + bitrate
+      - CMD_TXPOWER/CMD_SF/CMD_CR: 1 byte → update reported values + bitrate
+      - CMD_RADIO_STATE/CMD_RADIO_LOCK: 1 byte → update state
+      - CMD_FW_VERSION: 2 bytes → validate_firmware
+      - CMD_STAT_RX/CMD_STAT_TX: 4-byte BE → packet counts
+      - CMD_STAT_RSSI: 1 byte → byte - 157 = dBm
+      - CMD_STAT_SNR: signed byte * 0.25 → quality % computation
+      - CMD_STAT_CHTM: 11 bytes → airtime/channel load/RSSI/noise/interference
+      - CMD_STAT_PHYPRM: 12 bytes → symbol time/rate/preamble/CSMA params
+      - CMD_STAT_CSMA: 3 bytes → contention window band/min/max
+      - CMD_STAT_BAT: 2 bytes → battery state/percent (clamped 0-100)
+      - CMD_STAT_TEMP: 1 byte → byte-120 celsius (-30 to 90 range)
+      - CMD_RANDOM/CMD_PLATFORM/CMD_MCU: 1 byte → device info
+      - CMD_ERROR: error code → raise/log per type
+      - CMD_RESET: ESP32 online reset detection → reinit
+      - CMD_READY: process_queue for flow control
+      - CMD_FB_READ: 512 bytes → framebuffer
+      - CMD_DISP_READ: 1024 bytes → display data
+      - CMD_DETECT: DETECT_RESP → detected=true
+      - Timeout: resets state after 100ms/1250ms/1500ms (serial/BLE/TCP)
+      - ID beacon: transmits callsign after id_interval from first_tx
+      - TCP keepalive: sends detect every ACTIVITY_KEEPALIVE seconds
+    - process_incoming: rxb tracking, callback, clears RSSI/SNR
+    - process_outgoing: KISS frame encoding, flow control, ID beacon tracking
+    - queue/process_queue: packet queuing with flow control
+    - Display operations: enable/disable_external_framebuffer, display_image,
+      write_framebuffer, read_framebuffer, read_display, start/stop_display_updates
+    - Device management: hard_reset, leave, detect
+    - Battery: get_battery_state, get_battery_state_string, get_battery_percent
+    - Reconnection: reconnect_port with RECONNECT_WAIT delay
+    - teardown/detach: graceful shutdown with radio off + leave
+    - Serial port: POSIX termios at 115200 baud, 8N1
+  - Updated src/rns.cr to require interfaces/rnode_interface
+  - Created spec/rns/interfaces/rnode_interface_spec.cr (95 examples)
+    - RNodeKISS constants: frame delimiters (1), RNode commands (1),
+      statistics commands (1), device management (1), detection (1),
+      radio states (1), error codes (1), platform types (1), escape (1) = 9 tests
+    - RNodeInterface constants: hardware/frequency (1), signal quality (1),
+      firmware version (1), battery states (1), display (1), callsign/reconnect (1) = 6 tests
+    - Test constructor: defaults (1), HW_MTU (1), supports_discovery (1),
+      radio state off (1), flow control (1), ID beacon (1), airtime limits (1),
+      empty queue (1), empty hw_errors (1) = 9 tests
+    - Config parsing: missing port raises (1), TCP URI (1), BLE URI (1) = 3 tests
+    - Validation: frequency min/max (2), txpower min/max (2), bandwidth min/max (2),
+      SF min/max (2), CR min/max (2), airtime limits (2), valid config (1),
+      all valid SF (1), all valid CR (1) = 17 tests
+    - should_ingress_limit? always false (1)
+    - to_s formatting (1)
+    - Interface base class: inheritance (1), byte counters (1), hash (1) = 3 tests
+    - reset_radio_state (1)
+    - Battery: state (1), unknown string (1), charged (1), charging (1),
+      discharging (1), percent (1) = 6 tests
+    - update_bitrate: calculation (1), nil params (1), SF7/BW125k/CR5 (1),
+      lower for higher SF (1) = 4 tests
+    - process_incoming: rxb (1), callback (1), clears RSSI/SNR (1) = 3 tests
+    - process_outgoing: offline guard (1), queues when not ready (1) = 2 tests
+    - queue/process_queue: queuing (1), sets ready (1) = 2 tests
+    - validate_firmware: major > required (1), exact (1), higher minor (1) = 3 tests
+    - teardown/detach (1)
+    - KISS command encoding: frequency roundtrip (1), bandwidth encoding (1),
+      airtime limit encoding (1), detect command (1) = 4 tests
+    - KISS data frame: encoding (1), escape FEND (1), escape FESC (1),
+      100 random roundtrips (1) = 4 tests
+    - KISS read loop simulation: data frame (1), frequency response (1),
+      detect response (1), firmware version (1), RSSI (1), SNR + quality (1),
+      platform (1), battery (1), temperature (1), multiple frames (1),
+      escaped bytes (1) = 11 tests
+    - validate_radio_state: match (1), frequency mismatch (1) = 2 tests
+    - RNodeTCPConnection constants (2 tests)
+    - Stress: 20 configurations (1), 100 random KISS roundtrips (1),
+      50 frequency roundtrips (1) = 3 tests
+  - Ran crystal spec — 2004 examples, 0 failures, 5 pending (pre-existing)

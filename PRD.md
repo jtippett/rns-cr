@@ -269,7 +269,7 @@ This is the largest module (3312 LOC). Split into manageable sub-modules.
 - [x] **7.10 — I2P interface**
   Port `RNS/Interfaces/I2PInterface.py` (1009 LOC) → `src/rns/interfaces/i2p_interface.cr`. Implement `I2PInterface`, `I2PInterfacePeer`, and `I2PController`. Handle SAM (Simple Anonymous Messaging) protocol for communicating with the I2P router. Support tunnel creation, destination management, session handling. This is complex — the Python version uses asyncio internally. Map to Crystal fibers. Write specs: SAM protocol message formatting, session state management (can test protocol logic without running I2P daemon).
 
-- [ ] **7.11 — RNode interface (LoRa)**
+- [x] **7.11 — RNode interface (LoRa)**
   Port `RNS/Interfaces/RNodeInterface.py` (1558 LOC) → `src/rns/interfaces/rnode_interface.cr`. Implement `RNodeInterface` for LoRa radio communication via RNode hardware. Handle: KISS-based command protocol, radio parameter configuration (frequency, bandwidth, spreading factor, coding rate, TX power), firmware detection, statistics tracking, connection management over serial. This is the most complex interface. Write specs: command encoding/decoding, radio parameter validation, KISS command framing.
 
 - [ ] **7.12 — RNode Multi and Weave interfaces**

@@ -248,7 +248,7 @@ This is the largest module (3312 LOC). Split into manageable sub-modules.
 - [x] **7.3 — TCP interface (client and server)**
   Port `RNS/Interfaces/TCPInterface.py` (661 LOC) → `src/rns/interfaces/tcp_interface.cr`. Implement `TCPClientInterface` and `TCPServerInterface`. Client: connect to host:port, HDLC framing, reconnection logic, keepalive. Server: accept connections, manage client list, threading via fibers. Handle connection timeouts, graceful disconnection, data framing with HDLC escape sequences. Write specs: client/server communication over localhost, HDLC framing roundtrip, reconnection behavior.
 
-- [ ] **7.4 — Local interface**
+- [x] **7.4 — Local interface**
   Port `RNS/Interfaces/LocalInterface.py` (472 LOC) → `src/rns/interfaces/local_interface.cr`. Implement `LocalClientInterface` and `LocalServerInterface`. These use Unix domain sockets or TCP localhost for inter-process communication within the same machine. Support shared instance mode (multiple programs sharing one RNS transport instance). Write specs: local client/server communication, multi-client handling.
 
 - [ ] **7.5 — Auto interface (peer discovery)**

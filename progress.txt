@@ -991,3 +991,70 @@
     - Server Interface base: inheritance (1 test)
     - Server stress: 10 rapid connections, 20 multi-client messages (2 tests)
   - Ran crystal spec — 1446 examples, 0 failures, 5 pending
+
+2026-03-11 — Task 7.4: Local interface (client and server)
+  - Created src/rns/interfaces/local_interface.cr (~270 LOC)
+    porting RNS/Interfaces/LocalInterface.py (472 LOC)
+  - LocalClientInterface class inheriting from Interface:
+    - Constants: RECONNECT_WAIT (8), AUTOCONFIGURE_MTU (true), HW_MTU_DEFAULT (262144)
+    - Two constructors: initiator (connects via target_port or socket_path) and
+      server-spawned (wraps already-connected Socket)
+    - Supports TCP localhost (127.0.0.1) and Unix domain socket connections
+    - HDLC framing for all data (always HDLC, unlike TCP which supports KISS)
+    - Reconnection logic for shared instance connections with Transport notification
+    - should_ingress_limit? always returns false (local interfaces are trusted)
+    - force_bitrate option with mutex-protected simulated latency
+    - is_connected_to_shared_instance flag for reconnect/teardown behavior
+    - Calls Transport.shared_connection_disappeared/reappeared
+    - process_incoming with rxb tracking and parent_interface propagation
+    - process_outgoing with HDLC framing, txb tracking, error-triggered teardown
+    - read_loop fiber with HDLC deframing via process_hdlc_buffer
+    - teardown with nowarning option, removes from parent spawned_interfaces
+    - detach with socket cleanup
+    - Bitrate: 1 Gbps (1_000_000_000)
+    - to_s: "LocalInterface[port]" or "LocalInterface[path]"
+  - LocalServerInterface class inheriting from Interface:
+    - Two constructors: TCP (bindport) and Unix domain socket (socket_path)
+    - TCPServer on 127.0.0.1 with reuse_port, accept_loop fiber
+    - UNIXServer with stale socket file cleanup
+    - incoming_connection_tcp/incoming_connection_unix: spawns LocalClientInterface
+      per client with parent propagation (direction, bitrate, force_bitrate)
+    - Tracks client count, parent/child interface relationships via spawned_interfaces
+    - Announce tracking with from_spawned flag (only tracks spawned announces)
+    - process_outgoing is no-op (server doesn't send directly)
+    - detach cleans up socket file for Unix domain sockets
+    - is_local_shared_instance flag (default true)
+    - to_s: "Shared Instance[port]" or "Shared Instance[path]"
+  - Added Transport.shared_connection_disappeared and shared_connection_reappeared
+    stub methods to src/rns/transport.cr
+  - Updated src/rns.cr to require interfaces/local_interface
+  - Created spec/rns/interfaces/local_interface_spec.cr (49 examples)
+    - LocalClientInterface constants (3 tests)
+    - Connected socket constructor: TCP, Unix, TCP_NODELAY (3 tests)
+    - TCP port constructor: connects to localhost (1 test)
+    - Unix socket constructor: connects to Unix domain socket (1 test)
+    - HDLC outgoing: receive framed data, frame outgoing data (2 tests)
+    - HDLC roundtrip: bidirectional, special bytes, multiple messages (3 tests)
+    - Byte counters: rxb/txb tracking (1 test)
+    - should_ingress_limit?: always false (1 test)
+    - Teardown: sets offline, removes from parent spawned_interfaces (2 tests)
+    - Detach: marks detached, closes socket (1 test)
+    - Remote close: detects closed socket (1 test)
+    - to_s: TCP port, Unix path, no port (3 tests)
+    - Base class: inheritance, direction flags (2 tests)
+    - force_bitrate: defaults false (1 test)
+    - process_outgoing when offline: drops silently (1 test)
+    - Stress: 50 rapid sequential messages (1 test)
+    - LocalServerInterface TCP constants (2 tests)
+    - TCP server constructor: creation, spawned_interfaces, direction flags (3 tests)
+    - TCP incoming connections: accept client, multiple clients, receive data,
+      parent_interface set (4 tests)
+    - Announce tracking: received from_spawned, not from_spawned, sent from_spawned (3 tests)
+    - process_outgoing no-op (1 test)
+    - Detach: stops accepting (1 test)
+    - to_s: Shared Instance format (1 test)
+    - Base class: inheritance (1 test)
+    - Unix socket server: constructor, incoming connections, to_s, detach cleanup (4 tests)
+    - Multi-client communication: independent routing (1 test)
+    - Stress: 5 clients x 10 messages (1 test)
+  - Ran crystal spec — 1495 examples, 0 new failures, 5 pending (pre-existing)

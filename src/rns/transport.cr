@@ -1639,6 +1639,18 @@ module RNS
       @@job_loop_running = false
     end
 
+    # Called when a shared instance connection is lost.
+    # Notifies relevant subsystems to handle the disconnection.
+    def self.shared_connection_disappeared
+      @@is_connected_to_shared_instance = false
+    end
+
+    # Called when a shared instance connection is re-established.
+    # Notifies relevant subsystems to handle the reconnection.
+    def self.shared_connection_reappeared
+      @@is_connected_to_shared_instance = true
+    end
+
     # Exit handler: persists all transport state to disk.
     # Should be called before shutdown.
     def self.exit_handler

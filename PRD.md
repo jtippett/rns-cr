@@ -239,7 +239,7 @@ This is the largest module (3312 LOC). Split into manageable sub-modules.
 
 ### Phase 7: Interface System
 
-- [ ] **7.1 — Interface base class**
+- [x] **7.1 — Interface base class**
   Port `RNS/Interfaces/Interface.py` (302 LOC) → `src/rns/interfaces/interface.cr`. Define abstract `Interface` class. Constants: `IN = 0`, `OUT = 1`, `FWD = 2`, `RPT = 3`, mode flags (`MODE_FULL`, `MODE_POINT_TO_POINT`, `MODE_ACCESS_POINT`, `MODE_ROAMING`, `MODE_BOUNDARY`, `MODE_GATEWAY`), MTU types (`AUTOCONFIGURE_MTU`, `FIXED_MTU`, `HW_MTU`). Properties: `name`, `rxb`, `txb`, `online`, `bitrate`, `mtu`, `announce_rate_target`, `announce_rate_grace`, `announce_rate_penalty`, `ifac_size`, `held_announces`. Implement: `get_hash()`, `should_ingress_limit()`, `optimise_mtu()`, `age()`, `hold_announce()`, `process_held_announces()`, `received_announce()`, `sent_announce()`, `incoming_announce_frequency()`, `outgoing_announce_frequency()`, `process_announce_queue()`, `final_init()`, `detach()`. Implement HDLC framing helpers (used by multiple interfaces) and IFAC (Interface Authentication Code) validation. Write specs: hash computation, announce rate limiting, MTU optimization.
 
 - [ ] **7.2 — UDP interface**

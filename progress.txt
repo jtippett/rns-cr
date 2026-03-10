@@ -817,3 +817,71 @@
     - Correct return type annotation (Identity?)
     - Accepts any string argument
   - Ran crystal spec — 1245 examples, 0 failures, 5 pending
+
+2026-03-11 — Task 7.1: Interface base class
+  - Created src/rns/interfaces/interface.cr porting RNS/Interfaces/Interface.py (302 LOC)
+    - Abstract Interface class with all properties matching Python exactly
+    - Direction flags: IN, OUT, FWD, RPT (false by default)
+    - Mode constants: MODE_FULL (0x01), MODE_POINT_TO_POINT (0x02), MODE_ACCESS_POINT (0x03),
+      MODE_ROAMING (0x04), MODE_BOUNDARY (0x05), MODE_GATEWAY (0x06)
+    - DISCOVER_PATHS_FOR: [MODE_ACCESS_POINT, MODE_GATEWAY, MODE_ROAMING]
+    - Ingress control constants: IC_NEW_TIME (7200), IC_BURST_FREQ_NEW (3.5), IC_BURST_FREQ (12),
+      IC_BURST_HOLD (60), IC_BURST_PENALTY (300), IC_HELD_RELEASE_INTERVAL (30)
+    - Announce constants: IA_FREQ_SAMPLES (6), OA_FREQ_SAMPLES (6), MAX_HELD_ANNOUNCES (256),
+      ANNOUNCE_CAP (2), QUEUED_ANNOUNCE_LIFE (86400)
+    - MTU flags: AUTOCONFIGURE_MTU (false), FIXED_MTU (false)
+    - All properties: name, rxb, txb, online, bitrate, hw_mtu, mode, mtu, detached,
+      supports_discovery, discoverable, last_discovery_announce, bootstrap_only,
+      parent_interface, spawned_interfaces, tunnel_id
+    - Ingress control properties: ingress_control, ic_max_held_announces, ic_burst_hold,
+      ic_burst_active, ic_burst_activated, ic_held_release, ic_burst_freq_new, ic_burst_freq,
+      ic_new_time, ic_burst_penalty, ic_held_release_interval, held_announces
+    - Announce properties: announce_queue, announce_cap, announce_allowed_at,
+      announce_rate_target, announce_rate_grace, announce_rate_penalty
+    - IFAC properties: ifac_size, ifac_netname, ifac_netkey, ifac_key, ifac_identity, ifac_signature
+    - Methods: get_hash(), should_ingress_limit?(), optimise_mtu(), age(), hold_announce(),
+      process_held_announces(), received_announce(), sent_announce(),
+      incoming_announce_frequency(), outgoing_announce_frequency(), process_announce_queue(),
+      final_init(), detach(), process_outgoing() (abstract)
+    - HeldAnnounce record: raw, destination_hash, hops, receiving_interface
+    - AnnounceQueueEntry record: raw, hops, time
+    - Bounded frequency deques with IA_FREQ_SAMPLES/OA_FREQ_SAMPLES max size
+    - Announce frequency calculation matching Python algorithm (delta-based averaging)
+    - Ingress limiting with burst detection, hold time, and penalty
+    - Announce queue processing: stale removal, lowest-hop selection, rate-capped sending
+    - Parent interface announce propagation
+  - Created RNS::HDLC module in interface.cr (used by Serial, TCP, Pipe, I2P interfaces)
+    - Constants: FLAG (0x7E), ESC (0x7D), ESC_MASK (0x20)
+    - escape(): replaces FLAG and ESC bytes with escape sequences
+    - unescape(): reverses escape sequences back to original bytes
+    - frame(): wraps data with FLAG delimiters and escapes contents
+  - Updated src/rns.cr to require interfaces/interface module
+  - Created spec/rns/interfaces/interface_spec.cr (96 examples)
+    - HDLC constants (3), escape (6), unescape (5), roundtrip (2), frame (3)
+    - Interface constants: modes (1), DISCOVER_PATHS_FOR (1), freq samples (1),
+      MAX_HELD_ANNOUNCES (1), ingress control timing (1), announce cap/life (1),
+      MTU flags (1), direction flags (1)
+    - Initialization: defaults (1), discovery (1), ingress control (1), held announces (1),
+      frequency deques (1), announce queue (1), announce rate (1), IFAC (1), created time (1),
+      parent/spawned (1)
+    - get_hash: type and size (1), different names (1), consistent hashes (1)
+    - age: non-negative (1), increases (1)
+    - should_ingress_limit?: disabled (1), below threshold (1), burst activation (1),
+      burst mode persistence (1), deactivation after hold time (1)
+    - optimise_mtu: base class no-op (1)
+    - hold_announce: basic (1), overwrite (1), max capacity (1), overwrite at capacity (1)
+    - process_held_announces: empty (1), ingress limiting active (1), releases lowest-hop (1),
+      updates ic_held_release (1)
+    - received_announce: adds timestamp (1), limits deque (1), propagates to parent (1)
+    - sent_announce: adds timestamp (1), limits deque (1), propagates to parent (1)
+    - incoming_announce_frequency: no samples (1), one sample (1), positive (1), faster (1)
+    - outgoing_announce_frequency: no samples (1), one sample (1), positive (1)
+    - process_announce_queue: empty (1), lowest-hop oldest (1), removes sent (1),
+      stale removal (1), announce_allowed_at (1), records sent (1), error handling (1)
+    - final_init: no-op (1), detach: marks detached (1), to_s: returns name (1)
+    - Property mutation: name (1), rxb/txb (1), online (1), bitrate (1), mode (1),
+      hw_mtu (1), tunnel_id (1), IFAC (1), announce rate (1), parent/spawned (1)
+    - HeldAnnounce record (2), AnnounceQueueEntry record (1)
+    - Stress: 100 held announces (1), rapid frequency tracking (1),
+      200 HDLC escape/unescape (1), 20 announce queue entries (1)
+  - Ran crystal spec — 1341 examples, 0 failures, 5 pending

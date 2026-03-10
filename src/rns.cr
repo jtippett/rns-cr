@@ -26,6 +26,7 @@ require "./rns/link"
 require "./rns/resource"
 require "./rns/buffer"
 require "./rns/resolver"
+require "./rns/interfaces/interface"
 
 module RNS
   def self.version : String

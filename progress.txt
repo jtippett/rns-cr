@@ -1756,3 +1756,18 @@
   - Created spec/rns/discovery_spec.cr (49 examples)
   - Ran crystal spec — 2361 examples, 49/49 discovery specs pass,
     3 pre-existing flaky failures in stress tests, 5 pending
+
+2026-03-11 — Task 9.1: Wire up public API in src/rns.cr
+  - Reorganized src/rns.cr requires into logical sections (foundation, crypto,
+    core protocol, communication layer, interfaces, system integration)
+  - Added missing module-level functions matching Python RNS.__init__:
+    trace_exception, precise_timestamp_str, phyparams, exit, exit_called?
+  - Added convenience alias: RNS::InterfaceAnnouncer -> Discovery::InterfaceAnnouncer
+  - Wrote comprehensive spec/rns_spec.cr (56 examples) exercising full public API:
+    version, logging constants/functions, all utility functions, core class
+    re-exports (Identity, Destination, Packet, Link, Transport, Reticulum,
+    Resource, Channel, Buffer, Resolver), cryptography modules (hashes, HKDF,
+    X25519, Ed25519, Token, AES, PKCS7), interface system, discovery module,
+    end-to-end tests (Identity creation -> Destination hashing, sign/verify,
+    encrypt/decrypt)
+  - Ran crystal spec — 2415 examples, 0 failures, 5 pending

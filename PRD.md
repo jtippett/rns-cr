@@ -291,7 +291,7 @@ This is the largest module (3312 LOC). Split into manageable sub-modules.
 
 ### Phase 9: Public API and Module Integration
 
-- [ ] **9.1 — Wire up public API in src/rns.cr**
+- [x] **9.1 — Wire up public API in src/rns.cr**
   Update `src/rns.cr` to require all modules in correct order (respecting the dependency graph). Export the public API matching Python's `RNS.__init__`: `RNS::Reticulum`, `RNS::Identity`, `RNS::Destination`, `RNS::Transport`, `RNS::Packet`, `RNS::Link`, `RNS::Channel`, `RNS::Buffer`, `RNS::Resource`, `RNS::Resolver`. Ensure `RNS.log()`, `RNS.version()`, `RNS.host_os()`, `RNS.hexrep()`, etc. are accessible at module level. Add convenience type aliases where helpful for Crystal ergonomics. Write a comprehensive spec that exercises the full public API surface — import the library, create an Identity, create a Destination, verify the module re-exports work.
 
 - [ ] **9.2 — Cross-module integration testing**

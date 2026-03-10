@@ -179,7 +179,7 @@ Read `RNS/Cryptography/` for reference. Every crypto module must have specs with
 - [x] **2.3 — PKCS7 padding and AES-256-CBC**
   Create `src/rns/cryptography/pkcs7.cr` — implement PKCS7 `pad(data, block_size)` and `unpad(data)`. Read `RNS/Cryptography/PKCS7.py` for reference. Create `src/rns/cryptography/aes.cr` wrapping `OpenSSL::Cipher` — provide `encrypt(plaintext, key, iv)` and `decrypt(ciphertext, key, iv)` for AES-256-CBC with PKCS7 padding. Write specs: roundtrip encryption, known test vectors, invalid padding detection.
 
-- [ ] **2.4 — X25519 key exchange**
+- [x] **2.4 — X25519 key exchange**
   Create `src/rns/cryptography/x25519.cr`. Use Crystal's OpenSSL bindings to access X25519 via EVP_PKEY API (OpenSSL 1.1.1+). Implement `X25519PrivateKey` and `X25519PublicKey` classes matching the Python API in `RNS/Cryptography/X25519.py`: `generate()`, `from_private_bytes(data)`, `private_bytes()`, `public_key()`, `exchange(peer_public_key)`. Write specs: key generation, key exchange between two parties produces same shared secret, known test vectors from RFC 7748.
 
 - [ ] **2.5 — Ed25519 signatures**

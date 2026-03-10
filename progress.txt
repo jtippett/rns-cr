@@ -73,3 +73,22 @@
     - 1000-iteration random roundtrip tests with PKCS7 for both AES-256 and AES-128
   - Updated src/rns.cr to require cryptography/pkcs7 and cryptography/aes
   - Ran crystal spec — 166 examples, 0 failures
+
+2026-03-10 — Task 2.4: X25519 key exchange
+  - Created src/rns/cryptography/x25519.cr — X25519PrivateKey and X25519PublicKey classes
+    - Wraps Ed25519::Curve25519 shard (scalar_mult, scalar_mult_base) for ECDH
+    - X25519PrivateKey: generate(), from_private_bytes(data), private_bytes(), public_key(), exchange(peer)
+    - X25519PublicKey: from_public_bytes(data), public_bytes()
+    - Scalar clamping per RFC 7748 (clear 3 LSBs, clear bit 255, set bit 254)
+    - Public key high-bit masking per RFC 7748 Section 5
+    - Constant-time execution padding matching Python's timing protection
+    - exchange() accepts both X25519PublicKey and raw Bytes
+  - Created spec/rns/cryptography/x25519_spec.cr (26 examples)
+    - RFC 7748 Section 6.1 test vectors: Alice/Bob public key derivation and shared secret
+    - RFC 7748 Section 5.2 iterated test vectors (1 iteration and 1000 iterations)
+    - Key generation, uniqueness, serialization roundtrip
+    - Two-party key exchange produces matching shared secrets
+    - Clamping verification, invalid length rejection
+    - 100-iteration random key exchange roundtrip tests
+  - Updated src/rns.cr to require cryptography/x25519
+  - Ran crystal spec — 192 examples, 0 failures

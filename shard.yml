@@ -1,0 +1,26 @@
+name: rns
+version: 0.1.0
+
+authors:
+  - Reticulum Contributors
+
+crystal: ">= 1.9.0"
+
+license: MIT
+
+dependencies:
+  ed25519:
+    github: spider-gazelle/ed25519
+    version: ~> 1.0
+  qr-code:
+    github: spider-gazelle/qr-code
+  hkdf:
+    github: spider-gazelle/HKDF
+  msgpack:
+    github: crystal-community/msgpack-crystal
+  bindata:
+    github: spider-gazelle/bindata
+
+development_dependencies:
+  ameba:
+    github: crystal-ameba/ameba

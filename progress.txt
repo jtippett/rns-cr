@@ -1,0 +1,9 @@
+2026-03-10 — Task 1.1: Initialize Crystal shard project
+  - Created  directory with shard.yml (name: rns, version: 0.1.0, crystal >= 1.9.0)
+  - Added all dependencies: ed25519, qr-code, hkdf, msgpack, bindata, ameba (dev)
+  - Created src/rns.cr entry point with RNS module and version method
+  - Created src/rns/version.cr with VERSION constant
+  - Created spec/spec_helper.cr and spec/rns_spec.cr (trivial spec)
+  - Created .gitignore for Crystal (lib/, .shards/, bin/)
+  - Ran shards install — all dependencies resolved successfully
+  - Ran crystal spec — 2 examples, 0 failures

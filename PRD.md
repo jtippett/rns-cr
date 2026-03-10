@@ -277,7 +277,7 @@ This is the largest module (3312 LOC). Split into manageable sub-modules.
 
 ### Phase 8: System Integration
 
-- [ ] **8.1 — Configuration parser**
+- [x] **8.1 — Configuration parser**
   Create `src/rns/vendor/config_obj.cr`. Port the configuration file parsing that `RNS/Reticulum.py` uses. RNS configs use an INI-like format via `configobj`. Crystal has `INI` in stdlib — evaluate if it's sufficient or if a custom parser is needed to match RNS config format (which supports nested sections and type coercion). Handle: reading config files, creating default configs, interface section parsing. Write specs with sample RNS config files.
 
 - [ ] **8.2 — Reticulum main class — initialization and configuration**

@@ -1585,3 +1585,37 @@
   - Wrote 126 specs across both files (55 + 71 examples), all passing
   - Key fixes: rnode_parent typed property, peer_spawned_interfaces rename, firmware validation logic, Int64 bitrate alignment
   - Ran crystal spec — 2130 examples, 0 failures, 5 pending (pre-existing)
+
+2026-03-11 — Task 8.1: Configuration parser
+  - Created src/rns/vendor/config_obj.cr — ConfigObj parser compatible with Python's configobj
+    - ConfigObj class with Section inner class for nested config structure
+    - Value union type: String | Array(String) | Section
+    - Parsing: INI-like format with bracket-depth sections ([section], [[subsection]], etc.)
+    - Section marker regex and key=value regex matching Python configobj patterns
+    - Nested section support: child, sibling, and depth walk-back for returning to parent levels
+    - Comment handling: skip comment-only lines, strip inline comments (quote-aware)
+    - List value parsing: comma-separated values with quote-aware splitting
+    - Empty list support (single comma), trailing comma single-element lists
+    - Quoted value/section name support (single and double quotes)
+    - Type conversion: as_bool (yes/no/on/off/true/false/1/0), as_int, as_float, as_list
+    - Boolean conversion is case-insensitive, matching Python configobj._bools exactly
+    - Dictionary-like access: [], []=, has_key?, get with default, size
+    - Section tracking: separate scalars and sections lists for ordered iteration
+    - File I/O: from_file(path) reads config, write(path) writes config
+    - Write-back: generates INI format with proper bracket depth and indentation
+    - add_section for programmatic section creation
+  - Created spec/rns/vendor/config_obj_spec.cr with 51 test examples covering:
+    - Empty config, key=value parsing, whitespace handling, quoted values
+    - Comment lines, blank lines, inline comments, empty string values
+    - Top-level sections, nested sections (double brackets), deeply nested sections
+    - Sibling sections, section depth tracking, section iteration
+    - Boolean conversion (all variants), integer/float conversion, list conversion
+    - Dictionary access (has_key?, get with default, []=, scalars/sections tracking)
+    - File I/O (read and write roundtrip)
+    - RNS test config parsing (reticulum/logging/interfaces sections with type coercion)
+    - RNS default config parsing (with interface subsections)
+    - Depth walk-back (going from nested back to root), quoted section names
+    - List values (comma-separated, quoted, empty list, trailing comma)
+    - Programmatic config setting and section creation
+  - Updated src/rns.cr to require vendor/config_obj
+  - Ran crystal spec — 2181 examples (51 new), 0 failures in config_obj specs

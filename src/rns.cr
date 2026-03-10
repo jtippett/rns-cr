@@ -1,5 +1,6 @@
 require "./rns/version"
 require "./rns/vendor/platform_utils"
+require "./rns/vendor/config_obj"
 require "./rns/log"
 require "./rns/utilities"
 require "./rns/cryptography/hashes"

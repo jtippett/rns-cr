@@ -1771,3 +1771,43 @@
     end-to-end tests (Identity creation -> Destination hashing, sign/verify,
     encrypt/decrypt)
   - Ran crystal spec — 2415 examples, 0 failures, 5 pending
+
+## Task 9.2 — Cross-module integration testing (2026-03-11)
+
+- Created spec/rns/integration/ directory with 4 integration test files:
+  1. announce_spec.cr (27 examples) — Identity/Destination creation, announce
+     generation/packing/validation, Transport announce processing via inbound
+     and inbound_announce, path table population, Identity recall after announce,
+     app_data storage, handler registration/deregistration, tampered announce
+     rejection, local destination rejection, full inbound pipeline, stress tests
+     (50 announces, 100 validations)
+  2. link_establishment_spec.cr (18 examples) — 3-step ECDH handshake with
+     matching derived keys, bidirectional encryption via Token, MTU signalling
+     bytes, initiator pending link creation, responder HANDSHAKE state after
+     validate_request, encrypt/decrypt roundtrip at various payload sizes,
+     Transport registration, state transitions (PENDING→HANDSHAKE→ACTIVE→CLOSED),
+     data transfer with tx/txbytes counters, link callbacks, stress tests
+     (20 independent links, 100 random payload encrypt/decrypt)
+  3. file_transfer_spec.cr (18 examples) — Resource creation from small/medium/
+     large data, segment sizing within SDU, resource hash non-emptiness,
+     ResourceAdvertisement pack/unpack roundtrip with field preservation,
+     flag encoding, data integrity (parts within SDU, different data → different
+     hashes), metadata flag, proof validation (correct/incorrect), window
+     management defaults, callbacks, BZip2 compression integration, stress tests
+     (20 resources of varying sizes, 50 proof validations, 30 advertisement
+     roundtrips)
+  4. multi_interface_spec.cr (18 examples) — Interface registration/deregistration
+     via Transport.interfaces, path-based routing via path_table manipulation,
+     next_hop/receiving_interface/hops lookup, destination registration across
+     interfaces, path expiry via delete, UDP interface send/receive between two
+     interfaces, two independent UDP interface pairs, TCP LocalInterface
+     client-server connection, Transport transmit log recording, stress tests
+     (20 interfaces + 50 paths, 30 announces on different interfaces)
+- Key implementation decisions:
+  - Used actual Transport/Identity/Link/Resource public APIs (not mocked)
+  - Helper methods and constants declared at file top level (Crystal spec restriction)
+  - Used polling with Fiber.yield for spawned fiber synchronization
+  - Replaced spawned-callback handler tests with synchronous verification
+    (handler registration/deregistration + path table + Identity recall)
+  - UDP/TCP interface tests use random ports to avoid conflicts
+- Ran crystal spec — 2496 examples, 0 failures, 0 errors, 5 pending

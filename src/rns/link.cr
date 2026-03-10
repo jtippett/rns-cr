@@ -3,9 +3,9 @@ module RNS
     property link_established : Proc(Link, Nil)?
     property link_closed : Proc(Link, Nil)?
     property packet : Proc(Bytes, Packet, Nil)?
-    property resource : Proc(Nil)?          # TODO: Proc(ResourceAdvertisement, Bool)? when Resource is implemented
-    property resource_started : Proc(Nil)?  # TODO: proper signature when Resource is implemented
-    property resource_concluded : Proc(Nil)?
+    property resource : Proc(Bytes, Bool)?          # ResourceAdvertisement plaintext -> accept?
+    property resource_started : Proc(Bytes, Nil)?   # resource_hash -> void
+    property resource_concluded : Proc(Bytes, Nil)? # resource_hash -> void
     property remote_identified : Proc(Link, Identity, Nil)?
 
     def initialize
@@ -124,8 +124,10 @@ module RNS
     property expected_rate : Float64?
     property teardown_reason : UInt8?
     property pending_requests : Array(RequestReceipt)
-    property outgoing_resources : Array(Nil) # TODO: Array(Resource) when Resource is implemented
-    property incoming_resources : Array(Nil) # TODO: Array(Resource) when Resource is implemented
+    property outgoing_resources : Array(Bytes) # Resource hashes; Array(Resource) when Resource is implemented
+    property incoming_resources : Array(Bytes) # Resource hashes; Array(Resource) when Resource is implemented
+    property last_resource_window : Int32?
+    property last_resource_eifr : Float64?
     property attached_interface : Bytes?     # TODO: Interface? when interfaces are implemented
 
     @status : UInt8
@@ -311,8 +313,10 @@ module RNS
       @expected_rate = nil
       @callbacks = LinkCallbacks.new
       @resource_strategy = ACCEPT_NONE
-      @outgoing_resources = [] of Nil
-      @incoming_resources = [] of Nil
+      @outgoing_resources = [] of Bytes
+      @incoming_resources = [] of Bytes
+      @last_resource_window = nil
+      @last_resource_eifr = nil
       @pending_requests = [] of RequestReceipt
       @last_inbound = 0.0
       @last_outbound = 0.0
@@ -421,11 +425,11 @@ module RNS
       @hash = @link_id
     end
 
-    protected def set_destination(dest : Destination?)
+    def set_destination(dest : Destination?)
       @destination = dest
     end
 
-    protected def establishment_timeout=(value : Float64)
+    def establishment_timeout=(value : Float64)
       @establishment_timeout = value
     end
 
@@ -833,12 +837,83 @@ module RNS
       had_outbound
     end
 
+    # ─── Send convenience ────────────────────────────────────────────
+
+    def send(data : Bytes, packet_type : UInt8 = Packet::DATA, context : UInt8 = Packet::NONE) : Packet?
+      return nil if @status == CLOSED
+      packet = Packet.new(self, data, packet_type: packet_type, context: context)
+      packet.send
+      had_outbound
+      @tx += 1
+      @txbytes += data.size
+      packet
+    end
+
+    # ─── Resource management ──────────────────────────────────────────
+
+    def register_outgoing_resource(resource_hash : Bytes)
+      @outgoing_resources << resource_hash
+    end
+
+    def register_incoming_resource(resource_hash : Bytes)
+      @incoming_resources << resource_hash
+    end
+
+    def has_incoming_resource?(resource_hash : Bytes) : Bool
+      @incoming_resources.any? { |h| h == resource_hash }
+    end
+
+    def cancel_outgoing_resource(resource_hash : Bytes)
+      if @outgoing_resources.includes?(resource_hash)
+        @outgoing_resources.delete(resource_hash)
+      else
+        RNS.log("Attempt to cancel a non-existing outgoing resource", RNS::LOG_ERROR)
+      end
+    end
+
+    def cancel_incoming_resource(resource_hash : Bytes)
+      if @incoming_resources.includes?(resource_hash)
+        @incoming_resources.delete(resource_hash)
+      else
+        RNS.log("Attempt to cancel a non-existing incoming resource", RNS::LOG_ERROR)
+      end
+    end
+
+    def ready_for_new_resource? : Bool
+      @outgoing_resources.empty?
+    end
+
+    def get_last_resource_window : Int32?
+      @last_resource_window
+    end
+
+    def get_last_resource_eifr : Float64?
+      @last_resource_eifr
+    end
+
+    def resource_concluded(resource_hash : Bytes, resource_size : Int64, started_transferring : Float64,
+                           window : Int32? = nil, eifr : Float64? = nil, incoming : Bool = true)
+      concluded_at = Time.utc.to_unix_f
+      if incoming && @incoming_resources.includes?(resource_hash)
+        @last_resource_window = window
+        @last_resource_eifr = eifr
+        @incoming_resources.delete(resource_hash)
+        elapsed = Math.max(concluded_at - started_transferring, 0.0001)
+        @expected_rate = (resource_size * 8).to_f64 / elapsed
+      end
+      if @outgoing_resources.includes?(resource_hash)
+        @outgoing_resources.delete(resource_hash)
+        elapsed = Math.max(concluded_at - started_transferring, 0.0001)
+        @expected_rate = (resource_size * 8).to_f64 / elapsed
+      end
+    end
+
     # ─── Teardown ────────────────────────────────────────────────────
 
     def teardown
       if @status != PENDING && @status != CLOSED
-        teardown_packet = Packet.new(self, @link_id, context: Packet::LINKCLOSE)
-        teardown_packet.send
+        teardown_pkt = Packet.new(self, @link_id, context: Packet::LINKCLOSE)
+        teardown_pkt.send
         had_outbound
       end
       @status = CLOSED
@@ -859,18 +934,16 @@ module RNS
     end
 
     def link_closed
-      # Cancel resources (stub for now)
+      # Clear resource lists (cancel handled by Resource module when implemented)
+      @incoming_resources.clear
+      @outgoing_resources.clear
+
       # Purge keys
       @prv = nil
       @pub = nil
       @pub_bytes = nil
       @shared_key = nil
       @derived_key = nil
-
-      # TODO: shutdown channel when Channel integration is enabled
-      # if @channel
-      #   @channel.not_nil!.shutdown
-      # end
 
       dest = @destination
       if dest && dest.direction == Destination::IN
@@ -991,9 +1064,10 @@ module RNS
           when Packet::NONE
             plaintext = decrypt_data(packet.data)
             if plaintext
+              pt = plaintext # Bind non-nil for closure
               cb = @callbacks.packet
               if cb
-                spawn { cb.call(plaintext, packet) }
+                spawn { cb.call(pt, packet) }
               end
 
               dest = @destination
@@ -1060,7 +1134,7 @@ module RNS
               if plaintext
                 unpacked = Array(MessagePack::Any).from_msgpack(IO::Memory.new(plaintext))
                 if unpacked.size >= 2
-                  request_id = unpacked[0].as_bytes
+                  request_id = unpacked[0].raw.as(Bytes)
                   response_data = unpacked[1]
                   spawn { handle_response(request_id, response_data) }
                 end
@@ -1110,15 +1184,68 @@ module RNS
       return unless @status == ACTIVE
       return unless unpacked_request.size >= 3
 
-      # requested_at = unpacked_request[0]
-      path_hash = unpacked_request[1].as_bytes
-      # request_data = unpacked_request[2]
+      requested_at = unpacked_request[0].as_f? || unpacked_request[0].as_i64?.try(&.to_f64) || 0.0
+      path_hash = unpacked_request[1].raw.as(Bytes)
+      request_data_any = unpacked_request[2]
+      request_data : Bytes? = nil
+      begin
+        request_data = request_data_any.raw.as(Bytes)
+      rescue
+        # May be nil or other type
+      end
 
       dest = @destination
       return unless dest
 
       path_hash_hex = path_hash.hexstring
-      # TODO: full request handler dispatch when Destination request handlers are wired
+      handler_entry = dest.request_handlers[path_hash_hex]?
+      return unless handler_entry
+
+      path = handler_entry.path
+      response_generator = handler_entry.response_generator
+      allow = handler_entry.allow
+      allowed_list = handler_entry.allowed_list
+
+      allowed = false
+      if allow != Destination::ALLOW_NONE
+        if allow == Destination::ALLOW_LIST
+          ri = @remote_identity
+          if ri && allowed_list
+            allowed = allowed_list.any? { |h| h == ri.hash }
+          end
+        elsif allow == Destination::ALLOW_ALL
+          allowed = true
+        end
+      end
+
+      if allowed
+        RNS.log("Handling request #{RNS.prettyhexrep(request_id)} for: #{path}", RNS::LOG_DEBUG)
+        begin
+          response = response_generator.call(path, request_data, request_id, @link_id, @remote_identity, requested_at)
+          if response
+            packed_response = IO::Memory.new
+            packer = MessagePack::Packer.new(packed_response)
+            packer.write_array_start(2)
+            request_id.to_msgpack(packed_response)
+            response.to_msgpack(packed_response)
+            packed_bytes = packed_response.to_slice
+
+            if packed_bytes.size <= @mdu
+              resp_pkt = Packet.new(self, packed_bytes, packet_type: Packet::DATA, context: Packet::RESPONSE)
+              resp_pkt.send
+              had_outbound
+            else
+              # Large responses would go via Resource — not yet implemented
+              RNS.log("Response too large for packet MDU and Resource not yet implemented", RNS::LOG_ERROR)
+            end
+          end
+        rescue ex
+          RNS.log("Error while generating response for request #{RNS.prettyhexrep(request_id)}: #{ex}", RNS::LOG_ERROR)
+        end
+      else
+        identity_string = @remote_identity.try { |ri| ri.to_s } || "<Unknown>"
+        RNS.log("Request #{RNS.prettyhexrep(request_id)} from #{identity_string} not allowed for: #{path}", RNS::LOG_DEBUG)
+      end
     end
 
     def handle_response(request_id : Bytes, response_data : MessagePack::Any)
@@ -1224,6 +1351,18 @@ module RNS
       @callbacks.remote_identified = callback
     end
 
+    def set_resource_callback(callback : Proc(Bytes, Bool))
+      @callbacks.resource = callback
+    end
+
+    def set_resource_started_callback(callback : Proc(Bytes, Nil))
+      @callbacks.resource_started = callback
+    end
+
+    def set_resource_concluded_callback(callback : Proc(Bytes, Nil))
+      @callbacks.resource_concluded = callback
+    end
+
     # ─── String representation ───────────────────────────────────────
 
     def to_s(io : IO)
@@ -1327,6 +1466,7 @@ module RNS
     property callbacks : RequestReceiptCallbacks
     property link : Link
     property packet_receipt : PacketReceipt?
+    @resource_response_timeout : Float64?
 
     def initialize(link : Link,
                    packet_receipt : PacketReceipt? = nil,
@@ -1358,6 +1498,7 @@ module RNS
       @progress = 0.0
       @concluded_at = nil
       @response_concluded_at = nil
+      @resource_response_timeout = nil
       @timeout = timeout
 
       @callbacks = RequestReceiptCallbacks.new
@@ -1381,6 +1522,71 @@ module RNS
           rescue ex
             RNS.log("Error while executing request timed out callback: #{ex}", RNS::LOG_ERROR)
           end
+        end
+      end
+    end
+
+    # Called when a request sent as a Resource completes transfer
+    def request_resource_concluded(resource_status : UInt8, resource_complete : UInt8 = 0x00_u8)
+      if resource_status == resource_complete
+        RNS.log("Request #{RNS.prettyhexrep(@request_id)} successfully sent as resource.", RNS::LOG_DEBUG)
+        @started_at = Time.utc.to_unix_f if @started_at.nil?
+        @status = DELIVERED
+        @resource_response_timeout = Time.utc.to_unix_f + @timeout
+        spawn { response_timeout_job }
+      else
+        RNS.log("Sending request #{RNS.prettyhexrep(@request_id)} as resource failed", RNS::LOG_DEBUG)
+        @status = FAILED
+        @concluded_at = Time.utc.to_unix_f
+        @link.pending_requests.delete(self)
+
+        cb = @callbacks.failed
+        if cb
+          begin
+            cb.call(self)
+          rescue ex
+            RNS.log("Error while executing request failed callback: #{ex}", RNS::LOG_ERROR)
+          end
+        end
+      end
+    end
+
+    # Monitors timeout for resource-based request responses
+    private def response_timeout_job
+      while @status == DELIVERED
+        now = Time.utc.to_unix_f
+        rrt = @resource_response_timeout
+        if rrt && now > rrt
+          request_timed_out(nil)
+          break
+        end
+        sleep 0.1.seconds
+      end
+    end
+
+    # Called when progress is made receiving a response resource
+    def response_resource_progress(resource_progress : Float64)
+      return if @status == FAILED
+
+      @status = RECEIVING
+
+      pr = @packet_receipt
+      if pr && pr.status != PacketReceipt::DELIVERED
+        pr.status = PacketReceipt::DELIVERED
+        pr.proved = true
+        pr.concluded_at = Time.utc.to_unix_f
+        delivery_cb = pr.callbacks.delivery
+        delivery_cb.call(pr) if delivery_cb
+      end
+
+      @progress = resource_progress
+
+      progress_cb = @callbacks.progress
+      if progress_cb
+        begin
+          progress_cb.call(self)
+        rescue ex
+          RNS.log("Error while executing response progress callback: #{ex}", RNS::LOG_ERROR)
         end
       end
     end

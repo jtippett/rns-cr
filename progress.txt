@@ -626,3 +626,65 @@
     - LinkCallbacks (1 test)
     - Stress tests: 100 encrypt/decrypt cycles, concurrent link creation (2 tests)
   - Ran crystal spec — 1023 examples, 0 failures, 5 pending
+
+2026-03-11 — Task 5.3: Link module — lifecycle management
+  - Completed lifecycle management for src/rns/link.cr
+  - send() convenience method: creates and sends packet over link, tracks tx/txbytes
+  - Resource management methods (stubs ready for Task 5.4):
+    - register_outgoing_resource, register_incoming_resource (hash-based tracking)
+    - cancel_outgoing_resource, cancel_incoming_resource
+    - has_incoming_resource?, ready_for_new_resource?
+    - resource_concluded: updates expected_rate from transfer size/time,
+      tracks last_resource_window and last_resource_eifr
+    - get_last_resource_window, get_last_resource_eifr
+  - link_closed: clears incoming/outgoing resource lists on teardown
+  - Resource callback setters: set_resource_callback, set_resource_started_callback,
+    set_resource_concluded_callback with proper type signatures
+  - Complete handle_request dispatch: wires to Destination request_handlers,
+    validates ALLOW_NONE/ALLOW_ALL/ALLOW_LIST policies, invokes response_generator,
+    packs and sends response via MessagePack, logs disallowed requests
+  - RequestReceipt enhancements:
+    - request_resource_concluded: transitions DELIVERED on success, FAILED on failure,
+      spawns response timeout fiber
+    - response_timeout_job: polls for timeout on resource-based responses
+    - response_resource_progress: updates RECEIVING status, marks packet_receipt
+      delivered, calls progress callback
+    - @resource_response_timeout instance variable for timeout tracking
+  - Made set_destination and establishment_timeout= public for test access
+  - Fixed MessagePack::Any#as_bytes -> .raw.as(Bytes) for Crystal compatibility
+  - Fixed closure capture for nilable plaintext in receive dispatch (cb.call)
+  - Updated LinkCallbacks resource types to proper signatures
+  - Updated outgoing_resources/incoming_resources from Array(Nil) to Array(Bytes)
+  - Updated spec/rns/link_spec.cr with 71 new test examples (155 passing, 5 pending):
+    - send(): packet creation, tx/txbytes tracking, CLOSED nil return,
+      last_outbound update, packet_type/context params (5 tests)
+    - Resource management: register/track outgoing, register/track incoming,
+      has_incoming_resource? false for unknown, cancel outgoing, cancel incoming,
+      ready_for_new_resource?, resource_concluded incoming, resource_concluded outgoing,
+      clears on link_closed, last window/eifr nil initially (10 tests)
+    - Resource callbacks: set_resource_callback, set_resource_started_callback,
+      set_resource_concluded_callback (3 tests)
+    - Keepalive timing: formula verification, stale_time tracking, medium RTT scaling,
+      send_keepalive marks last_keepalive, send_keepalive doesn't update last_data,
+      had_outbound is_keepalive true/false (7 tests)
+    - Stale detection: STALE_FACTOR=2, STALE_TIME formula, default 720s,
+      stale adjusts with RTT, STALE->ACTIVE on inbound, inactive_for,
+      no_data_for (7 tests)
+    - Teardown: CLOSED status, DESTINATION_CLOSED for responder,
+      INITIATOR_CLOSED for initiator, purges crypto keys, clears resources,
+      link_closed callback, teardown_packet matching/non-matching,
+      reverse teardown reason, no teardown packet if PENDING (9 tests)
+    - RTT computation: nil initially, keepalive from RTT, establishment rate,
+      RTT range effect on keepalive, rtt property (5 tests)
+    - Receive dispatch: ignores CLOSED, increments rx/rxbytes, updates last_inbound,
+      STALE->ACTIVE, keepalive doesn't update last_data, non-keepalive updates last_data,
+      LINKCLOSE teardown, responder keepalive response, initiator ignores own keepalive (9 tests)
+    - handle_request: ALLOW_ALL dispatch, ALLOW_NONE rejection, no-op when not ACTIVE,
+      no-op for unregistered path (4 tests)
+    - RequestReceipt resource: DELIVERED on success, FAILED on failure,
+      response_resource_progress updates status/progress, ignores when FAILED,
+      marks packet_receipt delivered (5 tests)
+    - Watchdog: PENDING timeout, HANDSHAKE timeout (2 tests)
+    - prove_packet: creates proof with signature (1 test)
+    - Stress: 50 resource register/conclude cycles, concurrent link creation (2 tests)
+  - Ran crystal spec — 1094 examples, 0 failures, 5 pending

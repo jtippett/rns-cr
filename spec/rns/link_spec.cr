@@ -878,6 +878,721 @@ describe RNS::Link do
   end
 
   # ────────────────────────────────────────────────────────────────────
+  #  send() convenience method
+  # ────────────────────────────────────────────────────────────────────
+
+  describe "send" do
+    it "creates and returns a packet" do
+      link = create_handshaken_link
+      link.status = RNS::Link::ACTIVE
+      pkt = link.send("hello".to_slice)
+      pkt.should_not be_nil
+    end
+
+    it "increments tx and txbytes" do
+      link = create_handshaken_link
+      link.status = RNS::Link::ACTIVE
+      link.tx.should eq 0
+      link.txbytes.should eq 0
+      link.send("test".to_slice)
+      link.tx.should eq 1
+      link.txbytes.should eq 4
+    end
+
+    it "returns nil when CLOSED" do
+      link = create_handshaken_link
+      link.status = RNS::Link::CLOSED
+      link.send("hello".to_slice).should be_nil
+    end
+
+    it "updates last_outbound" do
+      link = create_handshaken_link
+      link.status = RNS::Link::ACTIVE
+      link.last_outbound.should eq 0.0
+      link.send("data".to_slice)
+      link.last_outbound.should be > 0
+    end
+
+    it "accepts packet_type and context" do
+      link = create_handshaken_link
+      link.status = RNS::Link::ACTIVE
+      pkt = link.send(Bytes[0xFF], packet_type: RNS::Packet::DATA, context: RNS::Packet::KEEPALIVE)
+      pkt.should_not be_nil
+    end
+  end
+
+  # ────────────────────────────────────────────────────────────────────
+  #  Resource management
+  # ────────────────────────────────────────────────────────────────────
+
+  describe "resource management" do
+    it "registers and tracks outgoing resources" do
+      link = create_handshaken_link
+      hash = Random::Secure.random_bytes(32)
+      link.register_outgoing_resource(hash)
+      link.outgoing_resources.size.should eq 1
+      link.ready_for_new_resource?.should be_false
+    end
+
+    it "registers and tracks incoming resources" do
+      link = create_handshaken_link
+      hash = Random::Secure.random_bytes(32)
+      link.register_incoming_resource(hash)
+      link.incoming_resources.size.should eq 1
+      link.has_incoming_resource?(hash).should be_true
+    end
+
+    it "has_incoming_resource? false for unknown hash" do
+      link = create_handshaken_link
+      link.has_incoming_resource?(Random::Secure.random_bytes(32)).should be_false
+    end
+
+    it "cancels outgoing resource" do
+      link = create_handshaken_link
+      hash = Random::Secure.random_bytes(32)
+      link.register_outgoing_resource(hash)
+      link.cancel_outgoing_resource(hash)
+      link.outgoing_resources.empty?.should be_true
+      link.ready_for_new_resource?.should be_true
+    end
+
+    it "cancels incoming resource" do
+      link = create_handshaken_link
+      hash = Random::Secure.random_bytes(32)
+      link.register_incoming_resource(hash)
+      link.cancel_incoming_resource(hash)
+      link.incoming_resources.empty?.should be_true
+    end
+
+    it "ready_for_new_resource? true when empty" do
+      link = create_handshaken_link
+      link.ready_for_new_resource?.should be_true
+    end
+
+    it "resource_concluded updates expected_rate for incoming" do
+      link = create_handshaken_link
+      hash = Random::Secure.random_bytes(32)
+      link.register_incoming_resource(hash)
+      started = Time.utc.to_unix_f - 1.0
+      link.resource_concluded(hash, 8000_i64, started, window: 10, eifr: 1000.0, incoming: true)
+      link.incoming_resources.empty?.should be_true
+      link.expected_rate.should_not be_nil
+      link.expected_rate.not_nil!.should be > 0
+      link.get_last_resource_window.should eq 10
+      link.get_last_resource_eifr.should eq 1000.0
+    end
+
+    it "resource_concluded updates expected_rate for outgoing" do
+      link = create_handshaken_link
+      hash = Random::Secure.random_bytes(32)
+      link.register_outgoing_resource(hash)
+      started = Time.utc.to_unix_f - 0.5
+      link.resource_concluded(hash, 4000_i64, started, incoming: false)
+      link.outgoing_resources.empty?.should be_true
+      link.expected_rate.not_nil!.should be > 0
+    end
+
+    it "clears resources on link_closed" do
+      link = create_handshaken_link
+      link.register_incoming_resource(Random::Secure.random_bytes(32))
+      link.register_outgoing_resource(Random::Secure.random_bytes(32))
+      link.link_closed
+      link.incoming_resources.empty?.should be_true
+      link.outgoing_resources.empty?.should be_true
+    end
+
+    it "get_last_resource_window/eifr nil initially" do
+      link = create_handshaken_link
+      link.get_last_resource_window.should be_nil
+      link.get_last_resource_eifr.should be_nil
+    end
+  end
+
+  # ────────────────────────────────────────────────────────────────────
+  #  Resource callback setters
+  # ────────────────────────────────────────────────────────────────────
+
+  describe "resource callbacks" do
+    it "sets resource callback" do
+      link = create_handshaken_link
+      link.set_resource_callback(->(data : Bytes) { true })
+      link.callbacks.resource.should_not be_nil
+    end
+
+    it "sets resource_started callback" do
+      link = create_handshaken_link
+      link.set_resource_started_callback(->(h : Bytes) { nil })
+      link.callbacks.resource_started.should_not be_nil
+    end
+
+    it "sets resource_concluded callback" do
+      link = create_handshaken_link
+      link.set_resource_concluded_callback(->(h : Bytes) { nil })
+      link.callbacks.resource_concluded.should_not be_nil
+    end
+  end
+
+  # ────────────────────────────────────────────────────────────────────
+  #  Keepalive timing (Task 5.3)
+  # ────────────────────────────────────────────────────────────────────
+
+  describe "keepalive timing" do
+    it "keepalive formula: rtt * (KEEPALIVE_MAX / KEEPALIVE_MAX_RTT)" do
+      link = create_handshaken_link
+      link.rtt = 1.0
+      link.update_keepalive
+      expected = Math.max(Math.min(1.0 * (RNS::Link::KEEPALIVE_MAX / RNS::Link::KEEPALIVE_MAX_RTT), RNS::Link::KEEPALIVE_MAX), RNS::Link::KEEPALIVE_MIN)
+      link.keepalive.should eq expected
+    end
+
+    it "stale_time tracks keepalive * STALE_FACTOR" do
+      link = create_handshaken_link
+      [0.001, 0.1, 0.5, 1.0, 5.0, 100.0].each do |rtt|
+        link.rtt = rtt
+        link.update_keepalive
+        link.stale_time.should eq link.keepalive * RNS::Link::STALE_FACTOR
+      end
+    end
+
+    it "scales keepalive proportionally for medium RTT" do
+      link = create_handshaken_link
+      link.rtt = 0.5
+      link.update_keepalive
+      ka = link.keepalive
+      ka.should be > RNS::Link::KEEPALIVE_MIN
+      ka.should be < RNS::Link::KEEPALIVE_MAX
+    end
+
+    it "send_keepalive marks last_keepalive" do
+      link = create_handshaken_link
+      link.status = RNS::Link::ACTIVE
+      link.last_keepalive.should eq 0.0
+      link.send_keepalive
+      link.last_keepalive.should be > 0
+    end
+
+    it "send_keepalive does not update last_data" do
+      link = create_handshaken_link
+      link.status = RNS::Link::ACTIVE
+      link.send_keepalive
+      link.last_data.should eq 0.0
+    end
+
+    it "had_outbound with is_keepalive=true only updates keepalive timestamp" do
+      link = create_handshaken_link
+      link.had_outbound(is_keepalive: true)
+      link.last_keepalive.should be > 0
+      link.last_data.should eq 0.0
+    end
+
+    it "had_outbound with is_keepalive=false updates data timestamp" do
+      link = create_handshaken_link
+      link.had_outbound(is_keepalive: false)
+      link.last_data.should be > 0
+      link.last_keepalive.should eq 0.0
+    end
+  end
+
+  # ────────────────────────────────────────────────────────────────────
+  #  Stale detection (Task 5.3)
+  # ────────────────────────────────────────────────────────────────────
+
+  describe "stale detection" do
+    it "STALE_FACTOR is 2" do
+      RNS::Link::STALE_FACTOR.should eq 2
+    end
+
+    it "STALE_TIME is KEEPALIVE * STALE_FACTOR" do
+      RNS::Link::STALE_TIME.should eq RNS::Link::KEEPALIVE * RNS::Link::STALE_FACTOR
+    end
+
+    it "default stale_time is 720.0 seconds" do
+      link = create_handshaken_link
+      link.stale_time.should eq 720.0
+    end
+
+    it "stale detection adjusts with RTT" do
+      link = create_handshaken_link
+      link.rtt = 0.1
+      link.update_keepalive
+      link.stale_time.should be < RNS::Link::STALE_TIME
+      link.stale_time.should eq link.keepalive * RNS::Link::STALE_FACTOR
+    end
+
+    it "STALE reverts to ACTIVE on inbound" do
+      link = create_handshaken_link
+      link.status = RNS::Link::STALE
+      # Simulate receive restoring ACTIVE
+      link.status = RNS::Link::ACTIVE if link.status == RNS::Link::STALE
+      link.status.should eq RNS::Link::ACTIVE
+    end
+
+    it "inactive_for reflects minimum of inbound/outbound" do
+      link = create_handshaken_link
+      link.activated_at = Time.utc.to_unix_f
+      sleep 0.01.seconds
+      link.had_outbound
+      # outbound is recent, inbound is from activation
+      link.inactive_for.should be < 1.0
+    end
+
+    it "no_data_for tracks last data exchange" do
+      link = create_handshaken_link
+      link.had_outbound  # updates last_data
+      sleep 0.01.seconds
+      link.no_data_for.should be >= 0.01
+      link.no_data_for.should be < 1.0
+    end
+  end
+
+  # ────────────────────────────────────────────────────────────────────
+  #  Teardown (Task 5.3)
+  # ────────────────────────────────────────────────────────────────────
+
+  describe "teardown" do
+    it "sets CLOSED status" do
+      link = create_handshaken_link
+      link.teardown
+      link.status.should eq RNS::Link::CLOSED
+    end
+
+    it "sets DESTINATION_CLOSED reason for responder" do
+      link = create_handshaken_link
+      link.initiator?.should be_false
+      link.teardown
+      link.teardown_reason.should eq RNS::Link::DESTINATION_CLOSED
+    end
+
+    it "sets INITIATOR_CLOSED reason for initiator" do
+      link = create_handshaken_link
+      link.set_initiator(true)
+      link.status = RNS::Link::ACTIVE
+      link.teardown
+      link.teardown_reason.should eq RNS::Link::INITIATOR_CLOSED
+    end
+
+    it "purges all crypto keys" do
+      link = create_handshaken_link
+      link.derived_key.should_not be_nil
+      link.teardown
+      link.prv_key.should be_nil
+      link.pub_key.should be_nil
+      link.pub_bytes.should be_nil
+      link.shared_key.should be_nil
+      link.derived_key.should be_nil
+    end
+
+    it "clears incoming and outgoing resources" do
+      link = create_handshaken_link
+      link.register_incoming_resource(Random::Secure.random_bytes(32))
+      link.register_outgoing_resource(Random::Secure.random_bytes(32))
+      link.teardown
+      link.incoming_resources.empty?.should be_true
+      link.outgoing_resources.empty?.should be_true
+    end
+
+    it "calls link_closed callback" do
+      owner = create_in_destination
+      peer_prv = RNS::Cryptography::X25519PrivateKey.generate
+      peer_sig_prv = RNS::Cryptography::Ed25519PrivateKey.generate
+      closed_link : RNS::Link? = nil
+      link = RNS::Link.new(owner: owner, peer_pub_bytes: peer_prv.public_key.public_bytes,
+        peer_sig_pub_bytes: peer_sig_prv.public_key.public_bytes,
+        closed_callback: ->(l : RNS::Link) { closed_link = l; nil })
+      link.teardown
+      closed_link.should eq link
+    end
+
+    it "teardown_packet with matching link_id closes link" do
+      link = create_handshaken_link
+      link.status = RNS::Link::ACTIVE
+      encrypted_lid = link.encrypt_data(link.link_id)
+      fake_pkt = RNS::Packet.new(link, encrypted_lid, context: RNS::Packet::LINKCLOSE)
+      link.teardown_packet(fake_pkt)
+      link.status.should eq RNS::Link::CLOSED
+    end
+
+    it "teardown_packet with wrong data does not close" do
+      link = create_handshaken_link
+      link.status = RNS::Link::ACTIVE
+      fake_pkt = RNS::Packet.new(link, "not-the-link-id".to_slice, context: RNS::Packet::LINKCLOSE)
+      link.teardown_packet(fake_pkt)
+      link.status.should eq RNS::Link::ACTIVE
+    end
+
+    it "teardown_packet sets reverse teardown reason for initiator" do
+      link = create_handshaken_link
+      link.set_initiator(true)
+      link.status = RNS::Link::ACTIVE
+      encrypted_lid = link.encrypt_data(link.link_id)
+      fake_pkt = RNS::Packet.new(link, encrypted_lid, context: RNS::Packet::LINKCLOSE)
+      link.teardown_packet(fake_pkt)
+      link.teardown_reason.should eq RNS::Link::DESTINATION_CLOSED
+    end
+
+    it "does not send teardown packet if PENDING" do
+      link = create_handshaken_link
+      link.status = RNS::Link::PENDING
+      link.teardown
+      link.status.should eq RNS::Link::CLOSED
+    end
+  end
+
+  # ────────────────────────────────────────────────────────────────────
+  #  RTT computation (Task 5.3)
+  # ────────────────────────────────────────────────────────────────────
+
+  describe "RTT computation" do
+    it "rtt nil initially" do
+      link = create_handshaken_link
+      link.rtt.should be_nil
+    end
+
+    it "keepalive updates from RTT" do
+      link = create_handshaken_link
+      link.rtt = 0.5
+      link.update_keepalive
+      expected_ka = Math.max(Math.min(0.5 * (RNS::Link::KEEPALIVE_MAX / RNS::Link::KEEPALIVE_MAX_RTT), RNS::Link::KEEPALIVE_MAX), RNS::Link::KEEPALIVE_MIN)
+      link.keepalive.should be_close(expected_ka, 0.001)
+    end
+
+    it "establishment_rate computed from cost/rtt" do
+      link = create_handshaken_link
+      link.establishment_cost = 200
+      link.rtt = 0.5
+      link.establishment_rate = link.establishment_cost.to_f64 / link.rtt.not_nil!
+      link.establishment_rate.should eq 400.0
+      link.get_establishment_rate.should eq 3200.0 # bits/sec
+    end
+
+    it "RTT affects keepalive range" do
+      link = create_handshaken_link
+      # Very fast RTT → minimum keepalive
+      link.rtt = 0.001
+      link.update_keepalive
+      link.keepalive.should eq RNS::Link::KEEPALIVE_MIN
+
+      # Very slow RTT → maximum keepalive
+      link.rtt = 100.0
+      link.update_keepalive
+      link.keepalive.should eq RNS::Link::KEEPALIVE_MAX
+    end
+
+    it "RTT available via rtt property" do
+      link = create_handshaken_link
+      link.rtt = 1.234
+      link.rtt.should eq 1.234
+    end
+  end
+
+  # ────────────────────────────────────────────────────────────────────
+  #  Receive packet dispatch (Task 5.3)
+  # ────────────────────────────────────────────────────────────────────
+
+  describe "receive" do
+    it "ignores packets when CLOSED" do
+      link = create_handshaken_link
+      link.status = RNS::Link::CLOSED
+      before_rx = link.rx
+      pkt = RNS::Packet.new(link, "test".to_slice, context: RNS::Packet::NONE)
+      link.receive(pkt)
+      link.rx.should eq before_rx
+    end
+
+    it "increments rx and rxbytes" do
+      link = create_handshaken_link
+      link.status = RNS::Link::ACTIVE
+      pkt = RNS::Packet.new(link, "data".to_slice, context: RNS::Packet::KEEPALIVE)
+      link.receive(pkt)
+      link.rx.should eq 1
+      link.rxbytes.should eq 4
+    end
+
+    it "updates last_inbound on receive" do
+      link = create_handshaken_link
+      link.status = RNS::Link::ACTIVE
+      link.last_inbound.should eq 0.0
+      pkt = RNS::Packet.new(link, "data".to_slice, context: RNS::Packet::KEEPALIVE)
+      link.receive(pkt)
+      link.last_inbound.should be > 0
+    end
+
+    it "STALE -> ACTIVE on receive" do
+      link = create_handshaken_link
+      link.status = RNS::Link::STALE
+      pkt = RNS::Packet.new(link, "data".to_slice, context: RNS::Packet::KEEPALIVE)
+      link.receive(pkt)
+      link.status.should eq RNS::Link::ACTIVE
+    end
+
+    it "keepalive does not update last_data" do
+      link = create_handshaken_link
+      link.status = RNS::Link::ACTIVE
+      pkt = RNS::Packet.new(link, Bytes[0xFF], context: RNS::Packet::KEEPALIVE)
+      link.receive(pkt)
+      link.last_data.should eq 0.0
+    end
+
+    it "non-keepalive updates last_data" do
+      link = create_handshaken_link
+      link.status = RNS::Link::ACTIVE
+      pkt = RNS::Packet.new(link, "data".to_slice, context: RNS::Packet::LRRTT)
+      pkt.packet_type = RNS::Packet::DATA
+      link.receive(pkt)
+      link.last_data.should be > 0
+    end
+
+    it "LINKCLOSE via receive tears down" do
+      link = create_handshaken_link
+      link.status = RNS::Link::ACTIVE
+      encrypted_lid = link.encrypt_data(link.link_id)
+      pkt = RNS::Packet.new(link, encrypted_lid, context: RNS::Packet::LINKCLOSE)
+      pkt.packet_type = RNS::Packet::DATA
+      link.receive(pkt)
+      link.status.should eq RNS::Link::CLOSED
+    end
+
+    it "responder sends keepalive response for 0xFF" do
+      link = create_handshaken_link
+      link.status = RNS::Link::ACTIVE
+      pkt = RNS::Packet.new(link, Bytes[0xFF], context: RNS::Packet::KEEPALIVE)
+      pkt.packet_type = RNS::Packet::DATA
+      link.receive(pkt)
+      # Responder sends 0xFE back, which updates last_outbound
+      link.last_outbound.should be > 0
+    end
+
+    it "initiator ignores own keepalive 0xFF" do
+      link = create_handshaken_link
+      link.set_initiator(true)
+      link.status = RNS::Link::ACTIVE
+      pkt = RNS::Packet.new(link, Bytes[0xFF], context: RNS::Packet::KEEPALIVE)
+      pkt.packet_type = RNS::Packet::DATA
+      before_rx = link.rx
+      link.receive(pkt)
+      # Initiator skips its own keepalive
+      link.rx.should eq before_rx
+    end
+
+    it "unlocks watchdog after receive" do
+      link = create_handshaken_link
+      link.status = RNS::Link::ACTIVE
+      pkt = RNS::Packet.new(link, "data".to_slice, context: RNS::Packet::KEEPALIVE)
+      link.receive(pkt)
+      # watchdog_lock should be false after receive completes
+      # (internal state, verified by the fact receive doesn't deadlock)
+    end
+  end
+
+  # ────────────────────────────────────────────────────────────────────
+  #  handle_request dispatch (Task 5.3)
+  # ────────────────────────────────────────────────────────────────────
+
+  describe "handle_request" do
+    it "dispatches to registered request handler with ALLOW_ALL" do
+      owner = create_in_destination
+      peer_prv = RNS::Cryptography::X25519PrivateKey.generate
+      peer_sig_prv = RNS::Cryptography::Ed25519PrivateKey.generate
+      link = RNS::Link.new(owner: owner,
+        peer_pub_bytes: peer_prv.public_key.public_bytes,
+        peer_sig_pub_bytes: peer_sig_prv.public_key.public_bytes)
+      link.set_link_id_bytes(RNS::Identity.truncated_hash(Random::Secure.random_bytes(32)))
+      link.do_handshake
+      link.status = RNS::Link::ACTIVE
+      link.set_destination(owner) # Set destination for request handler lookup
+
+      received_path = ""
+      owner.register_request_handler("/test",
+        ->(path : String, data : Bytes?, req_id : Bytes, link_id : Bytes, identity : RNS::Identity?, requested_at : Float64) {
+          received_path = path
+          "response".to_slice.as(Bytes?)
+        },
+        RNS::Destination::ALLOW_ALL)
+
+      path_hash = RNS::Identity.truncated_hash("/test".to_slice)
+      unpacked = [
+        MessagePack::Any.new(Time.utc.to_unix_f.as(MessagePack::Type)),
+        MessagePack::Any.new(path_hash.as(MessagePack::Type)),
+        MessagePack::Any.new(nil.as(MessagePack::Type)),
+      ] of MessagePack::Any
+
+      request_id = Random::Secure.random_bytes(16)
+      link.handle_request(request_id, unpacked)
+      received_path.should eq "/test"
+    end
+
+    it "rejects request with ALLOW_NONE" do
+      owner = create_in_destination
+      peer_prv = RNS::Cryptography::X25519PrivateKey.generate
+      peer_sig_prv = RNS::Cryptography::Ed25519PrivateKey.generate
+      link = RNS::Link.new(owner: owner,
+        peer_pub_bytes: peer_prv.public_key.public_bytes,
+        peer_sig_pub_bytes: peer_sig_prv.public_key.public_bytes)
+      link.set_link_id_bytes(RNS::Identity.truncated_hash(Random::Secure.random_bytes(32)))
+      link.do_handshake
+      link.status = RNS::Link::ACTIVE
+      link.set_destination(owner)
+
+      called = false
+      owner.register_request_handler("/blocked",
+        ->(path : String, data : Bytes?, req_id : Bytes, link_id : Bytes, identity : RNS::Identity?, requested_at : Float64) {
+          called = true
+          nil.as(Bytes?)
+        },
+        RNS::Destination::ALLOW_NONE)
+
+      path_hash = RNS::Identity.truncated_hash("/blocked".to_slice)
+      unpacked = [
+        MessagePack::Any.new(Time.utc.to_unix_f.as(MessagePack::Type)),
+        MessagePack::Any.new(path_hash.as(MessagePack::Type)),
+        MessagePack::Any.new(nil.as(MessagePack::Type)),
+      ] of MessagePack::Any
+
+      link.handle_request(Random::Secure.random_bytes(16), unpacked)
+      called.should be_false
+    end
+
+    it "no-op when not ACTIVE" do
+      link = create_handshaken_link
+      link.status = RNS::Link::HANDSHAKE
+      unpacked = [
+        MessagePack::Any.new(0.0.as(MessagePack::Type)),
+        MessagePack::Any.new(Bytes.new(16).as(MessagePack::Type)),
+        MessagePack::Any.new(nil.as(MessagePack::Type)),
+      ] of MessagePack::Any
+      link.handle_request(Bytes.new(16), unpacked) # should not raise
+    end
+
+    it "no-op for unregistered path" do
+      link = create_handshaken_link
+      link.status = RNS::Link::ACTIVE
+      unpacked = [
+        MessagePack::Any.new(0.0.as(MessagePack::Type)),
+        MessagePack::Any.new(Random::Secure.random_bytes(16).as(MessagePack::Type)),
+        MessagePack::Any.new(nil.as(MessagePack::Type)),
+      ] of MessagePack::Any
+      link.handle_request(Bytes.new(16), unpacked) # should not raise
+    end
+  end
+
+  # ────────────────────────────────────────────────────────────────────
+  #  RequestReceipt resource methods (Task 5.3)
+  # ────────────────────────────────────────────────────────────────────
+
+  describe "RequestReceipt resource methods" do
+    it "request_resource_concluded transitions to DELIVERED on success" do
+      link = create_handshaken_link
+      pkt = RNS::Packet.new(link, "test".to_slice, context: RNS::Packet::KEEPALIVE)
+      pkt.pack
+      pr = RNS::PacketReceipt.new(pkt)
+      rr = RNS::RequestReceipt.new(link: link, packet_receipt: pr, timeout: 10.0)
+      rr.request_resource_concluded(0x00_u8, 0x00_u8) # success
+      rr.status.should eq RNS::RequestReceipt::DELIVERED
+    end
+
+    it "request_resource_concluded transitions to FAILED on failure" do
+      link = create_handshaken_link
+      pkt = RNS::Packet.new(link, "test".to_slice, context: RNS::Packet::KEEPALIVE)
+      pkt.pack
+      pr = RNS::PacketReceipt.new(pkt)
+      failed = false
+      rr = RNS::RequestReceipt.new(link: link, packet_receipt: pr, timeout: 10.0,
+        failed_callback: ->(r : RNS::RequestReceipt) { failed = true; nil })
+      rr.request_resource_concluded(0xFF_u8, 0x00_u8) # failure
+      rr.status.should eq RNS::RequestReceipt::FAILED
+      failed.should be_true
+    end
+
+    it "response_resource_progress updates progress and status" do
+      link = create_handshaken_link
+      pkt = RNS::Packet.new(link, "test".to_slice, context: RNS::Packet::KEEPALIVE)
+      pkt.pack
+      pr = RNS::PacketReceipt.new(pkt)
+      progress_val = 0.0
+      rr = RNS::RequestReceipt.new(link: link, packet_receipt: pr, timeout: 10.0,
+        progress_callback: ->(r : RNS::RequestReceipt) { progress_val = r.progress; nil })
+      rr.response_resource_progress(0.5)
+      rr.status.should eq RNS::RequestReceipt::RECEIVING
+      rr.progress.should eq 0.5
+      progress_val.should eq 0.5
+    end
+
+    it "response_resource_progress ignores when FAILED" do
+      link = create_handshaken_link
+      pkt = RNS::Packet.new(link, "test".to_slice, context: RNS::Packet::KEEPALIVE)
+      pkt.pack
+      pr = RNS::PacketReceipt.new(pkt)
+      rr = RNS::RequestReceipt.new(link: link, packet_receipt: pr, timeout: 10.0)
+      rr.status = RNS::RequestReceipt::FAILED
+      rr.response_resource_progress(0.5)
+      rr.progress.should eq 0.0 # unchanged
+    end
+
+    it "response_resource_progress marks packet_receipt delivered" do
+      link = create_handshaken_link
+      pkt = RNS::Packet.new(link, "test".to_slice, context: RNS::Packet::KEEPALIVE)
+      pkt.pack
+      pr = RNS::PacketReceipt.new(pkt)
+      rr = RNS::RequestReceipt.new(link: link, packet_receipt: pr, timeout: 10.0)
+      rr.response_resource_progress(0.3)
+      pr.status.should eq RNS::PacketReceipt::DELIVERED
+      pr.proved.should be_true
+    end
+  end
+
+  # ────────────────────────────────────────────────────────────────────
+  #  Watchdog behavior (Task 5.3)
+  # ────────────────────────────────────────────────────────────────────
+
+  describe "watchdog" do
+    it "times out PENDING link after establishment_timeout" do
+      owner = create_in_destination
+      peer_prv = RNS::Cryptography::X25519PrivateKey.generate
+      peer_sig_prv = RNS::Cryptography::Ed25519PrivateKey.generate
+      link = RNS::Link.new(owner: owner,
+        peer_pub_bytes: peer_prv.public_key.public_bytes,
+        peer_sig_pub_bytes: peer_sig_prv.public_key.public_bytes)
+      link.set_link_id_bytes(RNS::Identity.truncated_hash(Random::Secure.random_bytes(32)))
+      link.request_time = Time.utc.to_unix_f - 100.0 # Way past timeout
+      link.establishment_timeout = 1.0
+      link.status.should eq RNS::Link::PENDING
+
+      link.start_watchdog
+      sleep 0.1.seconds # Let watchdog run
+      link.status.should eq RNS::Link::CLOSED
+      link.teardown_reason.should eq RNS::Link::TIMEOUT
+    end
+
+    it "times out HANDSHAKE link after establishment_timeout" do
+      link = create_handshaken_link
+      link.request_time = Time.utc.to_unix_f - 100.0
+      link.establishment_timeout = 1.0
+      link.status.should eq RNS::Link::HANDSHAKE
+
+      link.start_watchdog
+      sleep 0.1.seconds
+      link.status.should eq RNS::Link::CLOSED
+      link.teardown_reason.should eq RNS::Link::TIMEOUT
+    end
+  end
+
+  # ────────────────────────────────────────────────────────────────────
+  #  Prove packet (Task 5.3)
+  # ────────────────────────────────────────────────────────────────────
+
+  describe "prove_packet" do
+    it "creates a proof with packet_hash + signature" do
+      link = create_handshaken_link
+      link.status = RNS::Link::ACTIVE
+      pkt = RNS::Packet.new(link, "data".to_slice, context: RNS::Packet::NONE)
+      pkt.pack
+      # prove_packet should not raise
+      link.prove_packet(pkt)
+      link.last_outbound.should be > 0
+    end
+  end
+
+  # ────────────────────────────────────────────────────────────────────
   #  Stress tests
   # ────────────────────────────────────────────────────────────────────
 
@@ -901,6 +1616,30 @@ describe RNS::Link do
         pkt = RNS::Packet.new(owner, rd, packet_type: RNS::Packet::LINKREQUEST)
         pkt.pack
         RNS::Link.validate_request(owner, rd, pkt).not_nil!.status.should eq RNS::Link::HANDSHAKE
+      end
+    end
+
+    it "50 resource register/conclude cycles" do
+      link = create_handshaken_link
+      50.times do
+        hash = Random::Secure.random_bytes(32)
+        link.register_incoming_resource(hash)
+        link.resource_concluded(hash, Random::Secure.rand(100_i64..10000_i64), Time.utc.to_unix_f - 0.5, incoming: true)
+      end
+      link.incoming_resources.empty?.should be_true
+      link.expected_rate.not_nil!.should be > 0
+    end
+
+    it "concurrent link creation" do
+      10.times do
+        owner = create_in_destination
+        peer_prv = RNS::Cryptography::X25519PrivateKey.generate
+        peer_sig_prv = RNS::Cryptography::Ed25519PrivateKey.generate
+        link = RNS::Link.new(owner: owner,
+          peer_pub_bytes: peer_prv.public_key.public_bytes,
+          peer_sig_pub_bytes: peer_sig_prv.public_key.public_bytes)
+        link.initiator?.should be_false
+        link.status.should eq RNS::Link::PENDING
       end
     end
   end

@@ -465,6 +465,82 @@ module RNS
       end
     end
 
+    # Loads the tunnel table from disk.
+    # Returns the number of tunnel entries loaded, or -1 on error.
+    def self.load_tunnel_table(storage_path : String) : Int32
+      tunnel_table_path = File.join(storage_path, "tunnels")
+      return 0 unless File.exists?(tunnel_table_path)
+
+      begin
+        data = File.read(tunnel_table_path).to_slice
+        tunnels_data = Array(Array(MessagePack::Type)).from_msgpack(data)
+
+        loaded = 0
+        tunnels_data.each do |serialised_tunnel|
+          begin
+            tunnel_id = serialised_tunnel[0].as(Bytes)
+            interface_hash = serialised_tunnel[1].as?(Bytes)
+            serialised_paths = serialised_tunnel[2]
+            expires = msgpack_to_f64(serialised_tunnel[3])
+
+            tunnel_paths = Hash(String, PathEntry).new
+
+            if serialised_paths.is_a?(Array)
+              serialised_paths.each do |sp|
+                next unless sp.is_a?(Array)
+                path_arr = sp.as(Array(MessagePack::Type))
+
+                destination_hash = path_arr[0].as(Bytes)
+                timestamp = msgpack_to_f64(path_arr[1])
+                received_from = path_arr[2].as(Bytes)
+                hops = msgpack_to_i64(path_arr[3]).to_i32
+                path_expires = msgpack_to_f64(path_arr[4])
+
+                random_blobs = [] of Bytes
+                blob_data = path_arr[5]
+                if blob_data.is_a?(Array)
+                  blob_data.each do |b|
+                    random_blobs << b.as(Bytes) if b.is_a?(Bytes)
+                  end
+                end
+
+                path_interface_hash = path_arr[6].as?(Bytes)
+                packet_hash = path_arr[7].as(Bytes)
+
+                tunnel_paths[destination_hash.hexstring] = PathEntry.new(
+                  timestamp: timestamp,
+                  next_hop: received_from,
+                  hops: hops + 1, # Increment hops as per Python behavior
+                  expires: path_expires,
+                  random_blobs: random_blobs,
+                  receiving_interface: path_interface_hash,
+                  packet_hash: packet_hash,
+                )
+              end
+            end
+
+            if tunnel_paths.size > 0
+              @@tunnels[tunnel_id.hexstring] = TunnelEntry.new(
+                tunnel_id: tunnel_id,
+                interface: interface_hash,
+                paths: tunnel_paths,
+                expires: expires,
+              )
+              loaded += 1
+            end
+          rescue ex
+            RNS.log("Skipping tunnel table entry during load due to error: #{ex}", RNS::LOG_ERROR)
+          end
+        end
+
+        RNS.log("Loaded #{loaded} tunnel table entries from storage", RNS::LOG_DEBUG)
+        loaded
+      rescue ex
+        RNS.log("Could not load tunnel table from storage: #{ex}", RNS::LOG_ERROR)
+        -1
+      end
+    end
+
     # Calls all persistence methods.
     def self.persist_data(storage_path : String)
       save_path_table(storage_path)

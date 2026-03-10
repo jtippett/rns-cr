@@ -212,7 +212,7 @@ This is the largest module (3312 LOC). Split into manageable sub-modules.
 - [x] **4.3 — Transport packet routing and delivery**
   Complete `src/rns/transport.cr` with packet routing: `inbound(raw, interface)`, `outbound(packet)`, `forward(packet)`, `transmit(interface, raw)`, `internal_inbound(raw, interface)`. Implement link management: `register_link(link)`, `activate_link(link)`, `find_link_for_request_packet(packet)`, `find_best_link(destination_hash)`. Implement tunnel management in `src/rns/transport/tunnel_management.cr`: `register_tunnel(tunnel_id, interface)`, `tunnel_synthesize_handler()`. Implement the transport job loop: `jobs_locked`, periodic path/link/receipt expiry, cache cleaning. Write specs: packet routing decisions, link registration, receipt handling.
 
-- [ ] **4.4 — Transport caching and persistence**
+- [x] **4.4 — Transport caching and persistence**
   Implement Transport caching: `cache(packet, force_cache)`, packet hash deduplication, cache file storage. Implement `save_packet_hashlist()`, `load_packet_hashlist()`. Implement `save_tunnel_table()`, `load_tunnel_table()`. Implement `owner` references and the `start(reticulum_instance)` initialization method. Wire up the periodic job fiber that runs `jobs()`. Ensure all Transport state is properly synchronized with `Mutex` where needed for fiber safety. Write integration specs: cache persistence roundtrip, packet hashlist save/load, tunnel table persistence.
 
 ### Phase 5: Communication Layer

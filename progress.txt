@@ -450,3 +450,58 @@
     - LinkLike constants and LinkStub, link management, transmit, outbound routing, inbound pipeline,
       transport forwarding, tunnel management, jobs loop, proof routing, transport flags, stress tests
   - Ran crystal spec — 790 examples, 0 failures
+
+2026-03-10 — Task 4.4: Transport caching and persistence
+  - Added load_tunnel_table() to src/rns/transport/path_management.cr
+    - Deserializes tunnel entries from MessagePack format matching save_tunnel_table
+    - Reconstructs TunnelEntry records with nested PathEntry paths
+    - Increments hop count on load (matching Python behavior for cached packets)
+    - Skips tunnels with no valid paths, robust error handling per-entry
+  - Added caching methods to src/rns/transport.cr:
+    - should_cache(packet): returns false (disabled per Python TODO), placeholder for future
+    - cache(packet, force_cache, packet_type): writes packet raw+interface_ref as MessagePack
+      to cache_path/ or cache_path/announces/ based on packet_type
+    - get_cached_packet(packet_hash, packet_type): reads cached packet from disk, returns Packet
+    - cache_request_packet(packet): handles CACHE_REQUEST by replaying cached packet to inbound
+    - cache_request(packet_hash, destination): local cache lookup or network request
+    - clean_cache(): delegates to clean_announce_cache, updates timestamp
+  - Added OwnerRef record type to Transport module:
+    - Lightweight record (is_connected_to_shared_instance, storage_path, cache_path,
+      transport_enabled) avoiding circular dependency with Reticulum class
+    - owner= setter, owner accessor updated
+  - Added start() initialization method:
+    - Creates or loads transport identity from storage_path/transport_identity
+    - Loads packet hashlist unless connected to shared instance
+    - Creates control destinations (path request, tunnel synthesize)
+    - Loads path table and tunnel table when transport_enabled
+    - Sets start_time, deferred cache cleaning (60s), deferred management announces (15s)
+    - Starts periodic job loop fiber
+  - Added job loop lifecycle:
+    - start_job_loop(): spawns fiber running jobs() at JOB_INTERVAL (250ms)
+    - stop_job_loop(): sets flag to stop fiber gracefully
+    - job_loop_running? accessor, @@job_fiber and @@job_loop_running state
+  - Added exit_handler():
+    - Stops job loop, calls persist_data() to save all tables
+    - No-op for shared instance connections or when owner not set
+  - Updated reset() to clear new state (job_loop_running, job_fiber)
+  - Created spec/rns/transport/caching_persistence_spec.cr (53 examples)
+    - OwnerRef: default values, custom values, set/get on Transport, nil default
+    - should_cache: always false for any packet type
+    - cache/get_cached_packet: force_cache writes file, no cache without force,
+      announce subdirectory, no-op without owner, retrieval roundtrip, announce retrieval,
+      non-existent returns nil, no-owner returns nil, 10-packet random roundtrip
+    - cache_request_packet: wrong size returns false, uncached returns false
+    - clean_cache: removes orphans, preserves active paths, no-op without owner
+    - Packet hashlist persistence: save/load roundtrip, missing file, empty list, concurrent saves
+    - Path table persistence: save/load roundtrip, missing file, random blob limit
+    - Tunnel table persistence: save/load roundtrip, missing file, hop increment,
+      empty paths skipped, multiple tunnels
+    - persist_data: saves all three tables
+    - start(): identity creation, identity loading, owner ref, start_time, control destinations,
+      job loop, hashlist loading, transport-enabled path/tunnel loading, transport-disabled skip,
+      existing identity preservation
+    - Job loop: start/stop cleanly, no double-start
+    - exit_handler: persists data and stops loop, no-op without owner, no-op for shared instance
+    - Full lifecycle: start -> populate -> exit -> restart preserves state
+    - Stress: 50 path entries, 100 packet hashes, 20 cached packets, 10 tunnels × 5 paths
+  - Ran crystal spec — 843 examples, 0 failures

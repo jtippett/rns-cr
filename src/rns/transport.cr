@@ -228,7 +228,21 @@ module RNS
 
     # ─── Identity ──────────────────────────────────────────────────
     @@identity : Identity? = nil
-    @@owner : Nil = nil  # Will be Reticulum instance when implemented
+
+    # Owner is a lightweight record holding the Reticulum instance properties
+    # that Transport needs. This avoids a circular dependency on the full
+    # Reticulum class which hasn't been implemented yet.
+    record OwnerRef,
+      is_connected_to_shared_instance : Bool = false,
+      storage_path : String = "",
+      cache_path : String = "",
+      transport_enabled : Bool = false
+
+    @@owner : OwnerRef? = nil
+
+    # Job loop fiber reference
+    @@job_fiber : Fiber? = nil
+    @@job_loop_running = false
 
     # ─── Save operation guards ─────────────────────────────────────
     @@saving_path_table = false
@@ -319,6 +333,14 @@ module RNS
 
     def self.owner
       @@owner
+    end
+
+    def self.owner=(value : OwnerRef?)
+      @@owner = value
+    end
+
+    def self.job_loop_running?
+      @@job_loop_running
     end
 
     def self.jobs_locked
@@ -507,6 +529,8 @@ module RNS
       @@speed_tx = 0_i64
       @@identity = nil
       @@owner = nil
+      @@job_loop_running = false
+      @@job_fiber = nil
       @@saving_path_table = false
       @@saving_packet_hashlist = false
       @@saving_tunnel_table = false
@@ -1360,6 +1384,270 @@ module RNS
       end
       stale.each { |k| @@blackholed_identities.delete(k) }
       RNS.log("Removed #{stale.size} blackholed identities", RNS::LOG_VERBOSE) if stale.size > 0
+    end
+
+    # ════════════════════════════════════════════════════════════════
+    #  Packet Caching
+    # ════════════════════════════════════════════════════════════════
+
+    # Determines whether a packet should be cached.
+    # Currently returns false — the Python implementation has this
+    # disabled with a TODO to rework the caching system.
+    def self.should_cache(packet : Packet) : Bool
+      false
+    end
+
+    # Caches a packet to storage. Packets are stored exactly as they
+    # arrived over their interface (hop count not yet incremented).
+    # When force_cache is false, should_cache() is consulted.
+    def self.cache(packet : Packet, force_cache : Bool = false, packet_type : String? = nil)
+      return unless force_cache || should_cache(packet)
+
+      owner_ref = @@owner
+      return unless owner_ref
+
+      begin
+        ph = packet.get_hash
+        packet_hash_str = ph.hexstring
+
+        cache_path = owner_ref.cache_path
+        if packet_type == "announce"
+          announce_dir = File.join(cache_path, "announces")
+          Dir.mkdir_p(announce_dir) unless Dir.exists?(announce_dir)
+          filepath = File.join(announce_dir, packet_hash_str)
+        else
+          filepath = File.join(cache_path, packet_hash_str)
+        end
+
+        raw = packet.raw
+        return unless raw
+
+        interface_reference : String? = nil
+        # When interface objects are available, store interface name here
+
+        data = Array(MessagePack::Type).new
+        data << raw.as(MessagePack::Type)
+        data << interface_reference.as(MessagePack::Type)
+        File.write(filepath, data.to_msgpack)
+      rescue ex
+        RNS.log("Error writing packet to cache: #{ex}", RNS::LOG_ERROR)
+      end
+    end
+
+    # Retrieves a cached packet from storage.
+    # Returns the packet if found, nil otherwise.
+    def self.get_cached_packet(packet_hash : Bytes, packet_type : String? = nil) : Packet?
+      owner_ref = @@owner
+      return nil unless owner_ref
+
+      begin
+        packet_hash_str = packet_hash.hexstring
+        cache_path = owner_ref.cache_path
+
+        path = if packet_type == "announce"
+                 File.join(cache_path, "announces", packet_hash_str)
+               else
+                 File.join(cache_path, packet_hash_str)
+               end
+
+        return nil unless File.exists?(path)
+
+        data = File.read(path).to_slice
+        cached_data = Array(MessagePack::Type).from_msgpack(data)
+
+        raw = cached_data[0].as(Bytes)
+        interface_reference = cached_data[1].as?(String)
+
+        packet = Packet.new(nil, raw)
+
+        # Try to match interface reference to a registered interface
+        if interface_reference
+          @@interfaces.each do |iface_hash|
+            # When interface objects are available, match by string representation
+          end
+        end
+
+        packet
+      rescue ex
+        RNS.log("Exception occurred while getting cached packet: #{ex}", RNS::LOG_ERROR)
+        nil
+      end
+    end
+
+    # Handles a cache request packet. Retrieves the requested packet
+    # from the local cache and replays it to Transport.
+    def self.cache_request_packet(packet : Packet) : Bool
+      if packet.data.size == Identity::HASHLENGTH // 8
+        cached = get_cached_packet(packet.data)
+        if cached
+          cached_raw = cached.raw
+          if cached_raw
+            inbound(cached_raw, nil)
+            return true
+          end
+        end
+      end
+      false
+    end
+
+    # Requests a cached packet either from local cache or from the network.
+    def self.cache_request(packet_hash : Bytes, destination : Destination)
+      cached_packet = get_cached_packet(packet_hash)
+      if cached_packet
+        cached_raw = cached_packet.raw
+        if cached_raw
+          inbound(cached_raw, nil)
+        end
+      else
+        request_packet = Packet.new(
+          destination,
+          packet_hash,
+          context: Packet::CACHE_REQUEST,
+        )
+        request_packet.send
+      end
+    end
+
+    # Cleans the packet cache by removing stale announce files.
+    def self.clean_cache
+      owner_ref = @@owner
+      return unless owner_ref
+      return if owner_ref.is_connected_to_shared_instance
+
+      clean_announce_cache(owner_ref.cache_path)
+      @@cache_last_cleaned = Time.utc.to_unix_f
+    end
+
+    # ════════════════════════════════════════════════════════════════
+    #  Lifecycle: start, jobloop, exit_handler
+    # ════════════════════════════════════════════════════════════════
+
+    # Initializes and starts the Transport layer.
+    # Creates or loads the transport identity, loads persisted state
+    # (packet hashlist, path table, tunnel table), sets up control
+    # destinations, and starts the periodic job fiber.
+    def self.start(owner_ref : OwnerRef)
+      @@owner = owner_ref
+      @@jobs_running = true
+
+      # Load or create transport identity
+      if @@identity.nil?
+        transport_identity_path = File.join(owner_ref.storage_path, "transport_identity")
+        if File.exists?(transport_identity_path)
+          @@identity = Identity.from_file(transport_identity_path)
+        end
+
+        if @@identity.nil?
+          RNS.log("No valid Transport Identity in storage, creating...", RNS::LOG_VERBOSE)
+          @@identity = Identity.new
+          @@identity.try(&.to_file(transport_identity_path))
+        else
+          RNS.log("Loaded Transport Identity from storage", RNS::LOG_VERBOSE)
+        end
+      end
+
+      # Load packet hashlist
+      unless owner_ref.is_connected_to_shared_instance
+        load_packet_hashlist(owner_ref.storage_path)
+      end
+
+      # Create control destinations
+      begin
+        path_request_dest = Destination.new(
+          nil,
+          Destination::IN,
+          Destination::PLAIN,
+          APP_NAME,
+          ["path", "request"],
+        )
+        @@control_destinations << path_request_dest
+        @@control_hashes << path_request_dest.hash
+      rescue ex
+        RNS.log("Could not create path request destination: #{ex}", RNS::LOG_ERROR)
+      end
+
+      begin
+        tunnel_synth_dest = Destination.new(
+          nil,
+          Destination::IN,
+          Destination::PLAIN,
+          APP_NAME,
+          ["tunnel", "synthesize"],
+        )
+        @@control_destinations << tunnel_synth_dest
+        @@control_hashes << tunnel_synth_dest.hash
+      rescue ex
+        RNS.log("Could not create tunnel synthesize destination: #{ex}", RNS::LOG_ERROR)
+      end
+
+      # Defer cleaning packet cache for 60 seconds
+      @@cache_last_cleaned = Time.utc.to_unix_f + 60.0
+
+      # Defer management announces for 15 seconds
+      @@last_mgmt_announce = Time.utc.to_unix_f - MGMT_ANNOUNCE_INTERVAL + 15.0
+
+      # Load transport-related data if transport is enabled
+      if owner_ref.transport_enabled
+        @@transport_enabled = true
+
+        # Load path table
+        unless owner_ref.is_connected_to_shared_instance
+          loaded = load_path_table(owner_ref.storage_path)
+          if loaded >= 0
+            specifier = loaded == 1 ? "entry" : "entries"
+            RNS.log("Loaded #{loaded} path table #{specifier} from storage", RNS::LOG_VERBOSE)
+          end
+        end
+
+        # Load tunnel table
+        unless owner_ref.is_connected_to_shared_instance
+          loaded = load_tunnel_table(owner_ref.storage_path)
+          if loaded >= 0
+            specifier = loaded == 1 ? "entry" : "entries"
+            RNS.log("Loaded #{loaded} tunnel table #{specifier} from storage", RNS::LOG_VERBOSE)
+          end
+        end
+
+        identity = @@identity
+        if identity
+          RNS.log("Transport instance #{identity} started", RNS::LOG_VERBOSE)
+        end
+      end
+
+      @@start_time = Time.utc.to_unix_f
+      @@jobs_running = false
+
+      # Start the periodic job fiber
+      start_job_loop
+    end
+
+    # Starts the periodic job loop fiber.
+    def self.start_job_loop
+      return if @@job_loop_running
+
+      @@job_loop_running = true
+      @@job_fiber = spawn do
+        while @@job_loop_running
+          jobs
+          sleep(JOB_INTERVAL.seconds)
+        end
+      end
+    end
+
+    # Stops the periodic job loop fiber.
+    def self.stop_job_loop
+      @@job_loop_running = false
+    end
+
+    # Exit handler: persists all transport state to disk.
+    # Should be called before shutdown.
+    def self.exit_handler
+      owner_ref = @@owner
+      return unless owner_ref
+      return if owner_ref.is_connected_to_shared_instance
+
+      stop_job_loop
+      persist_data(owner_ref.storage_path)
     end
   end
 end

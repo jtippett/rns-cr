@@ -260,10 +260,10 @@ This is the largest module (3312 LOC). Split into manageable sub-modules.
 - [x] **7.7 — KISS and AX.25 KISS interfaces**
   Port `RNS/Interfaces/KISSInterface.py` (387 LOC) → `src/rns/interfaces/kiss_interface.cr`. Port `RNS/Interfaces/AX25KISSInterface.py` (400 LOC) → `src/rns/interfaces/ax25_kiss_interface.cr`. Implement KISS protocol framing: FEND (0xC0), FESC (0xDB), TFEND (0xDC), TFESC (0xDD), command bytes. AX.25 adds amateur radio addressing (callsigns, SSIDs) on top of KISS. Write specs: KISS frame encoding/decoding, AX.25 address formatting, roundtrip framing.
 
-- [ ] **7.8 — Backbone interface**
+- [x] **7.8 — Backbone interface**
   Port `RNS/Interfaces/BackboneInterface.py` (697 LOC) → `src/rns/interfaces/backbone_interface.cr`. Implement `BackboneInterface` and `BackboneClientInterface` for high-performance network backbone links. Support TCP and UDP modes, connection multiplexing, performance optimization for high-bandwidth links. Write specs: backbone connection establishment, data transfer.
 
-- [ ] **7.9 — Pipe interface**
+- [x] **7.9 — Pipe interface**
   Port `RNS/Interfaces/PipeInterface.py` (205 LOC) → `src/rns/interfaces/pipe_interface.cr`. Implement `PipeInterface` that communicates with external programs via stdin/stdout pipes. Handle process spawning, bidirectional pipe I/O, process lifecycle management. Write specs: pipe communication with a simple echo subprocess.
 
 - [ ] **7.10 — I2P interface**

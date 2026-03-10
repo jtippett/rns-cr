@@ -35,6 +35,8 @@ require "./rns/interfaces/auto_interface"
 require "./rns/interfaces/serial_interface"
 require "./rns/interfaces/kiss_interface"
 require "./rns/interfaces/ax25_kiss_interface"
+require "./rns/interfaces/backbone_interface"
+require "./rns/interfaces/pipe_interface"
 
 module RNS
   def self.version : String

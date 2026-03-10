@@ -1262,3 +1262,73 @@
     - AX.25 address formatting: dst callsign, default destination (2 tests)
     - Stress: 100 AX.25 KISS pipeline roundtrips, 20 interfaces with valid callsigns (2 tests)
   - Ran crystal spec — 1739 examples, 0 failures, 5 pending (pre-existing)
+
+2026-03-11 — Task 7.8: Backbone interface
+  - Created src/rns/interfaces/backbone_interface.cr
+    - BackboneInterfaceConstants module with HW_MTU = 1048576
+    - BackboneInterface (server): TCP listener accepting backbone connections
+      - Constants: BITRATE_GUESS = 1_000_000_000, DEFAULT_IFAC_SIZE = 16, AUTOCONFIGURE_MTU = true
+      - Configuration from Hash: name, listen_ip, listen_port, port (fallback), device, prefer_ipv6
+      - get_address_for_if: resolves bind address from network interface name via NetInfo
+      - accept_loop: fiber-based connection acceptance
+      - incoming_connection: spawns BackboneClientInterface per connection, inherits parent properties
+        (ifac, announce rates, mode, MTU, bitrate, direction flags)
+      - clients: returns count of spawned interfaces
+      - received_announce/sent_announce: tracks frequency only from spawned interfaces
+      - process_outgoing: no-op (server does not transmit directly)
+      - detach: closes server socket, marks offline
+      - to_s: BackboneInterface[name/ip:port] with IPv6 bracket formatting
+    - BackboneClientInterface: HDLC-framed TCP client for backbone links
+      - Constants: BITRATE_GUESS = 100_000_000, RECONNECT_WAIT = 5, TCP socket options
+        (TCP_USER_TIMEOUT = 24, TCP_PROBE_AFTER = 5, TCP_PROBE_INTERVAL = 2, TCP_PROBES = 12),
+        INITIAL_CONNECT_TIMEOUT = 5, SYNCHRONOUS_START = true
+      - Two constructors: from config Hash (initiator) or from pre-connected TCPSocket (spawned)
+      - connect: establishes TCP connection with timeout, TCP_NODELAY, keepalive
+      - reconnect: automatic reconnection loop for initiator clients with max retry support
+      - HDLC framing: process_outgoing wraps data in FLAG+escape+FLAG, write_mutex for fiber safety
+      - read_loop: fiber-based async reading with HDLC deframing via process_hdlc_buffer
+      - process_incoming: tracks rxb on both client and parent interface
+      - teardown: marks offline, removes self from parent spawned_interfaces, closes socket
+      - detach: marks detached, closes socket
+      - to_s: BackboneInterface[name/ip:port] with IPv6 bracket formatting
+  - Updated src/rns.cr to require interfaces/backbone_interface
+  - Created spec/rns/interfaces/backbone_interface_spec.cr (35 examples)
+    - BackboneInterface constants (4 tests), initialization (4 tests), server behavior (2 tests),
+      to_s formatting (2 tests), announce tracking (2 tests), detach (1 test)
+    - BackboneClientInterface constants (6 tests), spawned client (1 test),
+      HDLC framing (2 tests), HDLC deframing (3 tests), server+client integration (2 tests),
+      initiator client (1 test), process_incoming (1 test), teardown (2 tests), to_s (2 tests)
+  - Ran crystal spec — 1774 examples, 0 failures, 5 pending (pre-existing)
+
+2026-03-11 — Task 7.9: PipeInterface with subprocess pipe communication
+  - Created src/rns/interfaces/pipe_interface.cr — PipeInterface class for subprocess I/O
+    - Spawns external processes via Process.new with shell: true, piped stdin/stdout
+    - HDLC framing for packetization (reuses existing RNS::HDLC module)
+    - Constants: MAX_CHUNK (32768), BITRATE_GUESS (1_000_000), DEFAULT_IFAC_SIZE (8), HW_MTU (1064)
+    - open_pipe: spawns subprocess with Process.new, captures stdin/stdout pipes
+    - configure_pipe: starts read_loop fiber, sets online
+    - process_outgoing: HDLC-frames data and writes to subprocess stdin
+    - read_loop: byte-by-byte HDLC state machine reading from subprocess stdout
+    - reconnect_pipe: periodic respawn attempts with configurable respawn_delay
+    - kill_process: graceful process termination
+    - teardown/detach: clean shutdown
+    - Configuration from Hash: name, command, respawn_delay (default 5.0)
+    - Test constructor with spawn_process: false for unit testing without subprocess
+  - Updated src/rns.cr to require interfaces/pipe_interface
+  - Created spec/rns/interfaces/pipe_interface_spec.cr (33 examples)
+    - Constants tests (3): MAX_CHUNK, BITRATE_GUESS, DEFAULT_IFAC_SIZE
+    - Constructor tests (2): default settings, custom respawn_delay
+    - Configuration parsing (2): missing command raises, default respawn_delay
+    - Inheritance tests (2): is_a Interface, has Interface properties
+    - process_incoming tests (3): rxb counter, inbound callback, accumulation
+    - process_outgoing (1): does nothing when offline
+    - teardown/detach (2): sets online false, marks detached
+    - to_s (1): PipeInterface[name] format
+    - get_hash (2): consistent for same name, different for different names
+    - HW_MTU (1): defaults to 1064
+    - HDLC framing (4): FLAG bytes, FLAG escaping, ESC escaping, roundtrip
+    - Subprocess communication (5): single packet via cat, multiple packets,
+      HDLC special bytes, process termination, 10 random packets roundtrip
+    - HDLC state machine (5): single frame, multiple frames, HW_MTU truncation,
+      empty frames, 500 random packet roundtrip
+  - Ran crystal spec — 1807 examples, 0 failures, 5 pending (pre-existing)

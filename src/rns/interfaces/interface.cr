@@ -54,6 +54,64 @@ module RNS
     end
   end
 
+  # KISS framing helpers used by TCP (kiss_framing mode), KISS, and AX.25 interfaces.
+  module KISS
+    FEND    = 0xC0_u8
+    FESC    = 0xDB_u8
+    TFEND   = 0xDC_u8
+    TFESC   = 0xDD_u8
+    CMD_DATA    = 0x00_u8
+    CMD_UNKNOWN = 0xFE_u8
+
+    def self.escape(data : Bytes) : Bytes
+      io = IO::Memory.new(data.size)
+      data.each do |byte|
+        if byte == FESC
+          io.write_byte(FESC)
+          io.write_byte(TFESC)
+        elsif byte == FEND
+          io.write_byte(FESC)
+          io.write_byte(TFEND)
+        else
+          io.write_byte(byte)
+        end
+      end
+      io.to_slice
+    end
+
+    def self.unescape(data : Bytes) : Bytes
+      io = IO::Memory.new(data.size)
+      i = 0
+      while i < data.size
+        byte = data[i]
+        if byte == FESC && i + 1 < data.size
+          i += 1
+          next_byte = data[i]
+          if next_byte == TFEND
+            io.write_byte(FEND)
+          elsif next_byte == TFESC
+            io.write_byte(FESC)
+          else
+            io.write_byte(next_byte)
+          end
+        else
+          io.write_byte(byte)
+        end
+        i += 1
+      end
+      io.to_slice
+    end
+
+    def self.frame(data : Bytes) : Bytes
+      io = IO::Memory.new(data.size + 4)
+      io.write_byte(FEND)
+      io.write_byte(CMD_DATA)
+      io.write(escape(data))
+      io.write_byte(FEND)
+      io.to_slice
+    end
+  end
+
   # Base interface class for the Reticulum Network Stack.
   # All concrete interfaces (UDP, TCP, Serial, etc.) inherit from this.
   abstract class Interface

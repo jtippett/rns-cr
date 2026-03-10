@@ -919,3 +919,75 @@
     - Configuration: string hash, missing optional fields (2 tests)
     - Stress: 50 rapid sends, 20 rapid send/receive cycles (2 tests)
   - Ran crystal spec — 1369 examples, 0 failures, 5 pending
+
+2026-03-11 — Task 7.3: TCP interface (client and server)
+  - Added RNS::KISS module to src/rns/interfaces/interface.cr
+    - Constants: FEND (0xC0), FESC (0xDB), TFEND (0xDC), TFESC (0xDD), CMD_DATA (0x00), CMD_UNKNOWN (0xFE)
+    - escape(): replaces FEND and FESC bytes with escape sequences
+    - unescape(): reverses escape sequences back to original bytes
+    - frame(): wraps data with FEND + CMD_DATA + escaped(data) + FEND
+  - Created src/rns/interfaces/tcp_interface.cr porting RNS/Interfaces/TCPInterface.py (661 LOC)
+  - TCPInterfaceConstants module: HW_MTU = 262144 shared by client and server
+  - TCPClientInterface class inheriting from Interface:
+    - Constants: BITRATE_GUESS (10_000_000), DEFAULT_IFAC_SIZE (16), AUTOCONFIGURE_MTU (true),
+      RECONNECT_WAIT (5), RECONNECT_MAX_TRIES (nil), INITIAL_CONNECT_TIMEOUT (5),
+      TCP keepalive params (USER_TIMEOUT=24, PROBE_AFTER=5, PROBE_INTERVAL=2, PROBES=12),
+      I2P keepalive params (USER_TIMEOUT=45, PROBE_AFTER=10, PROBE_INTERVAL=9, PROBES=5)
+    - Two constructors: config Hash (initiator) and pre-connected TCPSocket (server-spawned)
+    - connect(): TCP connection with configurable timeout, TCP_NODELAY, keepalive options
+    - reconnect(): reconnection loop with RECONNECT_WAIT delay and max_reconnect_tries limit
+    - process_outgoing(): HDLC or KISS framing with txb tracking and parent_interface propagation
+    - process_incoming(): rxb tracking with parent_interface propagation, callback invocation
+    - read_loop(): fiber-based socket reader with HDLC and KISS deframing
+    - HDLC read: frame_buffer accumulation, FLAG-to-FLAG extraction, unescape, HEADER_MINSIZE filter
+    - KISS read: FEND/FESC/TFEND/TFESC handling, CMD_DATA filtering, port nibble stripping
+    - teardown(): close socket, mark offline, remove from parent spawned_interfaces
+    - detach(): graceful shutdown with detached flag
+    - to_s: "TCPInterface[name/ip:port]" with IPv6 bracket wrapping
+    - Workaround for Crystal 1.19.1 compiler bug: used while-loop instead of each iterator
+      for KISS byte processing (reassigning iteration variables causes compiler crash)
+  - TCPServerInterface class inheriting from Interface:
+    - Constants: BITRATE_GUESS (10_000_000), DEFAULT_IFAC_SIZE (16), AUTOCONFIGURE_MTU (true)
+    - Constructor: config Hash with listen_ip, listen_port, port, i2p_tunneled, prefer_ipv6
+    - accept_loop(): fiber-based connection acceptor using TCPServer.accept
+    - incoming_connection(): spawns TCPClientInterface per client with:
+      - Parent interface property propagation (IFAC, announce rate, mode, HW_MTU)
+      - Remote IP/port tracking, spawned_interfaces management
+    - clients: returns count of spawned interfaces
+    - received_announce/sent_announce: only records from spawned interfaces (from_spawned flag)
+    - process_outgoing: no-op (data sent through spawned client interfaces)
+    - detach(): close server, mark offline
+    - to_s: "TCPServerInterface[name/ip:port]" with IPv6 bracket wrapping
+  - Updated src/rns.cr to require interfaces/tcp_interface
+  - Created spec/rns/interfaces/tcp_interface_spec.cr (77 examples)
+    - KISS module: constants (2), escape (5), unescape (3), roundtrip (1), frame (3) = 14 tests
+    - TCPInterfaceConstants: HW_MTU (1 test)
+    - TCPClientInterface constants: BITRATE_GUESS, IFAC_SIZE, AUTOCONFIGURE_MTU, reconnect,
+      TCP keepalive, I2P, INITIAL_CONNECT_TIMEOUT (7 tests)
+    - Constructor from config: connection, direction flags, KISS framing, I2P tunneled,
+      connect_timeout, max_reconnect_tries (6 tests)
+    - Constructor from socket: creation, callback (2 tests)
+    - process_outgoing HDLC: framed data, txb tracking, parent txb (3 tests)
+    - process_outgoing KISS: framed data (1 test)
+    - HDLC framing roundtrip: send/receive, multiple frames, special bytes (3 tests)
+    - KISS framing roundtrip: send/receive, special bytes (2 tests)
+    - Bidirectional: both directions (1 test)
+    - Reconnection: server restart, max_reconnect_tries (2 tests)
+    - Teardown: close socket, remove from parent (2 tests)
+    - Detach: marks detached and offline (1 test)
+    - Remote close: non-initiator teardown (1 test)
+    - Offline: no-op when offline (1 test)
+    - to_s: formatted string, IPv6 brackets (2 tests)
+    - Interface base class: inheritance, HW_MTU, hash, counters (4 tests)
+    - Stress: 30 HDLC send/receive, 20 KISS send/receive (2 tests)
+    - TCPServerInterface constants: BITRATE_GUESS, IFAC_SIZE, AUTOCONFIGURE_MTU (3 tests)
+    - Server constructor: creation, port default, no port error, no IP error,
+      direction flags, HW_MTU, spawned_interfaces (7 tests)
+    - Incoming connections: accept client, multiple clients, receive data, parent rxb (4 tests)
+    - Announce tracking: from_spawned flag (1 test)
+    - Server process_outgoing: no-op (1 test)
+    - Server detach: close server, idempotent (2 tests)
+    - Server to_s: formatted string (1 test)
+    - Server Interface base: inheritance (1 test)
+    - Server stress: 10 rapid connections, 20 multi-client messages (2 tests)
+  - Ran crystal spec — 1446 examples, 0 failures, 5 pending

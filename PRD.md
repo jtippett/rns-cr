@@ -245,7 +245,7 @@ This is the largest module (3312 LOC). Split into manageable sub-modules.
 - [x] **7.2 — UDP interface**
   Port `RNS/Interfaces/UDPInterface.py` (140 LOC) → `src/rns/interfaces/udp_interface.cr`. Implement `UDPInterface` class using Crystal `UDPSocket`. Support: bind address/port, target address/port, broadcast mode. Implement `process_outgoing(data)` and the receive fiber. Handle configuration from config object. Write specs: send/receive over localhost UDP, configuration parsing.
 
-- [ ] **7.3 — TCP interface (client and server)**
+- [x] **7.3 — TCP interface (client and server)**
   Port `RNS/Interfaces/TCPInterface.py` (661 LOC) → `src/rns/interfaces/tcp_interface.cr`. Implement `TCPClientInterface` and `TCPServerInterface`. Client: connect to host:port, HDLC framing, reconnection logic, keepalive. Server: accept connections, manage client list, threading via fibers. Handle connection timeouts, graceful disconnection, data framing with HDLC escape sequences. Write specs: client/server communication over localhost, HDLC framing roundtrip, reconnection behavior.
 
 - [ ] **7.4 — Local interface**

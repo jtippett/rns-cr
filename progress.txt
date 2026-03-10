@@ -51,3 +51,25 @@
     - Determinism, output length, and cross-verification against manual HMAC computation
   - Updated src/rns.cr to require cryptography/hmac and cryptography/hkdf
   - Ran crystal spec — 132 examples, 0 failures
+
+2026-03-10 — Task 2.3: PKCS7 padding and AES-256-CBC
+  - Created src/rns/cryptography/pkcs7.cr — PKCS7 module with pad() and unpad()
+    - BLOCKSIZE constant (16) matching Python RNS
+    - pad(data, bs) adds PKCS7 padding, always adds at least 1 byte
+    - unpad(data, bs) removes padding, validates padding byte value
+    - Raises ArgumentError on invalid padding (0, > block_size, empty data)
+  - Created src/rns/cryptography/aes.cr — AES_128_CBC and AES_256_CBC modules
+    - Wraps OpenSSL::Cipher with padding disabled (caller handles PKCS7)
+    - encrypt(plaintext, key, iv) and decrypt(ciphertext, key, iv) for both key sizes
+    - Key length validation matching Python behavior (raises on wrong size)
+  - Created spec/rns/cryptography/pkcs7_spec.cr (18 examples)
+    - Pad tests: short data, block-aligned, one-short, multi-block, empty, custom block sizes
+    - Unpad tests: valid padding, full block, single byte, invalid padding, zero padding, empty
+    - Roundtrip tests: various lengths, custom block sizes, 1000 random iterations
+  - Created spec/rns/cryptography/aes_spec.cr (16 examples)
+    - NIST SP 800-38A test vectors for AES-256-CBC (single block + 4-block) and AES-128-CBC
+    - Roundtrip encryption, different keys/IVs produce different ciphertext
+    - Key length validation, ciphertext size verification
+    - 1000-iteration random roundtrip tests with PKCS7 for both AES-256 and AES-128
+  - Updated src/rns.cr to require cryptography/pkcs7 and cryptography/aes
+  - Ran crystal spec — 166 examples, 0 failures

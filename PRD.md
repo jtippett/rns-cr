@@ -203,7 +203,7 @@ Read `RNS/Cryptography/` for reference. Every crypto module must have specs with
 
 This is the largest module (3312 LOC). Split into manageable sub-modules.
 
-- [ ] **4.1 — Transport core and data structures**
+- [x] **4.1 — Transport core and data structures**
   Create `src/rns/transport.cr` and `src/rns/transport/path_management.cr`. Port the Transport class skeleton from `RNS/Transport.py`. Define all constants: `BROADCAST = 0x00`, `TRANSPORT = 0x01`, `RELAY = 0x02`, `TUNNEL = 0x03`, `REACHABILITY_UNREACHABLE/DIRECT/TRANSPORT`, `PATHFINDER_M`, `PATHFINDER_R`, `PATHFINDER_G`, `PATHFINDER_RW`, expiry times, rate limits. Set up core state: `@@interfaces`, `@@destinations`, `@@pending_links`, `@@active_links`, `@@packet_hashlist`, `@@receipts`, `@@announce_table`, `@@destination_table`, `@@path_table`, `@@reverse_table`, `@@tunnel_table`, `@@link_table`. Implement `register_destination(destination)`, `deregister_destination(destination)`, `register_interface(interface)`, `deregister_interface(interface)`, `has_path(destination_hash)`, `hops_to(destination_hash)`, `next_hop(destination_hash)`, `next_hop_interface(destination_hash)`, `expire_path(destination_hash)`, `request_path(destination_hash, on_interface, tag, recursive)`. Implement path table persistence: `save_path_table()`, `load_path_table()`. Write specs for path management: register/deregister, path lookup, expiry.
 
 - [ ] **4.2 — Transport announce handling**

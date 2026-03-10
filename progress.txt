@@ -318,3 +318,58 @@
     - DestinationInterface compliance: includes interface, usable as interface
     - Stress tests: 50 destination creation, 20 announce generation
   - Ran crystal spec — 525 examples, 0 failures
+
+2026-03-10 — Task 4.1: Transport core and data structures
+  - Expanded src/rns/transport.cr from stub to full Transport module
+    - Transport type constants: BROADCAST (0x00), TRANSPORT (0x01), RELAY (0x02), TUNNEL (0x03)
+    - Reachability constants: REACHABILITY_UNREACHABLE/DIRECT/TRANSPORT
+    - Pathfinder constants: PATHFINDER_M (128), PATHFINDER_R (1), PATHFINDER_G (5),
+      PATHFINDER_RW (0.5), PATHFINDER_E (604800), AP_PATH_TIME (86400), ROAMING_PATH_TIME (21600)
+    - Path request constants: PATH_REQUEST_TIMEOUT (15), PATH_REQUEST_GRACE (0.4),
+      PATH_REQUEST_RG (1.5), PATH_REQUEST_MI (20)
+    - State constants: STATE_UNKNOWN (0x00), STATE_UNRESPONSIVE (0x01), STATE_RESPONSIVE (0x02)
+    - Timeout/limit constants: REVERSE_TIMEOUT (480), DESTINATION_TIMEOUT (604800),
+      MAX_RECEIPTS (1024), MAX_RATE_TIMESTAMPS (16), PERSIST_RANDOM_BLOBS (32),
+      MAX_RANDOM_BLOBS (64), HASHLIST_MAXSIZE (1000000), MAX_PR_TAGS (32000)
+    - Job interval constants matching Python exactly
+    - All table index constants: IDX_PT_*, IDX_RT_*, IDX_AT_*, IDX_LT_*, IDX_TT_*
+    - Record types: PathEntry, AnnounceEntry, ReverseEntry, LinkEntry, TunnelEntry, AnnounceRateEntry
+    - Core state: @@interfaces, @@destinations, @@pending_links, @@active_links,
+      @@packet_hashlist, @@receipts, all table hashes, timing state, traffic counters,
+      identity, locking (Mutex), save operation guards
+    - AnnounceHandler abstract module
+    - Registration: register_destination (with duplicate check for IN destinations, sets MTU),
+      deregister_destination, register_announce_handler, deregister_announce_handler
+    - Full accessor methods for all state
+    - reset() method for test isolation
+  - Created src/rns/transport/path_management.cr
+    - Path lookup: has_path, hops_to, next_hop, next_hop_interface, first_hop_timeout
+    - Path state: expire_path (sets timestamp to 0, triggers culling),
+      mark_path_unresponsive, mark_path_responsive, mark_path_unknown_state, path_is_unresponsive
+    - Path mutation: update_path (insert/update entries), remove_path (with state cleanup)
+    - Path request: request_path (constructs path request packet, records timestamp)
+    - Interface management: register_interface, deregister_interface, find_interface_from_hash
+    - Persistence: save_path_table (MessagePack serialization with PERSIST_RANDOM_BLOBS limit),
+      load_path_table (with hop increment on load, robust integer type handling),
+      save_packet_hashlist, load_packet_hashlist, save_tunnel_table, persist_data
+    - MessagePack type conversion helpers: msgpack_to_i64, msgpack_to_f64
+  - Updated src/rns.cr to require transport/path_management
+  - Created spec/rns/transport_spec.cr (120 examples)
+    - Constants: transport types (5), reachability (3), pathfinder (7), path request (4),
+      state (3), timeout/limit (9), job interval (6), table indices (5), APP_NAME
+    - Initial state: all tables empty, counters zero, no identity, jobs not running
+    - Registration: register/deregister destinations, duplicate IN rejection, MTU setting,
+      OUT with same hash allowed, register/deregister interfaces, find_interface_from_hash
+    - Path management: has_path, hops_to (unknown/known/direct), next_hop,
+      next_hop_interface, first_hop_timeout, expire_path (preserves fields, resets culling),
+      mark_path_unresponsive/responsive/unknown, path_is_unresponsive, update_path (create/overwrite),
+      remove_path (with state cleanup), request_path (timestamp recording, custom tag)
+    - Persistence: save/load path table roundtrip (2 entries with blobs and interfaces),
+      load from nonexistent file, PERSIST_RANDOM_BLOBS limit enforcement,
+      save/load packet hashlist roundtrip, tunnel table save with paths, persist_data
+    - Record types: PathEntry, AnnounceEntry, ReverseEntry, LinkEntry, TunnelEntry, AnnounceRateEntry
+    - AnnounceHandler: register/deregister, multiple handlers
+    - Reset: clears all state
+    - Stress tests: 100 path entries, 50 destination registrations,
+      20-entry persistence roundtrip
+  - Ran crystal spec — 645 examples, 0 failures

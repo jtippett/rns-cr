@@ -505,3 +505,70 @@
     - Full lifecycle: start -> populate -> exit -> restart preserves state
     - Stress: 50 path entries, 100 packet hashes, 20 cached packets, 10 tunnels × 5 paths
   - Ran crystal spec — 843 examples, 0 failures
+
+2026-03-10 — Task 5.1: Channel module
+  - Created src/rns/channel.cr porting RNS/Channel.py (705 LOC)
+    - SystemMessageTypes module: SMT_STREAM_DATA (0xff00)
+    - CEType module: ME_NO_MSG_TYPE (0), ME_INVALID_MSG_TYPE (1), ME_NOT_REGISTERED (2),
+      ME_LINK_NOT_READY (3), ME_ALREADY_SENT (4), ME_TOO_BIG (5)
+    - ChannelException class: custom Exception with type code
+    - MessageState module: MSGSTATE_NEW (0), MSGSTATE_SENT (1), MSGSTATE_DELIVERED (2),
+      MSGSTATE_FAILED (3)
+    - MessageBase abstract class: abstract pack/unpack, class_getter msgtype pattern
+    - ChannelOutletBase(TPacket) abstract generic class: send, resend, mdu, rtt, is_usable,
+      get_packet_state, timed_out, set_packet_timeout_callback, set_packet_delivered_callback,
+      get_packet_id — matching Python ChannelOutletBase(ABC, Generic[TPacket])
+    - Envelope(TPacket) class: message wrapping with 6-byte header (msgtype + sequence + length),
+      pack/unpack with big-endian encoding, state tracking (tries, unpacked, packed, tracked)
+    - Channel(TPacket) generic class with full window management:
+      - Window constants: WINDOW (2), WINDOW_MIN (2), WINDOW_MAX_SLOW (5), WINDOW_MAX_MEDIUM (12),
+        WINDOW_MAX_FAST (48), WINDOW_MAX = WINDOW_MAX_FAST, WINDOW_FLEXIBILITY (4)
+      - Window limit constants: WINDOW_MIN_LIMIT_SLOW (2), WINDOW_MIN_LIMIT_MEDIUM (5),
+        WINDOW_MIN_LIMIT_FAST (16)
+      - Rate constants: FAST_RATE_THRESHOLD (10), RTT_FAST (0.18), RTT_MEDIUM (0.75), RTT_SLOW (1.45)
+      - Sequence constants: SEQ_MAX (0xFFFF), SEQ_MODULUS (0x10000)
+      - Constructor: window initialization based on RTT (slow links get window=1)
+      - register_message_type: validates MSGTYPE exists, < 0xf000, supports system types
+      - add_message_handler/remove_message_handler: callback management with dedup
+      - mdu: outlet.mdu - 6, capped at 0xFFFF
+      - is_ready_to_send?: checks outlet usability and outstanding window count
+      - send: creates envelope, packs, sends through outlet, sets up delivery/timeout callbacks
+      - _receive: unpacks envelope, validates sequence, handles out-of-order with rx_ring,
+        delivers contiguous messages in order, runs callbacks
+      - Delivery handling: removes from tx_ring, increases window, adapts rate
+      - Timeout handling: retries with resend, decreases window, decreases window_max,
+        tears down after max_tries (5)
+      - Rate adaptation: tracks fast/medium_rate_rounds, upgrades window_max/window_min
+        after sustained FAST_RATE_THRESHOLD rounds at fast or medium RTT
+      - Sequence wrapping at SEQ_MODULUS (0x10000)
+      - Reentrant mutex (matching Python's RLock) for thread safety
+      - shutdown: clears callbacks and rings
+    - Note: LinkChannelOutlet deferred to Task 5.2/5.3 when Link module is available
+  - Updated src/rns.cr to require channel module
+  - Created spec/rns/channel_spec.cr (91 examples)
+    - Constants: SystemMessageTypes (1), CEType (6), MessageState (4), Channel window (16)
+    - ChannelException: type code storage, message storage, Exception subclass
+    - MessageBase: MSGTYPE getter, no-arg construction, pack/unpack, roundtrip
+    - Envelope: initialization (message, raw), pack header encoding (big-endian),
+      unpack message reconstruction, unregistered MSGTYPE rejection, pack/unpack roundtrip
+    - Channel constructor: normal RTT, slow RTT (window=1), rate round initialization
+    - register_message_type: valid type, multiple types, system-reserved rejection,
+      nil MSGTYPE rejection
+    - Message handlers: add, no duplicates, remove, remove non-existent
+    - MDU: header overhead, cap at 0xFFFF, small MDU
+    - is_ready_to_send?: usable outlet, unusable outlet, full window
+    - send: message send, sequence increment, not-ready rejection, too-big rejection,
+      callback setup, raw bytes through outlet
+    - _receive: dispatch to handler, in-order delivery of out-of-order messages,
+      duplicate rejection, handler chain (stop on true, continue on false),
+      unregistered type graceful handling
+    - Delivery: tx_ring removal, window increase
+    - Timeout: retry with resend, window decrease, window_min floor
+    - Rate adaptation: fast_rate_rounds increment/reset, medium_rate_rounds increment/reset,
+      WINDOW_MAX_FAST upgrade, WINDOW_MAX_MEDIUM upgrade
+    - shutdown: clears callbacks and rings
+    - Sequence wrapping: wraps at SEQ_MODULUS
+    - Timeout computation: formula verification, increasing with tries
+    - Send/receive roundtrip: TestMessage, AnotherMessage
+    - Stress: 50 messages with delivery ack, 30 in-order receives, 20 random roundtrips
+  - Ran crystal spec — 934 examples, 0 failures

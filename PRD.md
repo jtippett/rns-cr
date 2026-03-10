@@ -217,7 +217,7 @@ This is the largest module (3312 LOC). Split into manageable sub-modules.
 
 ### Phase 5: Communication Layer
 
-- [ ] **5.1 — Channel module**
+- [x] **5.1 — Channel module**
   Port `RNS/Channel.py` (705 LOC) → `src/rns/channel.cr`. Define enums: `CEType` (exception types), `MessageState` (MSGSTATE_NEW, SENT, DELIVERED, FAILED). Implement abstract `ChannelOutletBase` (Crystal abstract class). Implement `MessageBase` abstract class with `pack()`, `unpack()`, `MSGTYPE` identification. Implement `Envelope` class: wraps messages with sequence numbers, timestamps, retry tracking. Implement `Channel` class: `send(message)`, `register_message_type(msg_type)`, `add_message_handler(callback)`, `remove_message_handler(callback)`, `get_mdu()`, `is_ready_to_send?`. Implement `LinkChannelOutlet` (concrete outlet using Link). Handle message ordering, delivery confirmation, retry logic, and windowing. Implement `SystemMessageTypes`. Write specs: message serialization, ordering, delivery confirmation, windowing behavior.
 
 - [ ] **5.2 — Link module — establishment and encryption**

@@ -7,3 +7,13 @@
   - Created .gitignore for Crystal (lib/, .shards/, bin/)
   - Ran shards install — all dependencies resolved successfully
   - Ran crystal spec — 2 examples, 0 failures
+
+2026-03-10 — Task 1.2: Logging and utility infrastructure
+  - Created src/rns/vendor/platform_utils.cr — OS detection (get_platform, is_linux?, is_darwin?, is_android?, is_windows?, use_epoll?, use_af_unix?)
+  - Created src/rns/log.cr — Log levels (LOG_NONE through LOG_EXTREME), log destinations (LOG_STDOUT, LOG_FILE, LOG_CALLBACK), loglevelname(), log() with configurable destination/level/callback, timestamp_str(), host_os(), rand(), panic()
+  - Created src/rns/utilities.cr — hexrep(), prettyhexrep(), prettysize(), prettyspeed(), prettyfrequency(), prettydistance(), prettytime(), prettyshorttime()
+  - Updated src/rns.cr to require all new modules
+  - Created spec/rns/vendor/platform_utils_spec.cr (9 examples)
+  - Created spec/rns/log_spec.cr (33 examples)
+  - Created spec/rns/utilities_spec.cr (36 examples)
+  - Ran crystal spec — 80 examples, 0 failures

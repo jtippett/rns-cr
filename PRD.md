@@ -163,7 +163,7 @@ Crystal stdlib provides: OpenSSL (AES-256-CBC, HMAC, SHA-256/512, X25519 via EVP
 - [x] **1.1 — Initialize Crystal shard project**
   Create `` directory. Initialize with `shard.yml` (name: `rns`, version: 0.1.0, crystal >= 1.9.0). Add all dependencies listed above. Create `src/rns.cr` entry point with module `RNS` and version constant. Create `src/rns/version.cr`. Create `spec/spec_helper.cr`. Create `.gitignore` for Crystal (`lib/`, `.shards/`, `bin/`). Run `shards install` to verify dependencies resolve. Write a trivial spec that requires the library and passes.
 
-- [ ] **1.2 — Logging and utility infrastructure**
+- [x] **1.2 — Logging and utility infrastructure**
   Port `RNS/__init__.py` logging system → `src/rns/log.cr`. Implement log levels: `LOG_CRITICAL` (0), `LOG_ERROR` (1), `LOG_WARNING` (2), `LOG_NOTICE` (3), `LOG_INFO` (4), `LOG_VERBOSE` (5), `LOG_DEBUG` (6), `LOG_EXTREME` (7). Implement `RNS.log(message, level, _override_destination)` with configurable log destination and level. Port `hexrep()`, `prettysize()`, `prettytime()`, `phyparams()`, `panic()` utility functions. Also create `src/rns/vendor/platform_utils.cr` with OS detection (map Python's `platformutils`). Write specs for all utility functions.
 
 ### Phase 2: Cryptography Layer

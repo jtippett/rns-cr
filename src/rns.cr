@@ -8,6 +8,7 @@ require "./rns/cryptography/hkdf"
 require "./rns/cryptography/pkcs7"
 require "./rns/cryptography/aes"
 require "./rns/cryptography/x25519"
+require "./rns/cryptography/ed25519"
 
 module RNS
   def self.version : String

@@ -182,7 +182,7 @@ Read `RNS/Cryptography/` for reference. Every crypto module must have specs with
 - [x] **2.4 — X25519 key exchange**
   Create `src/rns/cryptography/x25519.cr`. Use Crystal's OpenSSL bindings to access X25519 via EVP_PKEY API (OpenSSL 1.1.1+). Implement `X25519PrivateKey` and `X25519PublicKey` classes matching the Python API in `RNS/Cryptography/X25519.py`: `generate()`, `from_private_bytes(data)`, `private_bytes()`, `public_key()`, `exchange(peer_public_key)`. Write specs: key generation, key exchange between two parties produces same shared secret, known test vectors from RFC 7748.
 
-- [ ] **2.5 — Ed25519 signatures**
+- [x] **2.5 — Ed25519 signatures**
   Create `src/rns/cryptography/ed25519.cr`. Wrap the `spider-gazelle/ed25519` shard. Implement `Ed25519PrivateKey` and `Ed25519PublicKey` classes matching `RNS/Cryptography/Ed25519.py`: `generate()`, `from_private_bytes(data)`, `private_bytes()`, `public_key()`, `sign(message)`, `verify(signature, message)`. Write specs: sign/verify roundtrip, invalid signature rejection, key serialization roundtrip, RFC 8032 test vectors.
 
 - [ ] **2.6 — Token (Fernet-like authenticated encryption)**

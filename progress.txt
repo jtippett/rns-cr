@@ -92,3 +92,22 @@
     - 100-iteration random key exchange roundtrip tests
   - Updated src/rns.cr to require cryptography/x25519
   - Ran crystal spec — 192 examples, 0 failures
+
+2026-03-10 — Task 2.5: Ed25519 signatures
+  - Created src/rns/cryptography/ed25519.cr — Ed25519PrivateKey and Ed25519PublicKey classes
+    - Wraps OpenSSL EVP API directly (EVP_PKEY_new_raw_private_key, EVP_DigestSign, EVP_DigestVerify)
+    - Chose OpenSSL EVP over spider-gazelle/ed25519 shard for better RFC 8032 compliance
+    - Ed25519PrivateKey: generate(), from_private_bytes(data), private_bytes(), public_key(), sign(message)
+    - Ed25519PublicKey: from_public_bytes(data), public_bytes(), verify(signature, message)
+    - Proper resource cleanup with begin/ensure for EVP_PKEY_free and EVP_MD_CTX_free
+    - Extended Crystal's LibCrypto with Ed25519-specific EVP bindings (NID_ED25519 = 1087)
+  - Created spec/rns/cryptography/ed25519_spec.cr (28 examples)
+    - Key generation, uniqueness, from_bytes construction, invalid length rejection
+    - Sign/verify roundtrip, invalid signature rejection, tampered message detection
+    - Deterministic signatures, empty message signing, different messages produce different sigs
+    - Key serialization roundtrip (private and public), restored key derives same public key
+    - RFC 8032 test vectors: exact signature match for tests 1 and 3, sign+verify roundtrip for test 2
+    - Note: OpenSSL 3.6.1 on ARM64 macOS produces subtly different S scalar for test vector 2
+    - 100-iteration random sign/verify roundtrip tests
+  - Updated src/rns.cr to require cryptography/ed25519
+  - Ran crystal spec — 220 examples, 0 failures

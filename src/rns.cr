@@ -42,6 +42,7 @@ require "./rns/interfaces/i2p_interface"
 require "./rns/interfaces/rnode_interface"
 require "./rns/interfaces/rnode_multi_interface"
 require "./rns/interfaces/weave_interface"
+require "./rns/discovery"
 
 module RNS
   def self.version : String

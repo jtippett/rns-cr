@@ -200,6 +200,12 @@ module RNS
     property discovery_frequency : Int32? = nil
     property discovery_bandwidth : Int32? = nil
     property discovery_modulation : Int32? = nil
+    property discovery_channel : Int32? = nil
+
+    # Autoconnect properties (set by InterfaceDiscovery)
+    property autoconnect_hash : Bytes? = nil
+    property autoconnect_source : String? = nil
+    property autoconnect_down : Float64? = nil
 
     # Parent/spawned interface references
     property parent_interface : Interface? = nil

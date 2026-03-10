@@ -286,7 +286,7 @@ This is the largest module (3312 LOC). Split into manageable sub-modules.
 - [x] **8.3 — Reticulum main class — interface instantiation and lifecycle**
   Complete `src/rns/reticulum.cr`. Implement interface instantiation from config: for each `[[interface_name]]` section, determine type and create the appropriate Interface subclass with parsed configuration. Implement `start_local_interface()`, `start_remote_interface()`. Implement exit handler: `exit_handler()` — save state (path tables, known destinations, packet hashlist), teardown interfaces, stop Transport. Wire `at_exit` hook. Handle shared instance mode (daemon). Write specs: interface instantiation from config, exit handler saves state.
 
-- [ ] **8.4 — Discovery module**
+- [x] **8.4 — Discovery module**
   Port `RNS/Discovery.py` (733 LOC) → `src/rns/discovery.cr`. Implement `InterfaceAnnouncer` (creates and sends discovery announces for interfaces). Implement `InterfaceAnnounceHandler` (receives and processes discovery announces). Implement `InterfaceDiscovery` (coordinates discovery across all interfaces). Implement `BlackholeUpdater` (manages network blackhole detection and distribution). Handle: encrypted discovery announces, peer interface auto-connection, blackhole list publishing. Write specs: announce creation/validation, discovery state management, blackhole list handling.
 
 ### Phase 9: Public API and Module Integration

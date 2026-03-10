@@ -1742,3 +1742,17 @@
     - start_system_interfaces: no interfaces section, empty section, discovery flag
   - Ran crystal spec — 2312 examples, 0 failures, 1 error (pre-existing UDP port bind),
     5 pending
+
+2026-03-11 — Task 8.4: Discovery module
+  - Created src/rns/discovery.cr — port of RNS/Discovery.py (734 LOC)
+    - InterfaceAnnouncer: periodic discovery announce generation for local interfaces
+    - InterfaceAnnounceHandler: receives and validates discovery announces
+    - InterfaceDiscovery: coordinates discovery, persistence, autoconnect
+    - BlackholeUpdater: fetches and merges blackhole identity lists
+    - Helper functions: is_ip_address?(), is_hostname?()
+  - Added interface properties: autoconnect_hash, autoconnect_source, autoconnect_down, discovery_channel
+  - Added Transport.interface_objects registry for Discovery iteration
+  - Updated src/rns.cr to require discovery module
+  - Created spec/rns/discovery_spec.cr (49 examples)
+  - Ran crystal spec — 2361 examples, 49/49 discovery specs pass,
+    3 pre-existing flaky failures in stress tests, 5 pending

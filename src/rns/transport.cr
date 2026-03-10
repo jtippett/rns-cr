@@ -166,6 +166,7 @@ module RNS
 
     # ─── Core state (class-level variables) ────────────────────────
     @@interfaces = [] of Bytes         # Interface hashes (actual interface objects managed elsewhere)
+    @@interface_objects = [] of Interface  # Actual interface objects for discovery/iteration
     @@destinations = [] of Destination
     @@pending_links = [] of LinkLike
     @@active_links = [] of LinkLike
@@ -265,6 +266,10 @@ module RNS
 
     def self.interfaces
       @@interfaces
+    end
+
+    def self.interface_objects
+      @@interface_objects
     end
 
     def self.pending_links
@@ -487,6 +492,7 @@ module RNS
 
     def self.reset
       @@interfaces.clear
+      @@interface_objects.clear
       @@destinations.clear
       @@pending_links.clear
       @@active_links.clear

@@ -237,3 +237,84 @@
     - MTU boundary: maximum payload, empty payload
   - Updated src/rns.cr to require reticulum, transport, destination, packet modules
   - Ran crystal spec — 401 examples, 0 failures
+
+2026-03-10 — Task 3.3: Destination module
+  - Rewrote src/rns/destination.cr — transformed from stub module to full Destination class
+    porting RNS/Destination.py (691 LOC)
+    - Type constants: SINGLE (0x00), GROUP (0x01), PLAIN (0x02), LINK (0x03)
+    - Direction constants: IN (0x11), OUT (0x12)
+    - Proof strategy constants: PROVE_NONE (0x21), PROVE_APP (0x22), PROVE_ALL (0x23)
+      matching Python values exactly
+    - Request policy constants: ALLOW_NONE (0x00), ALLOW_ALL (0x01), ALLOW_LIST (0x02)
+    - Ratchet constants: PR_TAG_WINDOW (30), RATCHET_COUNT (512), RATCHET_INTERVAL (1800)
+    - DestinationInterface abstract module and Stub class preserved for backward compat
+    - DestinationCallbacks class for link_established, packet, proof_requested callbacks
+    - RequestHandler struct for request handler registration
+    - Destination class implements DestinationInterface
+    - Static methods: expand_name(), hash() (with Identity and raw Bytes overloads),
+      app_and_aspects_from_name(), hash_from_name_and_identity()
+    - Constructor: initialize(identity, direction, type, app_name, aspects, register)
+      with auto-identity creation for IN SINGLE destinations, validation of types/directions,
+      dot rejection in names/aspects, Transport registration
+    - Hash computation: name_hash (NAME_HASH_LENGTH bits) + identity hash -> truncated hash
+    - Announce: announce(app_data, path_response, tag, send) generates announce packets with
+      public_key + name_hash + random_hash + ratchet + signature + app_data,
+      path response caching, stale response cleanup
+    - Link management: accepts_links get/set, callback setters
+    - Proof strategy: set_proof_strategy with validation
+    - Request handlers: register_request_handler, deregister_request_handler with path hashing
+    - Receive: receive(packet) with LINKREQUEST handling, decryption, packet callback dispatch
+    - GROUP keys: create_keys, get_private_key, load_private_key, load_public_key
+      using Token (Fernet-like) for GROUP encryption
+    - Encryption: PLAIN passthrough, SINGLE via Identity with ratchet support,
+      GROUP via Token
+    - Decryption: PLAIN passthrough, SINGLE with ratchet retry and reload from storage,
+      GROUP via Token
+    - Signing: sign(message) via Identity for SINGLE destinations
+    - Default app data: set_default_app_data (bytes or callable), clear_default_app_data
+    - Ratchet support: enable_ratchets, enforce_ratchets, set_retained_ratchets,
+      set_ratchet_interval, rotate_ratchets, ratchet file persistence with
+      MessagePack serialization and signature verification
+    - String representation: to_s with <name:hexhash> format
+  - Added RNS::TypeError custom exception class
+  - Updated src/rns/transport.cr — added register_destination, deregister_destination,
+    destinations accessor, clear_destinations helper
+  - Updated src/rns/packet.cr — added Packet#send stub, updated type casts to handle
+    both Destination and Destination::Stub in pack() and PacketReceipt.validate_proof()
+  - Created spec/rns/destination_spec.cr (124 examples)
+    - Constants: all type, direction, proof strategy, request policy, ratchet constants
+    - Static methods: expand_name (with/without identity, dots rejection, splat),
+      hash (truncated hash size, different names/identities, nil identity, raw bytes,
+      invalid bytes, computation verification), app_and_aspects_from_name,
+      hash_from_name_and_identity
+    - Constructor: SINGLE IN auto-identity, SINGLE OUT with identity, OUT without identity
+      rejection, PLAIN without/with identity, GROUP, invalid type/direction, dots rejection,
+      default properties, Transport registration, register: false
+    - Name and hash: includes aspects, hexhash appears twice for SINGLE IN,
+      hexhash matches hash, same identity same hash, different hashes, name_hash size
+    - String representation: includes name and hexhash
+    - Callbacks: link_established, packet, proof_requested
+    - Proof strategy: set PROVE_NONE/ALL/APP, unsupported rejection
+    - Accepts links: default true, set false, set back true
+    - Request handlers: register, empty path rejection, invalid policy rejection,
+      deregister, deregister non-existent, multiple handlers
+    - GROUP keys: create, get_private_key, load_private_key, PLAIN/SINGLE raises,
+      load_public_key raises
+    - Encryption: PLAIN passthrough, SINGLE encrypt/decrypt roundtrip, overhead check,
+      random IV, wrong identity, empty plaintext, 100 random roundtrips,
+      GROUP roundtrip, GROUP without key raises, shared GROUP key, 50 GROUP roundtrips
+    - Signing: SINGLE sign, verify by identity, PLAIN returns nil, GROUP returns nil
+    - Default app data: set bytes, set callable, clear
+    - Announce: creates packet, data contains public key, data contains name_hash,
+      correct structure size, includes app_data, uses default app_data, callable app_data,
+      PATH_RESPONSE context, GROUP rejection, OUT rejection, signature validation,
+      two announces differ
+    - Ratchets: enable creates file, rotate adds ratchet, respects interval,
+      enforce with/without ratchets, set_retained_ratchets, set_ratchet_interval,
+      rotate without ratchets raises, ratchet file persistence and reload
+    - Receive: packet callback for DATA, decryption failure returns false,
+      PLAIN receives plaintext
+    - Transport integration: register, deregister, multiple destinations
+    - DestinationInterface compliance: includes interface, usable as interface
+    - Stress tests: 50 destination creation, 20 announce generation
+  - Ran crystal spec — 525 examples, 0 failures

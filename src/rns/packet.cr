@@ -132,7 +132,13 @@ module RNS
       end
 
       if destination && destination.type == Destination::LINK
-        @mtu = destination.as(Destination::Stub).mtu
+        @mtu = if destination.is_a?(Destination)
+                 destination.mtu
+               elsif destination.is_a?(Destination::Stub)
+                 destination.mtu
+               else
+                 Reticulum::MTU
+               end
       else
         @mtu = Reticulum::MTU
       end
@@ -175,7 +181,7 @@ module RNS
       header_io.write_byte(@hops)
 
       if @context == LRPROOF
-        link_id = dest.as(Destination::Stub).link_id
+        link_id = dest.as(Destination::Stub).link_id  # LRPROOF only used with Stub/Link destinations
         header_io.write(link_id.not_nil!)
         @ciphertext = @data
       else
@@ -198,8 +204,10 @@ module RNS
             @ciphertext = @data
           else
             @ciphertext = dest.encrypt(@data)
-            if dest.responds_to?(:latest_ratchet_id)
-              @ratchet_id = dest.as(Destination::Stub).latest_ratchet_id
+            if dest.is_a?(Destination)
+              @ratchet_id = dest.latest_ratchet_id
+            elsif dest.is_a?(Destination::Stub)
+              @ratchet_id = dest.latest_ratchet_id
             end
           end
         end
@@ -296,6 +304,17 @@ module RNS
       masked_flags.copy_to(result)
       rest.copy_to(result + masked_flags.size)
       result
+    end
+
+    def send
+      return if @sent
+
+      pack unless @packed
+
+      # TODO: full Transport.outbound integration
+      # For now, mark as sent but don't transmit
+      @sent = true
+      @sent_at = Time.utc.to_unix_f
     end
 
     def generate_proof_destination : ProofDestination
@@ -410,8 +429,14 @@ module RNS
         proof_hash = proof[0, Identity::HASHLENGTH // 8]
         signature = proof[Identity::HASHLENGTH // 8, Identity::SIGLENGTH // 8]
         dest = @destination
-        if proof_hash == @hash && dest && dest.responds_to?(:identity) && dest.as(Destination::Stub).identity
-          identity = dest.as(Destination::Stub).identity.not_nil!
+        identity = if dest.is_a?(Destination)
+                     dest.identity
+                   elsif dest.is_a?(Destination::Stub)
+                     dest.identity
+                   else
+                     nil
+                   end
+        if proof_hash == @hash && identity
           if identity.validate(signature, @hash)
             @status = DELIVERED
             @proved = true
@@ -432,8 +457,14 @@ module RNS
         false
       elsif proof.size == IMPL_LENGTH
         dest = @destination
-        return false unless dest && dest.responds_to?(:identity)
-        identity = dest.as(Destination::Stub).identity
+        return false unless dest
+        identity = if dest.is_a?(Destination)
+                     dest.identity
+                   elsif dest.is_a?(Destination::Stub)
+                     dest.identity
+                   else
+                     nil
+                   end
         return false if identity.nil?
 
         signature = proof[0, Identity::SIGLENGTH // 8]

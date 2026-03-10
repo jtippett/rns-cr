@@ -1332,3 +1332,98 @@
     - HDLC state machine (5): single frame, multiple frames, HW_MTU truncation,
       empty frames, 500 random packet roundtrip
   - Ran crystal spec — 1807 examples, 0 failures, 5 pending (pre-existing)
+
+2026-03-11 — Task 7.10: I2P interface
+  - Created src/rns/interfaces/i2p_interface.cr (~600 LOC)
+    porting RNS/Interfaces/I2PInterface.py (1009 LOC)
+  - I2PExceptions module with all SAM protocol error types:
+    - I2PError (base), CantReachPeer, DuplicatedDest, DuplicatedId, InvalidId,
+      InvalidKey, KeyNotFound, PeerNotFound, Timeout
+    - from_sam_result: parses SAM reply strings to exception types
+  - Base32 module: RFC 4648 encoder for I2P address computation
+  - SAMClient class for SAM v3 protocol communication:
+    - connect: TCP connection + HELLO handshake (MIN=3.1 MAX=3.1)
+    - generate_destination: DEST GENERATE for keypair creation
+    - create_session: SESSION CREATE STYLE=STREAM for tunnel sessions
+    - stream_connect: STREAM CONNECT for outbound I2P connections
+    - stream_accept: STREAM ACCEPT for inbound I2P connections
+    - naming_lookup: NAMING LOOKUP for destination resolution
+    - Constants: DEFAULT_SAM_HOST (127.0.0.1), DEFAULT_SAM_PORT (7656)
+  - I2PController class managing I2P tunnel lifecycle:
+    - Storage directory management (rns_storagepath/i2p)
+    - get_free_port: ephemeral port allocation via TCPServer bind
+    - client_tunnel: SAM session + stream connect for outbound tunnels
+    - server_tunnel: key file management (old/new format paths), SAM session
+      creation, accept loop fiber for incoming connections, b32 address
+    - Unique session IDs via atomic counter + timestamp
+    - Exception logging with SAM error type classification
+    - start/stop lifecycle management
+  - I2PInterfacePeer class inheriting from Interface:
+    - Constants: RECONNECT_WAIT=15, I2P_USER_TIMEOUT=45, I2P_PROBE_AFTER=10,
+      I2P_PROBE_INTERVAL=9, I2P_PROBES=5, I2P_READ_TIMEOUT=110
+    - Tunnel states: TUNNEL_STATE_INIT (0x00), ACTIVE (0x01), STALE (0x02)
+    - Three constructors: connected socket (server-spawned), target I2P dest
+      (initiator with tunnel_job + wait_job fibers), test (no I2P needed)
+    - IFAC inheritance from parent interface (ifac_netname/netkey → HKDF key)
+    - process_outgoing: mutex-protected HDLC or KISS framing, parent txb tracking
+    - process_incoming: rxb tracking, parent rxb when parent_count=true
+    - read_loop: byte-by-byte HDLC/KISS deframing matching Python exactly
+    - read_watchdog: fiber-based tunnel health monitoring, keepalive sending,
+      stale detection (PROBE_AFTER*2), timeout (I2P_READ_TIMEOUT)
+    - connect: socket creation with timeout, socket option configuration
+    - reconnect: loop with RECONNECT_WAIT delay, max_reconnect_tries support
+    - teardown: offline, direction flags cleared, parent cleanup, panic support
+    - detach: sets detached flag, closes socket
+    - HW_MTU = 1064 matching Python
+  - I2PInterface class (server) inheriting from Interface:
+    - Constants: BITRATE_GUESS=256000, DEFAULT_IFAC_SIZE=16
+    - Two constructors: config Hash (full with SAM+peers) and test (name only)
+    - TCP server with accept_loop fiber for incoming connections
+    - incoming_connection: spawns I2PInterfacePeer with full property inheritance
+      (IFAC, announce rates, mode, HW_MTU, bitrate, direction flags)
+    - server_tunnel_job: retry loop for connectable I2P endpoint setup
+    - Peer configuration: comma-separated peers string, each gets I2PInterfacePeer
+    - clients: count of spawned interfaces
+    - received_announce/sent_announce: only tracks from_spawned (matching Python)
+    - process_outgoing: no-op (data through spawned peers)
+    - detach: stops I2P controller, closes server
+    - HW_MTU = 1064, supports_discovery = true
+  - Updated src/rns.cr to require interfaces/i2p_interface
+  - Created spec/rns/interfaces/i2p_interface_spec.cr (102 examples)
+    - I2PExceptions: from_sam_result for all 9 error types + OK + inheritance (12 tests)
+    - Base32: empty, single byte, RFC test vectors f/fo/foo/foob/fooba/foobar (7 tests)
+    - SAMClient: constants (1), default settings (1), custom settings (1)
+    - I2PController: storage dir creation (1), start/stop (1), free port (1),
+      unique ports (1), empty tunnel tables (1), custom SAM (1), to_s (1)
+    - I2PInterfacePeer constants: reconnect (2), I2P timeouts (4), READ_TIMEOUT
+      computation (1), tunnel states (1)
+    - Test constructor: name, non-initiator, initiator, HW_MTU, HDLC/KISS framing,
+      i2p_tunneled, MODE_FULL, bitrate (9 tests)
+    - Connected socket constructor: creation (1), IFAC inheritance (1)
+    - process_incoming: rxb tracking (1), callback (1), parent rxb with
+      parent_count true/false (2 tests)
+    - process_outgoing: offline guard (1), HDLC framing (1), KISS framing (1),
+      parent txb tracking (1)
+    - HDLC framing roundtrip: single frame (1), multiple frames (1),
+      HDLC special bytes (1)
+    - KISS framing roundtrip: single frame (1), KISS special bytes (1)
+    - Teardown: sets offline (1), clears direction flags (1), removes from parent (1)
+    - Detach: sets flag (1), closes socket (1)
+    - to_s: I2PInterfacePeer[name] (1)
+    - Tunnel state: init (1), active transition (1), stale transition (1)
+    - Interface base class: inheritance (1), byte counters (1), hash consistency (1)
+    - Reconnection properties: defaults (3 tests)
+    - Stress: 50 HDLC send/receive cycles (1), 20 create/teardown cycles (1)
+    - I2PInterface constants: BITRATE_GUESS (1), DEFAULT_IFAC_SIZE (1)
+    - Test constructor: name (1), inheritance (1), HW_MTU (1), MODE_FULL (1),
+      starts offline (1), supports discovery (1), empty spawned (1),
+      direction flags (1), bitrate (1), nil b32 (1), has I2PController (1)
+    - Clients: count (1)
+    - incoming_connection: spawns peer (1), correct properties (1)
+    - process_outgoing: no-op (1)
+    - Announce tracking: received from_spawned (1), sent from_spawned (1)
+    - Detach: stops controller (1)
+    - to_s: I2PInterface[name] (1)
+    - Connectable property (2 tests), b32 property (1 test)
+    - Stress: 20 create/teardown (1), 10 incoming connections (1)
+  - Ran crystal spec — 1909 examples, 0 failures, 5 pending (pre-existing)

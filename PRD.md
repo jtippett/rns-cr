@@ -266,7 +266,7 @@ This is the largest module (3312 LOC). Split into manageable sub-modules.
 - [x] **7.9 — Pipe interface**
   Port `RNS/Interfaces/PipeInterface.py` (205 LOC) → `src/rns/interfaces/pipe_interface.cr`. Implement `PipeInterface` that communicates with external programs via stdin/stdout pipes. Handle process spawning, bidirectional pipe I/O, process lifecycle management. Write specs: pipe communication with a simple echo subprocess.
 
-- [ ] **7.10 — I2P interface**
+- [x] **7.10 — I2P interface**
   Port `RNS/Interfaces/I2PInterface.py` (1009 LOC) → `src/rns/interfaces/i2p_interface.cr`. Implement `I2PInterface`, `I2PInterfacePeer`, and `I2PController`. Handle SAM (Simple Anonymous Messaging) protocol for communicating with the I2P router. Support tunnel creation, destination management, session handling. This is complex — the Python version uses asyncio internally. Map to Crystal fibers. Write specs: SAM protocol message formatting, session state management (can test protocol logic without running I2P daemon).
 
 - [ ] **7.11 — RNode interface (LoRa)**

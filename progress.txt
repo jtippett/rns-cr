@@ -885,3 +885,37 @@
     - Stress: 100 held announces (1), rapid frequency tracking (1),
       200 HDLC escape/unescape (1), 20 announce queue entries (1)
   - Ran crystal spec — 1341 examples, 0 failures, 5 pending
+
+2026-03-11 — Task 7.2: UDP interface
+  - Created src/rns/interfaces/udp_interface.cr porting RNS/Interfaces/UDPInterface.py (140 LOC)
+    - UDPInterface class inheriting from Interface base class
+    - Constants: BITRATE_GUESS (10_000_000), DEFAULT_IFAC_SIZE (16)
+    - Constructor accepts Hash(String, String) configuration with keys:
+      name, device, port, listen_ip, listen_port, forward_ip, forward_port
+    - "port" serves as default for both listen_port and forward_port (matching Python)
+    - Explicit listen_port/forward_port override "port" default
+    - HW_MTU set to 1064 matching Python
+    - Receive mode: binds UDPSocket with reuse_address, spawns receive fiber
+    - Forward mode: creates new UDPSocket per send with broadcast=true
+    - process_incoming(data): tracks rxb, invokes inbound callback with data and interface
+    - process_outgoing(data): sends via UDP to forward_ip:forward_port, tracks txb,
+      logs errors gracefully without raising (matching Python try/except)
+    - teardown(): stops receive fiber, closes socket, sets online=false, idempotent
+    - to_s: "UDPInterface[name/bind_ip:bind_port]" matching Python __str__
+    - Two constructor overloads: with block (for inbound callback) and without
+    - dir_in/dir_out properties (IN=true, OUT=false by default)
+  - Updated src/rns.cr to require interfaces/udp_interface
+  - Created spec/rns/interfaces/udp_interface_spec.cr (28 examples)
+    - Constants: BITRATE_GUESS, DEFAULT_IFAC_SIZE (2 tests)
+    - Constructor: receive-only, forward-only, bidirectional, port default,
+      port override, direction flags (6 tests)
+    - process_outgoing: UDP send to receiver, txb tracking, broadcast enabled,
+      error handling graceful (4 tests)
+    - process_incoming: receive callback with rxb, multiple packets (2 tests)
+    - Integration: send/receive between two interfaces, bidirectional communication (2 tests)
+    - to_s: formatted string, forward-only format (2 tests)
+    - Interface base class: inheritance, counters, HW_MTU, hash (4 tests)
+    - Teardown: closes socket and frees port, idempotent (2 tests)
+    - Configuration: string hash, missing optional fields (2 tests)
+    - Stress: 50 rapid sends, 20 rapid send/receive cycles (2 tests)
+  - Ran crystal spec — 1369 examples, 0 failures, 5 pending

@@ -254,7 +254,7 @@ This is the largest module (3312 LOC). Split into manageable sub-modules.
 - [x] **7.5 — Auto interface (peer discovery)**
   Port `RNS/Interfaces/AutoInterface.py` (663 LOC) → `src/rns/interfaces/auto_interface.cr`. Implement `AutoInterface` with UDP multicast peer discovery. Handle: multicast group management, peer tracking (`AutoInterfacePeer`), link-local addressing, automatic peer connection/disconnection, data scope management. This is critical for zero-configuration networking. Write specs: peer discovery simulation, multicast group handling.
 
-- [ ] **7.6 — Serial interface**
+- [x] **7.6 — Serial interface**
   Port `RNS/Interfaces/SerialInterface.py` (227 LOC) → `src/rns/interfaces/serial_interface.cr`. Implement `SerialInterface` for generic serial port communication. Use HDLC framing over serial. Handle baud rate configuration, port opening/closing, read/write with proper byte-level handling. Note: may need to add `serialport` shard dependency or use direct POSIX termios bindings. Write specs: HDLC framing roundtrip (can test without hardware using IO pipes).
 
 - [ ] **7.7 — KISS and AX.25 KISS interfaces**

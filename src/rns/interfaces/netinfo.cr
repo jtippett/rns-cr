@@ -5,27 +5,35 @@ module RNS
   # Provides interface enumeration, address lookup, and name-to-index mapping
   # using POSIX getifaddrs. Ports the functionality of RNS/Interfaces/util/netinfo.py.
   module NetInfo
-    AF_INET  = LibC::AF_INET
-    AF_INET6 = LibC::AF_INET6
+    AF_INET  = Socket::Family::INET.value
+    AF_INET6 = Socket::Family::INET6.value
 
     INET6_ADDRSTRLEN = 46
 
     # LibC bindings for interface enumeration
     lib LibNet
+      # Minimal sockaddr for reading sa_family
+      struct Sockaddr
+        {% if flag?(:darwin) %}
+        sa_len : UInt8
+        {% end %}
+        sa_family : UInt8
+      end
+
       struct Ifaddrs
         ifa_next : Ifaddrs*
-        ifa_name : LibC::Char*
-        ifa_flags : LibC::UInt
-        ifa_addr : LibC::Sockaddr*
-        ifa_netmask : LibC::Sockaddr*
+        ifa_name : UInt8*
+        ifa_flags : UInt32
+        ifa_addr : Sockaddr*
+        ifa_netmask : Sockaddr*
         ifa_broadaddr : Void*
         ifa_data : Void*
       end
 
-      fun getifaddrs(ifap : Ifaddrs**) : LibC::Int
+      fun getifaddrs(ifap : Ifaddrs**) : Int32
       fun freeifaddrs(ifa : Ifaddrs*) : Void
-      fun if_nametoindex(ifname : LibC::Char*) : LibC::UInt
-      fun inet_ntop(af : LibC::Int, src : Void*, dst : UInt8*, size : LibC::UInt) : UInt8*
+      fun if_nametoindex(ifname : UInt8*) : UInt32
+      fun inet_ntop(af : Int32, src : Void*, dst : UInt8*, size : UInt32) : UInt8*
     end
 
     # Address information record matching Python netinfo's dict format

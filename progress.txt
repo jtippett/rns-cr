@@ -1155,3 +1155,38 @@
     - AutoInterfacePeer to_s (1 test)
     - AutoInterfacePeer stress (2 tests: 30 messages, 20 create/teardown cycles)
   - Ran crystal spec — 1600 examples, 0 failures, 5 pending (pre-existing)
+
+2026-03-11 — Task 7.6: Serial interface
+  - Ported RNS/Interfaces/SerialInterface.py (228 LOC) → src/rns/interfaces/serial_interface.cr
+  - Implemented SerialInterface class with POSIX termios for serial port control:
+    - Baud rate, databits, parity (none/even/odd), stopbits configuration
+    - HDLC framing for data transmission and reception (uses existing HDLC module)
+    - Byte-by-byte read loop matching Python's readLoop exactly
+    - Timeout-based stale data clearing (100ms default)
+    - Automatic reconnection on port errors (5-second retry interval)
+    - HW_MTU = 564 matching Python
+  - Used POSIX termios via Crystal's LibC bindings (tcgetattr, tcsetattr, cfmakeraw)
+    plus LibSerial for cfsetispeed, cfsetospeed, tcflush
+  - Added SerialConstants module with platform-specific termios constants
+    (baud rates, control flags, character sizes, flow control)
+  - Fixed pre-existing compilation issues in netinfo.cr:
+    - LibC::Char → UInt8, LibC::UInt → UInt32, LibC::Int → Int32
+    - LibC::Sockaddr → custom Sockaddr struct in LibNet
+    - LibC::AF_INET/AF_INET6 → Socket::Family enum values
+  - Updated src/rns.cr with require for serial_interface
+  - Wrote 40 specs covering:
+    - Constants (MAX_CHUNK, DEFAULT_IFAC_SIZE, parity symbols)
+    - Constructor with explicit params (default/custom settings, parity parsing)
+    - Configuration parsing (missing port error, default values)
+    - should_ingress_limit? always returns false
+    - to_s formatting, inheritance from Interface
+    - teardown/detach behavior
+    - process_outgoing (offline guard), process_incoming (rxb, callback)
+    - HDLC framing roundtrip (frame/unescape, escaping FLAG/ESC bytes)
+    - HDLC read loop simulation (single frame, multiple frames, special bytes,
+      MTU truncation, empty frames, 100 random packets)
+    - Pipe-based I/O simulation (multi-packet, byte-by-byte delivery)
+    - SerialConstants verification
+    - get_hash consistency
+    - Stress test: 1000 random packets through HDLC state machine
+  - Ran crystal spec — 1640 examples, 0 failures, 5 pending (pre-existing)

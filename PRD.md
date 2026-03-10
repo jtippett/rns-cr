@@ -251,7 +251,7 @@ This is the largest module (3312 LOC). Split into manageable sub-modules.
 - [x] **7.4 — Local interface**
   Port `RNS/Interfaces/LocalInterface.py` (472 LOC) → `src/rns/interfaces/local_interface.cr`. Implement `LocalClientInterface` and `LocalServerInterface`. These use Unix domain sockets or TCP localhost for inter-process communication within the same machine. Support shared instance mode (multiple programs sharing one RNS transport instance). Write specs: local client/server communication, multi-client handling.
 
-- [ ] **7.5 — Auto interface (peer discovery)**
+- [x] **7.5 — Auto interface (peer discovery)**
   Port `RNS/Interfaces/AutoInterface.py` (663 LOC) → `src/rns/interfaces/auto_interface.cr`. Implement `AutoInterface` with UDP multicast peer discovery. Handle: multicast group management, peer tracking (`AutoInterfacePeer`), link-local addressing, automatic peer connection/disconnection, data scope management. This is critical for zero-configuration networking. Write specs: peer discovery simulation, multicast group handling.
 
 - [ ] **7.6 — Serial interface**

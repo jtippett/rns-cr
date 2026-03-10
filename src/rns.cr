@@ -30,6 +30,8 @@ require "./rns/interfaces/interface"
 require "./rns/interfaces/udp_interface"
 require "./rns/interfaces/tcp_interface"
 require "./rns/interfaces/local_interface"
+require "./rns/interfaces/netinfo"
+require "./rns/interfaces/auto_interface"
 
 module RNS
   def self.version : String

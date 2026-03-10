@@ -1058,3 +1058,100 @@
     - Multi-client communication: independent routing (1 test)
     - Stress: 5 clients x 10 messages (1 test)
   - Ran crystal spec — 1495 examples, 0 new failures, 5 pending (pre-existing)
+
+2026-03-11 — Task 7.5: Auto interface (peer discovery)
+  - Created src/rns/interfaces/netinfo.cr — Network interface enumeration module
+    - LibC bindings for getifaddrs, freeifaddrs, if_nametoindex, inet_ntop
+    - AddressInfo record matching Python netinfo dict format
+    - interfaces(): list all network interface names via POSIX getifaddrs
+    - interface_name_to_index(): maps interface name to OS index
+    - interface_name_to_nice_name(): returns interface name (POSIX: same as name)
+    - interface_names_to_indexes(): hash mapping all names to indexes
+    - ifaddresses(): returns addresses grouped by AF_INET/AF_INET6
+    - format_ipv6(): formats 16 bytes as compressed IPv6 string with :: compression
+    - descope_linklocal(): removes %ifname suffix and embedded scope specifiers
+    - Raw byte extraction from sockaddr structures (offset 8 for IPv6, offset 4 for IPv4)
+  - Created src/rns/interfaces/auto_interface.cr (~730 LOC)
+    porting RNS/Interfaces/AutoInterface.py (663 LOC)
+  - AutoInterface class inheriting from Interface:
+    - Constants: HW_MTU=1196, FIXED_MTU=true, DEFAULT_DISCOVERY_PORT=29716,
+      DEFAULT_DATA_PORT=42671, DEFAULT_GROUP_ID="reticulum", DEFAULT_IFAC_SIZE=16
+    - Scope constants: SCOPE_LINK("2"), SCOPE_ADMIN("4"), SCOPE_SITE("5"),
+      SCOPE_ORGANISATION("8"), SCOPE_GLOBAL("e")
+    - Multicast address types: PERMANENT("0"), TEMPORARY("1")
+    - Timing: PEERING_TIMEOUT=22.0, ANNOUNCE_INTERVAL=1.6, PEER_JOB_INTERVAL=4.0,
+      MCAST_ECHO_TIMEOUT=6.5
+    - Platform ignore lists: ALL_IGNORE_IFS, DARWIN_IGNORE_IFS, ANDROID_IGNORE_IFS
+    - Multi-interface dedup: MULTI_IF_DEQUE_LEN=48, MULTI_IF_DEQUE_TTL=0.75
+    - IPv6 multicast socket options: IPPROTO_IPV6, IPV6_JOIN_GROUP, IPV6_MULTICAST_IF
+      with platform-specific values for macOS and Linux
+    - Constructor: parses config Hash (name, group_id, discovery_scope, discovery_port,
+      multicast_address_type, data_port, devices, ignored_devices, configured_bitrate),
+      computes group hash and multicast address, enumerates interfaces, starts discovery
+    - compute_mcast_address(): derives IPv6 multicast address from group hash matching
+      Python format exactly (ff + type + scope + hash-derived groups)
+    - start_discovery_listeners(): creates unicast and multicast UDP sockets per interface,
+      joins multicast group via LibC.setsockopt, spawns discovery handler fibers
+    - start_data_listener(): creates UDP server socket per interface for data transfer
+    - discovery_handler(): receives peering packets, validates hash against group_id+addr,
+      calls add_peer on valid packets
+    - peer_jobs(): periodic fiber — timeout detection, reverse peering, multicast echo
+      monitoring, carrier state tracking
+    - announce_handler(): periodic multicast peering announcement per interface
+    - peer_announce(): sends multicast discovery token (full_hash of group_id + link-local addr)
+    - reverse_announce(): sends unicast discovery token to specific peer
+    - add_peer(): creates AutoInterfacePeer with full IFAC setup (ifac_key via HKDF with
+      Reticulum.IFAC_SALT, ifac_identity, ifac_signature), registers with Transport
+    - refresh_peer(): updates last_heard timestamp
+    - process_incoming(): routes data to spawned peer by address
+    - mif_deque_add/mif_deque_hit?: multi-interface deduplication with TTL-bounded deque
+    - ipv6_pton(): converts IPv6 string to 16-byte binary (Socket::IPAddress + manual fallback)
+    - expand_ipv6(): expands compressed IPv6 to 8 groups
+    - should_skip_interface?(): platform-specific interface filtering
+  - AutoInterfacePeer class inheriting from Interface:
+    - Constructor: owner, addr, ifname, inherits HW_MTU and parent_interface
+    - process_incoming(): deduplication via owner mif_deque, rxb tracking on both
+      peer and owner, refreshes peer timestamp, calls owner_inbound callback
+    - process_outgoing(): mutex-protected UDP send with lazy socket/addr_info creation,
+      txb tracking on both peer and owner
+    - detach(): sets offline and detached flags
+    - teardown(): removes from owner spawned interfaces, deregisters from Transport,
+      sets direction flags to false, logs error or verbose based on detached state
+    - to_s: "AutoInterfacePeer[ifname/addr]"
+  - Added Reticulum.IFAC_SALT constant (32-byte hex) matching Python exactly
+  - Added Reticulum.panic_on_interface_error class variable with getter/setter
+  - Updated src/rns.cr to require netinfo and auto_interface modules
+  - Created spec/rns/interfaces/auto_interface_spec.cr (105 examples)
+    - NetInfo: format_ipv6 (7 tests: all-zeros, loopback, fe80, full address, longest
+      zero run, leading zeros, single zero group, wrong size)
+    - NetInfo: descope_linklocal (4 tests: %ifname, embedded scope, no scope, both)
+    - NetInfo: interfaces (3 tests: non-empty, loopback present, unique names)
+    - NetInfo: interface_name_to_index (2 tests: loopback positive, non-existent zero)
+    - NetInfo: ifaddresses (4 tests: loopback has addresses, IPv4 127.0.0.1, IPv6 ::1,
+      non-existent empty)
+    - NetInfo: interface_name_to_nice_name (1 test), interface_names_to_indexes (1 test)
+    - AutoInterface constants (11 tests: HW_MTU, FIXED_MTU, ports, IFAC size, scopes,
+      multicast types, timing, platform ignore lists, bitrate, dedup constants)
+    - AutoInterface constructor (16 tests: defaults, custom group_id/ports/scope/
+      address_type, configured_bitrate, reverse_peering_interval, allowed/ignored
+      interfaces parsing, empty peers)
+    - Group hash and multicast address (5 tests: hash computation, format validation,
+      scope changes, address type changes, group_id changes)
+    - Peer management (7 tests: add_peer, own address multicast echo, existing peer
+      refresh, refresh_peer timestamp, non-existent peer graceful, process_incoming
+      routing, unknown peer ignore, offline ignore)
+    - Multi-interface deduplication (4 tests: duplicate rejection, different data allowed,
+      mif_deque_add TTL, unknown hash)
+    - Detach (2 tests: online false, detached flag)
+    - to_s (1 test), interface base class (4 tests), adopted/link-local tracking (2 tests)
+    - Multicast echo tracking (3 tests), timed out interfaces (2 tests)
+    - process_outgoing no-op (1 test), Reticulum constants (2 tests)
+    - Stress (3 tests: 50 peers, 100 dedup entries, 20 instances)
+    - AutoInterfacePeer constructor (4 tests: creation, HW_MTU, parent, inheritance)
+    - AutoInterfacePeer process_incoming (5 tests: rxb tracking, dedup via owner,
+      offline peer, offline owner, peer refresh on incoming)
+    - AutoInterfacePeer detach/teardown (4 tests: flags, owner removal, Transport removal,
+      direction flags)
+    - AutoInterfacePeer to_s (1 test)
+    - AutoInterfacePeer stress (2 tests: 30 messages, 20 create/teardown cycles)
+  - Ran crystal spec — 1600 examples, 0 failures, 5 pending (pre-existing)

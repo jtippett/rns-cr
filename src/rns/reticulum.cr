@@ -13,6 +13,15 @@ module RNS
 
     DEFAULT_PER_HOP_TIMEOUT = 6
 
+    # IFAC (Interface Authentication Code) salt — must match Python exactly
+    IFAC_SALT = "adf54d882c9a9b80771eb4995d702d4a3e733391b2a0f53f416d9f907e55cff8".hexbytes
+
+    # Whether to panic on interface errors
+    @@panic_on_interface_error : Bool = false
+
+    def self.panic_on_interface_error; @@panic_on_interface_error; end
+    def self.panic_on_interface_error=(v); @@panic_on_interface_error = v; end
+
     # Default paths — overridden by Reticulum class at init time
     @@configdir : String = File.join(Path.home.to_s, ".reticulum")
     @@storagepath : String = File.join(@@configdir, "storage")

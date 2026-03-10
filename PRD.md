@@ -170,7 +170,7 @@ Crystal stdlib provides: OpenSSL (AES-256-CBC, HMAC, SHA-256/512, X25519 via EVP
 
 Read `RNS/Cryptography/` for reference. Every crypto module must have specs with known test vectors.
 
-- [ ] **2.1 — Hashes: SHA-256 and SHA-512**
+- [x] **2.1 — Hashes: SHA-256 and SHA-512**
   Create `src/rns/cryptography/hashes.cr`. Wrap Crystal's `OpenSSL::Digest` to provide `RNS::Cryptography.sha256(data : Bytes) : Bytes` and `RNS::Cryptography.sha512(data : Bytes) : Bytes`. Port the truncated hash helper used throughout RNS. Write specs using NIST test vectors from `tests/hashes.py` and add random roundtrip tests (1000+ iterations comparing against OpenSSL directly).
 
 - [ ] **2.2 — HMAC and HKDF**

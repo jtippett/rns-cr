@@ -17,3 +17,15 @@
   - Created spec/rns/log_spec.cr (33 examples)
   - Created spec/rns/utilities_spec.cr (36 examples)
   - Ran crystal spec — 80 examples, 0 failures
+
+2026-03-10 — Task 2.1: Hashes — SHA-256 and SHA-512
+  - Created src/rns/cryptography/hashes.cr — sha256(), sha512(), full_hash(), truncated_hash() wrapping OpenSSL::Digest
+  - TRUNCATED_HASHLENGTH constant (128 bits) matching Python RNS
+  - truncated_hash returns first 16 bytes of SHA-256, matching Identity.truncated_hash behavior
+  - Created spec/rns/cryptography/hashes_spec.cr (21 examples)
+    - NIST test vectors: empty, less-than-block, block-length, million-byte inputs for both SHA-256 and SHA-512
+    - 1000-iteration random roundtrip tests comparing against OpenSSL directly
+    - truncated_hash consistency and correctness tests
+    - full_hash alias verification
+  - Updated src/rns.cr to require cryptography/hashes
+  - Ran crystal spec — 101 examples, 0 failures

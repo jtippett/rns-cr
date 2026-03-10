@@ -257,7 +257,7 @@ This is the largest module (3312 LOC). Split into manageable sub-modules.
 - [x] **7.6 — Serial interface**
   Port `RNS/Interfaces/SerialInterface.py` (227 LOC) → `src/rns/interfaces/serial_interface.cr`. Implement `SerialInterface` for generic serial port communication. Use HDLC framing over serial. Handle baud rate configuration, port opening/closing, read/write with proper byte-level handling. Note: may need to add `serialport` shard dependency or use direct POSIX termios bindings. Write specs: HDLC framing roundtrip (can test without hardware using IO pipes).
 
-- [ ] **7.7 — KISS and AX.25 KISS interfaces**
+- [x] **7.7 — KISS and AX.25 KISS interfaces**
   Port `RNS/Interfaces/KISSInterface.py` (387 LOC) → `src/rns/interfaces/kiss_interface.cr`. Port `RNS/Interfaces/AX25KISSInterface.py` (400 LOC) → `src/rns/interfaces/ax25_kiss_interface.cr`. Implement KISS protocol framing: FEND (0xC0), FESC (0xDB), TFEND (0xDC), TFESC (0xDD), command bytes. AX.25 adds amateur radio addressing (callsigns, SSIDs) on top of KISS. Write specs: KISS frame encoding/decoding, AX.25 address formatting, roundtrip framing.
 
 - [ ] **7.8 — Backbone interface**

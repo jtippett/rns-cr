@@ -60,8 +60,16 @@ module RNS
     FESC    = 0xDB_u8
     TFEND   = 0xDC_u8
     TFESC   = 0xDD_u8
-    CMD_DATA    = 0x00_u8
-    CMD_UNKNOWN = 0xFE_u8
+    CMD_DATA       = 0x00_u8
+    CMD_TXDELAY    = 0x01_u8
+    CMD_P          = 0x02_u8
+    CMD_SLOTTIME   = 0x03_u8
+    CMD_TXTAIL     = 0x04_u8
+    CMD_FULLDUPLEX = 0x05_u8
+    CMD_SETHARDWARE = 0x06_u8
+    CMD_READY      = 0x0F_u8
+    CMD_UNKNOWN    = 0xFE_u8
+    CMD_RETURN     = 0xFF_u8
 
     def self.escape(data : Bytes) : Bytes
       io = IO::Memory.new(data.size)

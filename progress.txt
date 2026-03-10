@@ -1190,3 +1190,75 @@
     - get_hash consistency
     - Stress test: 1000 random packets through HDLC state machine
   - Ran crystal spec — 1640 examples, 0 failures, 5 pending (pre-existing)
+
+2026-03-11 — Task 7.7: KISS and AX.25 KISS interfaces
+  - Added extended KISS command constants to existing KISS module in interface.cr:
+    - CMD_TXDELAY (0x01), CMD_P (0x02), CMD_SLOTTIME (0x03), CMD_TXTAIL (0x04),
+      CMD_FULLDUPLEX (0x05), CMD_SETHARDWARE (0x06), CMD_READY (0x0F), CMD_RETURN (0xFF)
+  - Created src/rns/interfaces/kiss_interface.cr porting RNS/Interfaces/KISSInterface.py (387 LOC)
+    - KISSInterface class inheriting from Interface
+    - Constants: MAX_CHUNK=32768, BITRATE_GUESS=1200, DEFAULT_IFAC_SIZE=8, HW_MTU=564
+    - Serial port management via POSIX termios (reuses LibSerial/SerialConstants from serial_interface)
+    - KISS TNC configuration: set_preamble, set_tx_tail, set_persistence, set_slot_time, set_flow_control
+    - KISS-framed read loop with byte-by-byte parsing, FEND/FESC/TFEND/TFESC escape handling
+    - Port nibble stripping (supports multi-port TNCs)
+    - CMD_READY flow control: interface_ready flag, packet queue, flow_control_timeout
+    - Beacon/identification support: beacon_interval, beacon_data, first_tx tracking,
+      minimum 15-byte padding for beacon frames
+    - Reconnection on serial port errors (5-second retry interval)
+    - process_outgoing with KISS framing via KISS.frame()
+    - process_incoming with rxb tracking and callback invocation
+    - should_ingress_limit? always returns false
+    - Pipe-based testing support via serial_io accessor
+  - Created src/rns/interfaces/ax25_kiss_interface.cr porting RNS/Interfaces/AX25KISSInterface.py (400 LOC)
+    - AX25 module with protocol constants:
+      - PID_NOLAYER3 (0xF0), CTRL_UI (0x03), CRC_CORRECT, HEADER_SIZE (16)
+      - encode_call(): AX.25 address encoding (6-char shifted callsign + SSID byte)
+      - build_header(): constructs 16-byte AX.25 header (dst + src + CTRL + PID)
+    - AX25KISSInterface class inheriting from Interface
+    - Same serial port/KISS TNC management as KISSInterface
+    - AX.25 addressing: src_call, src_ssid, dst_call ("APZRNS"), dst_ssid
+    - Callsign validation: 3-6 chars, uppercase, SSID 0-15
+    - process_outgoing: builds AX.25 header + data, then KISS frames the combined payload
+    - process_incoming: strips 16-byte AX.25 header, rejects frames <= HEADER_SIZE
+    - KISS read loop with MTU limit adjusted for AX.25 header (HW_MTU + HEADER_SIZE)
+    - Flow control, reconnection, same patterns as KISSInterface
+  - Updated src/rns.cr to require kiss_interface and ax25_kiss_interface
+  - Created spec/rns/interfaces/kiss_interface_spec.cr (99 examples)
+    - KISS extended constants: all 14 command constants (1 test)
+    - KISS escape: FEND, FESC, both, empty, no special bytes (5 tests)
+    - KISS unescape: TFEND, TFESC, both (3 tests)
+    - KISS frame: wrapping, escaping, 100 random roundtrips (3 tests)
+    - KISSInterface constants: MAX_CHUNK, BITRATE_GUESS, IFAC_SIZE, parity symbols (2 tests)
+    - Constructor: defaults, custom KISS params, flow control, beacon config, parity parsing (5 tests)
+    - Config hash: missing port error, config key parsing (2 tests)
+    - should_ingress_limit? always false (1 test)
+    - to_s formatting (1 test)
+    - Interface base class: inheritance, counters, HW_MTU, hash (4 tests)
+    - Teardown/detach (2 tests)
+    - process_outgoing: offline guard, queue when not ready (2 tests)
+    - process_incoming: rxb tracking, callback (1 test)
+    - Flow control: queue, process_queue pop, process_queue sets ready (3 tests)
+    - KISS frame encoding: data, FEND escape, FESC escape (3 tests)
+    - KISS read loop: single frame, multiple frames, special bytes, CMD_READY,
+      port nibble stripping, MTU limit, 100 random roundtrips (7 tests)
+    - KISS command encoding: preamble, txtail, persistence, slottime, clamping (5 tests)
+    - Beacon: config storage, first_tx nil, tracking (3 tests)
+    - Pipe I/O: KISS framed send, escaped send (2 tests)
+    - Stress: 1000 random KISS state machine roundtrips (1 test)
+    - AX25 constants (1 test)
+    - AX25 encode_call: 6-char, short padding, last bit, no last bit (4 tests)
+    - AX25 build_header: size, dst/src order, CTRL/PID, last bit, Python encoding match (5 tests)
+    - AX25KISSInterface constants (1 test)
+    - Constructor: defaults, uppercase, callsign min/max, SSID range, all SSIDs,
+      custom KISS params, parity parsing (8 tests)
+    - Config hash: missing port error (1 test)
+    - should_ingress_limit?, to_s, base class, counters, hash (5 tests)
+    - Teardown/detach (2 tests)
+    - process_incoming: header stripping, short frame rejection, exact header rejection (3 tests)
+    - process_outgoing: offline guard, queue, AX.25 header + KISS framing via pipe (3 tests)
+    - Flow control: queue, process_queue (2 tests)
+    - AX.25 KISS read loop: header stripping, header-only rejection (2 tests)
+    - AX.25 address formatting: dst callsign, default destination (2 tests)
+    - Stress: 100 AX.25 KISS pipeline roundtrips, 20 interfaces with valid callsigns (2 tests)
+  - Ran crystal spec — 1739 examples, 0 failures, 5 pending (pre-existing)

@@ -33,6 +33,8 @@ require "./rns/interfaces/local_interface"
 require "./rns/interfaces/netinfo"
 require "./rns/interfaces/auto_interface"
 require "./rns/interfaces/serial_interface"
+require "./rns/interfaces/kiss_interface"
+require "./rns/interfaces/ax25_kiss_interface"
 
 module RNS
   def self.version : String

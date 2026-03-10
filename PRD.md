@@ -209,7 +209,7 @@ This is the largest module (3312 LOC). Split into manageable sub-modules.
 - [x] **4.2 — Transport announce handling**
   Create `src/rns/transport/announce_handler.cr`. Port announce processing from `RNS/Transport.py`: `inbound_announce(raw, packet, interface)`, `outbound_announce(announce)`, `process_announce_queue(interface)`, `should_forward_announce(announce, interface)`, `mark_path_unknown_for_destination(destination_hash)`, rate limiting logic, announce deduplication, announce validation. Handle the announce table: entry creation, expiry, retransmission timing. Handle path responses. Write specs: announce validation, rate limiting, deduplication, forwarding decisions.
 
-- [ ] **4.3 — Transport packet routing and delivery**
+- [x] **4.3 — Transport packet routing and delivery**
   Complete `src/rns/transport.cr` with packet routing: `inbound(raw, interface)`, `outbound(packet)`, `forward(packet)`, `transmit(interface, raw)`, `internal_inbound(raw, interface)`. Implement link management: `register_link(link)`, `activate_link(link)`, `find_link_for_request_packet(packet)`, `find_best_link(destination_hash)`. Implement tunnel management in `src/rns/transport/tunnel_management.cr`: `register_tunnel(tunnel_id, interface)`, `tunnel_synthesize_handler()`. Implement the transport job loop: `jobs_locked`, periodic path/link/receipt expiry, cache cleaning. Write specs: packet routing decisions, link registration, receipt handling.
 
 - [ ] **4.4 — Transport caching and persistence**

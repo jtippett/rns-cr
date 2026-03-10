@@ -431,3 +431,22 @@
       cache cleanup preserves active paths
     - Stress: 50 different announces, 20 processing cycles drain all, 30 rapid rate checks
   - Ran crystal spec — 714 examples, 0 failures
+
+2026-03-10 — Task 4.3: Transport packet routing and delivery
+  - Created src/rns/link_like.cr with LinkLike abstract module and LinkStub test implementation
+    - Constants: PENDING, HANDSHAKE, ACTIVE, STALE, CLOSED, STALE_TIME, ESTABLISHMENT_TIMEOUT_PER_HOP
+    - Abstract methods: link_id, initiator?, status, status=, destination_hash, expected_hops, attached_interface
+  - Updated src/rns/transport.cr with full packet routing implementation:
+    - Link management: register_link, activate_link, find_link_for_destination, find_best_link
+    - Transmit: records to transmit_log for test verification, updates traffic_txb
+    - Outbound: full routing via path_table (multi-hop HEADER_2, direct HEADER_1), broadcast fallback
+    - Inbound: IFAC stub, unpack, hop increment, packet_filter, plain broadcast, transport forwarding,
+      link transport handling, announce processing, link request delivery, proof handling
+    - Jobs loop: link cleanup, receipt culling, table culling, blackhole expiry, hashlist management
+    - Helpers: mark_packet_sent, cull_tables, cull_blackholes, is_local_client_interface, from_local_client
+  - Extended src/rns/transport/tunnel_management.cr:
+    - handle_tunnel, void_tunnel_interface, tunnel_synthesize_handler, synthesize_tunnel_data
+  - Created spec/rns/transport/packet_routing_spec.cr with 76 test examples covering:
+    - LinkLike constants and LinkStub, link management, transmit, outbound routing, inbound pipeline,
+      transport forwarding, tunnel management, jobs loop, proof routing, transport flags, stress tests
+  - Ran crystal spec — 790 examples, 0 failures

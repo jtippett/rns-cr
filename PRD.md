@@ -173,7 +173,7 @@ Read `RNS/Cryptography/` for reference. Every crypto module must have specs with
 - [x] **2.1 — Hashes: SHA-256 and SHA-512**
   Create `src/rns/cryptography/hashes.cr`. Wrap Crystal's `OpenSSL::Digest` to provide `RNS::Cryptography.sha256(data : Bytes) : Bytes` and `RNS::Cryptography.sha512(data : Bytes) : Bytes`. Port the truncated hash helper used throughout RNS. Write specs using NIST test vectors from `tests/hashes.py` and add random roundtrip tests (1000+ iterations comparing against OpenSSL directly).
 
-- [ ] **2.2 — HMAC and HKDF**
+- [x] **2.2 — HMAC and HKDF**
   Create `src/rns/cryptography/hmac.cr` wrapping `OpenSSL::HMAC` to provide `RNS::Cryptography::HMAC.digest(key, data, algorithm)`. Create `src/rns/cryptography/hkdf.cr` using the `hkdf` shard (spider-gazelle/HKDF) to provide `RNS::Cryptography::HKDF.derive_key(ikm, length, salt, info)`. Match the Python HKDF interface exactly — read `RNS/Cryptography/HKDF.py`. Write specs with RFC 5869 test vectors.
 
 - [ ] **2.3 — PKCS7 padding and AES-256-CBC**

@@ -3,6 +3,8 @@ require "./rns/vendor/platform_utils"
 require "./rns/log"
 require "./rns/utilities"
 require "./rns/cryptography/hashes"
+require "./rns/cryptography/hmac"
+require "./rns/cryptography/hkdf"
 
 module RNS
   def self.version : String

@@ -29,3 +29,25 @@
     - full_hash alias verification
   - Updated src/rns.cr to require cryptography/hashes
   - Ran crystal spec — 101 examples, 0 failures
+
+2026-03-10 — Task 2.2: HMAC and HKDF
+  - Created src/rns/cryptography/hmac.cr — HMAC class wrapping OpenSSL::HMAC
+    - HMAC.new(key, msg) with .update(), .digest(), .hexdigest() matching Python API
+    - HMAC.digest(key, data) class method for fast inline HMAC-SHA256
+    - Supports incremental updates and non-destructive digest calls
+  - Created src/rns/cryptography/hkdf.cr — hkdf() function matching Python RNS exactly
+    - Self-contained HKDF-SHA256 implementation (extract-then-expand)
+    - Signature: hkdf(length, derive_from, salt, context) matching Python parameter names
+    - Handles nil/empty salt (defaults to 32 zero bytes) and nil context (defaults to empty)
+    - Input validation: raises ArgumentError for invalid length or empty derive_from
+  - Created spec/rns/cryptography/hmac_spec.cr (16 examples)
+    - RFC 4231 test vectors (Cases 1-4, 6, 7) for HMAC-SHA256
+    - Object API tests: new, update, digest, hexdigest, incremental updates
+    - 100-iteration random roundtrip tests comparing against OpenSSL::HMAC directly
+  - Created spec/rns/cryptography/hkdf_spec.cr (15 examples)
+    - RFC 5869 test vectors (Cases 1-3) for HKDF-SHA256
+    - Nil/empty salt and context handling tests
+    - Input validation tests (invalid length, empty derive_from)
+    - Determinism, output length, and cross-verification against manual HMAC computation
+  - Updated src/rns.cr to require cryptography/hmac and cryptography/hkdf
+  - Ran crystal spec — 132 examples, 0 failures

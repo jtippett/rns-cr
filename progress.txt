@@ -688,3 +688,53 @@
     - prove_packet: creates proof with signature (1 test)
     - Stress: 50 resource register/conclude cycles, concurrent link creation (2 tests)
   - Ran crystal spec — 1094 examples, 0 failures, 5 pending
+
+2026-03-11 — Task 5.4: Resource module
+  - Created src/rns/vendor/bz2.cr — BZip2 FFI wrapper for wire-compatible compression
+    - Links against system libbz2 via @[Link("bz2")]
+    - RNS::BZip2.compress(data) with block_size_100k=9 matching Python bz2.compress default
+    - RNS::BZip2.decompress(data) with auto-growing buffer (doubles on BZ_OUTBUFF_FULL, max 256MB)
+  - Created src/rns/resource.cr (~900 LOC) porting RNS/Resource.py (1361 LOC)
+    - Resource class with all constants matching Python exactly:
+      - Window: WINDOW=4, WINDOW_MIN=2, WINDOW_MAX_SLOW=10, WINDOW_MAX_VERY_SLOW=4, WINDOW_MAX_FAST=75
+      - Rate: RATE_FAST=6250, RATE_VERY_SLOW=250
+      - Size: SDU=Packet::MDU, MAPHASH_LEN=4, RANDOM_HASH_SIZE=4, MAX_EFFICIENT_SIZE=1048575
+      - Timeout: PART_TIMEOUT_FACTOR=4, PART_TIMEOUT_FACTOR_AFTER_RTT=2, PROOF_TIMEOUT_FACTOR=3,
+        MAX_RETRIES=16, MAX_ADV_RETRIES=4, SENDER_GRACE_TIME=10.0
+      - Status: STATUS_NONE through CORRUPT (0x00-0x08)
+    - Sender construction: data → metadata combine → bz2 compress → random_hash prefix →
+      link.encrypt_data → split into SDU-sized parts with hashmap collision guard
+    - Receiver via Resource.accept() static method and new_receiver protected constructor
+    - Full lifecycle methods: advertise, watchdog_job, request_next, request, receive_part,
+      assemble, prove, validate_proof, cancel, _rejected, get_progress, update_eifr
+    - Adaptive windowing: FAST/SLOW/VERY_SLOW rate adaptation based on RTT measurements
+    - Watchdog fiber for timeout management (replaces Python threading.Thread)
+    - Window management with flexibility scaling
+    - Hashmap-based part verification with collision detection
+  - ResourceAdvertisement class with pack/unpack using MessagePack
+    - Flag encoding (6 bits: encrypted, compressed, split, is_request, is_response, has_metadata)
+    - HASHMAP_MAX_LEN computed from Link::MDU and advertisement overhead
+    - Constants: OVERHEAD=108, TRANSFER_OVERHEAD=4
+  - Updated src/rns/reticulum.cr — added class-level path constants:
+    - @@configdir, @@storagepath, @@cachepath, @@resourcepath with getters/setters
+  - Updated src/rns.cr — added requires for vendor/bz2 and resource modules
+  - Updated src/rns/transport.cr — changed cache_request parameter type from
+    Destination to Destination::DestinationInterface (allows Link objects)
+  - Created spec/rns/resource_spec.cr (77 examples)
+    - BZip2: empty, small, large, repetitive data, 50 random roundtrips
+    - Resource constants: window (9), rate (2), size (6), timeout (10), hashmap (2), status (9)
+    - Sender construction: 13 tests — creation, hashes, compression, parts, SDU, timeout, request_id
+    - get_map_hash: size, uniqueness, determinism
+    - Progress: initial, complete, partial, segment, transfer_size, data_size, parts, segments
+    - Cancel: status, callback, already-complete
+    - _rejected: initiator, non-initiator
+    - Callbacks: progress, concluded
+    - Window management: initial_window, window_max, flexibility
+    - validate_proof: correct, incorrect, failed, callback
+    - EIFR: initial, update, update_eifr
+    - hashmap_update: updates height, maps parts
+    - Stress: 20 resources, 10 proof validations
+    - ResourceAdvertisement: constants (3), pack/unpack (6), flag encoding (5), stress (1)
+    - Reticulum paths: configdir, storagepath, resourcepath
+    - to_s representation
+  - Ran crystal spec — 1171 examples, 0 failures, 5 pending

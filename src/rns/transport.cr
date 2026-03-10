@@ -1491,7 +1491,7 @@ module RNS
     end
 
     # Requests a cached packet either from local cache or from the network.
-    def self.cache_request(packet_hash : Bytes, destination : Destination)
+    def self.cache_request(packet_hash : Bytes, destination : Destination::DestinationInterface)
       cached_packet = get_cached_packet(packet_hash)
       if cached_packet
         cached_raw = cached_packet.raw

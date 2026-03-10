@@ -20,8 +20,10 @@ require "./rns/transport/tunnel_management"
 require "./rns/destination"
 require "./rns/identity"
 require "./rns/packet"
+require "./rns/vendor/bz2"
 require "./rns/channel"
 require "./rns/link"
+require "./rns/resource"
 
 module RNS
   def self.version : String

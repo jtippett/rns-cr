@@ -283,7 +283,7 @@ This is the largest module (3312 LOC). Split into manageable sub-modules.
 - [x] **8.2 — Reticulum main class — initialization and configuration**
   Port `RNS/Reticulum.py` (1716 LOC, part 1) → `src/rns/reticulum.cr`. Implement `Reticulum` class as singleton. Handle: configuration directory detection (`~/.reticulum/` or custom), config file parsing, storage/cache/resource path management. Constants: `MAX_QUEUED_ANNOUNCES`, connection modes. Implement `initialize(configdir, loglevel, logdest, verbosity)`: load config, set up paths, initialize Identity known destinations, start Transport. Implement `create_default_config()`. Write specs: initialization, path management, default config generation.
 
-- [ ] **8.3 — Reticulum main class — interface instantiation and lifecycle**
+- [x] **8.3 — Reticulum main class — interface instantiation and lifecycle**
   Complete `src/rns/reticulum.cr`. Implement interface instantiation from config: for each `[[interface_name]]` section, determine type and create the appropriate Interface subclass with parsed configuration. Implement `start_local_interface()`, `start_remote_interface()`. Implement exit handler: `exit_handler()` — save state (path tables, known destinations, packet hashlist), teardown interfaces, stop Transport. Wire `at_exit` hook. Handle shared instance mode (daemon). Write specs: interface instantiation from config, exit handler saves state.
 
 - [ ] **8.4 — Discovery module**

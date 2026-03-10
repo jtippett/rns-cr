@@ -1619,3 +1619,126 @@
     - Programmatic config setting and section creation
   - Updated src/rns.cr to require vendor/config_obj
   - Ran crystal spec — 2181 examples (51 new), 0 failures in config_obj specs
+
+2026-03-11 — Task 8.2: Reticulum main class — initialization and configuration
+  - Ported RNS/Reticulum.py (1716 LOC, part 1) → src/rns/reticulum.cr (~870 LOC)
+  - Reticulum module with all protocol constants matching Python exactly:
+    - MTU=500, LINK_MTU_DISCOVERY=true, MAX_QUEUED_ANNOUNCES=16384,
+      QUEUED_ANNOUNCE_LIFE=86400, ANNOUNCE_CAP=2, MINIMUM_BITRATE=5,
+      DEFAULT_PER_HOP_TIMEOUT=6, TRUNCATED_HASHLENGTH=128
+    - HEADER_MINSIZE=19, HEADER_MAXSIZE=35, IFAC_MIN_SIZE=1, MDU=464
+    - IFAC_SALT (32 bytes matching Python hex exactly)
+    - Time intervals: RESOURCE_CACHE=86400, JOB_INTERVAL=300, CLEAN_INTERVAL=900,
+      PERSIST_INTERVAL=43200, GRACIOUS_PERSIST_INTERVAL=300
+    - Default ports: DEFAULT_LOCAL_INTERFACE_PORT=37428, DEFAULT_LOCAL_CONTROL_PORT=37429
+  - Singleton management: @@instance, get_instance, reset_instance!, class_set_instance
+  - Configuration directory detection (4-level priority matching Python):
+    1. Explicit configdir parameter
+    2. /etc/reticulum (if dir + config file exist)
+    3. ~/.config/reticulum (if dir + config file exist)
+    4. ~/.reticulum (fallback)
+  - Path management: configdir, configpath, storagepath, cachepath, resourcepath,
+    identitypath, blackholepath, interfacepath — all with class-level getters/setters
+  - Directory creation: storage, cache, resources, identities, blackhole, interfaces,
+    cache/announces subdirectories created at initialization
+  - ReticulumInstance class with full initialization sequence:
+    - Singleton guard (raises on double-init)
+    - Log destination configuration (LOG_FILE, LOG_CALLBACK)
+    - Loglevel clamping (0-7), verbosity additive to config loglevel
+    - Config loading from file via ConfigObj, or default config creation
+    - apply_config: parses [logging] and [reticulum] sections
+  - Config parsing for all reticulum options:
+    - share_instance, instance_name, shared_instance_type, shared_instance_port,
+      instance_control_port, rpc_key (hex), enable_transport, network_identity,
+      link_mtu_discovery, enable_remote_management, remote_management_allowed (ACL),
+      respond_to_probes, force_shared_instance_bitrate, panic_on_interface_error,
+      use_implicit_proof, discover_interfaces, required_discovery_value,
+      publish_blackhole, blackhole_sources, interface_discovery_sources,
+      autoconnect_discovered_interfaces
+  - AF_UNIX vs TCP determination matching Python platform logic
+  - Default config template (DEFAULT_RNS_CONFIG) matching Python's __default_rns_config__
+    with [reticulum], [logging], and [interfaces] sections including Default Interface
+  - start_local_interface: shared instance (LocalServerInterface) / client
+    (LocalClientInterface) / standalone mode with proper fallback chain
+  - Background jobs fiber: periodic cache cleaning and data persistence
+  - Cache cleaning: resource cache (RESOURCE_CACHE expiry) and packet cache
+    (DESTINATION_TIMEOUT expiry) with file modification time checks
+  - Exit handler: detach_interfaces, Transport.exit_handler, Identity.exit_handler
+  - Signal handlers: SIGINT, SIGTERM → detach interfaces
+  - Static accessors for all class-level flags: transport_enabled?, link_mtu_discovery?,
+    remote_management_enabled?, should_use_implicit_proof?, probe_destination_enabled?,
+    discovery_enabled?, discover_interfaces?, required_discovery_value,
+    publish_blackhole_enabled?, blackhole_sources, interface_discovery_sources,
+    should_autoconnect_discovered_interfaces?, max_autoconnected_interfaces
+  - Added Transport stubs: detach_interfaces, remote_management_allowed (with dedup),
+    add_remote_management_allowed, cleared in reset
+  - Added Identity.try_clean_ratchets stub
+  - Created spec/rns/reticulum_spec.cr (106 examples)
+    - Protocol constants (13 tests): MTU, LINK_MTU_DISCOVERY, MAX_QUEUED_ANNOUNCES,
+      QUEUED_ANNOUNCE_LIFE, ANNOUNCE_CAP, MINIMUM_BITRATE, DEFAULT_PER_HOP_TIMEOUT,
+      TRUNCATED_HASHLENGTH, HEADER_MINSIZE, HEADER_MAXSIZE, IFAC_MIN_SIZE, MDU, IFAC_SALT
+    - Time intervals (5 tests): RESOURCE_CACHE, JOB_INTERVAL, CLEAN_INTERVAL,
+      PERSIST_INTERVAL, GRACIOUS_PERSIST_INTERVAL
+    - Default ports (2 tests)
+    - Path management (4 tests): default, set/read, all accessors, mutation
+    - Singleton management (2 tests): nil after reset, reset clears state
+    - Static accessors (18 tests): all flags with defaults and set/get
+    - Default config template (14 tests): lines, sections, values, ConfigObj parsing,
+      reticulum/logging/interfaces content, Default Interface subsection
+    - Default config file I/O (2 tests): write to disk, read back
+    - Config parsing (25 tests): loglevel, verbosity, clamping, share_instance,
+      shared_instance_port, instance_control_port, enable_transport,
+      panic_on_interface_error, use_implicit_proof, discover_interfaces,
+      required_discovery_value, publish_blackhole, force_shared_instance_bitrate,
+      shared_instance_type, respond_to_probes, enable_remote_management,
+      autoconnect_discovered_interfaces, AF_UNIX/TCP, local_socket_path,
+      instance_name, rpc_key valid/invalid, empty config
+    - Full initialization (7 tests): directory creation, singleton rejection,
+      default config creation, standalone mode, loglevel from config/override/clamp
+    - Exit handler (3 tests): runs, idempotent, signal handlers
+    - Transport stubs (3 tests): add/dedup remote management, detach_interfaces
+    - Stress (3 tests): 20 configs, 50 resets, 30 default config parses
+  - Ran crystal spec — 2287 examples, 0 failures, 5 pending (pre-existing)
+
+2026-03-11 — Task 8.3: Reticulum main class — interface instantiation and lifecycle
+  - Implemented interface instantiation from config in src/rns/reticulum.cr:
+    - start_system_interfaces: iterates [[interface_name]] sections, detects duplicates
+    - synthesize_interface: parses all config parameters (mode, IFAC, ingress control,
+      bitrate, announce rate, discovery settings), instantiates correct Interface subclass
+    - interface_post_init: applies post-creation config (mode, bitrate, IFAC key derivation,
+      announce rate, ingress control, discovery properties), registers with Transport
+    - Supports all 14 interface types: AutoInterface, BackboneInterface,
+      BackboneClientInterface, UDPInterface, TCPServerInterface, TCPClientInterface,
+      I2PInterface, SerialInterface, PipeInterface, KISSInterface, AX25KISSInterface,
+      RNodeInterface, RNodeMultiInterface, WeaveInterface
+    - BackboneInterface config alias normalization (port→listen_port/target_port, remote→target_host)
+    - I2PInterface gets storagepath/ifac_netname/ifac_netkey/ifac_size injected
+    - RNodeMultiInterface gets start() called after post_init
+  - Implemented add_interface public API method for programmatic interface addition
+    (matching Python's _add_interface), including IFAC key derivation
+  - Implemented should_persist_data? helper using GRACIOUS_PERSIST_INTERVAL
+  - Added 12 discovery properties to Interface base class: discovery_announce_interval,
+    discovery_publish_ifac, reachable_on, discovery_name, discovery_encrypt,
+    discovery_stamp_value, discovery_latitude/longitude/height,
+    discovery_frequency/bandwidth/modulation
+  - Added ConfigObj::Section#to_string_hash for converting config sections to Hash(String, String)
+  - Fixed pre-existing compilation issues:
+    - I2PInterface: nilable ifac_size assignment, nilable transport_identity.hash
+    - RNodeMultiInterface: Crystal 1.19.1 compiler bug with .try blocks inside
+      while+rescue (refactored to if-checks), missing dir_out/dir_in on RNodeSubInterface,
+      nilable hw_mtu comparison, RNS.hexrep(byte) type mismatch
+    - WeaveInterface/RNodeMultiInterface: LibC::O_NOCTTY, cfsetispeed/cfsetospeed/tcflush
+      and VMIN/VTIME/CS8/CREAD/CLOCAL not in Crystal LibC (use LibSerial/SerialConstants)
+    - WeaveInterface: Slice copy_to argument mismatch
+  - Added 25 new specs to spec/rns/reticulum_spec.cr covering:
+    - Interface instantiation from config: mode constants, disabled interfaces, duplicate
+      names, unknown types, IFAC settings, announce rate settings, interface mode parsing,
+      bitrate config, discovery settings, ingress control, bootstrap_configs tracking
+    - interface_post_init: DEFAULT_IFAC_SIZE verification across all interface types
+    - add_interface API: shared instance guard, should_persist_data? timing
+    - Exit handler: safe calls, idempotent, signal handlers
+    - ConfigObj::Section#to_string_hash: conversion and non-string filtering
+    - Interface discovery properties: defaults and setters on base class
+    - start_system_interfaces: no interfaces section, empty section, discovery flag
+  - Ran crystal spec — 2312 examples, 0 failures, 1 error (pre-existing UDP port bind),
+    5 pending

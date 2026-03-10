@@ -508,7 +508,7 @@ module RNS
           if dsz > @display_buffer.size
             @display_buffer = Bytes.new(dsz.to_i32)
           end
-          fbf.copy_to(@display_buffer + ofs.to_i32, fbf.size)
+          fbf.copy_to(@display_buffer[ofs.to_i32, fbf.size])
         end
       end
     end
@@ -644,13 +644,13 @@ module RNS
       termios.c_iflag = LibC::TcflagT.new(0)
       termios.c_oflag = LibC::TcflagT.new(0)
       termios.c_lflag = LibC::TcflagT.new(0)
-      termios.c_cflag = LibC::CS8 | LibC::CREAD | LibC::CLOCAL
-      LibC.cfsetispeed(pointerof(termios), LibC::B115200) # Fallback; actual speed set per platform
-      LibC.cfsetospeed(pointerof(termios), LibC::B115200)
-      termios.c_cc[LibC::VMIN] = 0_u8
-      termios.c_cc[LibC::VTIME] = 0_u8
+      termios.c_cflag = LibC::TcflagT.new(SerialConstants::CS8 | SerialConstants::CREAD | SerialConstants::CLOCAL)
+      LibSerial.cfsetispeed(pointerof(termios).as(Void*), SerialConstants::B115200)
+      LibSerial.cfsetospeed(pointerof(termios).as(Void*), SerialConstants::B115200)
+      termios.c_cc[SerialConstants::VMIN] = 0_u8
+      termios.c_cc[SerialConstants::VTIME] = 0_u8
       LibC.tcsetattr(fd, LibC::TCSANOW, pointerof(termios))
-      LibC.tcflush(fd, LibC::TCIOFLUSH)
+      LibSerial.tcflush(fd, SerialConstants::TCIOFLUSH)
     end
 
     def close

@@ -248,8 +248,9 @@ module RNS
       i2p_keyfile_of = File.join(@storagepath, RNS.hexrep(i2p_dest_hash_of, delimit: false) + ".i2p")
 
       # New format key path
+      ti_hash = transport_identity.hash || Bytes.new(0)
       i2p_dest_hash_nf = Identity.full_hash(
-        Identity.full_hash(owner.name.to_slice) + Identity.full_hash(transport_identity.hash)
+        Identity.full_hash(owner.name.to_slice) + Identity.full_hash(ti_hash)
       )
       i2p_keyfile_nf = File.join(@storagepath, RNS.hexrep(i2p_dest_hash_nf, delimit: false) + ".i2p")
 
@@ -979,7 +980,7 @@ module RNS
       @dir_in = true
       @dir_out = false
       @bitrate = BITRATE_GUESS
-      @ifac_size = ifac_size
+      @ifac_size = ifac_size || DEFAULT_IFAC_SIZE
       @ifac_netname = ifac_netname
       @ifac_netkey = ifac_netkey
       @supports_discovery = true

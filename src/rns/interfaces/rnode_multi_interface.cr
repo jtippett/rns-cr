@@ -299,18 +299,18 @@ module RNS
       termios.c_lflag = LibC::TcflagT.new(0)
 
       # 8N1
-      termios.c_cflag = LibC::CS8 | LibC::CREAD | LibC::CLOCAL
+      termios.c_cflag = LibC::TcflagT.new(SerialConstants::CS8 | SerialConstants::CREAD | SerialConstants::CLOCAL)
 
       # Speed 115200
-      LibC.cfsetispeed(pointerof(termios), LibC::B115200)
-      LibC.cfsetospeed(pointerof(termios), LibC::B115200)
+      LibSerial.cfsetispeed(pointerof(termios).as(Void*), SerialConstants::B115200)
+      LibSerial.cfsetospeed(pointerof(termios).as(Void*), SerialConstants::B115200)
 
       # Non-blocking
-      termios.c_cc[LibC::VMIN] = 0_u8
-      termios.c_cc[LibC::VTIME] = 0_u8
+      termios.c_cc[SerialConstants::VMIN] = 0_u8
+      termios.c_cc[SerialConstants::VTIME] = 0_u8
 
       LibC.tcsetattr(fd, LibC::TCSANOW, pointerof(termios))
-      LibC.tcflush(fd, LibC::TCIOFLUSH)
+      LibSerial.tcflush(fd, SerialConstants::TCIOFLUSH)
     end
 
     def configure_device
@@ -551,7 +551,7 @@ module RNS
               command = RNodeMultiKISS::CMD_UNKNOWN
               data_buffer = IO::Memory.new(512)
               command_buffer = IO::Memory.new(16)
-            elsif in_frame && data_buffer.size < @hw_mtu
+            elsif in_frame && data_buffer.size < (@hw_mtu || Reticulum::MTU)
               if data_buffer.size == 0 && command == RNodeMultiKISS::CMD_UNKNOWN
                 command = byte
               elsif RNodeMultiKISS.is_data_cmd?(command)
@@ -597,31 +597,33 @@ module RNS
                 @selected_index = byte.to_i32
               elsif command == RNodeMultiKISS::CMD_TXPOWER
                 txp = byte > 127 ? byte.to_i32 - 256 : byte.to_i32
-                @subinterfaces[@selected_index]?.try do |subint|
+                if (subint = @subinterfaces[@selected_index]?)
                   subint.r_txpower = txp
                   RNS.log("#{subint} Radio reporting TX power is #{subint.r_txpower} dBm", RNS::LOG_DEBUG)
                 end
               elsif command == RNodeMultiKISS::CMD_SF
-                @subinterfaces[@selected_index]?.try do |subint|
+                if (subint = @subinterfaces[@selected_index]?)
                   subint.r_sf = byte.to_i32
                   RNS.log("#{subint} Radio reporting spreading factor is #{subint.r_sf}", RNS::LOG_DEBUG)
                   subint.update_bitrate
                 end
               elsif command == RNodeMultiKISS::CMD_CR
-                @subinterfaces[@selected_index]?.try do |subint|
+                if (subint = @subinterfaces[@selected_index]?)
                   subint.r_cr = byte.to_i32
                   RNS.log("#{subint} Radio reporting coding rate is #{subint.r_cr}", RNS::LOG_DEBUG)
                   subint.update_bitrate
                 end
               elsif command == RNodeMultiKISS::CMD_RADIO_STATE
-                @subinterfaces[@selected_index]?.try do |subint|
+                if (subint = @subinterfaces[@selected_index]?)
                   subint.r_state = byte
                   unless subint.r_state == RNodeMultiKISS::RADIO_STATE_ON
                     RNS.log("#{subint} Radio reporting state is offline", RNS::LOG_DEBUG)
                   end
                 end
               elsif command == RNodeMultiKISS::CMD_RADIO_LOCK
-                @subinterfaces[@selected_index]?.try { |si| si.r_lock = byte }
+                if (si = @subinterfaces[@selected_index]?)
+                  si.r_lock = byte
+                end
               elsif command == RNodeMultiKISS::CMD_FW_VERSION
                 byte = handle_escape(byte, escape) { |e| escape = e }
                 next if escape
@@ -633,25 +635,12 @@ module RNS
                   validate_firmware
                 end
               elsif command == RNodeMultiKISS::CMD_STAT_RSSI
-                @subinterfaces[@selected_index]?.try do |subint|
+                if (subint = @subinterfaces[@selected_index]?)
                   subint.r_stat_rssi = byte.to_i32 - RNodeSubInterface::RSSI_OFFSET
                 end
               elsif command == RNodeMultiKISS::CMD_STAT_SNR
-                @subinterfaces[@selected_index]?.try do |subint|
-                  snr_raw = byte > 127 ? byte.to_i32 - 256 : byte.to_i32
-                  subint.r_stat_snr = snr_raw * 0.25
-                  begin
-                    sfs = (subint.r_sf || 7) - 7
-                    snr = subint.r_stat_snr.not_nil!
-                    q_snr_min = RNodeSubInterface::Q_SNR_MIN_BASE - sfs * RNodeSubInterface::Q_SNR_STEP
-                    q_snr_max = RNodeSubInterface::Q_SNR_MAX
-                    q_snr_span = q_snr_max - q_snr_min
-                    quality = ((snr - q_snr_min) / q_snr_span * 100).round(1)
-                    quality = 100.0 if quality > 100.0
-                    quality = 0.0 if quality < 0.0
-                    subint.r_stat_q = quality
-                  rescue
-                  end
+                if (subint = @subinterfaces[@selected_index]?)
+                  update_snr_stats(subint, byte)
                 end
               elsif command == RNodeMultiKISS::CMD_ST_ALOCK
                 byte = handle_escape(byte, escape) { |e| escape = e }
@@ -660,7 +649,7 @@ module RNS
                 if command_buffer.size == 2
                   cb = command_buffer.to_slice
                   at = cb[0].to_u32 << 8 | cb[1].to_u32
-                  @subinterfaces[@selected_index]?.try do |subint|
+                  if (subint = @subinterfaces[@selected_index]?)
                     subint.r_st_alock = at / 100.0
                     RNS.log("#{subint} Radio reporting short-term airtime limit is #{subint.r_st_alock}%", RNS::LOG_DEBUG)
                   end
@@ -672,7 +661,7 @@ module RNS
                 if command_buffer.size == 2
                   cb = command_buffer.to_slice
                   at = cb[0].to_u32 << 8 | cb[1].to_u32
-                  @subinterfaces[@selected_index]?.try do |subint|
+                  if (subint = @subinterfaces[@selected_index]?)
                     subint.r_lt_alock = at / 100.0
                     RNS.log("#{subint} Radio reporting long-term airtime limit is #{subint.r_lt_alock}%", RNS::LOG_DEBUG)
                   end
@@ -704,7 +693,7 @@ module RNS
                   prt = cb[6].to_u32 << 8 | cb[7].to_u32
                   cst = cb[8].to_u32 << 8 | cb[9].to_u32
 
-                  @subinterfaces[@selected_index]?.try do |subint|
+                  if (subint = @subinterfaces[@selected_index]?)
                     if lst != subint.r_symbol_time_ms || lsr.to_i32 != subint.r_symbol_rate || prs.to_i32 != subint.r_preamble_symbols || prt.to_i32 != subint.r_premable_time_ms || cst.to_i32 != subint.r_csma_slot_time_ms
                       subint.r_symbol_time_ms = lst
                       subint.r_symbol_rate = lsr.to_i32
@@ -725,13 +714,13 @@ module RNS
                 @mcu = byte
               elsif command == RNodeMultiKISS::CMD_ERROR
                 if byte == RNodeMultiKISS::ERROR_INITRADIO
-                  RNS.log("#{self} hardware initialisation error (code #{RNS.hexrep(byte)})", RNS::LOG_ERROR)
+                  RNS.log("#{self} hardware initialisation error (code #{byte.to_s(16)})", RNS::LOG_ERROR)
                   raise IO::Error.new("Radio initialisation failure")
                 elsif byte == RNodeMultiKISS::ERROR_TXFAILED
-                  RNS.log("#{self} hardware TX error (code #{RNS.hexrep(byte)})", RNS::LOG_ERROR)
+                  RNS.log("#{self} hardware TX error (code #{byte.to_s(16)})", RNS::LOG_ERROR)
                   raise IO::Error.new("Hardware transmit failure")
                 else
-                  RNS.log("#{self} hardware error (code #{RNS.hexrep(byte)})", RNS::LOG_ERROR)
+                  RNS.log("#{self} hardware error (code #{byte.to_s(16)})", RNS::LOG_ERROR)
                   raise IO::Error.new("Unknown hardware failure")
                 end
               elsif command == RNodeMultiKISS::CMD_RESET
@@ -882,6 +871,22 @@ module RNS
       write_serial(io.to_slice)
     end
 
+    private def update_snr_stats(subint : RNodeSubInterface, byte : UInt8)
+      snr_val = (byte > 127 ? byte.to_i32 - 256 : byte.to_i32) * 0.25
+      subint.r_stat_snr = snr_val
+      begin
+        sfs = (subint.r_sf || 7) - 7
+        q_snr_min = RNodeSubInterface::Q_SNR_MIN_BASE - sfs * RNodeSubInterface::Q_SNR_STEP
+        q_snr_max = RNodeSubInterface::Q_SNR_MAX
+        q_snr_span = q_snr_max - q_snr_min
+        quality = ((snr_val - q_snr_min) / q_snr_span * 100).round(1)
+        quality = 100.0 if quality > 100.0
+        quality = 0.0 if quality < 0.0
+        subint.r_stat_q = quality
+      rescue
+      end
+    end
+
     private def handle_escape(byte : UInt8, escape : Bool, &) : UInt8
       if byte == RNodeMultiKISS::FESC
         yield true
@@ -948,6 +953,8 @@ module RNS
     property r_premable_time_ms : Int32? = nil
     property r_csma_slot_time_ms : Int32? = nil
 
+    property dir_out : Bool = false
+    property dir_in : Bool = false
     property interface_ready : Bool = false
     property packet_queue : Array(Bytes) = [] of Bytes
     property rnode_parent : RNodeMultiInterface

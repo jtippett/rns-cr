@@ -344,6 +344,7 @@ module RNS
     property requested_loglevel : Int32?
     property requested_verbosity : Int32?
     property require_shared : Bool
+    property bootstrap_configs : Array(Hash(String, String)) = [] of Hash(String, String)
 
     def initialize(
       configdir : String? = nil,
@@ -469,6 +470,11 @@ module RNS
 
       # Start local interface
       start_local_interface
+
+      # Bring up system interfaces from config
+      if @is_shared_instance || @is_standalone_instance
+        start_system_interfaces
+      end
 
       # Start transport (loads known destinations, starts job loop)
       RNS.log("Loading known destinations...", RNS::LOG_VERBOSE)
@@ -803,6 +809,555 @@ module RNS
         @is_standalone_instance = true
         @is_connected_to_shared_instance = false
       end
+    end
+
+    # ─── System interface instantiation from config ────────────────────
+    def start_system_interfaces
+      cfg = @config
+      return unless cfg
+
+      if cfg.has_key?("interfaces")
+        interfaces_section = cfg["interfaces"]
+        if interfaces_section.is_a?(ConfigObj::Section)
+          RNS.log("Bringing up system interfaces...", RNS::LOG_VERBOSE)
+          interface_names = [] of String
+
+          interfaces_section.sections.each do |name|
+            if interface_names.includes?(name)
+              RNS.log("The interface name \"#{name}\" was already used. Check your configuration file for errors!", RNS::LOG_ERROR)
+              RNS.panic
+              next
+            end
+            interface_names << name
+
+            section = interfaces_section[name]
+            if section.is_a?(ConfigObj::Section)
+              synthesize_interface(section, name, instance_init: true)
+            end
+          end
+
+          RNS.log("System interfaces are ready", RNS::LOG_VERBOSE)
+        end
+      end
+    end
+
+    protected def synthesize_interface(config : ConfigObj::Section, name : String, instance_init : Bool = false)
+      # Parse interface mode
+      interface_mode = Interface::MODE_FULL
+
+      if config.has_key?("interface_mode")
+        mode_str = config["interface_mode"].as(String).downcase
+        interface_mode = parse_interface_mode(mode_str)
+      elsif config.has_key?("mode")
+        mode_str = config["mode"].as(String).downcase
+        interface_mode = parse_interface_mode(mode_str)
+      end
+
+      # Parse IFAC settings
+      ifac_size : Int32? = nil
+      if config.has_key?("ifac_size")
+        val = config.as_int("ifac_size")
+        ifac_size = val // 8 if val >= Reticulum::IFAC_MIN_SIZE * 8
+      end
+
+      ifac_netname : String? = nil
+      if config.has_key?("networkname")
+        v = config["networkname"].as(String)
+        ifac_netname = v unless v.empty?
+      end
+      if config.has_key?("network_name")
+        v = config["network_name"].as(String)
+        ifac_netname = v unless v.empty?
+      end
+
+      ifac_netkey : String? = nil
+      if config.has_key?("passphrase")
+        v = config["passphrase"].as(String)
+        ifac_netkey = v unless v.empty?
+      end
+      if config.has_key?("pass_phrase")
+        v = config["pass_phrase"].as(String)
+        ifac_netkey = v unless v.empty?
+      end
+
+      # Parse ingress control settings
+      ingress_control = true
+      ingress_control = config.as_bool("ingress_control") if config.has_key?("ingress_control")
+      ic_max_held_announces : Int32? = nil
+      ic_max_held_announces = config.as_int("ic_max_held_announces") if config.has_key?("ic_max_held_announces")
+      ic_burst_hold : Float64? = nil
+      ic_burst_hold = config.as_float("ic_burst_hold") if config.has_key?("ic_burst_hold")
+      ic_burst_freq_new : Float64? = nil
+      ic_burst_freq_new = config.as_float("ic_burst_freq_new") if config.has_key?("ic_burst_freq_new")
+      ic_burst_freq : Float64? = nil
+      ic_burst_freq = config.as_float("ic_burst_freq") if config.has_key?("ic_burst_freq")
+      ic_new_time : Float64? = nil
+      ic_new_time = config.as_float("ic_new_time") if config.has_key?("ic_new_time")
+      ic_burst_penalty : Float64? = nil
+      ic_burst_penalty = config.as_float("ic_burst_penalty") if config.has_key?("ic_burst_penalty")
+      ic_held_release_interval : Float64? = nil
+      ic_held_release_interval = config.as_float("ic_held_release_interval") if config.has_key?("ic_held_release_interval")
+
+      # Parse bitrate and announce rate settings
+      configured_bitrate : Int32? = nil
+      if config.has_key?("bitrate")
+        val = config.as_int("bitrate")
+        configured_bitrate = val if val >= Reticulum::MINIMUM_BITRATE
+      end
+
+      announce_rate_target : Int32? = nil
+      if config.has_key?("announce_rate_target")
+        val = config.as_int("announce_rate_target")
+        announce_rate_target = val if val > 0
+      end
+
+      announce_rate_grace : Int32? = nil
+      if config.has_key?("announce_rate_grace")
+        val = config.as_int("announce_rate_grace")
+        announce_rate_grace = val if val >= 0
+      end
+
+      announce_rate_penalty : Int32? = nil
+      if config.has_key?("announce_rate_penalty")
+        val = config.as_int("announce_rate_penalty")
+        announce_rate_penalty = val if val >= 0
+      end
+
+      announce_rate_grace = 0 if announce_rate_target && announce_rate_grace.nil?
+      announce_rate_penalty = 0 if announce_rate_target && announce_rate_penalty.nil?
+
+      announce_cap = Reticulum::ANNOUNCE_CAP / 100.0
+      if config.has_key?("announce_cap")
+        val = config.as_float("announce_cap")
+        announce_cap = val / 100.0 if val > 0 && val <= 100
+      end
+
+      bootstrap_only = false
+      bootstrap_only = config.as_bool("bootstrap_only") if config.has_key?("bootstrap_only")
+
+      ignore_config_warnings = false
+      ignore_config_warnings = config.as_bool("ignore_config_warnings") if config.has_key?("ignore_config_warnings")
+
+      # Parse discovery settings
+      discoverable = false
+      discovery_announce_interval : Int32? = nil
+      discovery_stamp_value : Int32? = nil
+      discovery_name : String? = nil
+      discovery_encrypt = false
+      reachable_on : String? = nil
+      publish_ifac = false
+      latitude : Float64? = nil
+      longitude : Float64? = nil
+      height : Float64? = nil
+      discovery_frequency : Int32? = nil
+      discovery_bandwidth : Int32? = nil
+      discovery_modulation : Int32? = nil
+
+      if config.has_key?("discoverable")
+        discoverable = config.as_bool("discoverable")
+        if discoverable
+          Reticulum.discovery_enabled = true
+          if config.has_key?("announce_interval")
+            discovery_announce_interval = config.as_int("announce_interval") * 60
+            discovery_announce_interval = 5 * 60 if discovery_announce_interval < 5 * 60
+          end
+
+          discovery_announce_interval = 6 * 60 * 60 if discovery_announce_interval.nil?
+          discovery_stamp_value = config.as_int("discovery_stamp_value") if config.has_key?("discovery_stamp_value")
+          discovery_name = config["discovery_name"].as(String) if config.has_key?("discovery_name")
+          discovery_encrypt = config.as_bool("discovery_encrypt") if config.has_key?("discovery_encrypt")
+          reachable_on = config["reachable_on"].as(String) if config.has_key?("reachable_on")
+          publish_ifac = config.as_bool("publish_ifac") if config.has_key?("publish_ifac")
+          latitude = config.as_float("latitude") if config.has_key?("latitude")
+          longitude = config.as_float("longitude") if config.has_key?("longitude")
+          height = config.as_float("height") if config.has_key?("height")
+          discovery_frequency = config.as_int("discovery_frequency") if config.has_key?("discovery_frequency")
+          discovery_bandwidth = config.as_int("discovery_bandwidth") if config.has_key?("discovery_bandwidth")
+          discovery_modulation = config.as_int("discovery_modulation") if config.has_key?("discovery_modulation")
+
+          interface_type = config.has_key?("type") ? config["type"].as(String) : ""
+          unless interface_mode == Interface::MODE_GATEWAY || interface_mode == Interface::MODE_ACCESS_POINT
+            unless ignore_config_warnings
+              if interface_type == "RNodeInterface" || interface_type == "RNodeMultiInterface"
+                interface_mode = Interface::MODE_ACCESS_POINT
+                RNS.log("Discovery enabled on interface #{name} without gateway or AP mode. Auto-configured to AP mode.", RNS::LOG_NOTICE)
+              else
+                interface_mode = Interface::MODE_GATEWAY
+                RNS.log("Discovery enabled on interface #{name} without gateway or AP mode. Auto-configured to gateway mode.", RNS::LOG_NOTICE)
+              end
+            end
+          end
+        end
+      end
+
+      begin
+        interface : Interface? = nil
+        enabled = false
+        if config.has_key?("interface_enabled")
+          enabled = config.as_bool("interface_enabled")
+        elsif config.has_key?("enabled")
+          enabled = config.as_bool("enabled")
+        end
+
+        if enabled
+          # Build interface config hash
+          interface_config = config.to_string_hash
+          interface_config["name"] = name
+          interface_config["selected_interface_mode"] = interface_mode.to_s
+          interface_config["configured_bitrate"] = configured_bitrate.to_s if configured_bitrate
+
+          interface_type = config.has_key?("type") ? config["type"].as(String) : ""
+
+          case interface_type
+          when "AutoInterface"
+            interface = AutoInterface.new(interface_config)
+
+          when "BackboneInterface", "BackboneClientInterface"
+            # Normalize config aliases
+            if config.has_key?("port")
+              port_val = config["port"].as(String)
+              interface_config["listen_port"] = port_val
+              interface_config["target_port"] = port_val
+            end
+            if config.has_key?("remote")
+              interface_config["target_host"] = config["remote"].as(String)
+            end
+            if config.has_key?("listen_on")
+              interface_config["listen_ip"] = config["listen_on"].as(String)
+            end
+
+            if interface_type == "BackboneInterface"
+              if interface_config.has_key?("target_host")
+                interface = BackboneClientInterface.new(interface_config)
+              else
+                interface = BackboneInterface.new(interface_config)
+              end
+            else
+              interface = BackboneClientInterface.new(interface_config)
+            end
+
+          when "UDPInterface"
+            interface = UDPInterface.new(interface_config)
+
+          when "TCPServerInterface"
+            interface = TCPServerInterface.new(interface_config)
+
+          when "TCPClientInterface"
+            interface = TCPClientInterface.new(interface_config)
+
+          when "I2PInterface"
+            interface_config["storagepath"] = Reticulum.storagepath
+            interface_config["ifac_netname"] = ifac_netname.to_s if ifac_netname
+            interface_config["ifac_netkey"] = ifac_netkey.to_s if ifac_netkey
+            interface_config["ifac_size"] = ifac_size.to_s if ifac_size
+            interface = I2PInterface.new(interface_config)
+
+          when "SerialInterface"
+            interface = SerialInterface.new(interface_config)
+
+          when "PipeInterface"
+            interface = PipeInterface.new(interface_config)
+
+          when "KISSInterface"
+            interface = KISSInterface.new(interface_config)
+
+          when "AX25KISSInterface"
+            interface = AX25KISSInterface.new(interface_config)
+
+          when "RNodeInterface"
+            interface = RNodeInterface.new(interface_config)
+
+          when "RNodeMultiInterface"
+            iface = RNodeMultiInterface.new(interface_config)
+            interface = iface
+
+          when "WeaveInterface"
+            interface = WeaveInterface.new(interface_config)
+          end
+
+          if iface = interface
+            interface_post_init(iface,
+              interface_mode: interface_mode,
+              announce_cap: announce_cap,
+              bootstrap_only: bootstrap_only,
+              configured_bitrate: configured_bitrate,
+              ifac_size: ifac_size,
+              ifac_netname: ifac_netname,
+              ifac_netkey: ifac_netkey,
+              ingress_control: ingress_control,
+              ic_max_held_announces: ic_max_held_announces,
+              ic_burst_hold: ic_burst_hold,
+              ic_burst_freq_new: ic_burst_freq_new,
+              ic_burst_freq: ic_burst_freq,
+              ic_new_time: ic_new_time,
+              ic_burst_penalty: ic_burst_penalty,
+              ic_held_release_interval: ic_held_release_interval,
+              announce_rate_target: announce_rate_target,
+              announce_rate_grace: announce_rate_grace,
+              announce_rate_penalty: announce_rate_penalty,
+              discoverable: discoverable,
+              discovery_announce_interval: discovery_announce_interval,
+              discovery_publish_ifac: publish_ifac,
+              reachable_on: reachable_on,
+              discovery_name: discovery_name,
+              discovery_encrypt: discovery_encrypt,
+              discovery_stamp_value: discovery_stamp_value,
+              discovery_latitude: latitude,
+              discovery_longitude: longitude,
+              discovery_height: height,
+              discovery_frequency: discovery_frequency,
+              discovery_bandwidth: discovery_bandwidth,
+              discovery_modulation: discovery_modulation,
+              outgoing: config.has_key?("outgoing") ? config.as_bool("outgoing") : true,
+            )
+
+            # RNodeMultiInterface needs start() called after post_init
+            if interface_type == "RNodeMultiInterface" && iface.responds_to?(:start)
+              iface.as(RNodeMultiInterface).start
+            end
+          end
+
+          if bootstrap_only && instance_init && interface_config
+            @bootstrap_configs << interface_config
+          end
+
+          if interface.nil?
+            # Try loading as external interface (not supported in Crystal port)
+            RNS.log("Unknown interface type \"#{interface_type}\" for interface \"#{name}\"", RNS::LOG_ERROR)
+          end
+        else
+          RNS.log("Skipping disabled interface \"#{name}\"", RNS::LOG_DEBUG)
+        end
+      rescue ex
+        RNS.log("The interface \"#{name}\" could not be created. Check your configuration file for errors!", RNS::LOG_ERROR)
+        RNS.log("The contained exception was: #{ex.message}", RNS::LOG_ERROR)
+        RNS.panic
+      end
+    end
+
+    protected def interface_post_init(interface : Interface, *,
+                                       interface_mode : UInt8,
+                                       announce_cap : Float64,
+                                       bootstrap_only : Bool,
+                                       configured_bitrate : Int32?,
+                                       ifac_size : Int32?,
+                                       ifac_netname : String?,
+                                       ifac_netkey : String?,
+                                       ingress_control : Bool,
+                                       ic_max_held_announces : Int32?,
+                                       ic_burst_hold : Float64?,
+                                       ic_burst_freq_new : Float64?,
+                                       ic_burst_freq : Float64?,
+                                       ic_new_time : Float64?,
+                                       ic_burst_penalty : Float64?,
+                                       ic_held_release_interval : Float64?,
+                                       announce_rate_target : Int32?,
+                                       announce_rate_grace : Int32?,
+                                       announce_rate_penalty : Int32?,
+                                       discoverable : Bool,
+                                       discovery_announce_interval : Int32?,
+                                       discovery_publish_ifac : Bool,
+                                       reachable_on : String?,
+                                       discovery_name : String?,
+                                       discovery_encrypt : Bool,
+                                       discovery_stamp_value : Int32?,
+                                       discovery_latitude : Float64?,
+                                       discovery_longitude : Float64?,
+                                       discovery_height : Float64?,
+                                       discovery_frequency : Int32?,
+                                       discovery_bandwidth : Int32?,
+                                       discovery_modulation : Int32?,
+                                       outgoing : Bool)
+      # Set direction
+      if interface.responds_to?(:dir_out=)
+        interface.dir_out = outgoing
+      end
+
+      interface.mode = interface_mode
+      interface.announce_cap = announce_cap
+      interface.bootstrap_only = bootstrap_only
+      interface.bitrate = configured_bitrate.to_i64 if configured_bitrate
+      interface.optimise_mtu
+
+      if is = ifac_size
+        interface.ifac_size = is
+      else
+        # Use the interface's own DEFAULT_IFAC_SIZE
+        interface.ifac_size = get_default_ifac_size(interface)
+      end
+
+      # Discovery properties
+      interface.discoverable = discoverable
+      interface.discovery_announce_interval = discovery_announce_interval
+      interface.discovery_publish_ifac = discovery_publish_ifac
+      interface.reachable_on = reachable_on
+      interface.discovery_name = discovery_name
+      interface.discovery_encrypt = discovery_encrypt
+      interface.discovery_stamp_value = discovery_stamp_value
+      interface.discovery_latitude = discovery_latitude
+      interface.discovery_longitude = discovery_longitude
+      interface.discovery_height = discovery_height
+      interface.discovery_frequency = discovery_frequency
+      interface.discovery_bandwidth = discovery_bandwidth
+      interface.discovery_modulation = discovery_modulation
+
+      # Announce rate limiting
+      interface.announce_rate_target = announce_rate_target
+      interface.announce_rate_grace = announce_rate_grace
+      interface.announce_rate_penalty = announce_rate_penalty
+
+      # Ingress control
+      interface.ingress_control = ingress_control
+      interface.ic_max_held_announces = ic_max_held_announces if ic_max_held_announces
+      interface.ic_burst_hold = ic_burst_hold.to_i32 if ic_burst_hold
+      interface.ic_burst_freq_new = ic_burst_freq_new if ic_burst_freq_new
+      interface.ic_burst_freq = ic_burst_freq if ic_burst_freq
+      interface.ic_new_time = ic_new_time.to_i32 if ic_new_time
+      interface.ic_burst_penalty = ic_burst_penalty.to_i32 if ic_burst_penalty
+      interface.ic_held_release_interval = ic_held_release_interval.to_i32 if ic_held_release_interval
+
+      # IFAC (Interface Authentication Code)
+      interface.ifac_netname = ifac_netname
+      interface.ifac_netkey = ifac_netkey
+
+      if ifac_netname || ifac_netkey
+        ifac_origin = IO::Memory.new
+
+        if nn = ifac_netname
+          ifac_origin.write(Identity.full_hash(nn.encode("UTF-8")))
+        end
+
+        if nk = ifac_netkey
+          ifac_origin.write(Identity.full_hash(nk.encode("UTF-8")))
+        end
+
+        ifac_origin_hash = Identity.full_hash(ifac_origin.to_slice)
+        interface.ifac_key = RNS::Cryptography.hkdf(
+          length: 64,
+          derive_from: ifac_origin_hash,
+          salt: @ifac_salt,
+          context: nil
+        )
+
+        if ik = interface.ifac_key
+          interface.ifac_identity = Identity.from_bytes(ik)
+          if ii = interface.ifac_identity
+            interface.ifac_signature = ii.sign(Identity.full_hash(ik))
+          end
+        end
+      end
+
+      Transport.register_interface(interface.get_hash)
+      interface.final_init
+    end
+
+    # Get the default IFAC size for a given interface type
+    private def get_default_ifac_size(interface : Interface) : Int32
+      case interface
+      when AutoInterface          then 16
+      when BackboneInterface      then 16
+      when BackboneClientInterface then 16
+      when TCPServerInterface     then 16
+      when TCPClientInterface     then 16
+      when UDPInterface           then 16
+      when I2PInterface           then 16
+      when WeaveInterface         then 16
+      when RNodeInterface         then 8
+      when RNodeMultiInterface    then 8
+      when SerialInterface        then 8
+      when KISSInterface          then 8
+      when AX25KISSInterface      then 8
+      when PipeInterface          then 8
+      else                             8
+      end
+    end
+
+    private def parse_interface_mode(mode_str : String) : UInt8
+      case mode_str
+      when "full"
+        Interface::MODE_FULL
+      when "access_point", "accesspoint", "ap"
+        Interface::MODE_ACCESS_POINT
+      when "pointtopoint", "ptp"
+        Interface::MODE_POINT_TO_POINT
+      when "roaming"
+        Interface::MODE_ROAMING
+      when "boundary"
+        Interface::MODE_BOUNDARY
+      when "gateway", "gw"
+        Interface::MODE_GATEWAY
+      else
+        Interface::MODE_FULL
+      end
+    end
+
+    # Public API to add an interface programmatically (matching Python's _add_interface)
+    def add_interface(interface : Interface, *,
+                      mode : UInt8? = nil,
+                      configured_bitrate : Int32? = nil,
+                      ifac_size : Int32? = nil,
+                      ifac_netname : String? = nil,
+                      ifac_netkey : String? = nil,
+                      announce_cap : Float64? = nil,
+                      announce_rate_target : Int32? = nil,
+                      announce_rate_grace : Int32? = nil,
+                      announce_rate_penalty : Int32? = nil,
+                      bootstrap_only : Bool = false)
+      return if @is_connected_to_shared_instance
+
+      actual_mode = mode || Interface::MODE_FULL
+      interface.mode = actual_mode
+      if interface.responds_to?(:dir_out=)
+        interface.dir_out = true
+      end
+
+      interface.bitrate = configured_bitrate.to_i64 if configured_bitrate
+      interface.bootstrap_only = true if bootstrap_only
+      interface.optimise_mtu
+
+      interface.ifac_size = ifac_size || 8
+      interface.announce_cap = announce_cap || (Reticulum::ANNOUNCE_CAP / 100.0)
+      interface.announce_rate_target = announce_rate_target
+      interface.announce_rate_grace = announce_rate_grace
+      interface.announce_rate_penalty = announce_rate_penalty
+
+      interface.ifac_netname = ifac_netname
+      interface.ifac_netkey = ifac_netkey
+
+      if ifac_netname || ifac_netkey
+        ifac_origin = IO::Memory.new
+
+        if nn = ifac_netname
+          ifac_origin.write(Identity.full_hash(nn.encode("UTF-8")))
+        end
+
+        if nk = ifac_netkey
+          ifac_origin.write(Identity.full_hash(nk.encode("UTF-8")))
+        end
+
+        ifac_origin_hash = Identity.full_hash(ifac_origin.to_slice)
+        interface.ifac_key = RNS::Cryptography.hkdf(
+          length: 64,
+          derive_from: ifac_origin_hash,
+          salt: @ifac_salt,
+          context: nil
+        )
+
+        if ik = interface.ifac_key
+          interface.ifac_identity = Identity.from_bytes(ik)
+          if ii = interface.ifac_identity
+            interface.ifac_signature = ii.sign(Identity.full_hash(ik))
+          end
+        end
+      end
+
+      Transport.register_interface(interface.get_hash)
+      interface.final_init
+    end
+
+    # Check if data should be persisted (used by other modules)
+    def should_persist_data? : Bool
+      Time.utc.to_unix_f > @last_data_persist + Reticulum::GRACIOUS_PERSIST_INTERVAL
     end
 
     # ─── Background jobs ─────────────────────────────────────────────

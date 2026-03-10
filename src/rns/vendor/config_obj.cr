@@ -133,6 +133,18 @@ module RNS
         end
       end
 
+      # Convert this section's scalar key-value pairs to a Hash(String, String).
+      # Only includes string values (not subsections or arrays).
+      # Useful for passing configuration to interface constructors.
+      def to_string_hash : Hash(String, String)
+        result = Hash(String, String).new
+        @scalars.each do |key|
+          val = @data[key]?
+          result[key] = val.as(String) if val.is_a?(String)
+        end
+        result
+      end
+
       # Write this section's content as config lines
       def write_lines(indent_type : String = "    ") : Array(String)
         out = [] of String

@@ -1,3 +1,10 @@
+# Define O_NOCTTY for platforms where Crystal's LibC doesn't include it (macOS).
+{% unless LibC.has_constant?(:O_NOCTTY) %}
+  lib LibC
+    O_NOCTTY = 0x20000
+  end
+{% end %}
+
 module RNS
   # HDLC framing helpers used by Serial, TCP, Pipe, and I2P interfaces.
   # Simplified HDLC framing similar to PPP.
@@ -181,6 +188,18 @@ module RNS
     property discoverable : Bool = false
     property last_discovery_announce : Float64 = 0.0
     property bootstrap_only : Bool = false
+    property discovery_announce_interval : Int32? = nil
+    property discovery_publish_ifac : Bool = false
+    property reachable_on : String? = nil
+    property discovery_name : String? = nil
+    property discovery_encrypt : Bool = false
+    property discovery_stamp_value : Int32? = nil
+    property discovery_latitude : Float64? = nil
+    property discovery_longitude : Float64? = nil
+    property discovery_height : Float64? = nil
+    property discovery_frequency : Int32? = nil
+    property discovery_bandwidth : Int32? = nil
+    property discovery_modulation : Int32? = nil
 
     # Parent/spawned interface references
     property parent_interface : Interface? = nil

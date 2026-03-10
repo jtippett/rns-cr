@@ -1566,3 +1566,22 @@
     - Stress: 20 configurations (1), 100 random KISS roundtrips (1),
       50 frequency roundtrips (1) = 3 tests
   - Ran crystal spec — 2004 examples, 0 failures, 5 pending (pre-existing)
+
+2026-03-11 — Task 7.12: RNode Multi and Weave interfaces
+  - Ported RNodeMultiInterface.py (1148 LOC) → src/rns/interfaces/rnode_multi_interface.cr (~1190 lines)
+    - RNodeMultiKISS module: all KISS constants, CMD_SEL_INT, CMD_INTERFACES, CMD_INT0_DATA-CMD_INT11_DATA, chip type constants, interface_type_to_str, is_data_cmd?, escape
+    - SubIntConfig record: name, vport, frequency, bandwidth, txpower, sf, cr, flow_control, st_alock, lt_alock, outgoing
+    - RNodeMultiInterface class: serial port management, detect/configure, read_loop with full KISS command parsing, subinterface creation, framebuffer support, firmware validation
+    - RNodeSubInterface class: rnode_parent typed reference, radio parameter validation (frequency range per chip type, bandwidth, txpower, sf, cr, airtime limits), bitrate calculation, queue management, process_incoming/process_outgoing
+  - Ported WeaveInterface.py (1091 LOC) → src/rns/interfaces/weave_interface.cr (~1090 lines)
+    - WeaveWDCL module: HDLC frame type constants (FLAG=0x7E, ESC=0x7D)
+    - WeaveCmd/WeaveEvt modules: command and event constants with description lookups
+    - WeaveLogFrame class, WeaveEndpoint class with bounded receive queue
+    - WeaveDevice class: identity management, discovery, handshake, stats tracking, endpoint management, incoming_frame parsing, log_handle
+    - WeaveWDCLConnection class: serial connection, HDLC framing, read_loop, reconnection
+    - WeaveInterface class: peer management via peer_spawned_interfaces, spawned interfaces, peering timeout jobs
+    - WeaveInterfacePeer class: per-peer packet processing with deduplication via mif_deque
+  - Updated src/rns.cr to require both new interfaces
+  - Wrote 126 specs across both files (55 + 71 examples), all passing
+  - Key fixes: rnode_parent typed property, peer_spawned_interfaces rename, firmware validation logic, Int64 bitrate alignment
+  - Ran crystal spec — 2130 examples, 0 failures, 5 pending (pre-existing)

@@ -373,3 +373,61 @@
     - Stress tests: 100 path entries, 50 destination registrations,
       20-entry persistence roundtrip
   - Ran crystal spec — 645 examples, 0 failures
+
+2026-03-10 — Task 4.2: Transport announce handling
+  - Created src/rns/transport/announce_handler.cr porting announce logic from RNS/Transport.py
+    - timebase_from_random_blob: extracts 40-bit big-endian emission timestamp from random blob bytes 5..9
+    - timebase_from_random_blobs: returns maximum timebase across array of random blobs
+    - announce_emitted: extracts emission timebase from announce packet data
+    - add_packet_hash / packet_hash_in_list?: packet deduplication hashlist management
+    - packet_filter: full packet filtering — transport ID checks, context passthrough (KEEPALIVE,
+      RESOURCE, CACHE_REQUEST, CHANNEL), PLAIN/GROUP hop limit enforcement, PLAIN/GROUP announce
+      rejection, hash deduplication with SINGLE announce bypass
+    - inbound_announce: core announce processing — signature validation via Identity.validate_announce,
+      local destination rejection, transport_id handling (rebroadcast detection, local_rebroadcasts
+      increment, passed-on detection), path table insertion with random blob deduplication and
+      timebase comparison, expired path replacement, unresponsive path replacement, hop count
+      comparison, announce table entry creation for retransmission, rate limiting
+    - check_announce_rate: per-destination rate limiting with timestamps, violations, blocking
+    - invoke_announce_handlers: calls registered AnnounceHandler callbacks with aspect_filter
+      matching, PATH_RESPONSE exclusion, fiber-spawned execution
+    - process_announce_table: periodic retransmission processing — retry limit enforcement,
+      local rebroadcast max enforcement, retransmit timeout checking, new packet creation
+      with HEADER_2/TRANSPORT transport, held announce reinsertion
+    - mark_path_unknown_for_destination: convenience wrapper for mark_path_unknown_state
+    - clean_announce_cache: removes cached announce files not in path/tunnel tables
+    - cache_packet: writes packet to disk with MessagePack serialization
+  - Added Identity.validate_announce to src/rns/identity.cr
+    - Full announce validation: public key extraction, ratchet detection via context_flag,
+      name_hash/random_hash/signature/app_data parsing, signed_data reconstruction,
+      signature verification via Ed25519, destination hash verification (name_hash + identity hash),
+      known public key mismatch detection, remember/recall integration, ratchet remembering
+    - Supports only_validate_signature mode for quick signature-only checks
+    - Blackholed identity filtering
+  - Changed Destination hash/hexhash from getter to property (needed for announce rebroadcast)
+  - Fixed Packet.pack to set destination_type from destination (was only set during unpack)
+  - Created spec/rns/transport/announce_handler_spec.cr (69 examples)
+    - Timebase: random blob extraction (normal, large, short, zero, big-endian), blob array max,
+      single blob, announce emission extraction
+    - Packet filter: KEEPALIVE/RESOURCE/CACHE_REQUEST/CHANNEL passthrough, PLAIN hop limit,
+      PLAIN/GROUP announce rejection, GROUP hop limit, unseen SINGLE packets, SINGLE announce
+      bypass hashlist, non-announce hash dedup
+    - Packet hash: add/check, unknown hash returns false
+    - Identity.validate_announce: valid packet, signature-only mode, remembers destination,
+      doesn't remember on sig-only, non-announce rejection, tampered data, app_data validation,
+      app_data recall, public key mismatch rejection, 20-packet stress test
+    - Inbound announce: path table addition, correct hops, local destination rejection,
+      invalid signature rejection, announce table addition, PATH_RESPONSE not in announce table,
+      random blob storage, received_from without transport_id, deduplication, fewer hops
+      with newer emission, more hops rejection, handler callbacks, aspect_filter filtering,
+      PATH_RESPONSE handler exclusion, app_data handling, non-announce rejection, max hops rejection
+    - Rate limiting: first announce not blocked, rate entry creation, timestamp updates,
+      MAX_RATE_TIMESTAMPS enforcement
+    - Process announce table: empty returns empty, retry limit removal, local rebroadcast max
+      removal, timeout retransmission, future timeout no retransmit, PATH_RESPONSE context
+      for block_rebroadcasts, held announce reinsertion
+    - mark_path_unknown_for_destination: clears unresponsive state
+    - Cache: packet caching to file, no cache without force, cache cleanup removes orphans,
+      cache cleanup preserves active paths
+    - Stress: 50 different announces, 20 processing cycles drain all, 30 rapid rate checks
+  - Ran crystal spec — 714 examples, 0 failures

@@ -480,6 +480,110 @@ module RNS
       end
     end
 
+    # ─── Announce Validation ────────────────────────────────────────────
+
+    # Validates an announce packet. Returns true if valid, false otherwise.
+    # When only_validate_signature is true, skips destination hash and
+    # known_destinations checks (used for quick signature validation).
+    def self.validate_announce(packet : Packet, only_validate_signature : Bool = false) : Bool
+      return false unless packet.packet_type == Packet::ANNOUNCE
+
+      keysize = KEYSIZE // 8
+      ratchetsize = RATCHETSIZE // 8
+      name_hash_len = NAME_HASH_LENGTH // 8
+      sig_len = SIGLENGTH // 8
+      destination_hash = packet.destination_hash
+
+      return false if destination_hash.nil?
+
+      public_key = packet.data[0, keysize]
+
+      if packet.context_flag == Packet::FLAG_SET
+        # Announce contains a ratchet
+        name_hash = packet.data[keysize, name_hash_len]
+        random_hash = packet.data[keysize + name_hash_len, 10]
+        ratchet = packet.data[keysize + name_hash_len + 10, ratchetsize]
+        signature = packet.data[keysize + name_hash_len + 10 + ratchetsize, sig_len]
+        app_data = Bytes.empty
+        if packet.data.size > keysize + name_hash_len + 10 + sig_len + ratchetsize
+          app_data = packet.data[keysize + name_hash_len + 10 + sig_len + ratchetsize..]
+        end
+      else
+        # No ratchet
+        ratchet = Bytes.empty
+        name_hash = packet.data[keysize, name_hash_len]
+        random_hash = packet.data[keysize + name_hash_len, 10]
+        signature = packet.data[keysize + name_hash_len + 10, sig_len]
+        app_data = Bytes.empty
+        if packet.data.size > keysize + name_hash_len + 10 + sig_len
+          app_data = packet.data[keysize + name_hash_len + 10 + sig_len..]
+        end
+      end
+
+      # Build signed data
+      signed_data = IO::Memory.new
+      signed_data.write(destination_hash.not_nil!)
+      signed_data.write(public_key)
+      signed_data.write(name_hash)
+      signed_data.write(random_hash)
+      signed_data.write(ratchet)
+      signed_data.write(app_data)
+
+      if packet.data.size <= KEYSIZE // 8 + NAME_HASH_LENGTH // 8 + 10 + SIGLENGTH // 8
+        app_data_for_remember = nil
+      else
+        app_data_for_remember = app_data
+      end
+
+      announced_identity = Identity.new(create_keys: false)
+      announced_identity.load_public_key(public_key)
+
+      # Check blackholed identities
+      if Transport.blackholed_identities.size > 0
+        id_hash = announced_identity.hash
+        if id_hash && Transport.blackholed_identities.has_key?(id_hash.hexstring)
+          return false
+        end
+      end
+
+      if announced_identity.pub && announced_identity.validate(signature, signed_data.to_slice)
+        return true if only_validate_signature
+
+        hash_material = IO::Memory.new
+        hash_material.write(name_hash)
+        hash_material.write(announced_identity.hash.not_nil!)
+        expected_hash = Identity.full_hash(hash_material.to_slice)[0, Reticulum::TRUNCATED_HASHLENGTH // 8]
+
+        if destination_hash.not_nil! == expected_hash
+          # Check for public key mismatch with known destinations
+          if @@known_destinations.has_key?(destination_hash.not_nil!)
+            known_pub_key = @@known_destinations[destination_hash.not_nil!][2].as(Bytes)
+            if public_key != known_pub_key
+              RNS.log("Received announce with valid signature and destination hash, but announced public key does not match already known public key.", RNS::LOG_CRITICAL)
+              return false
+            end
+          end
+
+          remember(packet.get_hash, destination_hash.not_nil!, public_key, app_data_for_remember)
+
+          if ratchet.size > 0
+            remember_ratchet(destination_hash.not_nil!, ratchet)
+          end
+
+          return true
+        else
+          RNS.log("Received invalid announce for #{RNS.prettyhexrep(destination_hash.not_nil!)}: Destination mismatch.", RNS::LOG_DEBUG)
+          return false
+        end
+      else
+        RNS.log("Received invalid announce for #{RNS.prettyhexrep(destination_hash.not_nil!)}: Invalid signature.", RNS::LOG_DEBUG)
+        return false
+      end
+    rescue ex
+      RNS.log("Error occurred while validating announce. The contained exception was: #{ex}", RNS::LOG_ERROR)
+      return false
+    end
+
     # ─── Hash Functions ────────────────────────────────────────────────
 
     def self.full_hash(data : Bytes) : Bytes

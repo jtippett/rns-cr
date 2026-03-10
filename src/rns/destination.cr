@@ -91,12 +91,12 @@ module RNS
     RATCHET_INTERVAL = 30 * 60 # 1800 seconds
 
     # ─── Instance properties ──────────────────────────────────────────
-    getter hash : Bytes
+    property hash : Bytes
     getter type : UInt8
     getter direction : UInt8
     getter name : String
     getter name_hash : Bytes
-    getter hexhash : String
+    property hexhash : String
     getter identity : Identity?
 
     property accept_link_requests : Bool

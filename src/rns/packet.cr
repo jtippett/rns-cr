@@ -175,6 +175,7 @@ module RNS
     def pack
       dest = @destination.not_nil!
       @destination_hash = dest.hash
+      @destination_type = dest.type
 
       header_io = IO::Memory.new
       header_io.write_byte(@flags)

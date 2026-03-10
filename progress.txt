@@ -133,3 +133,107 @@
     - 100-iteration random roundtrip tests for both AES-128-CBC and AES-256-CBC
   - Updated src/rns.cr to require cryptography/token and cryptography/provider
   - Ran crystal spec — 249 examples, 0 failures
+
+2026-03-10 — Task 3.1: Identity module
+  - Created src/rns/identity.cr — Identity class porting RNS/Identity.py
+    - Constants: CURVE ("Curve25519"), KEYSIZE (512), HASHLENGTH (256), SIGLENGTH (512),
+      NAME_HASH_LENGTH (80), TRUNCATED_HASHLENGTH (128), RATCHETSIZE (256),
+      RATCHET_EXPIRY (30 days), TOKEN_OVERHEAD (48), AES128_BLOCKSIZE (16),
+      DERIVED_KEY_LENGTH (64), DERIVED_KEY_LENGTH_LEGACY (32)
+    - Class-level state: known_destinations (Hash), known_ratchets (Hash)
+    - Key management: create_keys(), get_private_key(), get_public_key(),
+      load_private_key(data), load_public_key(data), update_hashes()
+    - Encryption: encrypt(plaintext, ratchet) using ECDH + HKDF + Token,
+      decrypt(ciphertext_token, ratchets, enforce_ratchets) with ratchet support
+    - Signing: sign(message) via Ed25519, validate(signature, message)
+    - Hash functions: full_hash(data), truncated_hash(data), get_random_hash()
+    - Remember/recall: remember(), recall(target_hash, from_identity_hash),
+      recall_app_data(), save_known_destinations(), load_known_destinations()
+    - Ratchet methods: generate_ratchet(), ratchet_public_bytes(), get_ratchet_id(),
+      remember_ratchet(), get_ratchet(), current_ratchet_id(), clean_ratchets()
+    - Factory methods: from_bytes(prv_bytes), from_file(path)
+    - File I/O: to_file(path), load(path)
+    - Persistence uses MessagePack for known_destinations serialization
+  - Created spec/rns/identity_spec.cr (76 examples)
+    - Constants verification (12 tests)
+    - Key generation: default creation, no-keys mode, uniqueness, correct sizes, hash computation
+    - Key serialization: private key roundtrip, public key roundtrip, derived key verification
+    - Hash computation: full_hash, truncated_hash, get_random_hash
+    - Signing: sign/verify roundtrip, invalid sig rejection, wrong message, KeyError checks,
+      cross-instance verify, deterministic signatures, empty messages
+    - Encryption: encrypt/decrypt roundtrip, overhead check, random IV, empty/large data,
+      wrong identity, tampered ciphertext, too-short token, KeyError checks,
+      pub-only encrypt + prv decrypt, 100 random roundtrips
+    - Ratchet encryption: encrypt with ratchet, fallback to identity key, enforce_ratchets
+    - Remember/recall: basic roundtrip, unknown destination, app_data, invalid key rejection,
+      overwrite behavior, recall by identity hash
+    - File I/O: save/load roundtrip, nonexistent file, from_bytes
+    - Persistence: save/load known_destinations via MessagePack
+    - Ratchet methods: generate, public bytes, ratchet ID, uniqueness, remember/retrieve
+    - Stress tests: 100 sign/verify roundtrips, 50 key serialization roundtrips
+  - Updated src/rns.cr to require identity module
+  - Ran crystal spec — 325 examples, 0 failures
+
+2026-03-10 — Task 3.2: Packet module
+  - Created src/rns/reticulum.cr — Reticulum module with core protocol constants
+    - MTU (500), TRUNCATED_HASHLENGTH (128), IFAC_MIN_SIZE (1)
+    - HEADER_MINSIZE (19), HEADER_MAXSIZE (35), MDU (464)
+    - DEFAULT_PER_HOP_TIMEOUT (6)
+  - Created src/rns/transport.cr — Transport module stub with transport type constants
+    - BROADCAST (0x00), TRANSPORT (0x01), RELAY (0x02), TUNNEL (0x03)
+  - Created src/rns/destination.cr — Destination module with type constants and stub class
+    - SINGLE (0x00), GROUP (0x01), PLAIN (0x02), LINK (0x03)
+    - IN/OUT direction constants, PROVE_NONE/APP/ALL proof strategy constants
+    - DestinationInterface abstract module for Packet interop
+    - Destination::Stub class implementing DestinationInterface for testing
+  - Created src/rns/packet.cr — Packet, ProofDestination, PacketReceipt classes
+    porting RNS/Packet.py
+    - Packet type constants: DATA (0x00), ANNOUNCE (0x01), LINKREQUEST (0x02), PROOF (0x03)
+    - Header types: HEADER_1 (0x00), HEADER_2 (0x01)
+    - All 21 context types: NONE through LRPROOF (0xFF)
+    - Size constants: HEADER_MAXSIZE (35), HEADER_MINSIZE (19), MDU (464),
+      PLAIN_MDU (464), ENCRYPTED_MDU (383), TIMEOUT_PER_HOP (6)
+    - Packet class: initialize (from destination or raw bytes), get_packed_flags(),
+      pack(), unpack(), update_hash(), get_hash(), get_truncated_hash(),
+      get_hashable_part(), generate_proof_destination()
+    - Pack handles all no-encryption cases: ANNOUNCE, LINKREQUEST, RESOURCE_PRF proof,
+      LINK destination proof, RESOURCE, KEEPALIVE, CACHE_REQUEST contexts
+    - Pack encrypts data for SINGLE/GROUP destinations via destination.encrypt()
+    - HEADER_2 support with transport_id in header
+    - LRPROOF context uses link_id instead of destination hash
+    - Unpack parses flags, hops, header type, transport type, destination type,
+      packet type, context flag from raw bytes
+    - Hash computation: masks upper nibble of flags byte, strips transport_id for
+      HEADER_2 (ensures hash identity across header types)
+    - ProofDestination: creates truncated-hash destination for proof routing,
+      encrypt() returns plaintext unchanged
+    - PacketReceipt: status tracking (FAILED/SENT/DELIVERED/CULLED),
+      EXPL_LENGTH (96), IMPL_LENGTH (64), timeout management, RTT computation,
+      delivery/timeout callbacks, validate_proof() with explicit and implicit proofs
+    - PacketReceiptCallbacks: holds delivery and timeout callback procs
+  - Created spec/rns/packet_spec.cr (76 examples)
+    - Constants: all packet types, header types, 21 context types, flag values,
+      MTU/MDU size constants, timeout constant
+    - Reticulum/Transport/Destination constant verification
+    - Flag packing: HEADER_1/2, all transport/destination type combinations,
+      context_flag, LRPROOF forces LINK type
+    - Pack: PLAIN DATA, ANNOUNCE, LINKREQUEST, RESOURCE, KEEPALIVE, CACHE_REQUEST,
+      RESOURCE_PRF proof, LINK proof — all verify no encryption
+    - Pack: HEADER_2 with transport_id, raises on HEADER_2 without transport_id,
+      raises when packed size exceeds MTU
+    - Pack: SINGLE destination encrypts data, destination_hash set, packet_hash computed
+    - Unpack: HEADER_1 and HEADER_2 parsing, malformed/empty packet handling
+    - Pack/unpack roundtrip: HEADER_1 PLAIN, HEADER_2 ANNOUNCE, hash preservation,
+      100-iteration random roundtrip stress test
+    - Hash computation: hashable part masking, transport_id exclusion for HEADER_2,
+      different payloads produce different hashes, same hash across header types
+    - Truncated hash: correct 16-byte size
+    - Constructor: from raw (nil destination), from destination with all field defaults
+    - LRPROOF: uses link_id in header
+    - PacketReceipt: status constants, proof length constants, initialization,
+      get_status, set_timeout, set_delivery_callback, set_timeout_callback,
+      get_rtt, is_timed_out, check_timeout (FAILED/CULLED/no-change/callback)
+    - ProofDestination: truncated hash creation, type=SINGLE, encrypt passthrough
+    - MTU boundary: maximum payload, empty payload
+  - Updated src/rns.cr to require reticulum, transport, destination, packet modules
+  - Ran crystal spec — 401 examples, 0 failures

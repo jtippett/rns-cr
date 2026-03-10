@@ -190,10 +190,10 @@ Read `RNS/Cryptography/` for reference. Every crypto module must have specs with
 
 ### Phase 3: Core Protocol
 
-- [ ] **3.1 — Identity module**
+- [x] **3.1 — Identity module**
   Port `RNS/Identity.py` (821 LOC) → `src/rns/identity.cr`. Key constants: `CURVE = "Curve25519"`, `KEYSIZE = 512` (bits), `HASHLENGTH = 256`, `NAME_HASH_LENGTH = 80`, `RATCHETSIZE = 256`, `RATCHET_EXPIRY`, `TRUNCATED_HASHLENGTH = 128`. Implement `Identity` class: `create_keys()`, `get_private_key()`, `load_private_key(data)`, `load_public_key(data)`, `encrypt(plaintext)`, `decrypt(ciphertext)`, `sign(message)`, `validate(signature, message)`, `prove(packet, destination)`, `hash()`, `hexhash()`, `from_bytes(data)`, `from_file(path)`, `to_file(path)`. Implement static methods: `remember(packet_hash, destination_hash, public_key, app_data)`, `recall(destination_hash)`, `recall_app_data(destination_hash)`, `save_known_destinations()`, `load_known_destinations(path)`, `full_hash(data)`, `truncated_hash(data)`, `get_random_hash()`. Handle the known_destinations and known_ratchets class-level state. Write thorough specs: key generation, sign/verify, encrypt/decrypt, hash computation, recall/remember, serialization.
 
-- [ ] **3.2 — Packet module**
+- [x] **3.2 — Packet module**
   Port `RNS/Packet.py` (602 LOC) → `src/rns/packet.cr`. Define all packet type constants: `DATA = 0x00`, `ANNOUNCE = 0x01`, `LINKREQUEST = 0x02`, `PROOF = 0x03`. Define header types: `HEADER_1 = 0x00`, `HEADER_2 = 0x01`. Define transport types, context types. Implement `Packet` class: `initialize(destination, data, packet_type, context, transport_type, header_type, transport_id, attached_interface, create_receipt)`, `pack()`, `unpack()`, `encrypt()`, `decrypt()`, `send()`, `resend()`, `prove(destination)`, `update_hash()`, `get_hash() : Bytes`. Implement `PacketReceipt` class with callbacks: `set_timeout(callback, timeout)`, `set_delivery_callback(callback)`, status tracking. Implement `ProofDestination` class. Port the MTU/MDU constants: `ENCRYPTED_MDU`, `PLAIN_MDU`, `HEADER_MINSIZE`, `HEADER_MAXSIZE`. Write specs: packet creation, pack/unpack roundtrip, hash computation, header encoding correctness, MTU boundary tests.
 
 - [ ] **3.3 — Destination module**

@@ -11,6 +11,11 @@ require "./rns/cryptography/x25519"
 require "./rns/cryptography/ed25519"
 require "./rns/cryptography/token"
 require "./rns/cryptography/provider"
+require "./rns/reticulum"
+require "./rns/transport"
+require "./rns/destination"
+require "./rns/identity"
+require "./rns/packet"
 
 module RNS
   def self.version : String

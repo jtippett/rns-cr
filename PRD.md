@@ -231,7 +231,7 @@ This is the largest module (3312 LOC). Split into manageable sub-modules.
 
 ### Phase 6: High-Level Modules
 
-- [ ] **6.1 — Buffer module**
+- [x] **6.1 — Buffer module**
   Port `RNS/Buffer.py` (369 LOC) → `src/rns/buffer.cr`. Implement `StreamDataMessage` (a Channel MessageBase for stream data). Implement `RawChannelReader` (reads from a Channel, implements `IO` interface). Implement `RawChannelWriter` (writes to a Channel, implements `IO` interface). Implement `Buffer` module with class methods: `create_reader(stream_id, channel, ready_callback)`, `create_writer(stream_id, channel)`, `create_bidirectional_buffer(stream_id_in, stream_id_out, channel, ready_callback)`. Wire buffering, flow control, and close semantics. Write specs: read/write roundtrip through channel, bidirectional buffer, flow control behavior.
 
 - [ ] **6.2 — Resolver module (stub)**

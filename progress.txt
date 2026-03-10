@@ -738,3 +738,70 @@
     - Reticulum paths: configdir, storagepath, resourcepath
     - to_s representation
   - Ran crystal spec — 1171 examples, 0 failures, 5 pending
+
+2026-03-11 — Task 6.1: Buffer module
+  - Created src/rns/buffer.cr (~270 LOC) porting RNS/Buffer.py (369 LOC)
+  - StreamDataMessage class (extends MessageBase):
+    - MSGTYPE = 0xff00 (SMT_STREAM_DATA, system-reserved)
+    - STREAM_ID_MAX = 0x3fff (14-bit stream id)
+    - OVERHEAD = 8 (2 stream header + 6 channel envelope)
+    - MAX_DATA_LEN = Link::MDU - OVERHEAD
+    - 2-byte big-endian header: bits 15=eof, 14=compressed, 13..0=stream_id
+    - pack/unpack with BZip2 decompression on receive when compressed flag set
+    - Validates stream_id range (0-16383)
+  - RawChannelReader(TPacket) generic class:
+    - Registers StreamDataMessage as system message type on channel
+    - Receives data via channel message handler, filters by stream_id
+    - Internal IO::Memory buffer with compact-on-read for memory efficiency
+    - read(size) returns Bytes?, nil when empty and not EOF, empty Bytes at EOF
+    - readinto(buffer) matching Python readinto API
+    - available() returns buffered byte count
+    - eof?() tracks end-of-stream flag
+    - Ready callbacks: add_ready_callback, remove_ready_callback
+    - Callbacks spawned in fibers (matching Python's threading.Thread)
+    - close() removes handler and clears listeners
+    - readable?/writable?/seekable?/closed? capability queries
+  - RawChannelWriter(TPacket) generic class:
+    - MAX_CHUNK_LEN = 16384 (16 KiB), COMPRESSION_TRIES = 4
+    - write(data) with adaptive BZip2 compression:
+      - Tries compression at full chunk, then half, then third
+      - Uses compressed version if smaller than both MAX_DATA_LEN and original
+      - Falls back to uncompressed if compression doesn't help
+    - Caps single write at MAX_CHUNK_LEN
+    - Returns 0 when channel not ready (catches ME_LINK_NOT_READY)
+    - close() waits for channel readiness then sends EOF-flagged empty message
+    - writable?/readable?/seekable? capability queries
+  - Buffer module with factory methods:
+    - create_reader(stream_id, channel, ready_callback?) -> RawChannelReader
+    - create_writer(stream_id, channel) -> RawChannelWriter
+    - create_bidirectional_buffer(rx_id, tx_id, channel, ready_callback?)
+      -> {RawChannelReader, RawChannelWriter} tuple
+    - All methods generic over TPacket via forall
+  - Updated src/rns.cr to require buffer module
+  - Created spec/rns/buffer_spec.cr (69 examples)
+    - StreamDataMessage constants: STREAM_ID_MAX, OVERHEAD, MAX_DATA_LEN, MSGTYPE (4 tests)
+    - Constructor: defaults, stream_id+data, eof, compressed, range validation (7 tests)
+    - Pack: nil stream_id rejection, header-only, with data, eof bit, compressed bit,
+      both bits, full 14-bit range (7 tests)
+    - Unpack: stream_id+data, eof flag, empty data, BZip2 decompression, too-short (5 tests)
+    - Pack/unpack roundtrip: flag preservation, 100 random messages (2 tests)
+    - RawChannelReader constructor: capabilities (1 test)
+    - Receiving: matching stream_id, ignoring other streams, accumulation,
+      eof flag, nil on empty, empty at eof, eof-only message (7 tests)
+    - readinto: fills buffer, nil on empty, partial reads (3 tests)
+    - Partial reads: retain remainder, byte-by-byte (2 tests)
+    - Ready callbacks: invocation, removal, multiple callbacks, cumulative count (4 tests)
+    - Close: removes handler and listeners (1 test)
+    - RawChannelWriter constants: MAX_CHUNK_LEN, COMPRESSION_TRIES (2 tests)
+    - Constructor: capabilities (1 test)
+    - Write: send, bytes consumed, MAX_CHUNK_LEN cap, not-ready returns 0,
+      packet through outlet, empty write (6 tests)
+    - Compression: compressible data, small data skip, incompressible fallback (3 tests)
+    - Buffer.create_reader: type check, callback, no callback (3 tests)
+    - Buffer.create_writer: type check (1 test)
+    - Buffer.create_bidirectional_buffer: tuple type, different stream_ids, callback (3 tests)
+    - Integration: loopback roundtrip, sequential writes, eof propagation,
+      eof flag parsing (4 tests)
+    - Stress: 50 write/delivery cycles, 20 bidirectional creations,
+      30 random read/write loopback roundtrips (3 tests)
+  - Ran crystal spec — 1240 examples, 0 failures, 5 pending

@@ -111,3 +111,25 @@
     - 100-iteration random sign/verify roundtrip tests
   - Updated src/rns.cr to require cryptography/ed25519
   - Ran crystal spec — 220 examples, 0 failures
+
+2026-03-10 — Task 2.6: Token (Fernet-like authenticated encryption)
+  - Created src/rns/cryptography/token.cr — Token class porting RNS/Cryptography/Token.py
+    - TOKEN_OVERHEAD constant (48 bytes = 16 IV + 32 HMAC-SHA256)
+    - Token.generate_key(mode) — generates 64-byte key for AES-256-CBC (default) or 32-byte for AES-128-CBC
+    - Token#initialize(key) — splits key into signing and encryption halves based on key length
+    - Token#encrypt(data) — random IV + AES-CBC(PKCS7.pad(data)) + HMAC-SHA256 of (IV + ciphertext)
+    - Token#decrypt(token) — verifies HMAC, extracts IV/ciphertext, decrypts, unpads PKCS7
+    - Token#verify_hmac(token) — validates HMAC-SHA256 of token data matches appended HMAC
+    - Supports both AES-128-CBC (32-byte key) and AES-256-CBC (64-byte key) modes
+  - Created src/rns/cryptography/provider.cr — re-exports all crypto modules, sets PROVIDER = :internal
+  - Created spec/rns/cryptography/token_spec.cr (29 examples)
+    - TOKEN_OVERHEAD constant verification
+    - Key generation: correct sizes for both modes, uniqueness, invalid mode rejection
+    - Constructor: 32-byte and 64-byte keys, invalid size rejection
+    - Encrypt: correct overhead, random IV produces different ciphertexts, empty/large data
+    - Decrypt: roundtrip for both AES modes, tampered ciphertext/HMAC rejection, wrong key rejection
+    - verify_hmac: valid/tampered tokens, too-short token rejection
+    - Overhead constant verification: exact size checks for various plaintext lengths
+    - 100-iteration random roundtrip tests for both AES-128-CBC and AES-256-CBC
+  - Updated src/rns.cr to require cryptography/token and cryptography/provider
+  - Ran crystal spec — 249 examples, 0 failures

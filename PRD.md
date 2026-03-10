@@ -185,7 +185,7 @@ Read `RNS/Cryptography/` for reference. Every crypto module must have specs with
 - [x] **2.5 — Ed25519 signatures**
   Create `src/rns/cryptography/ed25519.cr`. Wrap the `spider-gazelle/ed25519` shard. Implement `Ed25519PrivateKey` and `Ed25519PublicKey` classes matching `RNS/Cryptography/Ed25519.py`: `generate()`, `from_private_bytes(data)`, `private_bytes()`, `public_key()`, `sign(message)`, `verify(signature, message)`. Write specs: sign/verify roundtrip, invalid signature rejection, key serialization roundtrip, RFC 8032 test vectors.
 
-- [ ] **2.6 — Token (Fernet-like authenticated encryption)**
+- [x] **2.6 — Token (Fernet-like authenticated encryption)**
   Create `src/rns/cryptography/token.cr`. Port `RNS/Cryptography/Token.py` exactly. Implement `Token` class with `TOKEN_OVERHEAD` constant (48 bytes), `generate_key()`, `encrypt(plaintext, key)`, `decrypt(ciphertext, key)`, `verify_hmac(token, key)`. This uses AES-256-CBC + HMAC-SHA256. Write specs: roundtrip encrypt/decrypt, tampering detection, overhead constant verification. Create `src/rns/cryptography/provider.cr` that re-exports all crypto modules.
 
 ### Phase 3: Core Protocol

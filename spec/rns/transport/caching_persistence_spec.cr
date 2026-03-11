@@ -318,7 +318,7 @@ describe RNS::Transport do
       tmp = make_temp_dir
       begin
         RNS::Transport.owner = make_owner_ref(tmp, tmp)
-        before = Time.utc.to_unix_f
+        _before = Time.utc.to_unix_f
         RNS::Transport.clean_cache
         # cache_last_cleaned is private, but we can verify it doesn't crash
         # and that orphaned files are cleaned
@@ -1138,7 +1138,7 @@ describe RNS::Transport do
         loaded.should eq(10)
 
         total_paths = 0
-        RNS::Transport.tunnels.each_value { |t| total_paths += t.paths.size }
+        RNS::Transport.tunnels.each_value { |tunnel| total_paths += tunnel.paths.size }
         total_paths.should eq(50)
       ensure
         FileUtils.rm_rf(tmp)

@@ -266,7 +266,7 @@ module RNS
 
     def start
       open_port
-      if serial = @serial
+      if _serial = @serial
         configure_device
       else
         raise IO::Error.new("Could not open serial port")
@@ -512,7 +512,7 @@ module RNS
       io.write_byte(RNodeMultiKISS::FEND)
       frame = io.to_slice
 
-      written = write_serial(frame)
+      _written = write_serial(frame)
       @txb += data.size
     end
 
@@ -764,11 +764,11 @@ module RNS
               if ft = @first_tx
                 if Time.utc.to_unix_f > ft + @id_interval.not_nil!
                   interface_available = false
-                  @subinterfaces.each do |subint|
-                    next unless subint
-                    next unless subint.online
+                  @subinterfaces.each do |sub_interface|
+                    next unless sub_interface
+                    next unless sub_interface.online
                     interface_available = true
-                    subint.process_outgoing(@id_callsign.not_nil!)
+                    sub_interface.process_outgoing(@id_callsign.not_nil!)
                   end
                   if interface_available
                     RNS.log("Interface #{self} is transmitting beacon data on all subinterfaces: #{String.new(@id_callsign.not_nil!)}", RNS::LOG_DEBUG)
@@ -790,8 +790,8 @@ module RNS
       teardown_subinterfaces
     ensure
       @online = false
-      @serial.try do |s|
-        s.close unless s.closed?
+      @serial.try do |ser|
+        ser.close unless ser.closed?
       rescue ex
         RNS.log("Error closing serial port: #{ex.message}", RNS::LOG_DEBUG)
       end

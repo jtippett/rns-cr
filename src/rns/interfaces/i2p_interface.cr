@@ -215,7 +215,7 @@ module RNS
 
         session_id = next_session_id
         # Create a SAM stream session for this tunnel
-        session_sock = @sam.create_session(session_id)
+        _session_sock = @sam.create_session(session_id)
 
         # Connect to the remote I2P destination
         stream_sock = @sam.stream_connect(session_id, i2p_destination)
@@ -277,7 +277,7 @@ module RNS
         # Create a SAM stream session with the stored key
         session_id = next_session_id
         RNS.log("#{owner} Bringing up I2P endpoint, this may take a while...", RNS::LOG_INFO)
-        session_sock = @sam.create_session(session_id, destination: private_key)
+        _session_sock = @sam.create_session(session_id, destination: private_key)
 
         # Get the base32 address via naming lookup
         b32 = @sam.naming_lookup("ME")

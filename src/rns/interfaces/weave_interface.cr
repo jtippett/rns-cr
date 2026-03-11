@@ -657,8 +657,8 @@ module RNS
       @should_run = false
       @online = false
       @wdcl_connected = false
-      @serial.try do |s|
-        s.close unless s.closed?
+      @serial.try do |serial|
+        serial.close unless serial.closed?
       rescue ex
         RNS.log("Error closing serial port: #{ex.message}", RNS::LOG_DEBUG)
       end
@@ -712,7 +712,7 @@ module RNS
 
       while @should_run
         serial = @serial
-        break unless serial && !serial.closed?
+        break if serial.nil? || serial.closed?
 
         begin
           bytes_read = serial.read(buf)
@@ -736,8 +736,8 @@ module RNS
     ensure
       @online = false
       @wdcl_connected = false
-      @serial.try do |s|
-        s.close unless s.closed?
+      @serial.try do |ser|
+        ser.close unless ser.closed?
       rescue ex
         RNS.log("Error closing serial port: #{ex.message}", RNS::LOG_DEBUG)
       end
@@ -1037,8 +1037,8 @@ module RNS
       deque_hit = false
 
       if @owner.mif_deque.includes?(data_hash)
-        @owner.mif_deque_times.each do |te|
-          if te[0] == data_hash && Time.utc.to_unix_f < te[1] + WeaveInterface::MULTI_IF_DEQUE_TTL
+        @owner.mif_deque_times.each do |time_entry|
+          if time_entry[0] == data_hash && Time.utc.to_unix_f < time_entry[1] + WeaveInterface::MULTI_IF_DEQUE_TTL
             deque_hit = true
             break
           end

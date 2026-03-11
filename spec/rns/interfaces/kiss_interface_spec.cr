@@ -449,7 +449,7 @@ describe RNS::KISSInterface do
     it "parses multiple KISS frames" do
       received = [] of Bytes
 
-      callback = ->(data : Bytes, _iface : RNS::Interface) { received << data.dup; nil }
+      _callback = ->(data : Bytes, _iface : RNS::Interface) { received << data.dup; nil }
 
       # Parse frames manually
       frames = [
@@ -459,7 +459,7 @@ describe RNS::KISSInterface do
       ]
 
       all_bytes = IO::Memory.new
-      frames.each { |f| all_bytes.write(build_kiss_frame(f)) }
+      frames.each { |frame| all_bytes.write(build_kiss_frame(frame)) }
       raw = all_bytes.to_slice
 
       # Simulate KISS state machine
@@ -1345,7 +1345,7 @@ describe RNS::AX25KISSInterface do
   describe "AX.25 KISS read loop simulation" do
     it "parses frame with AX.25 header stripping" do
       received = [] of Bytes
-      callback = ->(data : Bytes, _iface : RNS::Interface) { received << data.dup; nil }
+      _callback = ->(data : Bytes, _iface : RNS::Interface) { received << data.dup; nil }
 
       # Build AX.25 payload: header + data
       header = RNS::AX25.build_header(

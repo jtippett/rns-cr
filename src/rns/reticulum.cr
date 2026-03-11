@@ -794,7 +794,7 @@ module RNS
                 end
                 begin
                   source_hash = hexhash.hexbytes
-                  unless Reticulum.blackhole_sources.any? { |h| h == source_hash }
+                  unless Reticulum.blackhole_sources.any? { |hash| hash == source_hash }
                     Reticulum.blackhole_sources << source_hash
                   end
                 rescue
@@ -810,7 +810,7 @@ module RNS
                 end
                 begin
                   source_hash = hexhash.hexbytes
-                  unless Reticulum.interface_discovery_sources.any? { |h| h == source_hash }
+                  unless Reticulum.interface_discovery_sources.any? { |hash| hash == source_hash }
                     Reticulum.interface_discovery_sources << source_hash
                   end
                 rescue
@@ -898,9 +898,9 @@ module RNS
             Reticulum.remote_management_enabled = false
             Reticulum.allow_probes = false
             RNS.log("Connected to locally available Reticulum instance via: #{client}", RNS::LOG_DEBUG)
-          rescue ex2
+          rescue ex
             RNS.log("Local shared instance appears to be running, but it could not be connected", RNS::LOG_ERROR)
-            RNS.log("The contained exception was: #{ex2.message}", RNS::LOG_ERROR)
+            RNS.log("The contained exception was: #{ex.message}", RNS::LOG_ERROR)
             @is_shared_instance = false
             @is_standalone_instance = true
             @is_connected_to_shared_instance = false

@@ -624,7 +624,7 @@ module RNS
 
     # Start data listener (UDP server) on an interface
     private def start_data_listener(ifname : String, link_local_addr : String)
-      if_index = NetInfo.interface_name_to_index(ifname)
+      _if_index = NetInfo.interface_name_to_index(ifname)
       local_addr = "#{link_local_addr}%#{ifname}"
       sock = UDPSocket.new(Socket::Family::INET6)
       sock.reuse_address = true
@@ -711,7 +711,7 @@ module RNS
 
     # Check if data hash is in the multi-interface deque and still valid
     def mif_deque_hit?(data_hash : Bytes) : Bool
-      return false unless @mif_deque.any? { |h| h == data_hash }
+      return false unless @mif_deque.any? { |hash| hash == data_hash }
       @mif_deque_times.any? do |entry|
         entry[0] == data_hash && Time.utc.to_unix_f < entry[1] + MULTI_IF_DEQUE_TTL
       end

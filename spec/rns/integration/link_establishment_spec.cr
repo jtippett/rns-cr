@@ -171,7 +171,7 @@ describe "Integration: Link Establishment" do
       dir = start_link_transport
       server_identity = RNS::Identity.new
       server_dest = create_link_dest(server_identity)
-      resp, _ = setup_responder_link(server_dest)
+      _resp, _ = setup_responder_link(server_dest)
       RNS::Transport.active_links.size.should be >= 1
       cleanup_link_dir(dir)
     end

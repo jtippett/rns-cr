@@ -594,7 +594,7 @@ module RNS
             part_data = encrypted_data[part_start...part_end]
             map_hash = get_map_hash(part_data)
 
-            if collision_guard_list.any? { |h| h == map_hash }
+            if collision_guard_list.any? { |hash| hash == map_hash }
               RNS.log("Found hash collision in resource map, remapping...", RNS::LOG_DEBUG)
               hashmap_ok = false
               break
@@ -807,7 +807,7 @@ module RNS
               end
             end
           else
-            max_extra_wait = (0...MAX_RETRIES).sum { |r| (r + 1).to_f64 * PER_RETRY_DELAY }
+            max_extra_wait = (0...MAX_RETRIES).sum { |retry_num| (retry_num + 1).to_f64 * PER_RETRY_DELAY }
             rtt_val = @rtt || 0.5
             max_wait = rtt_val * @timeout_factor * @max_retries + @sender_grace_time + max_extra_wait
             sleep_time = @last_activity + max_wait - Time.utc.to_unix_f
@@ -1285,7 +1285,7 @@ module RNS
 
       requested_parts = @sender_parts[search_start...search_end].select do |part|
         mh = part.map_hash
-        mh && map_hashes.any? { |h| h == mh }
+        mh && map_hashes.any? { |hash| hash == mh }
       end
 
       requested_parts.each do |part|

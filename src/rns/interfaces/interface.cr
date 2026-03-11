@@ -430,7 +430,7 @@ module RNS
       now = Time.utc.to_unix_f
 
       # Remove stale entries
-      @announce_queue.reject! { |a| now > a.time + QUEUED_ANNOUNCE_LIFE }
+      @announce_queue.reject! { |announce| now > announce.time + QUEUED_ANNOUNCE_LIFE }
 
       return if @announce_queue.empty?
 
@@ -447,7 +447,7 @@ module RNS
       process_outgoing(selected.raw)
       sent_announce
 
-      @announce_queue.reject! { |a| a.raw == selected.raw && a.time == selected.time }
+      @announce_queue.reject! { |announce| announce.raw == selected.raw && announce.time == selected.time }
 
       unless @announce_queue.empty?
         spawn do

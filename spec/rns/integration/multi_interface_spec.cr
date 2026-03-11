@@ -54,7 +54,7 @@ describe "Integration: Multi-Interface Routing" do
         hash
       end
       RNS::Transport.interfaces.size.should be >= 3
-      iface_hashes.each { |h| RNS::Transport.interfaces.should contain(h) }
+      iface_hashes.each { |hash| RNS::Transport.interfaces.should contain(hash) }
       cleanup_mi_dir(dir)
     end
 
@@ -208,7 +208,7 @@ describe "Integration: Multi-Interface Routing" do
           MI_APP_NAME, ["service#{i}"])
       end
       RNS::Transport.destinations.size.should be >= 5
-      destinations.each { |d| RNS::Transport.destinations.should contain(d) }
+      destinations.each { |dest| RNS::Transport.destinations.should contain(dest) }
       cleanup_mi_dir(dir)
     end
 

@@ -114,8 +114,8 @@ module RNS
           args.phy_rates = true
         when /^-[vqSClCFfOnpP]+$/
           # Handle combined short flags
-          arg[1..].each_char do |c|
-            case c
+          arg[1..].each_char do |char|
+            case char
             when 'v' then args.verbose += 1
             when 'q' then args.quiet += 1
             when 'S' then args.silent = true
@@ -128,7 +128,7 @@ module RNS
             when 'p' then args.print_identity = true
             when 'P' then args.phy_rates = true
             else
-              raise ArgumentError.new("Unknown flag: -#{c}")
+              raise ArgumentError.new("Unknown flag: -#{char}")
             end
           end
         when "-v", "--verbose"
@@ -351,7 +351,7 @@ module RNS
       ann = announce < 0 ? false : true
 
       targetloglevel = 3 + verbosity - quietness
-      reticulum = ReticulumInstance.new(configdir: configdir, loglevel: targetloglevel)
+      _reticulum = ReticulumInstance.new(configdir: configdir, loglevel: targetloglevel)
 
       fetch_jail : String? = nil
       if j = jail
@@ -398,7 +398,7 @@ module RNS
 
         if af = allowed_file
           begin
-            ali = File.read(af).gsub("\r", "").split("\n").select { |a| a.size == dest_len }
+            ali = File.read(af).gsub("\r", "").split("\n").select { |alias_line| alias_line.size == dest_len }
             if ali.size > 0
               if allowed.empty?
                 allowed = ali
@@ -413,13 +413,13 @@ module RNS
           end
         end
 
-        allowed.each do |a|
-          if a.size != dest_len
+        allowed.each do |entry|
+          if entry.size != dest_len
             puts "Allowed destination length is invalid, must be #{dest_len} hexadecimal characters (#{dest_len // 2} bytes)."
             RNS.exit(1)
           end
           begin
-            allowed_identity_hashes << a.hexbytes
+            allowed_identity_hashes << entry.hexbytes
           rescue
             puts "Invalid destination entered. Check your input."
             RNS.exit(1)
@@ -434,7 +434,7 @@ module RNS
       destination.set_link_established_callback(->(link : Link) {
         RNS.log("Incoming link established", RNS::LOG_VERBOSE)
         link.set_remote_identified_callback(->(lnk : Link, ident : Identity) {
-          if allowed_identity_hashes.any? { |h| h == ident.hash }
+          if allowed_identity_hashes.any? { |hash| hash == ident.hash }
             RNS.log("Authenticated sender", RNS::LOG_VERBOSE)
           elsif !allow_all
             RNS.log("Sender not allowed, tearing down link", RNS::LOG_VERBOSE)
@@ -445,7 +445,7 @@ module RNS
         link.set_resource_callback(->(resource : Resource) {
           sender_identity = resource.link.try(&.get_remote_identity)
           if si = sender_identity
-            return true if allowed_identity_hashes.any? { |h| h == si.hash }
+            return true if allowed_identity_hashes.any? { |hash| hash == si.hash }
           end
           return true if allow_all
           false
@@ -584,7 +584,7 @@ module RNS
 
       print ERASE_STR
 
-      reticulum = ReticulumInstance.new(configdir: configdir, loglevel: targetloglevel)
+      _reticulum = ReticulumInstance.new(configdir: configdir, loglevel: targetloglevel)
       identity = prepare_identity(identitypath)
 
       if !Transport.has_path(destination_hash)
@@ -818,7 +818,7 @@ module RNS
 
       destination_hash = parse_destination_hash(destination)
 
-      reticulum = ReticulumInstance.new(configdir: configdir, loglevel: targetloglevel)
+      _reticulum = ReticulumInstance.new(configdir: configdir, loglevel: targetloglevel)
       identity = prepare_identity(identitypath)
 
       if !Transport.has_path(destination_hash)

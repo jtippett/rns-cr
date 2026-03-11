@@ -59,11 +59,11 @@ module RNS
           args.version = true
         when /^-[vsntwv]+$/
           # Handle combined short flags, but only -v can be combined
-          arg[1..].each_char do |c|
-            case c
+          arg[1..].each_char do |char|
+            case char
             when 'v' then args.verbose += 1
             else
-              raise ArgumentError.new("Unknown flag: -#{c}")
+              raise ArgumentError.new("Unknown flag: -#{char}")
             end
           end
         else
@@ -192,7 +192,7 @@ module RNS
         verbosity = -1
       end
 
-      reticulum = ReticulumInstance.new(configdir: args.config, loglevel: 3 + verbosity)
+      _reticulum = ReticulumInstance.new(configdir: args.config, loglevel: 3 + verbosity)
 
       if !Transport.has_path(destination_hash)
         Transport.request_path(destination_hash)

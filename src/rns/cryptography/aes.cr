@@ -2,7 +2,7 @@ require "openssl"
 
 module RNS
   module Cryptography
-    module AES_128_CBC
+    module AES128CBC
       def self.encrypt(plaintext : Bytes, key : Bytes, iv : Bytes) : Bytes
         if key.size != 16
           raise ArgumentError.new("Invalid key length #{key.size * 8} for AES-128-CBC")
@@ -34,7 +34,7 @@ module RNS
       end
     end
 
-    module AES_256_CBC
+    module AES256CBC
       def self.encrypt(plaintext : Bytes, key : Bytes, iv : Bytes) : Bytes
         if key.size != 32
           raise ArgumentError.new("Invalid key length #{key.size * 8} for AES-256-CBC")

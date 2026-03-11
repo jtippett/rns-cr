@@ -59,9 +59,9 @@ module RNS
 
         ciphertext = case @mode
                      when Mode::AES_128_CBC
-                       AES_128_CBC.encrypt(padded, @encryption_key, iv)
+                       AES128CBC.encrypt(padded, @encryption_key, iv)
                      when Mode::AES_256_CBC
-                       AES_256_CBC.encrypt(padded, @encryption_key, iv)
+                       AES256CBC.encrypt(padded, @encryption_key, iv)
                      else
                        raise ArgumentError.new("Invalid mode")
                      end
@@ -88,9 +88,9 @@ module RNS
 
         plaintext = case @mode
                     when Mode::AES_128_CBC
-                      AES_128_CBC.decrypt(ciphertext, @encryption_key, iv)
+                      AES128CBC.decrypt(ciphertext, @encryption_key, iv)
                     when Mode::AES_256_CBC
-                      AES_256_CBC.decrypt(ciphertext, @encryption_key, iv)
+                      AES256CBC.decrypt(ciphertext, @encryption_key, iv)
                     else
                       raise ArgumentError.new("Invalid mode")
                     end

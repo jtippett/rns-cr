@@ -355,11 +355,11 @@ describe RNS::WeaveDevice do
 
   describe "#log_handle" do
     it "handles WDCL connection event" do
-      device = RNS::WeaveDevice.new(as_interface: true)
+      _device = RNS::WeaveDevice.new(as_interface: true)
       # Need a connection to set wdcl_connected on
       # We test the logic indirectly
 
-      frame = RNS::WeaveLogFrame.new(
+      _frame = RNS::WeaveLogFrame.new(
         timestamp: 1000.0,
         level: 5_u8,
         event: RNS::WeaveEvt::ET_PROTO_WDCL_CONNECTION,

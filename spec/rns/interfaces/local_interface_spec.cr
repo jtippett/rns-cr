@@ -752,7 +752,7 @@ describe RNS::LocalServerInterface do
         server.clients.should eq(3)
         server.spawned_interfaces.not_nil!.size.should eq(3)
 
-        clients.each { |c| c.close rescue nil }
+        clients.each { |client| client.close rescue nil }
         server.detach
       end
 
@@ -1026,17 +1026,17 @@ describe RNS::LocalServerInterface do
       wait_for { server.clients >= 5 }
 
       # Each client sends 10 messages
-      clients.each do |c|
+      clients.each do |client|
         10.times do
-          c.write(RNS::HDLC.frame(Random::Secure.random_bytes(25)))
-          c.flush
+          client.write(RNS::HDLC.frame(Random::Secure.random_bytes(25)))
+          client.flush
         end
       end
 
       wait_for(timeout: 5.seconds) { count.get >= 50 }
       count.get.should eq(50)
 
-      clients.each { |c| c.close rescue nil }
+      clients.each { |client| client.close rescue nil }
       server.detach
     end
   end

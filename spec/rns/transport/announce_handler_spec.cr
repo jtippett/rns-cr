@@ -620,7 +620,7 @@ describe "Transport Announce Handling" do
 
       # This will be rejected because the new announce has more hops,
       # the path hasn't expired, and the emission time is similar
-      result = RNS::Transport.inbound_announce(packet2)
+      _result = RNS::Transport.inbound_announce(packet2)
       # May or may not be true depending on emission timing
       # But hops should not increase
       entry = RNS::Transport.path_table[dest.hash.hexstring]
@@ -631,9 +631,9 @@ describe "Transport Announce Handling" do
       handler_called = false
       received_hash = nil
 
-      handler = TestCallbackAnnounceHandler.new(nil) do |dh, _ai, _ad, _aph|
+      handler = TestCallbackAnnounceHandler.new(nil) do |dest_hash, _ai, _ad, _aph|
         handler_called = true
-        received_hash = dh
+        received_hash = dest_hash
       end
 
       RNS::Transport.register_announce_handler(handler)

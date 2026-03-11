@@ -117,8 +117,8 @@ module RNS
           args.quiet += 1
         when /^-[vqplxbnNdm]+$/
           # Handle combined short flags
-          arg[1..].each_char do |c|
-            case c
+          arg[1..].each_char do |char|
+            case char
             when 'v' then args.verbose += 1
             when 'q' then args.quiet += 1
             when 'p' then args.print_identity = true
@@ -130,7 +130,7 @@ module RNS
             when 'd' then args.detailed = true
             when 'm' then args.mirror = true
             else
-              raise ArgumentError.new("Unknown flag: -#{c}")
+              raise ArgumentError.new("Unknown flag: -#{char}")
             end
           end
         else
@@ -260,7 +260,7 @@ module RNS
       end
 
       tstr = ""
-      components.each_with_index do |c, idx|
+      components.each_with_index do |component, idx|
         i = idx + 1
         if i == 1
           # first component, no prefix
@@ -269,7 +269,7 @@ module RNS
         elsif i == components.size
           tstr += " and "
         end
-        tstr += c
+        tstr += component
       end
 
       tstr
@@ -400,7 +400,7 @@ module RNS
         end
         if truncated_parts.size > 0
           output << "\nOutput truncated before being returned:\n"
-          truncated_parts.each { |p| output << p << "\n" }
+          truncated_parts.each { |part| output << part << "\n" }
         end
       end
 
@@ -505,7 +505,7 @@ module RNS
       allowed_identity_hashes = [] of Bytes
 
       targetloglevel = 3 + verbosity - quietness
-      reticulum = ReticulumInstance.new(configdir: configdir, loglevel: targetloglevel)
+      _reticulum = ReticulumInstance.new(configdir: configdir, loglevel: targetloglevel)
 
       identity = prepare_identity(identitypath)
       destination = Destination.new(identity, Destination::IN, Destination::SINGLE, APP_NAME, "execute")
@@ -519,13 +519,13 @@ module RNS
       unless disable_auth
         dest_len = (Reticulum::TRUNCATED_HASHLENGTH // 8) * 2
 
-        allowed.each do |a|
-          if a.size != dest_len
+        allowed.each do |entry|
+          if entry.size != dest_len
             puts "Allowed destination length is invalid, must be #{dest_len} hexadecimal characters (#{dest_len // 2} bytes)."
             exit(1)
           end
           begin
-            allowed_identity_hashes << a.hexbytes
+            allowed_identity_hashes << entry.hexbytes
           rescue
             puts "Invalid destination entered. Check your input."
             exit(1)
@@ -564,7 +564,7 @@ module RNS
       destination.set_link_established_callback(->(link : Link) {
         link.set_remote_identified_callback(->(lnk : Link, ident : Identity) {
           RNS.log("Initiator of link #{lnk} identified as #{RNS.prettyhexrep(ident.hash)}")
-          if !allow_all && !allowed_identity_hashes.any? { |h| h == ident.hash }
+          if !allow_all && !allowed_identity_hashes.any? { |hash| hash == ident.hash }
             RNS.log("Identity #{RNS.prettyhexrep(ident.hash)} not allowed, tearing down link")
             lnk.teardown
           end
@@ -692,7 +692,7 @@ module RNS
       destination_hash = parse_destination_hash(destination)
 
       targetloglevel = 3 + verbosity - quietness
-      reticulum = ReticulumInstance.new(configdir: configdir, loglevel: targetloglevel)
+      _reticulum = ReticulumInstance.new(configdir: configdir, loglevel: targetloglevel)
       identity = prepare_identity(identitypath)
 
       if !Transport.has_path(destination_hash)

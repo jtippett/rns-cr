@@ -213,8 +213,8 @@ describe RNS do
     describe ".phyparams" do
       it "prints physical parameters without error" do
         # Capture stdout
-        output = String.build do |_|
-          original_stdout = STDOUT
+        _output = String.build do |_|
+          _original_stdout = STDOUT
           # We can't easily redirect STDOUT in Crystal, so just verify it doesn't raise
         end
         # Just verify the method exists and doesn't raise
@@ -421,8 +421,8 @@ describe RNS do
       iv = Random::Secure.random_bytes(16)
       plaintext = "test plaintext!!".to_slice # 16 bytes, one block
 
-      ciphertext = RNS::Cryptography::AES_256_CBC.encrypt(plaintext, key, iv)
-      decrypted = RNS::Cryptography::AES_256_CBC.decrypt(ciphertext, key, iv)
+      ciphertext = RNS::Cryptography::AES256CBC.encrypt(plaintext, key, iv)
+      decrypted = RNS::Cryptography::AES256CBC.decrypt(ciphertext, key, iv)
       decrypted.should eq plaintext
     end
 

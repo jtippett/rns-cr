@@ -113,19 +113,18 @@ module RNS
 
     if seconds > 0 && (!compact || displayed < 2)
       components << (verbose ? "#{seconds} second#{ss}" : "#{seconds}s")
-      displayed += 1
     end
 
     tstr = ""
-    components.each_with_index do |c, i|
-      if i == 0
+    components.each_with_index do |component, idx|
+      if idx == 0
         # first component, no prefix
-      elsif i < components.size - 1
+      elsif idx < components.size - 1
         tstr += ", "
       else
         tstr += " and "
       end
-      tstr += c
+      tstr += component
     end
 
     if tstr.empty?
@@ -175,19 +174,18 @@ module RNS
 
     if microseconds > 0 && (!compact || displayed < 2)
       components << (verbose ? "#{microseconds} microsecond#{sus}" : "#{microseconds}µs")
-      displayed += 1
     end
 
     tstr = ""
-    components.each_with_index do |c, i|
-      if i == 0
+    components.each_with_index do |component, idx|
+      if idx == 0
         # first component, no prefix
-      elsif i < components.size - 1
+      elsif idx < components.size - 1
         tstr += ", "
       else
         tstr += " and "
       end
-      tstr += c
+      tstr += component
     end
 
     if tstr.empty?

@@ -296,8 +296,8 @@ describe "Protocol Compatibility" do
       plaintext = "Hello Reticulum AES test!".to_slice
       padded = RNS::Cryptography::PKCS7.pad(plaintext)
 
-      ciphertext = RNS::Cryptography::AES_256_CBC.encrypt(padded, key, iv)
-      decrypted = RNS::Cryptography::AES_256_CBC.decrypt(ciphertext, key, iv)
+      ciphertext = RNS::Cryptography::AES256CBC.encrypt(padded, key, iv)
+      decrypted = RNS::Cryptography::AES256CBC.decrypt(ciphertext, key, iv)
       unpadded = RNS::Cryptography::PKCS7.unpad(decrypted)
       unpadded.should eq plaintext
     end
@@ -307,8 +307,8 @@ describe "Protocol Compatibility" do
       iv = Bytes.new(16) { |i| (i + 0x10).to_u8 }
       plaintext = RNS::Cryptography::PKCS7.pad("test".to_slice)
 
-      ct1 = RNS::Cryptography::AES_256_CBC.encrypt(plaintext, key, iv)
-      ct2 = RNS::Cryptography::AES_256_CBC.encrypt(plaintext, key, iv)
+      ct1 = RNS::Cryptography::AES256CBC.encrypt(plaintext, key, iv)
+      ct2 = RNS::Cryptography::AES256CBC.encrypt(plaintext, key, iv)
       ct1.should eq ct2
     end
 
@@ -317,7 +317,7 @@ describe "Protocol Compatibility" do
       iv = Random::Secure.random_bytes(16)
       50.times do
         plaintext = RNS::Cryptography::PKCS7.pad(Random::Secure.random_bytes(rand(1..200)))
-        ciphertext = RNS::Cryptography::AES_256_CBC.encrypt(plaintext, key, iv)
+        ciphertext = RNS::Cryptography::AES256CBC.encrypt(plaintext, key, iv)
         (ciphertext.size % 16).should eq 0
       end
     end
@@ -810,9 +810,9 @@ describe "Protocol Compatibility" do
         {ht: 1_u8, cf: 1_u8, tt: 1_u8, dt: 3_u8, pt: 3_u8, expected: 0x7F_u8}, # all bits set
       ]
 
-      test_cases.each do |tc|
-        computed = (tc[:ht].to_u8 << 6) | (tc[:cf].to_u8 << 5) | (tc[:tt].to_u8 << 4) | (tc[:dt].to_u8 << 2) | tc[:pt].to_u8
-        computed.should eq tc[:expected]
+      test_cases.each do |test_case|
+        computed = (test_case[:ht].to_u8 << 6) | (test_case[:cf].to_u8 << 5) | (test_case[:tt].to_u8 << 4) | (test_case[:dt].to_u8 << 2) | test_case[:pt].to_u8
+        computed.should eq test_case[:expected]
       end
     end
 
@@ -1060,8 +1060,8 @@ describe "Protocol Compatibility" do
       # Last 5 bytes are big-endian timestamp
       timestamp_bytes = random_hash[5, 5]
       timestamp = 0_i64
-      timestamp_bytes.each do |b|
-        timestamp = (timestamp << 8) | b.to_i64
+      timestamp_bytes.each do |byte|
+        timestamp = (timestamp << 8) | byte.to_i64
       end
 
       # Timestamp should be within our time window
@@ -1097,7 +1097,7 @@ describe "Protocol Compatibility" do
     end
 
     it "cross-identity encryption: encrypt with public key, decrypt with private key" do
-      sender_identity = RNS::Identity.new
+      _sender_identity = RNS::Identity.new
       receiver_identity = RNS::Identity.new
 
       # Create a public-key-only copy of the receiver
@@ -1152,7 +1152,7 @@ describe "Protocol Compatibility" do
 
     it "50 random encrypt/decrypt cycles with different identities" do
       50.times do
-        sender = RNS::Identity.new
+        _sender = RNS::Identity.new
         receiver = RNS::Identity.new
 
         receiver_pub = RNS::Identity.new(create_keys: false)

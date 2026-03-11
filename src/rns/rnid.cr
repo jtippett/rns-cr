@@ -138,8 +138,8 @@ module RNS
         when "--version"
           args.version = true
         when /^-[vqfIORpPbBQx]+$/
-          arg[1..].each_char do |c|
-            case c
+          arg[1..].each_char do |char|
+            case char
             when 'v' then args.verbose += 1
             when 'q' then args.quiet += 1
             when 'f' then args.force = true
@@ -153,7 +153,7 @@ module RNS
             when 'Q' then args.qr = true
             when 'x' then args.export = true
             else
-              raise ArgumentError.new("Unknown flag: -#{c}")
+              raise ArgumentError.new("Unknown flag: -#{char}")
             end
           end
         else
@@ -266,9 +266,9 @@ module RNS
       nbits = 0
       result = IO::Memory.new
 
-      clean.each_char do |c|
-        val = alphabet.index(c)
-        raise ArgumentError.new("Invalid base32 character: #{c}") if val.nil?
+      clean.each_char do |char|
+        val = alphabet.index(char)
+        raise ArgumentError.new("Invalid base32 character: #{char}") if val.nil?
         bits = (bits << 5) | val.to_u64
         nbits += 5
         if nbits >= 8
@@ -438,7 +438,6 @@ module RNS
         rescue ex
           RNS.log("Could not decode Identity from specified file")
           exit(9)
-          raise ex # unreachable
         end
       end
     end
@@ -825,7 +824,7 @@ module RNS
       target_loglevel = 4
       target_loglevel = target_loglevel + args.verbose - args.quiet
 
-      reticulum = ReticulumInstance.new(configdir: args.config, loglevel: target_loglevel)
+      _reticulum = ReticulumInstance.new(configdir: args.config, loglevel: target_loglevel)
       RNS.compact_log_fmt = true
       if args.stdout
         RNS.loglevel = -1

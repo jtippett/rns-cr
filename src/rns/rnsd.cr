@@ -44,14 +44,14 @@ module RNS
           args.version = true
         when /^-[vqsi]+$/
           # Handle combined short flags like -vvqs
-          arg[1..].each_char do |c|
-            case c
+          arg[1..].each_char do |char|
+            case char
             when 'v' then args.verbose += 1
             when 'q' then args.quiet += 1
             when 's' then args.service = true
             when 'i' then args.interactive = true
             else
-              raise ArgumentError.new("Unknown flag: -#{c}")
+              raise ArgumentError.new("Unknown flag: -#{char}")
             end
           end
         else
@@ -136,8 +136,10 @@ module RNS
       STDERR.puts "rnsd: #{ex.message}"
       STDERR.puts "Usage: rnsd [--config PATH] [-v] [-q] [-s] [-i] [--exampleconfig] [--version]"
       exit(1)
-    rescue ex : KeyboardInterrupt | Exception
-      if ex.is_a?(Exception) && ex.message.try(&.includes?("Interrupt"))
+    rescue ex : KeyboardInterrupt
+      puts ""
+    rescue ex : Exception
+      if ex.message.try(&.includes?("Interrupt"))
         puts ""
       end
     end

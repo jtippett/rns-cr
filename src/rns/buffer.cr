@@ -267,9 +267,9 @@ module RNS
         message = StreamDataMessage.new(@stream_id, chunk, @eof, comp_success)
         @channel.send(message)
         return processed_length
-      rescue cex : ChannelException
-        if cex.type != CEType::ME_LINK_NOT_READY
-          raise cex
+      rescue ex : ChannelException
+        if ex.type != CEType::ME_LINK_NOT_READY
+          raise ex
         end
       end
 

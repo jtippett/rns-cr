@@ -243,7 +243,7 @@ module RNS
             # Serialize random_blobs - persist up to PERSIST_RANDOM_BLOBS
             blobs_to_save = entry.random_blobs[0, Math.min(entry.random_blobs.size, PERSIST_RANDOM_BLOBS)]
             blob_array = Array(MessagePack::Type).new
-            blobs_to_save.each { |b| blob_array << b.as(MessagePack::Type) }
+            blobs_to_save.each { |blob| blob_array << blob.as(MessagePack::Type) }
             serialised_entry << blob_array.as(MessagePack::Type)
 
             iface_hash = entry.receiving_interface
@@ -299,8 +299,8 @@ module RNS
             random_blobs = [] of Bytes
             blob_data = entry[5]
             if blob_data.is_a?(Array)
-              blob_data.each do |b|
-                random_blobs << b.as(Bytes) if b.is_a?(Bytes)
+              blob_data.each do |blob|
+                random_blobs << blob.as(Bytes) if blob.is_a?(Bytes)
               end
             end
 
@@ -350,7 +350,7 @@ module RNS
         RNS.log("Saving packet hashlist to storage...", RNS::LOG_DEBUG)
 
         hash_array = Array(MessagePack::Type).new
-        @@packet_hashlist.each { |h| hash_array << h.hexbytes.as(MessagePack::Type) }
+        @@packet_hashlist.each { |hash_hex| hash_array << hash_hex.hexbytes.as(MessagePack::Type) }
 
         hashlist_path = File.join(storage_path, "packet_hashlist")
         File.write(hashlist_path, hash_array.to_msgpack)
@@ -411,39 +411,39 @@ module RNS
 
         serialised_tunnels = [] of Array(MessagePack::Type)
 
-        @@tunnels.each do |_hex_key, te|
+        @@tunnels.each do |_hex_key, tunnel_entry|
           begin
             serialised_paths = [] of Array(MessagePack::Type)
 
-            te.paths.each do |dest_hex, pe|
-              path_entry = Array(MessagePack::Type).new
-              path_entry << dest_hex.hexbytes.as(MessagePack::Type)
-              path_entry << pe.timestamp.as(MessagePack::Type)
-              path_entry << pe.next_hop.as(MessagePack::Type)
-              path_entry << pe.hops.to_i64.as(MessagePack::Type)
-              path_entry << pe.expires.as(MessagePack::Type)
+            tunnel_entry.paths.each do |dest_hex, path_entry|
+              path_entry_mp = Array(MessagePack::Type).new
+              path_entry_mp << dest_hex.hexbytes.as(MessagePack::Type)
+              path_entry_mp << path_entry.timestamp.as(MessagePack::Type)
+              path_entry_mp << path_entry.next_hop.as(MessagePack::Type)
+              path_entry_mp << path_entry.hops.to_i64.as(MessagePack::Type)
+              path_entry_mp << path_entry.expires.as(MessagePack::Type)
 
               blob_array = Array(MessagePack::Type).new
-              pe.random_blobs.each { |b| blob_array << b.as(MessagePack::Type) }
-              path_entry << blob_array.as(MessagePack::Type)
+              path_entry.random_blobs.each { |blob| blob_array << blob.as(MessagePack::Type) }
+              path_entry_mp << blob_array.as(MessagePack::Type)
 
-              iface = pe.receiving_interface
-              path_entry << (iface ? iface.as(MessagePack::Type) : nil.as(MessagePack::Type))
-              path_entry << pe.packet_hash.as(MessagePack::Type)
+              iface = path_entry.receiving_interface
+              path_entry_mp << (iface ? iface.as(MessagePack::Type) : nil.as(MessagePack::Type))
+              path_entry_mp << path_entry.packet_hash.as(MessagePack::Type)
 
-              serialised_paths << path_entry
+              serialised_paths << path_entry_mp
             end
 
-            tunnel_entry = Array(MessagePack::Type).new
-            tunnel_entry << te.tunnel_id.as(MessagePack::Type)
-            tunnel_entry << (te.interface ? te.interface.as(MessagePack::Type) : nil.as(MessagePack::Type))
+            tunnel_entry_mp = Array(MessagePack::Type).new
+            tunnel_entry_mp << tunnel_entry.tunnel_id.as(MessagePack::Type)
+            tunnel_entry_mp << (tunnel_entry.interface ? tunnel_entry.interface.as(MessagePack::Type) : nil.as(MessagePack::Type))
 
             paths_mp = Array(MessagePack::Type).new
-            serialised_paths.each { |sp| paths_mp << sp.as(MessagePack::Type) }
-            tunnel_entry << paths_mp.as(MessagePack::Type)
-            tunnel_entry << te.expires.as(MessagePack::Type)
+            serialised_paths.each { |path| paths_mp << path.as(MessagePack::Type) }
+            tunnel_entry_mp << paths_mp.as(MessagePack::Type)
+            tunnel_entry_mp << tunnel_entry.expires.as(MessagePack::Type)
 
-            serialised_tunnels << tunnel_entry
+            serialised_tunnels << tunnel_entry_mp
           rescue ex
             RNS.log("Skipping persist for tunnel table entry due to error: #{ex}", RNS::LOG_ERROR)
           end
@@ -486,9 +486,9 @@ module RNS
             tunnel_paths = Hash(String, PathEntry).new
 
             if serialised_paths.is_a?(Array)
-              serialised_paths.each do |sp|
-                next unless sp.is_a?(Array)
-                path_arr = sp.as(Array(MessagePack::Type))
+              serialised_paths.each do |path|
+                next unless path.is_a?(Array)
+                path_arr = path.as(Array(MessagePack::Type))
 
                 destination_hash = path_arr[0].as(Bytes)
                 timestamp = msgpack_to_f64(path_arr[1])
@@ -499,8 +499,8 @@ module RNS
                 random_blobs = [] of Bytes
                 blob_data = path_arr[5]
                 if blob_data.is_a?(Array)
-                  blob_data.each do |b|
-                    random_blobs << b.as(Bytes) if b.is_a?(Bytes)
+                  blob_data.each do |blob|
+                    random_blobs << blob.as(Bytes) if blob.is_a?(Bytes)
                   end
                 end
 

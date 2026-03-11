@@ -1368,7 +1368,7 @@ describe RNS::TCPServerInterface do
         wait_for { iface.clients >= 3 }
         iface.clients.should eq(3)
       ensure
-        clients.each { |c| c.close rescue nil }
+        clients.each { |client| client.close rescue nil }
         iface.detach
       end
     end
@@ -1590,7 +1590,7 @@ describe RNS::TCPServerInterface do
         wait_for(timeout: 5.seconds) { iface.clients >= 10 }
         iface.clients.should eq(10)
       ensure
-        clients.each { |c| c.close rescue nil }
+        clients.each { |client| client.close rescue nil }
         iface.detach
       end
     end
@@ -1623,9 +1623,9 @@ describe RNS::TCPServerInterface do
         sleep 200.milliseconds
 
         # Each client sends multiple messages
-        clients.each_with_index do |client, ci|
-          7.times do |mi|
-            data = Bytes.new(20) { |i| ((ci * 7 + mi * 3 + i) % 256).to_u8 }
+        clients.each_with_index do |client, client_idx|
+          7.times do |msg_idx|
+            data = Bytes.new(20) { |i| ((client_idx * 7 + msg_idx * 3 + i) % 256).to_u8 }
             framed = RNS::HDLC.frame(data)
             client.write(framed)
             client.flush
@@ -1637,7 +1637,7 @@ describe RNS::TCPServerInterface do
         wait_for(timeout: 5.seconds) { received_data.size >= 21 }
         received_data.size.should be >= 20
       ensure
-        clients.each { |c| c.close rescue nil }
+        clients.each { |client| client.close rescue nil }
         iface.detach
       end
     end

@@ -127,7 +127,7 @@ module RNS
       return false unless Identity.validate_announce(packet, only_validate_signature: true)
 
       # Check if this is for a local destination
-      local_destination = @@destinations.find { |d| d.hash == packet.destination_hash }
+      local_destination = @@destinations.find { |dest| dest.hash == packet.destination_hash }
       return false if local_destination
 
       # Perform full validation
@@ -185,7 +185,7 @@ module RNS
       should_add = false
 
       # Must not be for a local destination and hops within limit
-      if !@@destinations.any? { |d| d.hash == destination_hash } && packet.hops < PATHFINDER_M + 1
+      if !@@destinations.any? { |dest| dest.hash == destination_hash } && packet.hops < PATHFINDER_M + 1
         announce_emitted_val = announce_emitted(packet)
 
         offset = Identity::KEYSIZE // 8 + Identity::NAME_HASH_LENGTH // 8
@@ -200,7 +200,7 @@ module RNS
             if packet.hops.to_i32 <= path_entry.hops
               # Equal or fewer hops — check for replay protection
               path_timebase = timebase_from_random_blobs(random_blobs)
-              if !random_blobs.any? { |b| b == random_blob } && announce_emitted_val > path_timebase
+              if !random_blobs.any? { |blob| blob == random_blob } && announce_emitted_val > path_timebase
                 mark_path_unknown_state(destination_hash)
                 should_add = true
               end
@@ -217,7 +217,7 @@ module RNS
 
               if now >= path_expires
                 # Path has expired
-                if !random_blobs.any? { |b| b == random_blob }
+                if !random_blobs.any? { |blob| blob == random_blob }
                   RNS.log("Replacing destination table entry for #{RNS.prettyhexrep(destination_hash)} with new announce due to expired path", RNS::LOG_DEBUG)
                   mark_path_unknown_state(destination_hash)
                   should_add = true
@@ -225,7 +225,7 @@ module RNS
               else
                 if announce_emitted_val > path_announce_emitted
                   # More recently emitted
-                  if !random_blobs.any? { |b| b == random_blob }
+                  if !random_blobs.any? { |blob| blob == random_blob }
                     RNS.log("Replacing destination table entry for #{RNS.prettyhexrep(destination_hash)} with new announce, since it was more recently emitted", RNS::LOG_DEBUG)
                     mark_path_unknown_state(destination_hash)
                     should_add = true
@@ -263,7 +263,7 @@ module RNS
             expires = now + PATHFINDER_E.to_f64
 
             # Update random blobs
-            if !random_blobs.any? { |b| b == random_blob }
+            if !random_blobs.any? { |blob| blob == random_blob }
               random_blobs << random_blob.dup
               if random_blobs.size > MAX_RANDOM_BLOBS
                 random_blobs = random_blobs[random_blobs.size - MAX_RANDOM_BLOBS..]
@@ -534,7 +534,7 @@ module RNS
       @@path_table.each_value { |entry| active_paths << entry.packet_hash.hexstring }
 
       @@tunnels.each_value do |tunnel_entry|
-        tunnel_entry.paths.each_value { |pe| active_paths << pe.packet_hash.hexstring }
+        tunnel_entry.paths.each_value { |path_entry| active_paths << path_entry.packet_hash.hexstring }
       end
 
       removed = 0

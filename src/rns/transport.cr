@@ -483,7 +483,7 @@ module RNS
     end
 
     def self.deregister_announce_handler(handler : AnnounceHandler)
-      @@announce_handlers.reject! { |h| h == handler }
+      @@announce_handlers.reject! { |hdl| hdl == handler }
     end
 
     # ════════════════════════════════════════════════════════════════
@@ -639,7 +639,7 @@ module RNS
         generate_receipt = false
         if packet.create_receipt &&
            packet.packet_type == Packet::DATA &&
-           packet.destination.try { |d| d.type != Destination::PLAIN } &&
+           packet.destination.try { |dest| dest.type != Destination::PLAIN } &&
            !(packet.context >= Packet::KEEPALIVE && packet.context <= Packet::LRPROOF) &&
            !(packet.context >= Packet::RESOURCE && packet.context <= Packet::RESOURCE_RCL)
           generate_receipt = true
@@ -650,7 +650,7 @@ module RNS
 
         # Check if we have a known path for the destination
         if packet.packet_type != Packet::ANNOUNCE &&
-           packet.destination.try { |d| d.type != Destination::PLAIN && d.type != Destination::GROUP } &&
+           packet.destination.try { |dest| dest.type != Destination::PLAIN && dest.type != Destination::GROUP } &&
            dest_hex && @@path_table.has_key?(dest_hex)
           path_entry = @@path_table[dest_hex]
           outbound_interface = path_entry.receiving_interface
@@ -729,7 +729,7 @@ module RNS
               should_transmit = true
 
               # For LINK destinations, check link status
-              if packet.destination.try { |d| d.type == Destination::LINK }
+              if packet.destination.try { |dest| dest.type == Destination::LINK }
                 # In full implementation, check link status and attached_interface
                 # For now, allow transmission
               end
@@ -859,7 +859,7 @@ module RNS
         end
 
         # Plain broadcast handling
-        if dest_hash && !@@control_hashes.any? { |ch| ch == dest_hash }
+        if dest_hash && !@@control_hashes.any? { |ctrl_hash| ctrl_hash == dest_hash }
           if packet.destination_type == Destination::PLAIN && packet.transport_type == Transport::BROADCAST
             if from_local
               # From local client: retransmit on all interfaces except source
@@ -1692,7 +1692,7 @@ module RNS
     end
 
     def self.add_remote_management_allowed(hash : Bytes)
-      unless @@remote_management_allowed.any? { |h| h == hash }
+      unless @@remote_management_allowed.any? { |existing_hash| existing_hash == hash }
         @@remote_management_allowed << hash
       end
     end

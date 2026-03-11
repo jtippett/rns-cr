@@ -132,12 +132,12 @@ describe RNS::Cryptography::PKCS7 do
     end
 
     it "roundtrips with custom block sizes" do
-      [8, 16, 32].each do |bs|
+      [8, 16, 32].each do |block_size|
         (0..48).each do |len|
           data = Random::Secure.random_bytes(len)
-          padded = RNS::Cryptography::PKCS7.pad(data, bs)
-          (padded.size % bs).should eq(0)
-          unpadded = RNS::Cryptography::PKCS7.unpad(padded, bs)
+          padded = RNS::Cryptography::PKCS7.pad(data, block_size)
+          (padded.size % block_size).should eq(0)
+          unpadded = RNS::Cryptography::PKCS7.unpad(padded, block_size)
           unpadded.should eq(data)
         end
       end

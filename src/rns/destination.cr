@@ -445,7 +445,7 @@ module RNS
           stale_tags << entry_tag
         end
       end
-      stale_tags.each { |t| @path_responses.delete(t) }
+      stale_tags.each { |stale_tag| @path_responses.delete(stale_tag) }
 
       announce_data : Bytes
 

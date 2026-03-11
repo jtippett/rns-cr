@@ -856,7 +856,7 @@ module RNS
     end
 
     def has_incoming_resource?(resource_hash : Bytes) : Bool
-      @incoming_resources.any? { |h| h == resource_hash }
+      @incoming_resources.any? { |hash| hash == resource_hash }
     end
 
     def cancel_outgoing_resource(resource_hash : Bytes)
@@ -1202,7 +1202,7 @@ module RNS
         if allow == Destination::ALLOW_LIST
           ri = @remote_identity
           if ri && allowed_list
-            allowed = allowed_list.any? { |h| h == ri.hash }
+            allowed = allowed_list.any? { |hash| hash == ri.hash }
           end
         elsif allow == Destination::ALLOW_ALL
           allowed = true

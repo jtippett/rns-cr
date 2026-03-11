@@ -356,12 +356,12 @@ module RNS
       in_single_quote = false
       in_double_quote = false
 
-      value.each_char do |ch|
-        if ch == '\'' && !in_double_quote
+      value.each_char do |char|
+        if char == '\'' && !in_double_quote
           in_single_quote = !in_single_quote
-        elsif ch == '"' && !in_single_quote
+        elsif char == '"' && !in_single_quote
           in_double_quote = !in_double_quote
-        elsif ch == ',' && !in_single_quote && !in_double_quote
+        elsif char == ',' && !in_single_quote && !in_double_quote
           return true
         end
       end
@@ -375,19 +375,19 @@ module RNS
       in_single_quote = false
       in_double_quote = false
 
-      value.each_char do |ch|
-        if ch == '\'' && !in_double_quote
+      value.each_char do |char|
+        if char == '\'' && !in_double_quote
           in_single_quote = !in_single_quote
-          current << ch
-        elsif ch == '"' && !in_single_quote
+          current << char
+        elsif char == '"' && !in_single_quote
           in_double_quote = !in_double_quote
-          current << ch
-        elsif ch == ',' && !in_single_quote && !in_double_quote
+          current << char
+        elsif char == ',' && !in_single_quote && !in_double_quote
           item = current.to_s.strip
           items << unquote(item) unless item.empty?
           current = String::Builder.new
         else
-          current << ch
+          current << char
         end
       end
 

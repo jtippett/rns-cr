@@ -142,10 +142,10 @@ module RNS
       cur_start = -1
       cur_len = 0
 
-      groups.each_with_index do |g, i|
-        if g == 0
+      groups.each_with_index do |group, idx|
+        if group == 0
           if cur_start == -1
-            cur_start = i
+            cur_start = idx
             cur_len = 1
           else
             cur_len += 1
@@ -161,8 +161,8 @@ module RNS
       end
 
       if best_len >= 2
-        before = groups[0...best_start].map { |g| "%x" % g }.join(":")
-        after = groups[(best_start + best_len)..].map { |g| "%x" % g }.join(":")
+        before = groups[0...best_start].map { |group| "%x" % group }.join(":")
+        after = groups[(best_start + best_len)..].map { |group| "%x" % group }.join(":")
         if before.empty? && after.empty?
           "::"
         elsif before.empty?
@@ -173,7 +173,7 @@ module RNS
           "#{before}::#{after}"
         end
       else
-        groups.map { |g| "%x" % g }.join(":")
+        groups.map { |group| "%x" % group }.join(":")
       end
     end
 

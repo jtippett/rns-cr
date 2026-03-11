@@ -617,7 +617,7 @@ describe "RNS::RawChannelWriter" do
     end
 
     it "caps write at MAX_CHUNK_LEN" do
-      channel, outlet = buf_create_channel(mdu: 20000)
+      channel, _outlet = buf_create_channel(mdu: 20000)
       writer = RNS::RawChannelWriter.new(1, channel)
 
       large_data = Random::Secure.random_bytes(RNS::RawChannelWriter::MAX_CHUNK_LEN + 1000)
@@ -668,7 +668,7 @@ describe "RNS::RawChannelWriter" do
     end
 
     it "skips compression for small data (<= 32 bytes)" do
-      channel, outlet = buf_create_channel
+      channel, _outlet = buf_create_channel
       writer = RNS::RawChannelWriter.new(1, channel)
 
       data = "short".to_slice
@@ -677,7 +677,7 @@ describe "RNS::RawChannelWriter" do
     end
 
     it "falls back to uncompressed when compression doesn't help" do
-      channel, outlet = buf_create_channel(mdu: 500)
+      channel, _outlet = buf_create_channel(mdu: 500)
       writer = RNS::RawChannelWriter.new(1, channel)
 
       # Random data doesn't compress well

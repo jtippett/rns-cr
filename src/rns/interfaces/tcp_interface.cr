@@ -195,7 +195,7 @@ module RNS
     end
 
     def process_incoming(data : Bytes)
-      return unless @online && !detached?
+      return if !@online || detached?
       @rxb += data.size.to_i64
       if pi = @parent_interface
         pi.rxb += data.size.to_i64
@@ -206,7 +206,7 @@ module RNS
     end
 
     def process_outgoing(data : Bytes)
-      return unless @online && !detached?
+      return if !@online || detached?
       begin
         @writing = true
         framed = if @kiss_framing

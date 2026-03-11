@@ -1,0 +1,26 @@
+# Ameba configuration for Crystal RNS port
+# Some rules are excluded because this is a port from Python's Reticulum
+# and certain patterns are intentional or require major refactoring.
+
+Metrics/CyclomaticComplexity:
+  # Many methods are direct ports from Python and intentionally complex.
+  # Refactoring would diverge from the reference implementation.
+  Enabled: false
+
+Naming/AccessorMethodName:
+  # Methods like get_public_key/set_callback follow the Python RNS API.
+  # Renaming would break 1:1 correspondence with reference implementation.
+  Enabled: false
+
+Naming/PredicateName:
+  # Methods like is_connected_to_shared_instance follow Python RNS API.
+  Enabled: false
+
+Naming/QueryBoolMethods:
+  # Boolean properties follow the Python RNS naming convention.
+  Enabled: false
+
+Lint/NotNil:
+  # Extensively used in this Python port where nil state is known by context.
+  # Replacing 413 instances requires careful per-case nil flow analysis.
+  Enabled: false

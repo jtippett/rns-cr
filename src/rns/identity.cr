@@ -359,9 +359,9 @@ module RNS
         # Merge with existing on-disk data
         if File.exists?(filepath)
           begin
-            storage_known = Hash(Bytes, Array(Bytes | Float64 | Nil)).new
+            _storage_known = Hash(Bytes, Array(Bytes | Float64 | Nil)).new
             data = File.read(filepath).to_slice
-            unpacked = MessagePack::IOUnpacker.new(IO::Memory.new(data))
+            _unpacked = MessagePack::IOUnpacker.new(IO::Memory.new(data))
             # Simple merge: load existing, add any missing
             # For now, we save our in-memory state directly
           rescue

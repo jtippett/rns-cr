@@ -35,7 +35,7 @@ module RNS
 
     private def configure(c : Hash(String, String))
       name = c["name"]? || ""
-      device = c["device"]?
+      _device = c["device"]?
       port = c["port"]?.try(&.to_i)
       bindip = c["listen_ip"]?
       bindport = c["listen_port"]?.try(&.to_i)

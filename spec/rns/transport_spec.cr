@@ -1032,8 +1032,8 @@ describe RNS::Transport do
         loaded = RNS::Transport.load_path_table(tmp_dir)
         loaded.should eq(20)
 
-        dest_hashes.each do |dh|
-          RNS::Transport.has_path(dh).should be_true
+        dest_hashes.each do |dest_hash|
+          RNS::Transport.has_path(dest_hash).should be_true
         end
       ensure
         FileUtils.rm_rf(tmp_dir) if Dir.exists?(tmp_dir)

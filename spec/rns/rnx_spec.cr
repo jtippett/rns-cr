@@ -399,7 +399,7 @@ describe RNS::Rnx do
 
     it "formats detailed output with stdout byte counts" do
       result = [true, 0_i32, "ab".to_slice, Bytes.empty, 100_i32, 0_i32, 1000.0, 1001.0] of Bool | Int32? | Bytes? | Int64? | Float64?
-      output, retval = RNS::Rnx.format_result(result, true, false, nil, nil)
+      output, _retval = RNS::Rnx.format_result(result, true, false, nil, nil)
       output.should contain("100 bytes to stdout")
       output.should contain("2 bytes displayed")
     end
@@ -407,14 +407,14 @@ describe RNS::Rnx do
     it "shows truncation warning in non-detailed mode" do
       # stdout was truncated: returned 10 bytes but total was 100
       result = [true, 0_i32, ("a" * 10).to_slice, Bytes.empty, 100_i32, 0_i32, 1000.0, 1001.0] of Bool | Int32? | Bytes? | Int64? | Float64?
-      output, retval = RNS::Rnx.format_result(result, false, false, 10, nil)
+      output, _retval = RNS::Rnx.format_result(result, false, false, 10, nil)
       output.should contain("truncated")
       output.should contain("stdout truncated to 10 bytes")
     end
 
     it "no truncation warning when all data returned" do
       result = [true, 0_i32, "hello".to_slice, Bytes.empty, 5_i32, 0_i32, 1000.0, 1001.0] of Bool | Int32? | Bytes? | Int64? | Float64?
-      output, retval = RNS::Rnx.format_result(result, false, false, nil, nil)
+      output, _retval = RNS::Rnx.format_result(result, false, false, nil, nil)
       output.should_not contain("truncated")
     end
   end
@@ -493,10 +493,10 @@ describe RNS::Rnx do
       durations = [0.0, 0.5, 1.0, 2.5, 10.0, 30.0, 59.99, 60.0,
                    61.0, 120.0, 300.0, 600.0, 3600.0, 3661.0,
                    7200.0, 36000.0, 86400.0, 90061.0, 172800.0, 259200.0]
-      durations.each do |d|
-        result = RNS::Rnx.pretty_time(d)
+      durations.each do |duration|
+        result = RNS::Rnx.pretty_time(duration)
         # Zero produces empty string, all others produce content
-        if d > 0
+        if duration > 0
           result.should_not be_empty
         end
       end

@@ -110,8 +110,8 @@ module RNS
         when "-j", "--json"
           args.json = true
         when /^-[vtrdDxbBUpj]+$/
-          arg[1..].each_char do |c|
-            case c
+          arg[1..].each_char do |char|
+            case char
             when 'v' then args.verbose += 1
             when 't' then args.table = true
             when 'r' then args.rates = true
@@ -124,7 +124,7 @@ module RNS
             when 'p' then args.blackholed_list = true
             when 'j' then args.json = true
             else
-              raise ArgumentError.new("Unknown flag: -#{c}")
+              raise ArgumentError.new("Unknown flag: -#{char}")
             end
           end
         else

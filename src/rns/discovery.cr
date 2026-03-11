@@ -290,7 +290,7 @@ module RNS
         discovery_sources = Reticulum.interface_discovery_sources
         if discovery_sources.size > 0 && announced_identity
           id_hash = announced_identity.hash
-          unless id_hash && discovery_sources.any? { |s| s == id_hash }
+          unless id_hash && discovery_sources.any? { |source| source == id_hash }
             RNS.log("Interface discovered from non-authorized network identity #{id_hash ? RNS.prettyhexrep(id_hash) : "unknown"}, ignoring", RNS::LOG_DEBUG)
             return
           end
@@ -603,7 +603,7 @@ module RNS
               nid = info["network_id"]?
               if nid
                 nid_bytes = nid.to_s.hexbytes rescue nil
-                unless nid_bytes && discovery_sources.any? { |s| s == nid_bytes }
+                unless nid_bytes && discovery_sources.any? { |source| source == nid_bytes }
                   should_remove = true
                 end
               else
@@ -652,18 +652,18 @@ module RNS
         end
 
         # Sort by (status_code desc, value desc, last_heard desc)
-        discovered_interfaces.sort! do |a, b|
-          a_sc = a["status_code"]?.try { |v| v.is_a?(Int64) ? v : 0_i64 } || 0_i64
-          b_sc = b["status_code"]?.try { |v| v.is_a?(Int64) ? v : 0_i64 } || 0_i64
+        discovered_interfaces.sort! do |iface_a, iface_b|
+          a_sc = iface_a["status_code"]?.try { |v| v.is_a?(Int64) ? v : 0_i64 } || 0_i64
+          b_sc = iface_b["status_code"]?.try { |v| v.is_a?(Int64) ? v : 0_i64 } || 0_i64
           cmp = b_sc <=> a_sc
           if cmp == 0
-            a_val = a["value"]?.try { |v| v.is_a?(Int64) ? v : 0_i64 } || 0_i64
-            b_val = b["value"]?.try { |v| v.is_a?(Int64) ? v : 0_i64 } || 0_i64
+            a_val = iface_a["value"]?.try { |v| v.is_a?(Int64) ? v : 0_i64 } || 0_i64
+            b_val = iface_b["value"]?.try { |v| v.is_a?(Int64) ? v : 0_i64 } || 0_i64
             cmp = b_val <=> a_val
           end
           if cmp == 0
-            a_lh = a["last_heard"]?.try { |v| v.is_a?(Float64) ? v : 0.0 } || 0.0
-            b_lh = b["last_heard"]?.try { |v| v.is_a?(Float64) ? v : 0.0 } || 0.0
+            a_lh = iface_a["last_heard"]?.try { |v| v.is_a?(Float64) ? v : 0.0 } || 0.0
+            b_lh = iface_b["last_heard"]?.try { |v| v.is_a?(Float64) ? v : 0.0 } || 0.0
             cmp = b_lh <=> a_lh
           end
           cmp

@@ -128,7 +128,7 @@ describe RNS::I2PController do
     Dir.tempdir.tap do |base|
       tmpdir = File.join(base, "test_i2p_controller_#{Random.rand(100000)}")
       Dir.mkdir_p(tmpdir) unless Dir.exists?(tmpdir)
-      controller = RNS::I2PController.new(tmpdir)
+      _controller = RNS::I2PController.new(tmpdir)
       Dir.exists?(File.join(tmpdir, "i2p")).should be_true
       FileUtils.rm_rf(tmpdir)
     end
@@ -1051,8 +1051,8 @@ describe RNS::I2PInterface do
 
       iface.clients.should eq(10)
 
-      sockets.each { |s| s.close rescue nil }
-      servers.each { |s| s.close rescue nil }
+      sockets.each { |sock| sock.close rescue nil }
+      servers.each { |srv| srv.close rescue nil }
     end
   end
 end

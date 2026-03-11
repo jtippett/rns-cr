@@ -92,8 +92,8 @@ module RNS
           val = argv[i]? || raise ArgumentError.new("--monitor-interval requires a seconds value")
           args.monitor_interval = val.to_f64
         when /^-[vAaltrjdDm]+$/
-          arg[1..].each_char do |c|
-            case c
+          arg[1..].each_char do |char|
+            case char
             when 'v' then args.verbose += 1
             when 'A' then args.announce_stats = true
             when 'a' then args.all = true
@@ -105,7 +105,7 @@ module RNS
             when 'D' then args.discovered_details = true
             when 'm' then args.monitor = true
             else
-              raise ArgumentError.new("Unknown flag: -#{c}")
+              raise ArgumentError.new("Unknown flag: -#{char}")
             end
           end
         else

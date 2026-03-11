@@ -262,47 +262,47 @@ describe RNS::Reticulum do
 
     it "contains [reticulum] section" do
       lines = RNS::Reticulum.default_config_lines
-      lines.any? { |l| l.strip == "[reticulum]" }.should be_true
+      lines.any? { |line| line.strip == "[reticulum]" }.should be_true
     end
 
     it "contains [logging] section" do
       lines = RNS::Reticulum.default_config_lines
-      lines.any? { |l| l.strip == "[logging]" }.should be_true
+      lines.any? { |line| line.strip == "[logging]" }.should be_true
     end
 
     it "contains [interfaces] section" do
       lines = RNS::Reticulum.default_config_lines
-      lines.any? { |l| l.strip == "[interfaces]" }.should be_true
+      lines.any? { |line| line.strip == "[interfaces]" }.should be_true
     end
 
     it "contains Default Interface subsection" do
       lines = RNS::Reticulum.default_config_lines
-      lines.any? { |l| l.strip == "[[Default Interface]]" }.should be_true
+      lines.any? { |line| line.strip == "[[Default Interface]]" }.should be_true
     end
 
     it "enables AutoInterface by default" do
       lines = RNS::Reticulum.default_config_lines
-      lines.any? { |l| l.strip == "type = AutoInterface" }.should be_true
+      lines.any? { |line| line.strip == "type = AutoInterface" }.should be_true
     end
 
     it "has enable_transport = False" do
       lines = RNS::Reticulum.default_config_lines
-      lines.any? { |l| l.strip == "enable_transport = False" }.should be_true
+      lines.any? { |line| line.strip == "enable_transport = False" }.should be_true
     end
 
     it "has share_instance = Yes" do
       lines = RNS::Reticulum.default_config_lines
-      lines.any? { |l| l.strip == "share_instance = Yes" }.should be_true
+      lines.any? { |line| line.strip == "share_instance = Yes" }.should be_true
     end
 
     it "has instance_name = default" do
       lines = RNS::Reticulum.default_config_lines
-      lines.any? { |l| l.strip == "instance_name = default" }.should be_true
+      lines.any? { |line| line.strip == "instance_name = default" }.should be_true
     end
 
     it "has loglevel = 4" do
       lines = RNS::Reticulum.default_config_lines
-      lines.any? { |l| l.strip == "loglevel = 4" }.should be_true
+      lines.any? { |line| line.strip == "loglevel = 4" }.should be_true
     end
 
     it "can be parsed by ConfigObj" do
@@ -665,7 +665,7 @@ describe RNS::Reticulum do
         original_ll = RNS.loglevel
 
         begin
-          inst1 = RNS::ReticulumInstance.new(configdir: tmpdir, loglevel: RNS::LOG_NONE)
+          _inst1 = RNS::ReticulumInstance.new(configdir: tmpdir, loglevel: RNS::LOG_NONE)
 
           expect_raises(Exception, /reinitialise/) do
             RNS::ReticulumInstance.new(configdir: tmpdir, loglevel: RNS::LOG_NONE)
@@ -691,7 +691,7 @@ describe RNS::Reticulum do
         original_ll = RNS.loglevel
 
         begin
-          inst = RNS::ReticulumInstance.new(configdir: tmpdir, loglevel: RNS::LOG_NONE)
+          _inst = RNS::ReticulumInstance.new(configdir: tmpdir, loglevel: RNS::LOG_NONE)
 
           File.exists?(File.join(tmpdir, "config")).should be_true
 
@@ -748,7 +748,7 @@ describe RNS::Reticulum do
         original_ll = RNS.loglevel
 
         begin
-          inst = RNS::ReticulumInstance.new(configdir: tmpdir)
+          _inst = RNS::ReticulumInstance.new(configdir: tmpdir)
           RNS.loglevel.should eq 6
         ensure
           RNS.loglevel = original_ll
@@ -773,7 +773,7 @@ describe RNS::Reticulum do
         original_ll = RNS.loglevel
 
         begin
-          inst = RNS::ReticulumInstance.new(configdir: tmpdir, loglevel: 2)
+          _inst = RNS::ReticulumInstance.new(configdir: tmpdir, loglevel: 2)
           RNS.loglevel.should eq 2
         ensure
           RNS.loglevel = original_ll
@@ -798,7 +798,7 @@ describe RNS::Reticulum do
         original_ll = RNS.loglevel
 
         begin
-          inst = RNS::ReticulumInstance.new(configdir: tmpdir, loglevel: 99)
+          _inst = RNS::ReticulumInstance.new(configdir: tmpdir, loglevel: 99)
           RNS.loglevel.should eq RNS::LOG_EXTREME # 7
         ensure
           RNS.loglevel = original_ll
@@ -1170,7 +1170,7 @@ describe RNS::Reticulum do
     end
 
     it "get_default_ifac_size returns correct sizes for each interface type" do
-      inst = make_test_instance("[reticulum]\nshare_instance = No\n[logging]\nloglevel = 4")
+      _inst = make_test_instance("[reticulum]\nshare_instance = No\n[logging]\nloglevel = 4")
       # We can verify the get_default_ifac_size by checking the returned values
       # through the interface type mapping logic. Since it's a private method,
       # we test it indirectly through synthesize_interface behavior.
@@ -1197,7 +1197,7 @@ describe RNS::Reticulum do
     it "does nothing when connected to shared instance" do
       inst = make_test_instance("[reticulum]\nshare_instance = No\n[logging]\nloglevel = 4")
       inst.is_connected_to_shared_instance = true
-      initial_count = RNS::Transport.interfaces.size
+      _initial_count = RNS::Transport.interfaces.size
       # Create a mock interface - we can't easily create a real one without
       # binding sockets, but we can test the guard condition
       inst.is_connected_to_shared_instance.should be_true

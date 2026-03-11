@@ -299,7 +299,7 @@ describe RNS::Destination do
       hexhash = identity.hexhash.not_nil!
       # The hexhash appears as an aspect (from constructor) and from expand_name
       parts = dest.name.split(".")
-      parts.count { |p| p == hexhash }.should eq 2
+      parts.count { |part| part == hexhash }.should eq 2
     end
 
     it "hexhash matches hash hex representation" do
@@ -1036,8 +1036,8 @@ describe RNS::Destination do
 
     it "multiple destinations register" do
       RNS::Transport.clear_destinations
-      dest1 = RNS::Destination.new(nil, RNS::Destination::IN, RNS::Destination::PLAIN, "app1")
-      dest2 = RNS::Destination.new(nil, RNS::Destination::IN, RNS::Destination::PLAIN, "app2")
+      _dest1 = RNS::Destination.new(nil, RNS::Destination::IN, RNS::Destination::PLAIN, "app1")
+      _dest2 = RNS::Destination.new(nil, RNS::Destination::IN, RNS::Destination::PLAIN, "app2")
       RNS::Transport.destinations.size.should eq 2
     end
   end

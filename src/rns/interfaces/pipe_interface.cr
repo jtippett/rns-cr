@@ -130,7 +130,7 @@ module RNS
         in_frame = false
         escape = false
         data_buffer = IO::Memory.new(1024)
-        last_read_ms = (Time.utc.to_unix_f * 1000).to_i64
+        _last_read_ms = (Time.utc.to_unix_f * 1000).to_i64
         buf = Bytes.new(1)
 
         while @running
@@ -149,7 +149,7 @@ module RNS
             end
 
             byte = buf[0]
-            last_read_ms = (Time.utc.to_unix_f * 1000).to_i64
+            _last_read_ms = (Time.utc.to_unix_f * 1000).to_i64
 
             if in_frame && byte == HDLC::FLAG
               in_frame = false

@@ -336,9 +336,9 @@ module RNS
             contiguous << e
             @next_rx_sequence = ((@next_rx_sequence.to_u32 + 1_u32) % SEQ_MODULUS).to_u16
             if @next_rx_sequence == 0_u16
-              @rx_ring.each do |e2|
-                if e2.sequence == @next_rx_sequence
-                  contiguous << e2
+              @rx_ring.each do |inner_envelope|
+                if inner_envelope.sequence == @next_rx_sequence
+                  contiguous << inner_envelope
                   @next_rx_sequence = ((@next_rx_sequence.to_u32 + 1_u32) % SEQ_MODULUS).to_u16
                 end
               end
@@ -416,9 +416,9 @@ module RNS
 
     private def _run_callbacks(message : MessageBase)
       cbs = @message_callbacks.dup
-      cbs.each do |cb|
+      cbs.each do |callback|
         begin
-          return if cb.call(message)
+          return if callback.call(message)
         rescue e
           RNS.log("Channel #{self} experienced an error while running a message callback. The contained exception was: #{e}", RNS::LOG_ERROR)
         end

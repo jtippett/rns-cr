@@ -1,14 +1,14 @@
 require "../../spec_helper"
 
-describe RNS::Cryptography::AES_256_CBC do
+describe RNS::Cryptography::AES256CBC do
   describe ".encrypt and .decrypt" do
     it "roundtrips a single block" do
       key = Random::Secure.random_bytes(32)
       iv = Random::Secure.random_bytes(16)
       plaintext = RNS::Cryptography::PKCS7.pad(Bytes[1, 2, 3, 4, 5])
 
-      ciphertext = RNS::Cryptography::AES_256_CBC.encrypt(plaintext, key, iv)
-      decrypted = RNS::Cryptography::AES_256_CBC.decrypt(ciphertext, key, iv)
+      ciphertext = RNS::Cryptography::AES256CBC.encrypt(plaintext, key, iv)
+      decrypted = RNS::Cryptography::AES256CBC.decrypt(ciphertext, key, iv)
       decrypted.should eq(plaintext)
     end
 
@@ -18,8 +18,8 @@ describe RNS::Cryptography::AES_256_CBC do
       data = Random::Secure.random_bytes(100)
       plaintext = RNS::Cryptography::PKCS7.pad(data)
 
-      ciphertext = RNS::Cryptography::AES_256_CBC.encrypt(plaintext, key, iv)
-      decrypted = RNS::Cryptography::AES_256_CBC.decrypt(ciphertext, key, iv)
+      ciphertext = RNS::Cryptography::AES256CBC.encrypt(plaintext, key, iv)
+      decrypted = RNS::Cryptography::AES256CBC.decrypt(ciphertext, key, iv)
       RNS::Cryptography::PKCS7.unpad(decrypted).should eq(data)
     end
 
@@ -29,8 +29,8 @@ describe RNS::Cryptography::AES_256_CBC do
       iv = Random::Secure.random_bytes(16)
       plaintext = RNS::Cryptography::PKCS7.pad("Hello, World!".to_slice)
 
-      ct1 = RNS::Cryptography::AES_256_CBC.encrypt(plaintext, key1, iv)
-      ct2 = RNS::Cryptography::AES_256_CBC.encrypt(plaintext, key2, iv)
+      ct1 = RNS::Cryptography::AES256CBC.encrypt(plaintext, key1, iv)
+      ct2 = RNS::Cryptography::AES256CBC.encrypt(plaintext, key2, iv)
       ct1.should_not eq(ct2)
     end
 
@@ -40,8 +40,8 @@ describe RNS::Cryptography::AES_256_CBC do
       iv2 = Random::Secure.random_bytes(16)
       plaintext = RNS::Cryptography::PKCS7.pad("Hello, World!".to_slice)
 
-      ct1 = RNS::Cryptography::AES_256_CBC.encrypt(plaintext, key, iv1)
-      ct2 = RNS::Cryptography::AES_256_CBC.encrypt(plaintext, key, iv2)
+      ct1 = RNS::Cryptography::AES256CBC.encrypt(plaintext, key, iv1)
+      ct2 = RNS::Cryptography::AES256CBC.encrypt(plaintext, key, iv2)
       ct1.should_not eq(ct2)
     end
 
@@ -50,7 +50,7 @@ describe RNS::Cryptography::AES_256_CBC do
       iv = Random::Secure.random_bytes(16)
       plaintext = RNS::Cryptography::PKCS7.pad(Random::Secure.random_bytes(42))
 
-      ciphertext = RNS::Cryptography::AES_256_CBC.encrypt(plaintext, key, iv)
+      ciphertext = RNS::Cryptography::AES256CBC.encrypt(plaintext, key, iv)
       ciphertext.size.should eq(plaintext.size)
     end
 
@@ -60,7 +60,7 @@ describe RNS::Cryptography::AES_256_CBC do
       plaintext = RNS::Cryptography::PKCS7.pad(Bytes[1])
 
       expect_raises(ArgumentError, "Invalid key length 128 for AES-256-CBC") do
-        RNS::Cryptography::AES_256_CBC.encrypt(plaintext, key, iv)
+        RNS::Cryptography::AES256CBC.encrypt(plaintext, key, iv)
       end
     end
 
@@ -70,7 +70,7 @@ describe RNS::Cryptography::AES_256_CBC do
       ciphertext = Random::Secure.random_bytes(16)
 
       expect_raises(ArgumentError, "Invalid key length 128 for AES-256-CBC") do
-        RNS::Cryptography::AES_256_CBC.decrypt(ciphertext, key, iv)
+        RNS::Cryptography::AES256CBC.decrypt(ciphertext, key, iv)
       end
     end
 
@@ -97,10 +97,10 @@ describe RNS::Cryptography::AES_256_CBC do
         0x77, 0x9e, 0xab, 0xfb, 0x5f, 0x7b, 0xfb, 0xd6,
       ]
 
-      ciphertext = RNS::Cryptography::AES_256_CBC.encrypt(plaintext, key, iv)
+      ciphertext = RNS::Cryptography::AES256CBC.encrypt(plaintext, key, iv)
       ciphertext.should eq(expected)
 
-      decrypted = RNS::Cryptography::AES_256_CBC.decrypt(ciphertext, key, iv)
+      decrypted = RNS::Cryptography::AES256CBC.decrypt(ciphertext, key, iv)
       decrypted.should eq(plaintext)
     end
 
@@ -137,10 +137,10 @@ describe RNS::Cryptography::AES_256_CBC do
         0xda, 0x6c, 0x19, 0x07, 0x8c, 0x6a, 0x9d, 0x1b,
       ]
 
-      ciphertext = RNS::Cryptography::AES_256_CBC.encrypt(plaintext, key, iv)
+      ciphertext = RNS::Cryptography::AES256CBC.encrypt(plaintext, key, iv)
       ciphertext.should eq(expected)
 
-      decrypted = RNS::Cryptography::AES_256_CBC.decrypt(ciphertext, key, iv)
+      decrypted = RNS::Cryptography::AES256CBC.decrypt(ciphertext, key, iv)
       decrypted.should eq(plaintext)
     end
 
@@ -151,8 +151,8 @@ describe RNS::Cryptography::AES_256_CBC do
         len = Random.new.rand(0..256)
         data = Random::Secure.random_bytes(len)
         padded = RNS::Cryptography::PKCS7.pad(data)
-        ciphertext = RNS::Cryptography::AES_256_CBC.encrypt(padded, key, iv)
-        decrypted = RNS::Cryptography::AES_256_CBC.decrypt(ciphertext, key, iv)
+        ciphertext = RNS::Cryptography::AES256CBC.encrypt(padded, key, iv)
+        decrypted = RNS::Cryptography::AES256CBC.decrypt(ciphertext, key, iv)
         unpadded = RNS::Cryptography::PKCS7.unpad(decrypted)
         unpadded.should eq(data)
       end
@@ -160,15 +160,15 @@ describe RNS::Cryptography::AES_256_CBC do
   end
 end
 
-describe RNS::Cryptography::AES_128_CBC do
+describe RNS::Cryptography::AES128CBC do
   describe ".encrypt and .decrypt" do
     it "roundtrips a single block" do
       key = Random::Secure.random_bytes(16)
       iv = Random::Secure.random_bytes(16)
       plaintext = RNS::Cryptography::PKCS7.pad(Bytes[1, 2, 3, 4, 5])
 
-      ciphertext = RNS::Cryptography::AES_128_CBC.encrypt(plaintext, key, iv)
-      decrypted = RNS::Cryptography::AES_128_CBC.decrypt(ciphertext, key, iv)
+      ciphertext = RNS::Cryptography::AES128CBC.encrypt(plaintext, key, iv)
+      decrypted = RNS::Cryptography::AES128CBC.decrypt(ciphertext, key, iv)
       decrypted.should eq(plaintext)
     end
 
@@ -178,7 +178,7 @@ describe RNS::Cryptography::AES_128_CBC do
       plaintext = RNS::Cryptography::PKCS7.pad(Bytes[1])
 
       expect_raises(ArgumentError, "Invalid key length 256 for AES-128-CBC") do
-        RNS::Cryptography::AES_128_CBC.encrypt(plaintext, key, iv)
+        RNS::Cryptography::AES128CBC.encrypt(plaintext, key, iv)
       end
     end
 
@@ -188,7 +188,7 @@ describe RNS::Cryptography::AES_128_CBC do
       ciphertext = Random::Secure.random_bytes(16)
 
       expect_raises(ArgumentError, "Invalid key length 256 for AES-128-CBC") do
-        RNS::Cryptography::AES_128_CBC.decrypt(ciphertext, key, iv)
+        RNS::Cryptography::AES128CBC.decrypt(ciphertext, key, iv)
       end
     end
 
@@ -211,10 +211,10 @@ describe RNS::Cryptography::AES_128_CBC do
         0xce, 0xe9, 0x8e, 0x9b, 0x12, 0xe9, 0x19, 0x7d,
       ]
 
-      ciphertext = RNS::Cryptography::AES_128_CBC.encrypt(plaintext, key, iv)
+      ciphertext = RNS::Cryptography::AES128CBC.encrypt(plaintext, key, iv)
       ciphertext.should eq(expected)
 
-      decrypted = RNS::Cryptography::AES_128_CBC.decrypt(ciphertext, key, iv)
+      decrypted = RNS::Cryptography::AES128CBC.decrypt(ciphertext, key, iv)
       decrypted.should eq(plaintext)
     end
 
@@ -225,8 +225,8 @@ describe RNS::Cryptography::AES_128_CBC do
         len = Random.new.rand(0..256)
         data = Random::Secure.random_bytes(len)
         padded = RNS::Cryptography::PKCS7.pad(data)
-        ciphertext = RNS::Cryptography::AES_128_CBC.encrypt(padded, key, iv)
-        decrypted = RNS::Cryptography::AES_128_CBC.decrypt(ciphertext, key, iv)
+        ciphertext = RNS::Cryptography::AES128CBC.encrypt(padded, key, iv)
+        decrypted = RNS::Cryptography::AES128CBC.decrypt(ciphertext, key, iv)
         unpadded = RNS::Cryptography::PKCS7.unpad(decrypted)
         unpadded.should eq(data)
       end

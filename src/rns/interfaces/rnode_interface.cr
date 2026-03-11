@@ -162,8 +162,8 @@ module RNS
     end
 
     def cleanup
-      @socket.try do |s|
-        s.close unless s.closed?
+      @socket.try do |socket|
+        socket.close unless socket.closed?
       rescue ex
         RNS.log("Error closing socket: #{ex.message}", RNS::LOG_DEBUG)
       end

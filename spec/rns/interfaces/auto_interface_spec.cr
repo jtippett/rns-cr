@@ -93,7 +93,7 @@ describe RNS::NetInfo do
 
     it "includes loopback interface" do
       ifaces = RNS::NetInfo.interfaces
-      has_lo = ifaces.any? { |n| n == "lo" || n == "lo0" }
+      has_lo = ifaces.any? { |name| name == "lo" || name == "lo0" }
       has_lo.should be_true
     end
 
@@ -105,7 +105,7 @@ describe RNS::NetInfo do
 
   describe ".interface_name_to_index" do
     it "returns a positive index for loopback" do
-      lo_name = RNS::NetInfo.interfaces.find { |n| n == "lo" || n == "lo0" }
+      lo_name = RNS::NetInfo.interfaces.find { |name| name == "lo" || name == "lo0" }
       if lo_name
         idx = RNS::NetInfo.interface_name_to_index(lo_name)
         idx.should be > 0
@@ -120,7 +120,7 @@ describe RNS::NetInfo do
 
   describe ".ifaddresses" do
     it "returns addresses for loopback" do
-      lo_name = RNS::NetInfo.interfaces.find { |n| n == "lo" || n == "lo0" }
+      lo_name = RNS::NetInfo.interfaces.find { |name| name == "lo" || name == "lo0" }
       if lo_name
         addrs = RNS::NetInfo.ifaddresses(lo_name)
         # Loopback should have at least IPv4 or IPv6
@@ -129,21 +129,21 @@ describe RNS::NetInfo do
     end
 
     it "returns IPv4 127.0.0.1 for loopback" do
-      lo_name = RNS::NetInfo.interfaces.find { |n| n == "lo" || n == "lo0" }
+      lo_name = RNS::NetInfo.interfaces.find { |name| name == "lo" || name == "lo0" }
       if lo_name
         addrs = RNS::NetInfo.ifaddresses(lo_name)
         if ipv4s = addrs[RNS::NetInfo::AF_INET.to_i32]?
-          ipv4s.any? { |a| a.addr == "127.0.0.1" }.should be_true
+          ipv4s.any? { |addr| addr.addr == "127.0.0.1" }.should be_true
         end
       end
     end
 
     it "returns IPv6 ::1 for loopback" do
-      lo_name = RNS::NetInfo.interfaces.find { |n| n == "lo" || n == "lo0" }
+      lo_name = RNS::NetInfo.interfaces.find { |name| name == "lo" || name == "lo0" }
       if lo_name
         addrs = RNS::NetInfo.ifaddresses(lo_name)
         if ipv6s = addrs[RNS::NetInfo::AF_INET6.to_i32]?
-          ipv6s.any? { |a| a.addr == "::1" }.should be_true
+          ipv6s.any? { |addr| addr.addr == "::1" }.should be_true
         end
       end
     end
@@ -318,7 +318,7 @@ describe RNS::AutoInterface do
 
     it "uses configured bitrate" do
       config = {"name" => "TestAuto", "configured_bitrate" => "5000000"}
-      ai = RNS::AutoInterface.new(config)
+      _ai = RNS::AutoInterface.new(config)
       # Bitrate is only set if suitable_interfaces > 0, but we might not have any
       # In this case the default should still be BITRATE_GUESS
     end

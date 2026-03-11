@@ -28,6 +28,10 @@ targets:
     main: src/rnstatus.cr
   rnpath:
     main: src/rnpath.cr
+  rnprobe:
+    main: src/rnprobe.cr
+  rnid:
+    main: src/rnid.cr
 
 development_dependencies:
   ameba:

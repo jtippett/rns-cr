@@ -115,6 +115,45 @@ development_dependencies:
 
 Crystal stdlib provides: OpenSSL (AES-256-CBC, HMAC, SHA-256/512, X25519 via EVP), TCP/UDP sockets, fibers/channels, INI parsing.
 
+## CAUTION: Network Impact During Testing
+
+Running `crystal spec` on this project can cause **severe network degradation on the host machine**. The AutoInterface binds UDP multicast sockets to every network interface it discovers (including virtual ones like Tailscale, Docker, etc.), and each spec run can open **thousands of sockets** with hundreds of multicast group memberships. Multiple concurrent spec runs compound the problem.
+
+### Prevention
+
+- **Restrict AutoInterface to loopback only in tests.** Any spec that instantiates AutoInterface or Reticulum must configure `allowed_interfaces` to only `["lo0"]` (macOS) or `["lo"]` (Linux). Never allow it to bind to all discovered interfaces during testing.
+- **Use LocalInterface or loopback UDP/TCP for integration tests.** Do not use AutoInterface for integration specs unless specifically testing AutoInterface discovery — and even then, restrict to loopback.
+- **Never run multiple `crystal spec` processes concurrently.** Wait for one to finish before starting another.
+- **Prefer running individual spec files** (`crystal spec spec/rns/some_spec.cr`) over the full suite when iterating on a single module.
+
+### Recovery: If Networking Becomes Slow or Flaky
+
+If the host machine's networking degrades, follow these steps in order:
+
+1. **Kill all crystal test processes:**
+   ```
+   pkill -9 -f 'crystal-run-spec'
+   pkill -9 -f 'crystal spec'
+   ```
+
+2. **Verify no sockets remain open:**
+   ```
+   lsof -i -n -P | grep crystal-r | wc -l
+   ```
+   This should return 0. If not, kill the specific PIDs shown by `lsof`.
+
+3. **Flush mDNSResponder (macOS):**
+   ```
+   sudo killall -HUP mDNSResponder
+   ```
+
+4. **Flush DNS cache (macOS):**
+   ```
+   sudo dscacheutil -flushcache
+   ```
+
+5. **Verify recovery:** Try `curl -I https://example.com` or `ping -c 3 1.1.1.1`. If still slow, toggle Wi-Fi off and on, or run `sudo ifconfig en0 down && sudo ifconfig en0 up`.
+
 ## Key Porting Notes
 
 - Python `threading.Thread` → Crystal `spawn` (fibers)
@@ -305,7 +344,7 @@ This is the largest module (3312 LOC). Split into manageable sub-modules.
 - [x] **10.2 — rnstatus and rnpath utilities**
   Port `RNS/Utilities/rnstatus.py` (687 LOC) → `rnstatus` binary target. Display interface status, transport stats, announce table, path table. Port `RNS/Utilities/rnpath.py` (548 LOC) → `rnpath` binary target. Path lookup, path request, path table display. Both connect to a running rnsd instance. Write basic specs for output formatting.
 
-- [ ] **10.3 — rnprobe and rnid utilities**
+- [x] **10.3 — rnprobe and rnid utilities**
   Port `RNS/Utilities/rnprobe.py` (251 LOC) → `rnprobe` binary target. Network connectivity probe — send probe packet, measure RTT. Port `RNS/Utilities/rnid.py` (611 LOC) → `rnid` binary target. Identity management: create, import, export identities; sign/verify data; encrypt/decrypt. Integrate the `qr-code` shard for QR code generation of identity hashes. Write specs for identity operations.
 
 - [ ] **10.4 — rncp and rnx utilities**

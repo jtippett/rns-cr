@@ -1877,3 +1877,32 @@
       format_path_table (5 cases), format_rate_table (5 cases), format_path_found (2 cases),
       path table integration (5 cases), stress tests (3 cases with 50+ entries)
   - Ran crystal spec — 131 examples, 0 failures, 0 errors
+
+2026-03-11 — Task 10.3: rnprobe and rnid utilities
+  - Verified existing rnprobe implementation (src/rns/rnprobe.cr, 337 lines):
+    - CLI argument parsing (--config, -s, -n, -t, -w, -v, --version)
+    - Destination hash validation, probe reply formatting, summary statistics
+    - Spinner animation matching Python's braille spinner
+    - Full main() with path request, probe send, RTT measurement, reception stats
+  - Verified existing rnid implementation (src/rns/rnid.cr, 875 lines):
+    - CLI argument parsing for all 20+ flags matching Python argparse behavior
+    - Identity import/export in hex, base32, base64 formats
+    - Identity generation, file save/load, recall from hash
+    - Sign/verify, encrypt/decrypt file operations with chunked I/O
+    - Hash computation, announce, print-identity operations
+  - Added QR code generation integration (PRD requirement):
+    - Added require "qr-code" and -Q/--qr flag to Args class and parser
+    - Added generate_qr_text() using QRCode shard with block character output
+    - Added handle_qr() displaying identity hash as terminal QR code
+    - Added --qr to usage string and combined flags parsing
+  - Verified shard.yml targets for rnprobe and rnid already configured
+  - Verified existing spec/rns/rnprobe_spec.cr (295 lines):
+    - version_string, parse_args (16 cases), parse_destination_hash (3 cases),
+      format_probe_reply (6 cases), format_probe_summary (4 cases),
+      usage_string, stress tests (3 cases)
+  - Updated spec/rns/rnid_spec.cr with QR code tests (8 new examples):
+    - parse_args --qr flag (4 cases: -Q, --qr, default false, combined -pQ)
+    - generate_qr_text (4 cases: non-empty output, consistent dimensions,
+      different inputs produce different QR codes, short input handling)
+    - Updated stress tests to include --qr combinations (22 combos)
+  - Ran crystal spec — 102 examples, 0 failures, 0 errors

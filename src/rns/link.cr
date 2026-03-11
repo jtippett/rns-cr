@@ -1,11 +1,12 @@
 module RNS
+  # Container for link event callback procs (established, closed, packet, resource, identify).
   class LinkCallbacks
     property link_established : Proc(Link, Nil)?
     property link_closed : Proc(Link, Nil)?
     property packet : Proc(Bytes, Packet, Nil)?
-    property resource : Proc(Bytes, Bool)?          # ResourceAdvertisement plaintext -> accept?
-    property resource_started : Proc(Bytes, Nil)?   # resource_hash -> void
-    property resource_concluded : Proc(Bytes, Nil)? # resource_hash -> void
+    property resource : Proc(Resource, Bool)?          # Resource -> accept?
+    property resource_started : Proc(Resource, Nil)?   # Resource -> void
+    property resource_concluded : Proc(Resource, Nil)? # Resource -> void
     property remote_identified : Proc(Link, Identity, Nil)?
 
     def initialize
@@ -19,18 +20,23 @@ module RNS
     end
   end
 
+  # Encrypted bidirectional communication channel between two Reticulum destinations,
+  # established via ECDH key exchange over X25519 with Ed25519 signing.
   class Link
     include LinkLike
     include Destination::DestinationInterface
 
+    # Curve type and key sizes for ECDH key exchange and signing.
     # ─── Curve and key size constants ────────────────────────────────
     CURVE     = Identity::CURVE
     ECPUBSIZE = 32 + 32 # 64 bytes: 32 X25519 + 32 Ed25519 public key bytes
     KEYSIZE   = 32      # Derived key size in bytes
 
+    # Maximum Data Unit: largest plaintext payload that fits in an encrypted link packet.
     # ─── MDU ─────────────────────────────────────────────────────────
     MDU = ((Reticulum::MTU - Reticulum::IFAC_MIN_SIZE - Reticulum::HEADER_MINSIZE - Identity::TOKEN_OVERHEAD) // Identity::AES128_BLOCKSIZE) * Identity::AES128_BLOCKSIZE - 1
 
+    # Timeout, keepalive, and watchdog timing parameters for link lifecycle management.
     # ─── Timing constants ────────────────────────────────────────────
     ESTABLISHMENT_TIMEOUT_PER_HOP = Reticulum::DEFAULT_PER_HOP_TIMEOUT.to_f64
     LINK_MTU_SIZE                 =     3
@@ -46,6 +52,7 @@ module RNS
     STALE_TIME                    = STALE_FACTOR * KEEPALIVE
     WATCHDOG_MAX_SLEEP            = 5.0
 
+    # Link lifecycle states: PENDING -> HANDSHAKE -> ACTIVE -> STALE -> CLOSED.
     # ─── Link states ─────────────────────────────────────────────────
     PENDING   = 0x00_u8
     HANDSHAKE = 0x01_u8
@@ -53,17 +60,20 @@ module RNS
     STALE     = 0x03_u8
     CLOSED    = 0x04_u8
 
+    # Reason codes recorded when a link is torn down.
     # ─── Teardown reasons ────────────────────────────────────────────
     TIMEOUT            = 0x01_u8
     INITIATOR_CLOSED   = 0x02_u8
     DESTINATION_CLOSED = 0x03_u8
 
+    # Policies controlling whether incoming resource transfers are accepted.
     # ─── Resource strategies ─────────────────────────────────────────
     ACCEPT_NONE         = 0x00_u8
     ACCEPT_APP          = 0x01_u8
     ACCEPT_ALL          = 0x02_u8
     RESOURCE_STRATEGIES = [ACCEPT_NONE, ACCEPT_APP, ACCEPT_ALL]
 
+    # Symmetric encryption modes negotiated during link establishment.
     # ─── Encryption modes ────────────────────────────────────────────
     MODE_AES128_CBC    = 0x00_u8
     MODE_AES256_CBC    = 0x01_u8
@@ -86,6 +96,7 @@ module RNS
       MODE_PQ_RESERVED_4 => "MODE_PQ_RESERVED_4",
     }
 
+    # Bitmasks for encoding MTU and encryption mode into signalling bytes.
     # ─── Byte masks for MTU signalling ───────────────────────────────
     MTU_BYTEMASK  = 0x1FFFFF_u32
     MODE_BYTEMASK =      0xE0_u8
@@ -249,6 +260,7 @@ module RNS
       Identity.truncated_hash(hashable_part)
     end
 
+    # Validates an incoming link request packet, creates the responder-side link, and sends a proof.
     def self.validate_request(owner : Destination, data : Bytes, packet : Packet) : Link?
       if data.size == ECPUBSIZE || data.size == ECPUBSIZE + LINK_MTU_SIZE
         begin
@@ -293,6 +305,8 @@ module RNS
 
     # ─── Constructor ─────────────────────────────────────────────────
 
+    # Creates a new link. When *destination* is provided, acts as initiator and sends a link request.
+    # When *owner* and peer key bytes are provided instead, acts as responder during `validate_request`.
     def initialize(destination : Destination? = nil,
                    established_callback : Proc(Link, Nil)? = nil,
                    closed_callback : Proc(Link, Nil)? = nil,
@@ -411,6 +425,7 @@ module RNS
 
     # ─── Peer loading ────────────────────────────────────────────────
 
+    # Loads the remote peer's X25519 and Ed25519 public keys from raw bytes.
     def load_peer(peer_pub_bytes : Bytes, peer_sig_pub_bytes : Bytes)
       @peer_pub_bytes = peer_pub_bytes
       @peer_pub = Cryptography::X25519PublicKey.from_public_bytes(peer_pub_bytes)
@@ -466,6 +481,7 @@ module RNS
 
     # ─── Handshake (ECDH key derivation) ─────────────────────────────
 
+    # Performs ECDH key exchange and derives symmetric encryption keys via HKDF.
     def do_handshake
       if @status == PENDING && @prv
         @status = HANDSHAKE
@@ -490,6 +506,7 @@ module RNS
 
     # ─── Prove (responder sends proof to initiator) ──────────────────
 
+    # Constructs and sends a signed link proof packet from the responder to the initiator.
     def prove
       signalling_bytes = Link.signalling_bytes(@mtu.to_u32, @mode)
       pub_b = @pub_bytes.not_nil!
@@ -520,6 +537,7 @@ module RNS
 
     # ─── Validate proof (initiator receives and verifies) ────────────
 
+    # Validates a link proof received by the initiator, completing the handshake and activating the link.
     def validate_proof(packet : Packet)
       if @status == PENDING
         sig_len = Identity::SIGLENGTH // 8 # 64 bytes
@@ -600,6 +618,7 @@ module RNS
 
     # ─── RTT packet handling (responder) ─────────────────────────────
 
+    # Handles an RTT measurement packet on the responder side, activating the link.
     def rtt_packet(packet : Packet)
       measured_rtt = Time.utc.to_unix_f - @request_time.not_nil!
       plaintext = decrypt_data(packet.data)
@@ -635,6 +654,7 @@ module RNS
 
     # ─── Encryption and decryption ───────────────────────────────────
 
+    # Encrypts plaintext using the link's derived symmetric key via the Token cipher.
     def encrypt_data(plaintext : Bytes) : Bytes
       token = @token
       if token.nil?
@@ -652,6 +672,7 @@ module RNS
       raise ex
     end
 
+    # Decrypts ciphertext using the link's derived symmetric key. Returns nil on failure.
     def decrypt_data(ciphertext : Bytes) : Bytes?
       token = @token
       if token.nil?
@@ -666,10 +687,12 @@ module RNS
 
     # ─── Signing and validation ──────────────────────────────────────
 
+    # Signs a message using this link's Ed25519 private key.
     def sign(message : Bytes) : Bytes
       @sig_prv.not_nil!.sign(message)
     end
 
+    # Validates a signature against a message using the peer's Ed25519 public key.
     def validate(signature : Bytes, message : Bytes) : Bool
       @peer_sig_pub.not_nil!.verify(signature, message)
       true
@@ -679,6 +702,7 @@ module RNS
 
     # ─── Identify (initiator reveals identity to responder) ──────────
 
+    # Reveals the initiator's identity to the responder by sending a signed identity proof.
     def identify(identity : Identity)
       if @initiator && @status == ACTIVE
         pub_key = identity.get_public_key
@@ -701,6 +725,7 @@ module RNS
 
     RESPONSE_MAX_GRACE_TIME = 10.0 # Placeholder until Resource module provides this
 
+    # Sends a request to the remote destination on *path* and returns a `RequestReceipt` to track the response.
     def request(path : String,
                 data : Bytes? = nil,
                 response_callback : Proc(RequestReceipt, Nil)? = nil,
@@ -835,6 +860,7 @@ module RNS
 
     # ─── Send convenience ────────────────────────────────────────────
 
+    # Sends data over the link as an encrypted packet. Returns nil if the link is closed.
     def send(data : Bytes, packet_type : UInt8 = Packet::DATA, context : UInt8 = Packet::NONE) : Packet?
       return nil if @status == CLOSED
       packet = Packet.new(self, data, packet_type: packet_type, context: context)
@@ -906,6 +932,7 @@ module RNS
 
     # ─── Teardown ────────────────────────────────────────────────────
 
+    # Tears down the link, sending a close packet to the peer and purging keys.
     def teardown
       if @status != PENDING && @status != CLOSED
         teardown_pkt = Packet.new(self, @link_id, context: Packet::LINKCLOSE)
@@ -928,6 +955,7 @@ module RNS
       RNS.log("Error processing teardown packet: #{ex.message}", RNS::LOG_DEBUG)
     end
 
+    # Cleans up after link closure: purges keys, removes from destination, and fires the closed callback.
     def link_closed
       # Clear resource lists (cancel handled by Resource module when implemented)
       @incoming_resources.clear
@@ -1041,6 +1069,7 @@ module RNS
 
     # ─── Receive ─────────────────────────────────────────────────────
 
+    # Processes an incoming packet on this link, dispatching by context (data, identify, request, keepalive, etc.).
     def receive(packet : Packet)
       @watchdog_lock = true
 
@@ -1341,15 +1370,15 @@ module RNS
       @callbacks.remote_identified = callback
     end
 
-    def set_resource_callback(callback : Proc(Bytes, Bool))
+    def set_resource_callback(callback : Proc(Resource, Bool))
       @callbacks.resource = callback
     end
 
-    def set_resource_started_callback(callback : Proc(Bytes, Nil))
+    def set_resource_started_callback(callback : Proc(Resource, Nil))
       @callbacks.resource_started = callback
     end
 
-    def set_resource_concluded_callback(callback : Proc(Bytes, Nil))
+    def set_resource_concluded_callback(callback : Proc(Resource, Nil))
       @callbacks.resource_concluded = callback
     end
 

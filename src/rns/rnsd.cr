@@ -136,8 +136,6 @@ module RNS
       STDERR.puts "rnsd: #{ex.message}"
       STDERR.puts "Usage: rnsd [--config PATH] [-v] [-q] [-s] [-i] [--exampleconfig] [--version]"
       exit(1)
-    rescue ex : KeyboardInterrupt
-      puts ""
     rescue ex : Exception
       if ex.message.try(&.includes?("Interrupt"))
         puts ""

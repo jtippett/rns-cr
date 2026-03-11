@@ -361,10 +361,9 @@ module RNS
 
       save_path : String? = nil
       if s = save
-        sp = File.expand_path(s)
-        if Dir.exists?(sp)
-          # Crystal doesn't have os.access, just check writability by attempting
-          save_path = sp
+        expanded = File.expand_path(s)
+        if Dir.exists?(expanded)
+          save_path = expanded
         else
           RNS.log("Output directory not found", RNS::LOG_ERROR)
           RNS.exit(3)
@@ -374,7 +373,7 @@ module RNS
 
       identity = prepare_identity(identitypath)
 
-      destination = Destination.new(identity, Destination::IN, Destination::SINGLE, APP_NAME, "receive")
+      destination = Destination.new(identity, Destination::IN, Destination::SINGLE, APP_NAME, ["receive"])
 
       if display_identity
         puts "Identity     : #{identity}"
@@ -453,26 +452,31 @@ module RNS
         link.set_resource_started_callback(->(resource : Resource) {
           id_str = ""
           if ri = resource.link.try(&.get_remote_identity)
-            id_str = " from #{RNS.prettyhexrep(ri.hash)}"
+            if rh = ri.hash
+              id_str = " from #{RNS.prettyhexrep(rh)}"
+            end
           end
           puts "Starting resource transfer #{RNS.prettyhexrep(resource.hash)}#{id_str}"
         })
         link.set_resource_concluded_callback(->(resource : Resource) {
           if resource.status == Resource::COMPLETE
             puts "#{resource} completed"
-            meta = resource.metadata
-            if meta.nil?
+            raw_meta = resource.metadata
+            if raw_meta.nil?
               puts "Invalid data received, ignoring resource"
-              next
+              return
             end
             begin
-              filename = File.basename(String.new(meta["name"].as(Bytes)))
+              meta = MessagePack::Any.from_msgpack(raw_meta)
+              name_raw = meta["name"].raw
+              name_str = name_raw.is_a?(Bytes) ? String.new(name_raw) : name_raw.to_s
+              filename = File.basename(name_str)
               counter = 0
               saved_filename = if sp = save_path
                                  full = File.expand_path(sp + "/" + filename)
                                  unless full.starts_with?(sp + "/")
                                    RNS.log("Invalid save path #{full}, ignoring", RNS::LOG_ERROR)
-                                   next
+                                   return
                                  end
                                  full
                                else
@@ -510,13 +514,13 @@ module RNS
         if allow_all
           RNS.log("Allowing unauthenticated fetch requests", RNS::LOG_WARNING)
           destination.register_request_handler("fetch_file",
-            response_generator: ->(_path : String, data : Bytes, _request_id : Bytes, _link_id : Bytes, _remote_identity : Identity?, _requested_at : Float64) {
+            response_generator: ->(_path : String, data : Bytes?, _request_id : Bytes, _link_id : Bytes, _remote_identity : Identity?, _requested_at : Float64) {
               handle_fetch_request(data, fetch_jail, fetch_auto_compress)
             },
             allow: Destination::ALLOW_ALL)
         else
           destination.register_request_handler("fetch_file",
-            response_generator: ->(_path : String, data : Bytes, _request_id : Bytes, _link_id : Bytes, _remote_identity : Identity?, _requested_at : Float64) {
+            response_generator: ->(_path : String, data : Bytes?, _request_id : Bytes, _link_id : Bytes, _remote_identity : Identity?, _requested_at : Float64) {
               handle_fetch_request(data, fetch_jail, fetch_auto_compress)
             },
             allow: Destination::ALLOW_LIST,
@@ -543,8 +547,9 @@ module RNS
     end
 
     # Handle a fetch file request from a remote client.
-    private def self.handle_fetch_request(data : Bytes, fetch_jail : String?,
-                                          fetch_auto_compress : Bool) : Bool | UInt8
+    private def self.handle_fetch_request(data : Bytes?, fetch_jail : String?,
+                                          fetch_auto_compress : Bool) : Bytes?
+      return nil if data.nil?
       file_path_str = String.new(data)
       if fj = fetch_jail
         if file_path_str.starts_with?(fj + "/")
@@ -553,7 +558,7 @@ module RNS
         file_path = File.expand_path("#{fj}/#{file_path_str}")
         unless file_path.starts_with?(fj + "/")
           RNS.log("Disallowing fetch request for #{file_path} outside of fetch jail #{fj}", RNS::LOG_WARNING)
-          return REQ_FETCH_NOT_ALLOWED
+          return nil
         end
       else
         file_path = File.expand_path(file_path_str)
@@ -561,11 +566,11 @@ module RNS
 
       unless File.exists?(file_path)
         RNS.log("Client-requested file not found: #{file_path}", RNS::LOG_VERBOSE)
-        return false
+        return nil
       end
 
       RNS.log("Sending file #{file_path} to client", RNS::LOG_VERBOSE)
-      true
+      File.read(file_path).to_slice
     end
 
     # Send mode — send a file to a remote rncp listener.
@@ -635,7 +640,7 @@ module RNS
         Destination::OUT,
         Destination::SINGLE,
         APP_NAME,
-        "receive"
+        ["receive"]
       )
 
       link = Link.new(receiver_destination)
@@ -709,14 +714,16 @@ module RNS
         end
       }
 
-      metadata = {"name" => File.basename(file_path).to_slice}
+      meta_hash = Hash(MessagePack::Type, MessagePack::Type).new
+      meta_hash["name"] = File.basename(file_path).to_slice.as(MessagePack::Type)
+      metadata = MessagePack::Any.new(meta_hash.as(MessagePack::Type))
       begin
         resource = Resource.new(File.read(file_path).to_slice, link, metadata: metadata,
           callback: progress_callback, progress_callback: progress_callback,
           auto_compress: auto_compress)
       rescue ex
         puts "Could not start transfer: #{ex}"
-        RNS.exit(1)
+        exit(1)
       end
 
       while resource.status < Resource::TRANSFERRING
@@ -807,9 +814,9 @@ module RNS
 
       save_path : String? = nil
       if s = save
-        sp = File.expand_path(s)
-        if Dir.exists?(sp)
-          save_path = sp
+        expanded = File.expand_path(s)
+        if Dir.exists?(expanded)
+          save_path = expanded
         else
           RNS.log("Output directory not found", RNS::LOG_ERROR)
           RNS.exit(3)
@@ -869,7 +876,7 @@ module RNS
         Destination::OUT,
         Destination::SINGLE,
         APP_NAME,
-        "receive"
+        ["receive"]
       )
 
       link = Link.new(listener_destination)
@@ -916,7 +923,7 @@ module RNS
       link.set_resource_strategy(Link::ACCEPT_ALL)
       link.set_resource_started_callback(->(resource : Resource) {
         current_resource = resource
-        resource.progress_callback(->(r : Resource) {
+        resource.progress_callback_proc = ->(r : Resource) {
           now = Time.utc.to_unix_f
           got = r.get_progress * r.get_data_size
           phy_got = r.get_segment_progress * r.get_transfer_size
@@ -933,27 +940,30 @@ module RNS
             phy_diff = phy_got - stats[0][2]
             phy_speed = phy_diff / span if phy_diff > 0
           end
-        })
+        }
         current_transfer_started = Time.utc.to_unix_f if current_transfer_started.nil?
       })
 
       link.set_resource_concluded_callback(->(resource : Resource) {
         if resource.status == Resource::COMPLETE
-          meta = resource.metadata
-          if meta.nil?
+          raw_meta = resource.metadata
+          if raw_meta.nil?
             puts "Invalid data received, ignoring resource"
             resource_resolved = true
-            next
+            return
           end
           begin
-            filename = File.basename(String.new(meta["name"].as(Bytes)))
+            meta = MessagePack::Any.from_msgpack(raw_meta)
+            name_raw = meta["name"].raw
+            name_str = name_raw.is_a?(Bytes) ? String.new(name_raw) : name_raw.to_s
+            filename = File.basename(name_str)
             counter = 0
             saved_filename = if sp = save_path
                                full = File.expand_path(sp + "/" + filename)
                                unless full.starts_with?(sp + "/")
                                  puts "Invalid save path #{full}, ignoring"
                                  resource_resolved = true
-                                 next
+                                 return
                                end
                                full
                              else

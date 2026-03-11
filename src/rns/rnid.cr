@@ -530,6 +530,7 @@ module RNS
     # Handle the --qr flag.
     def self.handle_qr(args : Args, identity : Identity) : Nil
       hash_hex = identity.hexhash
+      raise "Identity has no hash" unless hash_hex
       RNS.log("Identity hash: #{hash_hex}")
       puts ""
       puts generate_qr_text(hash_hex)

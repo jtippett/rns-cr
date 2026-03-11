@@ -635,7 +635,8 @@ module RNS
       fd = LibC.open(@port, LibC::O_RDWR | LibC::O_NOCTTY | LibC::O_NONBLOCK)
       raise IO::Error.new("Could not open serial port #{@port}") if fd < 0
       configure_termios(fd)
-      @serial = IO::FileDescriptor.new(fd, blocking: false)
+      IO::FileDescriptor.set_blocking(fd, false)
+      @serial = IO::FileDescriptor.new(fd)
     end
 
     private def configure_termios(fd : Int32)
@@ -673,7 +674,7 @@ module RNS
       if @as_interface
         timeout = Time.utc.to_unix_f + WeaveWDCL::WDCL_HANDSHAKE_TIMEOUT
         while Time.utc.to_unix_f < timeout && !@wdcl_connected
-          sleep(0.1)
+          sleep(0.1.seconds)
         end
         unless @wdcl_connected
           raise IO::Error.new("WDCL connection handshake timed out for #{self}")
@@ -720,7 +721,7 @@ module RNS
             frame_buf.write(buf[0, bytes_read])
             process_frames(frame_buf)
           else
-            sleep(0.01)
+            sleep(0.01.seconds)
           end
         rescue ex
           break
@@ -774,7 +775,7 @@ module RNS
       @wdcl_connected = false
       while !@online && @should_run
         begin
-          sleep(5)
+          sleep(5.seconds)
           RNS.log("Attempting to reconnect serial port #{@port} for #{@owner}...", RNS::LOG_DEBUG)
           open_port
           if @serial
@@ -894,7 +895,7 @@ module RNS
 
     def peer_jobs
       loop do
-        sleep(@peer_job_interval)
+        sleep(@peer_job_interval.seconds)
         now = Time.utc.to_unix_f
         timed_out_peers = [] of Bytes
 

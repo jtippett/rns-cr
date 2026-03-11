@@ -336,16 +336,16 @@ module RNS
 
     # Format execution result for display.
     # Result array from remote: [executed, retval, stdout, stderr, outlen, errlen, started, concluded]
-    def self.format_result(result : Array, detailed : Bool, mirror : Bool,
+    def self.format_result(result : Array(MessagePack::Type), detailed : Bool, mirror : Bool,
                            stdout_limit : Int32?, stderr_limit : Int32?) : {String, Int32?}
       executed = result[0].as(Bool)
-      retval = result[1].as(Int32?)
-      stdout_data = result[2].as(Bytes?)
-      stderr_data = result[3].as(Bytes?)
-      outlen = result[4].as(Int32?)
-      errlen = result[5].as(Int32?)
-      started = result[6].as(Float64?)
-      concluded = result[7].as(Float64?)
+      retval = result[1].as?(Int64).try(&.to_i32) || result[1].as?(Int32)
+      stdout_data = result[2].as?(Bytes)
+      stderr_data = result[3].as?(Bytes)
+      outlen = result[4].as?(Int64).try(&.to_i32) || result[4].as?(Int32)
+      errlen = result[5].as?(Int64).try(&.to_i32) || result[5].as?(Int32)
+      started = result[6].as?(Float64)
+      concluded = result[7].as?(Float64)
 
       output = String::Builder.new
 
@@ -508,7 +508,7 @@ module RNS
       _reticulum = ReticulumInstance.new(configdir: configdir, loglevel: targetloglevel)
 
       identity = prepare_identity(identitypath)
-      destination = Destination.new(identity, Destination::IN, Destination::SINGLE, APP_NAME, "execute")
+      destination = Destination.new(identity, Destination::IN, Destination::SINGLE, APP_NAME, ["execute"])
 
       if print_identity
         puts "Identity     : #{identity}"
@@ -563,10 +563,13 @@ module RNS
 
       destination.set_link_established_callback(->(link : Link) {
         link.set_remote_identified_callback(->(lnk : Link, ident : Identity) {
-          RNS.log("Initiator of link #{lnk} identified as #{RNS.prettyhexrep(ident.hash)}")
-          if !allow_all && !allowed_identity_hashes.any? { |hash| hash == ident.hash }
-            RNS.log("Identity #{RNS.prettyhexrep(ident.hash)} not allowed, tearing down link")
-            lnk.teardown
+          ih = ident.hash
+          if ih
+            RNS.log("Initiator of link #{lnk} identified as #{RNS.prettyhexrep(ih)}")
+            if !allow_all && !allowed_identity_hashes.any? { |hash| hash == ih }
+              RNS.log("Identity #{RNS.prettyhexrep(ih)} not allowed, tearing down link")
+              lnk.teardown
+            end
           end
         })
         link.set_link_closed_callback(->(lnk : Link) {
@@ -577,15 +580,15 @@ module RNS
 
       if !allow_all
         destination.register_request_handler("command",
-          response_generator: ->(_path : String, data : Bytes, _request_id : Bytes, _link_id : Bytes, remote_identity : Identity?, _requested_at : Float64) {
-            execute_received_command(data, remote_identity)
+          response_generator: ->(_path : String, data : Bytes?, _request_id : Bytes, _link_id : Bytes, remote_identity : Identity?, _requested_at : Float64) {
+            data ? execute_received_command(data, remote_identity) : nil
           },
           allow: Destination::ALLOW_LIST,
           allowed_list: allowed_identity_hashes)
       else
         destination.register_request_handler("command",
-          response_generator: ->(_path : String, data : Bytes, _request_id : Bytes, _link_id : Bytes, remote_identity : Identity?, _requested_at : Float64) {
-            execute_received_command(data, remote_identity)
+          response_generator: ->(_path : String, data : Bytes?, _request_id : Bytes, _link_id : Bytes, remote_identity : Identity?, _requested_at : Float64) {
+            data ? execute_received_command(data, remote_identity) : nil
           },
           allow: Destination::ALLOW_ALL)
       end
@@ -602,7 +605,7 @@ module RNS
     # Execute a command received from a remote client.
     # Data is a msgpack array: [command_bytes, timeout, o_limit, e_limit, stdin_bytes]
     # Returns a result array: [executed, retval, stdout, stderr, outlen, errlen, started, concluded]
-    def self.execute_received_command(data : Bytes, remote_identity : Identity?) : Array
+    def self.execute_received_command(data : Bytes, remote_identity : Identity?) : Bytes?
       # Unpack the request data (msgpack array)
       unpacked = Array(MessagePack::Type).from_msgpack(data)
       command = String.new(unpacked[0].as(Bytes))
@@ -612,7 +615,8 @@ module RNS
       stdin_data = unpacked[4].as?(Bytes)
 
       if ri = remote_identity
-        RNS.log("Executing command [#{command}] for #{RNS.prettyhexrep(ri.hash)}")
+        rih = ri.hash
+        RNS.log("Executing command [#{command}] for #{rih ? RNS.prettyhexrep(rih) : "unknown"}")
       else
         RNS.log("Executing command [#{command}] for unknown requestor")
       end
@@ -630,7 +634,8 @@ module RNS
         result[0] = true
       rescue ex
         result[0] = false
-        return result.map(&.as(Bool | Int32? | Bytes? | Int64? | Float64?))
+        mp_result = result.map(&.as(MessagePack::Type))
+        return mp_result.to_msgpack
       end
 
       if sd = stdin_data
@@ -674,12 +679,14 @@ module RNS
       result[5] = stderr_bytes.size.to_i64
 
       if ri = remote_identity
-        RNS.log("Delivering result of command [#{command}] to #{RNS.prettyhexrep(ri.hash)}")
+        rih2 = ri.hash
+        RNS.log("Delivering result of command [#{command}] to #{rih2 ? RNS.prettyhexrep(rih2) : "unknown"}")
       else
         RNS.log("Delivering result of command [#{command}] to unknown requestor")
       end
 
-      result.map(&.as(Bool | Int32? | Bytes? | Int64? | Float64?))
+      mp_result = result.map(&.as(MessagePack::Type))
+      mp_result.to_msgpack
     end
 
     # Execute a command on a remote rnx listener.
@@ -718,7 +725,7 @@ module RNS
         Destination::OUT,
         Destination::SINGLE,
         APP_NAME,
-        "execute"
+        ["execute"]
       )
 
       link = Link.new(listener_destination)
@@ -735,25 +742,32 @@ module RNS
         link.identify(identity)
       end
 
-      sd = stdin_data ? stdin_data.encode("UTF-8").to_slice : nil
+      sd = stdin_data ? stdin_data.to_slice : nil
 
-      request_data = [
-        command.encode("UTF-8").to_slice,
-        timeout,
-        stdout_limit,
-        stderr_limit,
-        sd,
-      ]
+      request_arr = Array(MessagePack::Type).new
+      request_arr << command.to_slice.as(MessagePack::Type)
+      request_arr << timeout.as(MessagePack::Type)
+      request_arr << (stdout_limit ? stdout_limit.to_i64 : nil).as(MessagePack::Type)
+      request_arr << (stderr_limit ? stderr_limit.to_i64 : nil).as(MessagePack::Type)
+      request_arr << sd.as(MessagePack::Type)
+      request_data = request_arr.to_msgpack
 
-      rexec_timeout = timeout + link.rtt * 4 + REMOTE_EXEC_GRACE
+      rexec_timeout = timeout + (link.rtt || 0.0) * 4 + REMOTE_EXEC_GRACE
 
-      request_receipt = link.request(
+      rr = link.request(
         path: "command",
         data: request_data,
         response_callback: ->(_receipt : RequestReceipt) { },
         failed_callback: ->(_receipt : RequestReceipt) { },
         timeout: rexec_timeout
       )
+
+      unless rr
+        puts "Could not create execution request"
+        return nil if interactive
+        exit(244)
+      end
+      request_receipt = rr
 
       spin("Sending execution request", timeout: rexec_timeout + 0.5) {
         link.status == Link::CLOSED ||
@@ -797,7 +811,7 @@ module RNS
 
       if response = request_receipt.response
         begin
-          result_arr = response.as(Array)
+          result_arr = response.as_a
           output, retval = format_result(result_arr, detailed, mirror, stdout_limit, stderr_limit)
           print output
         rescue ex

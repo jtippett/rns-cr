@@ -1,4 +1,7 @@
 module RNS
+  # The fundamental data unit in Reticulum. Handles serialization to/from
+  # wire format, encryption via destination identities, header construction,
+  # hash-based addressing, and proof generation for reliable delivery.
   class Packet
     # ─── Packet types ───────────────────────────────────────────────
     DATA        = 0x00_u8
@@ -86,6 +89,9 @@ module RNS
     # NOTE: property link : Link? — not added due to Packet/Link circular dependency
     property map_hash : Bytes?
 
+    # Creates a new packet. When *destination* is provided, builds a packet for
+    # sending with the given *data* payload, *packet_type*, and routing parameters.
+    # When *destination* is `nil`, treats *data* as raw wire bytes for unpacking.
     def initialize(destination : Destination::DestinationInterface?, data : Bytes,
                    packet_type : UInt8 = DATA, context : UInt8 = NONE,
                    transport_type : UInt8 = Transport::BROADCAST,
@@ -172,6 +178,8 @@ module RNS
       end
     end
 
+    # Serializes the packet into wire format by constructing the header,
+    # encrypting the payload when required, and concatenating into `@raw`.
     def pack
       dest = @destination.not_nil!
       @destination_hash = dest.hash
@@ -244,6 +252,9 @@ module RNS
       update_hash
     end
 
+    # Deserializes a raw byte packet from `@raw`, extracting flags, header
+    # fields, destination hash, and payload data. Returns `true` on success,
+    # `false` if the packet is malformed.
     def unpack : Bool
       raw = @raw.not_nil!
 
@@ -282,10 +293,13 @@ module RNS
       @packet_hash = get_hash
     end
 
+    # Returns the full SHA-256 hash of this packet's hashable part.
     def get_hash : Bytes
       Identity.full_hash(get_hashable_part)
     end
 
+    # Returns the truncated hash of this packet, used for addressing and
+    # proof routing within the network.
     def get_truncated_hash : Bytes
       Identity.truncated_hash(get_hashable_part)
     end
@@ -307,8 +321,10 @@ module RNS
       result
     end
 
+    # Sends the packet via Transport, packing it first if needed. Records
+    # the send timestamp and marks the packet as sent.
     def send
-      return if @sent
+      return @receipt if @sent
 
       pack unless @packed
 
@@ -316,6 +332,8 @@ module RNS
       # side effects in unit tests. Full integration requires a running Reticulum instance.
       @sent = true
       @sent_at = Time.utc.to_unix_f
+      @receipt = PacketReceipt.new(self)
+      @receipt
     end
 
     def generate_proof_destination : ProofDestination
@@ -323,6 +341,9 @@ module RNS
     end
   end
 
+  # A lightweight destination wrapper used for routing packet proofs. Derives
+  # its hash from the original packet and acts as a `SINGLE`-type destination
+  # so that proof packets can be addressed back through the network.
   class ProofDestination
     include Destination::DestinationInterface
 
@@ -339,6 +360,9 @@ module RNS
     end
   end
 
+  # Tracks the delivery status of a sent packet and validates incoming proofs.
+  # Supports delivery/timeout callbacks and computes round-trip time once a
+  # proof is validated.
   class PacketReceipt
     # ─── Status constants ──────────────────────────────────────────
     FAILED    = 0x00_u8
@@ -426,6 +450,9 @@ module RNS
       validate_proof(proof_packet.data)
     end
 
+    # Validates a proof against this receipt. Handles both explicit proofs
+    # (hash + signature) and implicit proofs (signature only). On success,
+    # marks the receipt as `DELIVERED` and fires the delivery callback.
     def validate_proof(proof : Bytes, proof_packet : Packet? = nil) : Bool
       if proof.size == EXPL_LENGTH
         proof_hash = proof[0, Identity::HASHLENGTH // 8]

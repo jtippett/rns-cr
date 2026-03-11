@@ -286,7 +286,8 @@ module RNS
       raise IO::Error.new("Could not open serial port #{@port}") if fd < 0
 
       configure_termios(fd)
-      @serial = IO::FileDescriptor.new(fd, blocking: false)
+      IO::FileDescriptor.set_blocking(fd, false)
+      @serial = IO::FileDescriptor.new(fd)
     end
 
     private def configure_termios(fd : Int32)
@@ -314,12 +315,12 @@ module RNS
     end
 
     def configure_device
-      sleep(2.0)
+      sleep(2.seconds)
 
       spawn { read_loop }
 
       detect
-      sleep(0.2)
+      sleep(0.2.seconds)
 
       if !@detected
         RNS.log("Could not detect device for #{self}", RNS::LOG_ERROR)
@@ -777,7 +778,7 @@ module RNS
               end
             end
 
-            sleep(0.08)
+            sleep(0.08.seconds)
           end
         rescue ex
           break
@@ -804,7 +805,7 @@ module RNS
       @reconnecting = true
       while !@online && !@detached
         begin
-          sleep(5)
+          sleep(5.seconds)
           RNS.log("Attempting to reconnect serial port #{@port} for #{self}...", RNS::LOG_VERBOSE)
           open_port
           if @serial
@@ -1111,7 +1112,7 @@ module RNS
 
     def validate_radio_state : Bool
       RNS.log("Waiting for radio configuration validation for #{self}...", RNS::LOG_VERBOSE)
-      sleep(0.25)
+      sleep(0.25.seconds)
 
       valid = true
       if rf = @r_frequency

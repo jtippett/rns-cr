@@ -90,7 +90,7 @@ module RNS
     end
 
     # Iterate over all interface addresses, yielding (name, family, address_string)
-    private def self.each_ifaddr(&block : String, Int32, String ->)
+    private def self.each_ifaddr(& : String, Int32, String ->)
       ifap = Pointer(LibNet::Ifaddrs).null
       ret = LibNet.getifaddrs(pointerof(ifap))
       raise "getifaddrs failed" if ret != 0

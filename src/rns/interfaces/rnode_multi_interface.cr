@@ -597,31 +597,31 @@ module RNS
                 @selected_index = byte.to_i32
               elsif command == RNodeMultiKISS::CMD_TXPOWER
                 txp = byte > 127 ? byte.to_i32 - 256 : byte.to_i32
-                if (subint = @subinterfaces[@selected_index]?)
+                if subint = @subinterfaces[@selected_index]?
                   subint.r_txpower = txp
                   RNS.log("#{subint} Radio reporting TX power is #{subint.r_txpower} dBm", RNS::LOG_DEBUG)
                 end
               elsif command == RNodeMultiKISS::CMD_SF
-                if (subint = @subinterfaces[@selected_index]?)
+                if subint = @subinterfaces[@selected_index]?
                   subint.r_sf = byte.to_i32
                   RNS.log("#{subint} Radio reporting spreading factor is #{subint.r_sf}", RNS::LOG_DEBUG)
                   subint.update_bitrate
                 end
               elsif command == RNodeMultiKISS::CMD_CR
-                if (subint = @subinterfaces[@selected_index]?)
+                if subint = @subinterfaces[@selected_index]?
                   subint.r_cr = byte.to_i32
                   RNS.log("#{subint} Radio reporting coding rate is #{subint.r_cr}", RNS::LOG_DEBUG)
                   subint.update_bitrate
                 end
               elsif command == RNodeMultiKISS::CMD_RADIO_STATE
-                if (subint = @subinterfaces[@selected_index]?)
+                if subint = @subinterfaces[@selected_index]?
                   subint.r_state = byte
                   unless subint.r_state == RNodeMultiKISS::RADIO_STATE_ON
                     RNS.log("#{subint} Radio reporting state is offline", RNS::LOG_DEBUG)
                   end
                 end
               elsif command == RNodeMultiKISS::CMD_RADIO_LOCK
-                if (si = @subinterfaces[@selected_index]?)
+                if si = @subinterfaces[@selected_index]?
                   si.r_lock = byte
                 end
               elsif command == RNodeMultiKISS::CMD_FW_VERSION
@@ -635,11 +635,11 @@ module RNS
                   validate_firmware
                 end
               elsif command == RNodeMultiKISS::CMD_STAT_RSSI
-                if (subint = @subinterfaces[@selected_index]?)
+                if subint = @subinterfaces[@selected_index]?
                   subint.r_stat_rssi = byte.to_i32 - RNodeSubInterface::RSSI_OFFSET
                 end
               elsif command == RNodeMultiKISS::CMD_STAT_SNR
-                if (subint = @subinterfaces[@selected_index]?)
+                if subint = @subinterfaces[@selected_index]?
                   update_snr_stats(subint, byte)
                 end
               elsif command == RNodeMultiKISS::CMD_ST_ALOCK
@@ -649,7 +649,7 @@ module RNS
                 if command_buffer.size == 2
                   cb = command_buffer.to_slice
                   at = cb[0].to_u32 << 8 | cb[1].to_u32
-                  if (subint = @subinterfaces[@selected_index]?)
+                  if subint = @subinterfaces[@selected_index]?
                     subint.r_st_alock = at / 100.0
                     RNS.log("#{subint} Radio reporting short-term airtime limit is #{subint.r_st_alock}%", RNS::LOG_DEBUG)
                   end
@@ -661,7 +661,7 @@ module RNS
                 if command_buffer.size == 2
                   cb = command_buffer.to_slice
                   at = cb[0].to_u32 << 8 | cb[1].to_u32
-                  if (subint = @subinterfaces[@selected_index]?)
+                  if subint = @subinterfaces[@selected_index]?
                     subint.r_lt_alock = at / 100.0
                     RNS.log("#{subint} Radio reporting long-term airtime limit is #{subint.r_lt_alock}%", RNS::LOG_DEBUG)
                   end
@@ -693,7 +693,7 @@ module RNS
                   prt = cb[6].to_u32 << 8 | cb[7].to_u32
                   cst = cb[8].to_u32 << 8 | cb[9].to_u32
 
-                  if (subint = @subinterfaces[@selected_index]?)
+                  if subint = @subinterfaces[@selected_index]?
                     if lst != subint.r_symbol_time_ms || lsr.to_i32 != subint.r_symbol_rate || prs.to_i32 != subint.r_preamble_symbols || prt.to_i32 != subint.r_premable_time_ms || cst.to_i32 != subint.r_csma_slot_time_ms
                       subint.r_symbol_time_ms = lst
                       subint.r_symbol_rate = lsr.to_i32
@@ -1142,17 +1142,15 @@ module RNS
     end
 
     def update_bitrate
-      begin
-        r_sf = @r_sf
-        r_cr = @r_cr
-        r_bw = @r_bandwidth
-        return unless r_sf && r_cr && r_bw
-        @bitrate = (r_sf * (4.0 / r_cr) / ((2_f64 ** r_sf) / (r_bw / 1000.0)) * 1000).to_i64
-        @bitrate_kbps = (@bitrate / 1000.0).round(2)
-        RNS.log("#{self} On-air bitrate is now #{@bitrate_kbps} kbps", RNS::LOG_VERBOSE)
-      rescue
-        @bitrate = 0
-      end
+      r_sf = @r_sf
+      r_cr = @r_cr
+      r_bw = @r_bandwidth
+      return unless r_sf && r_cr && r_bw
+      @bitrate = (r_sf * (4.0 / r_cr) / ((2_f64 ** r_sf) / (r_bw / 1000.0)) * 1000).to_i64
+      @bitrate_kbps = (@bitrate / 1000.0).round(2)
+      RNS.log("#{self} On-air bitrate is now #{@bitrate_kbps} kbps", RNS::LOG_VERBOSE)
+    rescue
+      @bitrate = 0
     end
 
     def process_incoming(data : Bytes)

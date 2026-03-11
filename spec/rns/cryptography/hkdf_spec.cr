@@ -21,7 +21,7 @@ describe RNS::Cryptography do
     end
 
     it "computes RFC 5869 Test Case 2 (longer inputs/outputs)" do
-      ikm = Bytes.new(80) { |i| i.to_u8 }
+      ikm = Bytes.new(80, &.to_u8)
       salt = Bytes.new(80) { |i| (0x60 + i).to_u8 }
       info = Bytes.new(80) { |i| (0xb0 + i).to_u8 }
       length = 82
@@ -58,7 +58,7 @@ describe RNS::Cryptography do
 
     it "handles nil context (defaults to empty bytes)" do
       ikm = Bytes.new(22, 0x0b_u8)
-      salt = Bytes.new(13) { |i| i.to_u8 }
+      salt = Bytes.new(13, &.to_u8)
       length = 42
 
       # nil context should behave same as empty context

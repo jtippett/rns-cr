@@ -1214,7 +1214,7 @@ module RNS
               culled.check_timeout
             end
 
-            @@receipts.each { |receipt| receipt.check_timeout }
+            @@receipts.each(&.check_timeout)
             @@receipts.reject! { |receipt| receipt.status != PacketReceipt::SENT }
             @@receipts_last_checked = now
           end
@@ -1256,7 +1256,7 @@ module RNS
       @@jobs_running = false
 
       # Send outgoing packets after releasing jobs lock
-      outgoing.each { |packet| packet.send }
+      outgoing.each(&.send)
     end
 
     # Cull stale entries from all routing tables.
@@ -1490,7 +1490,7 @@ module RNS
 
         # Try to match interface reference to a registered interface
         if interface_reference
-          @@interfaces.each do |iface_hash|
+          @@interfaces.each do |_|
             # When interface objects are available, match by string representation
           end
         end

@@ -229,14 +229,14 @@ describe "Integration: Link Establishment" do
     it "established callback is set" do
       server_identity = RNS::Identity.new
       server_dest = create_link_dest(server_identity)
-      link = RNS::Link.new(destination: server_dest, established_callback: ->(l : RNS::Link) { })
+      link = RNS::Link.new(destination: server_dest, established_callback: ->(_l : RNS::Link) { })
       link.callbacks.link_established.should_not be_nil
     end
 
     it "closed callback is set" do
       server_identity = RNS::Identity.new
       server_dest = create_link_dest(server_identity)
-      link = RNS::Link.new(destination: server_dest, closed_callback: ->(l : RNS::Link) { })
+      link = RNS::Link.new(destination: server_dest, closed_callback: ->(_l : RNS::Link) { })
       link.callbacks.link_closed.should_not be_nil
     end
   end

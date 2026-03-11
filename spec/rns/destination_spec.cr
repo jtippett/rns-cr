@@ -342,19 +342,19 @@ describe RNS::Destination do
     it "sets link established callback" do
       dest = RNS::Destination.new(nil, RNS::Destination::IN, RNS::Destination::SINGLE, "testapp", register: false)
       called = false
-      dest.set_link_established_callback(->(link : RNS::Link) { called = true; nil })
+      dest.set_link_established_callback(->(_link : RNS::Link) { called = true; nil })
       dest.callbacks.link_established.should_not be_nil
     end
 
     it "sets packet callback" do
       dest = RNS::Destination.new(nil, RNS::Destination::IN, RNS::Destination::SINGLE, "testapp", register: false)
-      dest.set_packet_callback(->(data : Bytes, pkt : RNS::Packet) { nil })
+      dest.set_packet_callback(->(_data : Bytes, _pkt : RNS::Packet) { nil })
       dest.callbacks.packet.should_not be_nil
     end
 
     it "sets proof requested callback" do
       dest = RNS::Destination.new(nil, RNS::Destination::IN, RNS::Destination::SINGLE, "testapp", register: false)
-      dest.set_proof_requested_callback(->(pkt : RNS::Packet) { true })
+      dest.set_proof_requested_callback(->(_pkt : RNS::Packet) { true })
       dest.callbacks.proof_requested.should_not be_nil
     end
   end
@@ -412,14 +412,14 @@ describe RNS::Destination do
   describe "request handlers" do
     it "registers a request handler" do
       dest = RNS::Destination.new(nil, RNS::Destination::IN, RNS::Destination::SINGLE, "testapp", register: false)
-      handler = ->(path : String, data : Bytes?, req_id : Bytes, link_id : Bytes, identity : RNS::Identity?, requested_at : Float64) { nil.as(Bytes?) }
+      handler = ->(_path : String, _data : Bytes?, _req_id : Bytes, _link_id : Bytes, _identity : RNS::Identity?, _requested_at : Float64) { nil.as(Bytes?) }
       dest.register_request_handler("/test", handler, RNS::Destination::ALLOW_ALL)
       dest.request_handlers.size.should eq 1
     end
 
     it "raises on empty path" do
       dest = RNS::Destination.new(nil, RNS::Destination::IN, RNS::Destination::SINGLE, "testapp", register: false)
-      handler = ->(path : String, data : Bytes?, req_id : Bytes, link_id : Bytes, identity : RNS::Identity?, requested_at : Float64) { nil.as(Bytes?) }
+      handler = ->(_path : String, _data : Bytes?, _req_id : Bytes, _link_id : Bytes, _identity : RNS::Identity?, _requested_at : Float64) { nil.as(Bytes?) }
       expect_raises(ArgumentError, /Invalid path/) do
         dest.register_request_handler("", handler, RNS::Destination::ALLOW_ALL)
       end
@@ -427,7 +427,7 @@ describe RNS::Destination do
 
     it "raises on invalid request policy" do
       dest = RNS::Destination.new(nil, RNS::Destination::IN, RNS::Destination::SINGLE, "testapp", register: false)
-      handler = ->(path : String, data : Bytes?, req_id : Bytes, link_id : Bytes, identity : RNS::Identity?, requested_at : Float64) { nil.as(Bytes?) }
+      handler = ->(_path : String, _data : Bytes?, _req_id : Bytes, _link_id : Bytes, _identity : RNS::Identity?, _requested_at : Float64) { nil.as(Bytes?) }
       expect_raises(ArgumentError, /Invalid request policy/) do
         dest.register_request_handler("/test", handler, 0xFF_u8)
       end
@@ -435,7 +435,7 @@ describe RNS::Destination do
 
     it "deregisters a request handler" do
       dest = RNS::Destination.new(nil, RNS::Destination::IN, RNS::Destination::SINGLE, "testapp", register: false)
-      handler = ->(path : String, data : Bytes?, req_id : Bytes, link_id : Bytes, identity : RNS::Identity?, requested_at : Float64) { nil.as(Bytes?) }
+      handler = ->(_path : String, _data : Bytes?, _req_id : Bytes, _link_id : Bytes, _identity : RNS::Identity?, _requested_at : Float64) { nil.as(Bytes?) }
       dest.register_request_handler("/test", handler)
       dest.deregister_request_handler("/test").should be_true
       dest.request_handlers.size.should eq 0
@@ -448,7 +448,7 @@ describe RNS::Destination do
 
     it "registers multiple handlers on different paths" do
       dest = RNS::Destination.new(nil, RNS::Destination::IN, RNS::Destination::SINGLE, "testapp", register: false)
-      handler = ->(path : String, data : Bytes?, req_id : Bytes, link_id : Bytes, identity : RNS::Identity?, requested_at : Float64) { nil.as(Bytes?) }
+      handler = ->(_path : String, _data : Bytes?, _req_id : Bytes, _link_id : Bytes, _identity : RNS::Identity?, _requested_at : Float64) { nil.as(Bytes?) }
       dest.register_request_handler("/path1", handler)
       dest.register_request_handler("/path2", handler)
       dest.request_handlers.size.should eq 2
@@ -972,7 +972,7 @@ describe RNS::Destination do
       dest = RNS::Destination.new(nil, RNS::Destination::IN, RNS::Destination::SINGLE, "testapp", register: false)
       received_data : Bytes? = nil
 
-      dest.set_packet_callback(->(data : Bytes, pkt : RNS::Packet) {
+      dest.set_packet_callback(->(data : Bytes, _pkt : RNS::Packet) {
         received_data = data
         nil
       })
@@ -1003,7 +1003,7 @@ describe RNS::Destination do
       dest = RNS::Destination.new(nil, RNS::Destination::IN, RNS::Destination::PLAIN, "testapp", register: false)
       received_data : Bytes? = nil
 
-      dest.set_packet_callback(->(data : Bytes, pkt : RNS::Packet) {
+      dest.set_packet_callback(->(data : Bytes, _pkt : RNS::Packet) {
         received_data = data
         nil
       })

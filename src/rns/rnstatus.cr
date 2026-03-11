@@ -288,23 +288,23 @@ module RNS
                when "rate", "bitrate"
                  interfaces.sort_by { |i| i.bitrate || 0_i64 }
                when "rx"
-                 interfaces.sort_by { |i| i.rxb }
+                 interfaces.sort_by(&.rxb)
                when "tx"
-                 interfaces.sort_by { |i| i.txb }
+                 interfaces.sort_by(&.txb)
                when "rxs"
-                 interfaces.sort_by { |i| i.rxs }
+                 interfaces.sort_by(&.rxs)
                when "txs"
-                 interfaces.sort_by { |i| i.txs }
+                 interfaces.sort_by(&.txs)
                when "traffic"
                  interfaces.sort_by { |i| i.rxb + i.txb }
                when "announces", "announce"
                  interfaces.sort_by { |i| i.incoming_announce_frequency + i.outgoing_announce_frequency }
                when "arx"
-                 interfaces.sort_by { |i| i.incoming_announce_frequency }
+                 interfaces.sort_by(&.incoming_announce_frequency)
                when "atx"
-                 interfaces.sort_by { |i| i.outgoing_announce_frequency }
+                 interfaces.sort_by(&.outgoing_announce_frequency)
                when "held"
-                 interfaces.sort_by { |i| i.held_announces }
+                 interfaces.sort_by(&.held_announces)
                else
                  interfaces
                end

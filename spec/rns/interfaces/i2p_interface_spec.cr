@@ -328,7 +328,7 @@ describe RNS::I2PInterfacePeer do
     it "tracks rxb" do
       data = Bytes[1, 2, 3, 4, 5]
       received_data : Bytes? = nil
-      callback = ->(d : Bytes, i : RNS::Interface) { received_data = d; nil }
+      callback = ->(d : Bytes, _i : RNS::Interface) { received_data = d; nil }
 
       peer = RNS::I2PInterfacePeer.new("test_peer", inbound_callback: callback)
       peer.process_incoming(data)
@@ -337,7 +337,7 @@ describe RNS::I2PInterfacePeer do
 
     it "calls inbound callback" do
       received_data : Bytes? = nil
-      callback = ->(d : Bytes, i : RNS::Interface) { received_data = d; nil }
+      callback = ->(d : Bytes, _i : RNS::Interface) { received_data = d; nil }
 
       peer = RNS::I2PInterfacePeer.new("test_peer", inbound_callback: callback)
       peer.process_incoming(Bytes[10, 20, 30])
@@ -487,7 +487,7 @@ describe RNS::I2PInterfacePeer do
       port = server.local_address.port
 
       received_packets = [] of Bytes
-      callback = ->(d : Bytes, i : RNS::Interface) { received_packets << d.dup; nil }
+      callback = ->(d : Bytes, _i : RNS::Interface) { received_packets << d.dup; nil }
 
       # Server side: create peer from accepted connection
       server_peer : RNS::I2PInterfacePeer? = nil
@@ -525,7 +525,7 @@ describe RNS::I2PInterfacePeer do
       port = server.local_address.port
 
       received_packets = [] of Bytes
-      callback = ->(d : Bytes, i : RNS::Interface) { received_packets << d.dup; nil }
+      callback = ->(d : Bytes, _i : RNS::Interface) { received_packets << d.dup; nil }
 
       spawn do
         if client = server.accept?
@@ -561,7 +561,7 @@ describe RNS::I2PInterfacePeer do
       port = server.local_address.port
 
       received_packets = [] of Bytes
-      callback = ->(d : Bytes, i : RNS::Interface) { received_packets << d.dup; nil }
+      callback = ->(d : Bytes, _i : RNS::Interface) { received_packets << d.dup; nil }
 
       spawn do
         if client = server.accept?
@@ -597,7 +597,7 @@ describe RNS::I2PInterfacePeer do
       port = server.local_address.port
 
       received_packets = [] of Bytes
-      callback = ->(d : Bytes, i : RNS::Interface) { received_packets << d.dup; nil }
+      callback = ->(d : Bytes, _i : RNS::Interface) { received_packets << d.dup; nil }
 
       spawn do
         if client = server.accept?
@@ -630,7 +630,7 @@ describe RNS::I2PInterfacePeer do
       port = server.local_address.port
 
       received_packets = [] of Bytes
-      callback = ->(d : Bytes, i : RNS::Interface) { received_packets << d.dup; nil }
+      callback = ->(d : Bytes, _i : RNS::Interface) { received_packets << d.dup; nil }
 
       spawn do
         if client = server.accept?
@@ -781,7 +781,7 @@ describe RNS::I2PInterfacePeer do
       port = server.local_address.port
 
       received_packets = [] of Bytes
-      callback = ->(d : Bytes, i : RNS::Interface) { received_packets << d.dup; nil }
+      callback = ->(d : Bytes, _i : RNS::Interface) { received_packets << d.dup; nil }
 
       spawn do
         if client = server.accept?
@@ -798,7 +798,7 @@ describe RNS::I2PInterfacePeer do
       sender.socket = client_sock
       sender.online = true
 
-      50.times do |i|
+      50.times do |_|
         data = Random::Secure.random_bytes(Random.rand(1..200))
         sender.process_outgoing(data)
       end

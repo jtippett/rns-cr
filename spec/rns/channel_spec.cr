@@ -517,7 +517,7 @@ describe "RNS::Channel module" do
       outlet = TestOutlet.new
       ch = RNS::Channel(MockPacket).new(outlet)
       called = false
-      handler = ->(msg : RNS::MessageBase) { called = true; true }
+      handler = ->(_msg : RNS::MessageBase) { called = true; true }
       ch.add_message_handler(handler)
     end
 
@@ -525,7 +525,7 @@ describe "RNS::Channel module" do
       outlet = TestOutlet.new
       ch = RNS::Channel(MockPacket).new(outlet)
       count = 0
-      handler = ->(msg : RNS::MessageBase) { count += 1; true }
+      handler = ->(_msg : RNS::MessageBase) { count += 1; true }
       ch.add_message_handler(handler)
       ch.add_message_handler(handler) # duplicate
       ch.register_message_type(TestMessage)
@@ -538,7 +538,7 @@ describe "RNS::Channel module" do
       outlet = TestOutlet.new
       ch = RNS::Channel(MockPacket).new(outlet)
       called = false
-      handler = ->(msg : RNS::MessageBase) { called = true; true }
+      handler = ->(_msg : RNS::MessageBase) { called = true; true }
       ch.add_message_handler(handler)
       ch.remove_message_handler(handler)
       ch.register_message_type(TestMessage)
@@ -550,7 +550,7 @@ describe "RNS::Channel module" do
     it "removing non-existent handler does nothing" do
       outlet = TestOutlet.new
       ch = RNS::Channel(MockPacket).new(outlet)
-      handler = ->(msg : RNS::MessageBase) { true }
+      handler = ->(_msg : RNS::MessageBase) { true }
       ch.remove_message_handler(handler) # should not raise
     end
   end
@@ -728,7 +728,7 @@ describe "RNS::Channel module" do
       ch = RNS::Channel(MockPacket).new(outlet)
       ch.register_message_type(TestMessage)
       count = 0
-      handler = ->(msg : RNS::MessageBase) {
+      handler = ->(_msg : RNS::MessageBase) {
         count += 1
         true
       }
@@ -746,8 +746,8 @@ describe "RNS::Channel module" do
       ch = RNS::Channel(MockPacket).new(outlet)
       ch.register_message_type(TestMessage)
       call_order = [] of Int32
-      handler1 = ->(msg : RNS::MessageBase) { call_order << 1; true }
-      handler2 = ->(msg : RNS::MessageBase) { call_order << 2; true }
+      handler1 = ->(_msg : RNS::MessageBase) { call_order << 1; true }
+      handler2 = ->(_msg : RNS::MessageBase) { call_order << 2; true }
       ch.add_message_handler(handler1)
       ch.add_message_handler(handler2)
 
@@ -762,8 +762,8 @@ describe "RNS::Channel module" do
       ch = RNS::Channel(MockPacket).new(outlet)
       ch.register_message_type(TestMessage)
       call_order = [] of Int32
-      handler1 = ->(msg : RNS::MessageBase) { call_order << 1; false }
-      handler2 = ->(msg : RNS::MessageBase) { call_order << 2; true }
+      handler1 = ->(_msg : RNS::MessageBase) { call_order << 1; false }
+      handler2 = ->(_msg : RNS::MessageBase) { call_order << 2; true }
       ch.add_message_handler(handler1)
       ch.add_message_handler(handler2)
 
@@ -964,7 +964,7 @@ describe "RNS::Channel module" do
       outlet = TestOutlet.new
       ch = RNS::Channel(MockPacket).new(outlet)
       ch.register_message_type(TestMessage)
-      handler = ->(msg : RNS::MessageBase) { true }
+      handler = ->(_msg : RNS::MessageBase) { true }
       ch.add_message_handler(handler)
       ch.send(TestMessage.new("test"))
 

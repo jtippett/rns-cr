@@ -839,7 +839,7 @@ describe RNS::KISSInterface do
 
   describe "stress tests" do
     it "roundtrips 1000 random packets through KISS state machine" do
-      1000.times do |i|
+      1000.times do |_|
         data = Random::Secure.random_bytes(rand(1..200))
         frame = build_kiss_frame(data)
 

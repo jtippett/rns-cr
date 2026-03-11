@@ -506,7 +506,7 @@ describe "RNS::RawChannelReader" do
       reader = RNS::RawChannelReader.new(1, channel)
 
       call_count = 0
-      cb = ->(bytes : Int32) { call_count += 1; nil }
+      cb = ->(_bytes : Int32) { call_count += 1; nil }
       reader.add_ready_callback(cb)
       reader.remove_ready_callback(cb)
 
@@ -523,8 +523,8 @@ describe "RNS::RawChannelReader" do
 
       count1 = 0
       count2 = 0
-      cb1 = ->(bytes : Int32) { count1 += 1; nil }
-      cb2 = ->(bytes : Int32) { count2 += 1; nil }
+      cb1 = ->(_bytes : Int32) { count1 += 1; nil }
+      cb2 = ->(_bytes : Int32) { count2 += 1; nil }
       reader.add_ready_callback(cb1)
       reader.add_ready_callback(cb2)
 
@@ -562,7 +562,7 @@ describe "RNS::RawChannelReader" do
       reader = RNS::RawChannelReader.new(1, channel)
 
       count = 0
-      cb = ->(bytes : Int32) { count += 1; nil }
+      cb = ->(_bytes : Int32) { count += 1; nil }
       reader.add_ready_callback(cb)
 
       reader.close
@@ -701,7 +701,7 @@ describe "RNS::Buffer" do
     it "attaches ready callback" do
       channel, _outlet = buf_create_channel
       called = false
-      cb = ->(bytes : Int32) { called = true; nil }
+      cb = ->(_bytes : Int32) { called = true; nil }
       reader = RNS::Buffer.create_reader(1, channel, cb)
 
       buf_inject_stream(channel, 1, "data".to_slice)
@@ -758,7 +758,7 @@ describe "RNS::Buffer" do
     it "attaches ready callback to reader" do
       channel, _outlet = buf_create_channel
       called = false
-      cb = ->(bytes : Int32) { called = true; nil }
+      cb = ->(_bytes : Int32) { called = true; nil }
       reader, _writer = RNS::Buffer.create_bidirectional_buffer(1, 2, channel, cb)
 
       buf_inject_stream(channel, 1, "data".to_slice)
@@ -837,7 +837,7 @@ describe "Buffer integration" do
     channel, outlet = buf_create_channel(mdu: 500)
     writer = RNS::Buffer.create_writer(1, channel)
 
-    50.times do |i|
+    50.times do |_|
       data = Random::Secure.random_bytes(Random.rand(1..100))
       n = writer.write(data)
       n.should be > 0
@@ -867,7 +867,7 @@ describe "Buffer integration" do
     reader = RNS::Buffer.create_reader(1, channel)
     writer = RNS::Buffer.create_writer(1, channel)
 
-    30.times do |i|
+    30.times do |_|
       data = Random::Secure.random_bytes(Random.rand(1..50))
       writer.write(data)
 

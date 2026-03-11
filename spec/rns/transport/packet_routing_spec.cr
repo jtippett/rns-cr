@@ -433,7 +433,7 @@ describe RNS::Transport do
       dest = RNS::Destination.new(identity, RNS::Destination::IN, RNS::Destination::SINGLE, "testapp", ["recv"], register: false)
       RNS::Transport.register_destination(dest)
 
-      dest.set_packet_callback(->(data : Bytes, packet : RNS::Packet) {
+      dest.set_packet_callback(->(data : Bytes, _packet : RNS::Packet) {
         received_data = data
         nil
       })

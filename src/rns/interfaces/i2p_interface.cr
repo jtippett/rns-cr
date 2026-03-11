@@ -735,7 +735,7 @@ module RNS
         while should_run && !@wd_reset
           sleep 1.second
 
-          if (Time.utc.to_unix_f - @last_read > I2P_PROBE_AFTER * 2)
+          if Time.utc.to_unix_f - @last_read > I2P_PROBE_AFTER * 2
             if @i2p_tunnel_state != TUNNEL_STATE_STALE
               RNS.log("I2P tunnel became unresponsive", RNS::LOG_DEBUG)
             end
@@ -744,7 +744,7 @@ module RNS
             @i2p_tunnel_state = TUNNEL_STATE_ACTIVE
           end
 
-          if (Time.utc.to_unix_f - @last_write > I2P_PROBE_AFTER * 1)
+          if Time.utc.to_unix_f - @last_write > I2P_PROBE_AFTER * 1
             begin
               if sock = @socket
                 sock.write(Bytes[HDLC::FLAG, HDLC::FLAG])
@@ -757,7 +757,7 @@ module RNS
             end
           end
 
-          if (Time.utc.to_unix_f - @last_read > I2P_READ_TIMEOUT)
+          if Time.utc.to_unix_f - @last_read > I2P_READ_TIMEOUT
             RNS.log("I2P socket is unresponsive, restarting...", RNS::LOG_WARNING)
             shutdown_socket
             should_run = false
@@ -1099,7 +1099,7 @@ module RNS
     end
 
     private def server_tunnel_job
-      while true
+      loop do
         begin
           unless @i2p.server_tunnel(self)
             RNS.log("#{self} I2P control process experienced an error, requesting new tunnel...", RNS::LOG_ERROR)

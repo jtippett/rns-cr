@@ -868,7 +868,7 @@ describe RNS::Packet do
         receipt = RNS::PacketReceipt.new(pkt)
 
         called = false
-        receipt.set_delivery_callback(->(r : RNS::PacketReceipt) { called = true; nil })
+        receipt.set_delivery_callback(->(_r : RNS::PacketReceipt) { called = true; nil })
         receipt.callbacks.delivery.should_not be_nil
       end
     end
@@ -883,7 +883,7 @@ describe RNS::Packet do
         pkt.pack
         receipt = RNS::PacketReceipt.new(pkt)
 
-        receipt.set_timeout_callback(->(r : RNS::PacketReceipt) { nil })
+        receipt.set_timeout_callback(->(_r : RNS::PacketReceipt) { nil })
         receipt.callbacks.timeout.should_not be_nil
       end
     end
@@ -988,7 +988,7 @@ describe RNS::Packet do
         receipt.set_timeout(0.0)
 
         callback_called = false
-        receipt.set_timeout_callback(->(r : RNS::PacketReceipt) { callback_called = true; nil })
+        receipt.set_timeout_callback(->(_r : RNS::PacketReceipt) { callback_called = true; nil })
         receipt.check_timeout
 
         # Give the spawned fiber time to run

@@ -283,11 +283,11 @@ module RNS
     private def find_parent(current : Section, target_depth : Int32) : Section
       if target_depth == current.depth + 1
         # New section is a child of current
-        return current
+        current
       elsif target_depth == current.depth
         # Sibling — parent is current's parent
         p = current.parent
-        return p.nil? ? @root : p
+        p.nil? ? @root : p
       elsif target_depth < current.depth
         # Walk back up to find the right parent
         sect = current
@@ -296,7 +296,7 @@ module RNS
           break if p.nil?
           sect = p
         end
-        return sect
+        sect
       else
         # target_depth > current.depth + 1 — nesting too deep
         raise NestingError.new("Section nested too deeply")

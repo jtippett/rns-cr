@@ -7,7 +7,7 @@ describe RNS::Cryptography::PKCS7 do
       padded = RNS::Cryptography::PKCS7.pad(data)
       padded.size.should eq(16)
       # Last 13 bytes should all be 13
-      padded[3, 13].each { |b| b.should eq(13) }
+      padded[3, 13].each(&.should(eq(13)))
       padded[0, 3].should eq(data)
     end
 
@@ -16,7 +16,7 @@ describe RNS::Cryptography::PKCS7 do
       padded = RNS::Cryptography::PKCS7.pad(data)
       padded.size.should eq(32)
       padded[0, 16].should eq(data)
-      padded[16, 16].each { |b| b.should eq(16) }
+      padded[16, 16].each(&.should(eq(16)))
     end
 
     it "pads data one byte short of block size" do
@@ -31,28 +31,28 @@ describe RNS::Cryptography::PKCS7 do
       padded = RNS::Cryptography::PKCS7.pad(data)
       padded.size.should eq(32)
       # 32 - 20 = 12 bytes of padding
-      padded[20, 12].each { |b| b.should eq(12) }
+      padded[20, 12].each(&.should(eq(12)))
     end
 
     it "pads empty data with full block of padding" do
       data = Bytes.new(0)
       padded = RNS::Cryptography::PKCS7.pad(data)
       padded.size.should eq(16)
-      padded.each { |b| b.should eq(16) }
+      padded.each(&.should(eq(16)))
     end
 
     it "supports custom block size" do
       data = Bytes[1, 2, 3]
       padded = RNS::Cryptography::PKCS7.pad(data, 8)
       padded.size.should eq(8)
-      padded[3, 5].each { |b| b.should eq(5) }
+      padded[3, 5].each(&.should(eq(5)))
     end
 
     it "pads data at custom block size boundary" do
       data = Bytes.new(8, 0xDD_u8)
       padded = RNS::Cryptography::PKCS7.pad(data, 8)
       padded.size.should eq(16)
-      padded[8, 8].each { |b| b.should eq(8) }
+      padded[8, 8].each(&.should(eq(8)))
     end
   end
 
@@ -74,7 +74,7 @@ describe RNS::Cryptography::PKCS7 do
       (16...32).each { |i| padded[i] = 16_u8 }
       unpadded = RNS::Cryptography::PKCS7.unpad(padded)
       unpadded.size.should eq(16)
-      unpadded.each { |b| b.should eq(0xAA) }
+      unpadded.each(&.should(eq(170)))
     end
 
     it "unpads single byte of padding" do

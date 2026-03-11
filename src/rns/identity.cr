@@ -319,7 +319,7 @@ module RNS
 
     def self.recall(target_hash : Bytes, from_identity_hash : Bool = false) : Identity?
       if from_identity_hash
-        @@known_destinations.each do |destination_hash, identity_data|
+        @@known_destinations.each do |_, identity_data|
           pub_key = identity_data[2].as(Bytes)
           if target_hash == Identity.truncated_hash(pub_key)
             identity = Identity.new(create_keys: false)
@@ -328,7 +328,7 @@ module RNS
             return identity
           end
         end
-        return nil
+        nil
       else
         if @@known_destinations.has_key?(target_hash)
           identity_data = @@known_destinations[target_hash]
@@ -337,7 +337,7 @@ module RNS
           identity.app_data = identity_data[3].as?(Bytes)
           return identity
         end
-        return nil
+        nil
       end
     end
 
@@ -570,18 +570,18 @@ module RNS
             remember_ratchet(destination_hash.not_nil!, ratchet)
           end
 
-          return true
+          true
         else
           RNS.log("Received invalid announce for #{RNS.prettyhexrep(destination_hash.not_nil!)}: Destination mismatch.", RNS::LOG_DEBUG)
-          return false
+          false
         end
       else
         RNS.log("Received invalid announce for #{RNS.prettyhexrep(destination_hash.not_nil!)}: Invalid signature.", RNS::LOG_DEBUG)
-        return false
+        false
       end
     rescue ex
       RNS.log("Error occurred while validating announce. The contained exception was: #{ex}", RNS::LOG_ERROR)
-      return false
+      false
     end
 
     # ─── Hash Functions ────────────────────────────────────────────────

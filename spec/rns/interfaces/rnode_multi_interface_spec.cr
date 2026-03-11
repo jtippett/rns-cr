@@ -176,7 +176,7 @@ describe RNS::RNodeMultiInterface do
     it "initializes subinterfaces array" do
       iface = RNS::RNodeMultiInterface.new("TestMulti", "/dev/ttyUSB0")
       iface.subinterfaces.size.should eq(RNS::RNodeMultiInterface::MAX_SUBINTERFACES)
-      iface.subinterfaces.all?(&.nil?).should be_true
+      iface.subinterfaces.all?(Nil).should be_true
     end
 
     it "initializes subinterface_types as empty" do

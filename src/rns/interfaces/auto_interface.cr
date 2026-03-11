@@ -382,47 +382,43 @@ module RNS
 
     # Send a reverse (unicast) peering announcement to a specific peer
     def reverse_announce(ifname : String, peer_addr : String)
+      link_local_address = @adopted_interfaces[ifname]
+      discovery_token = RNS::Identity.full_hash(
+        concat_bytes(@group_id, link_local_address.encode("UTF-8"))
+      )
+      sock = UDPSocket.new(Socket::Family::INET6)
       begin
-        link_local_address = @adopted_interfaces[ifname]
-        discovery_token = RNS::Identity.full_hash(
-          concat_bytes(@group_id, link_local_address.encode("UTF-8"))
-        )
-        sock = UDPSocket.new(Socket::Family::INET6)
-        begin
-          target = "#{peer_addr}%#{ifname}"
-          addr = Socket::IPAddress.new(target, @unicast_discovery_port)
-          sock.send(discovery_token, addr)
-        ensure
-          sock.close
-        end
-      rescue ex
-        RNS.log("Could not send reverse peering packet to #{peer_addr} on #{ifname}: #{ex.message}", RNS::LOG_ERROR)
+        target = "#{peer_addr}%#{ifname}"
+        addr = Socket::IPAddress.new(target, @unicast_discovery_port)
+        sock.send(discovery_token, addr)
+      ensure
+        sock.close
       end
+    rescue ex
+      RNS.log("Could not send reverse peering packet to #{peer_addr} on #{ifname}: #{ex.message}", RNS::LOG_ERROR)
     end
 
     # Send a multicast peering announcement on an interface
     def peer_announce(ifname : String)
+      link_local_address = @adopted_interfaces[ifname]
+      discovery_token = RNS::Identity.full_hash(
+        concat_bytes(@group_id, link_local_address.encode("UTF-8"))
+      )
+      sock = UDPSocket.new(Socket::Family::INET6)
       begin
-        link_local_address = @adopted_interfaces[ifname]
-        discovery_token = RNS::Identity.full_hash(
-          concat_bytes(@group_id, link_local_address.encode("UTF-8"))
-        )
-        sock = UDPSocket.new(Socket::Family::INET6)
-        begin
-          if_index = NetInfo.interface_name_to_index(ifname)
-          # Set multicast interface
-          if_bytes = Bytes.new(4)
-          IO::ByteFormat::LittleEndian.encode(if_index.to_u32, if_bytes)
-          LibC.setsockopt(sock.fd, IPPROTO_IPV6, IPV6_MULTICAST_IF, if_bytes.to_unsafe.as(Void*), if_bytes.size.to_u32)
-          addr = Socket::IPAddress.new(@mcast_discovery_address, @discovery_port)
-          sock.send(discovery_token, addr)
-        ensure
-          sock.close
-        end
-      rescue ex
-        if (@timed_out_interfaces.has_key?(ifname) && !@timed_out_interfaces[ifname]) || !@timed_out_interfaces.has_key?(ifname)
-          RNS.log("#{self} Detected possible carrier loss on #{ifname}: #{ex.message}", RNS::LOG_WARNING)
-        end
+        if_index = NetInfo.interface_name_to_index(ifname)
+        # Set multicast interface
+        if_bytes = Bytes.new(4)
+        IO::ByteFormat::LittleEndian.encode(if_index.to_u32, if_bytes)
+        LibC.setsockopt(sock.fd, IPPROTO_IPV6, IPV6_MULTICAST_IF, if_bytes.to_unsafe.as(Void*), if_bytes.size.to_u32)
+        addr = Socket::IPAddress.new(@mcast_discovery_address, @discovery_port)
+        sock.send(discovery_token, addr)
+      ensure
+        sock.close
+      end
+    rescue ex
+      if (@timed_out_interfaces.has_key?(ifname) && !@timed_out_interfaces[ifname]) || !@timed_out_interfaces.has_key?(ifname)
+        RNS.log("#{self} Detected possible carrier loss on #{ifname}: #{ex.message}", RNS::LOG_WARNING)
       end
     end
 
@@ -451,7 +447,9 @@ module RNS
           RNS.log("#{self} received multicast echo on unexpected interface", RNS::LOG_WARNING)
         end
       else
-        unless @peers.has_key?(addr)
+        if @peers.has_key?(addr)
+          refresh_peer(addr)
+        else
           now = Time.utc.to_unix_f
           @peers[addr] = {ifname, now, now}
 
@@ -503,8 +501,6 @@ module RNS
           @peer_spawned_interfaces[addr] = spawned
 
           RNS.log("#{self} added peer #{addr} on #{ifname}", RNS::LOG_DEBUG)
-        else
-          refresh_peer(addr)
         end
       end
     end
@@ -628,34 +624,32 @@ module RNS
 
     # Start data listener (UDP server) on an interface
     private def start_data_listener(ifname : String, link_local_addr : String)
-      begin
-        if_index = NetInfo.interface_name_to_index(ifname)
-        local_addr = "#{link_local_addr}%#{ifname}"
-        sock = UDPSocket.new(Socket::Family::INET6)
-        sock.reuse_address = true
-        sock.bind(local_addr, @data_port)
-        @interface_sockets[ifname] = sock
+      if_index = NetInfo.interface_name_to_index(ifname)
+      local_addr = "#{link_local_addr}%#{ifname}"
+      sock = UDPSocket.new(Socket::Family::INET6)
+      sock.reuse_address = true
+      sock.bind(local_addr, @data_port)
+      @interface_sockets[ifname] = sock
 
-        spawn do
-          buf = Bytes.new(2048)
-          loop do
-            begin
-              bytes_read, remote_addr = sock.receive(buf)
-              break if bytes_read <= 0
-              data = buf[0, bytes_read].dup
-              peer_addr = remote_addr.address
-              process_incoming(data, peer_addr)
-            rescue ex : IO::Error
-              break
-            rescue ex
-              RNS.log("Error in data listener for #{self} on #{ifname}: #{ex.message}", RNS::LOG_ERROR)
-              break
-            end
+      spawn do
+        buf = Bytes.new(2048)
+        loop do
+          begin
+            bytes_read, remote_addr = sock.receive(buf)
+            break if bytes_read <= 0
+            data = buf[0, bytes_read].dup
+            peer_addr = remote_addr.address
+            process_incoming(data, peer_addr)
+          rescue ex : IO::Error
+            break
+          rescue ex
+            RNS.log("Error in data listener for #{self} on #{ifname}: #{ex.message}", RNS::LOG_ERROR)
+            break
           end
         end
-      rescue ex
-        RNS.log("Could not start data listener on #{ifname}: #{ex.message}", RNS::LOG_ERROR)
       end
+    rescue ex
+      RNS.log("Could not start data listener on #{ifname}: #{ex.message}", RNS::LOG_ERROR)
     end
 
     # Convert IPv6 string to 16-byte binary representation
@@ -801,13 +795,13 @@ module RNS
     end
 
     def teardown
-      unless detached?
+      if detached?
+        RNS.log("The interface #{self} is being torn down.", RNS::LOG_VERBOSE)
+      else
         RNS.log("The interface #{self} experienced an unrecoverable error and is being torn down.", RNS::LOG_ERROR)
         if Reticulum.panic_on_interface_error
           RNS.panic
         end
-      else
-        RNS.log("The interface #{self} is being torn down.", RNS::LOG_VERBOSE)
       end
 
       @online = false

@@ -62,7 +62,7 @@ describe RNS::Cryptography::Token do
     end
 
     it "splits 64-byte key into 32-byte signing and 32-byte encryption keys" do
-      key = Bytes.new(64) { |i| i.to_u8 }
+      key = Bytes.new(64, &.to_u8)
       token = RNS::Cryptography::Token.new(key)
       # Verify by encrypting/decrypting — correct key split means it works
       plaintext = "test data".to_slice
@@ -72,7 +72,7 @@ describe RNS::Cryptography::Token do
     end
 
     it "splits 32-byte key into 16-byte signing and 16-byte encryption keys" do
-      key = Bytes.new(32) { |i| i.to_u8 }
+      key = Bytes.new(32, &.to_u8)
       token = RNS::Cryptography::Token.new(key)
       plaintext = "test data".to_slice
       encrypted = token.encrypt(plaintext)

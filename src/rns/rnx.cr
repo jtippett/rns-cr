@@ -577,14 +577,14 @@ module RNS
 
       if !allow_all
         destination.register_request_handler("command",
-          response_generator: ->(path : String, data : Bytes, request_id : Bytes, link_id : Bytes, remote_identity : Identity?, requested_at : Float64) {
+          response_generator: ->(_path : String, data : Bytes, _request_id : Bytes, _link_id : Bytes, remote_identity : Identity?, _requested_at : Float64) {
             execute_received_command(data, remote_identity)
           },
           allow: Destination::ALLOW_LIST,
           allowed_list: allowed_identity_hashes)
       else
         destination.register_request_handler("command",
-          response_generator: ->(path : String, data : Bytes, request_id : Bytes, link_id : Bytes, remote_identity : Identity?, requested_at : Float64) {
+          response_generator: ->(_path : String, data : Bytes, _request_id : Bytes, _link_id : Bytes, remote_identity : Identity?, _requested_at : Float64) {
             execute_received_command(data, remote_identity)
           },
           allow: Destination::ALLOW_ALL)
@@ -750,8 +750,8 @@ module RNS
       request_receipt = link.request(
         path: "command",
         data: request_data,
-        response_callback: ->(receipt : RequestReceipt) { },
-        failed_callback: ->(receipt : RequestReceipt) { },
+        response_callback: ->(_receipt : RequestReceipt) { },
+        failed_callback: ->(_receipt : RequestReceipt) { },
         timeout: rexec_timeout
       )
 
@@ -823,7 +823,7 @@ module RNS
         end
       else
         if interactive
-          return mirror ? retval : nil
+          mirror ? retval : nil
         else
           exit(0)
         end

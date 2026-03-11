@@ -110,7 +110,7 @@ describe RNS::HDLC do
     end
 
     it "roundtrips data containing all byte values" do
-      data = Bytes.new(256) { |i| i.to_u8 }
+      data = Bytes.new(256, &.to_u8)
       result = RNS::HDLC.unescape(RNS::HDLC.escape(data))
       result.should eq(data)
     end
@@ -849,7 +849,7 @@ describe RNS::Interface do
   describe "stress tests" do
     it "handles 100 held announces" do
       iface = TestInterface.new
-      100.times do |i|
+      100.times do |_|
         dest_hash = Random::Secure.random_bytes(16)
         announce = RNS::Interface::HeldAnnounce.new(
           raw: Random::Secure.random_bytes(50),
@@ -887,7 +887,7 @@ describe RNS::Interface do
     it "processes 20 announce queue entries" do
       iface = TestInterface.new
       now = Time.utc.to_unix_f
-      20.times do |i|
+      20.times do |_|
         iface.announce_queue << RNS::Interface::AnnounceQueueEntry.new(
           raw: Random::Secure.random_bytes(50),
           hops: Random.rand(1..5),

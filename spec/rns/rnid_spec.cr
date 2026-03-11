@@ -520,7 +520,7 @@ describe RNS::Rnid do
       lines = qr.lines
       lines.size.should be > 0
       # All lines should have the same width (QR codes are square + quiet zone)
-      widths = lines.map(&.size).uniq
+      widths = lines.map(&.size).uniq!
       widths.size.should eq 1
     end
 

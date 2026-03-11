@@ -302,64 +302,62 @@ module RNS
 
     # Process incoming raw bytes as a channel message.
     def _receive(raw : Bytes)
-      begin
-        envelope = Envelope(TPacket).new(outlet: @outlet, raw: raw)
-        is_new = false
+      envelope = Envelope(TPacket).new(outlet: @outlet, raw: raw)
+      is_new = false
 
-        @lock.synchronize do
-          envelope.unpack(@message_factories)
+      @lock.synchronize do
+        envelope.unpack(@message_factories)
 
-          if envelope.sequence < @next_rx_sequence
-            window_overflow = ((@next_rx_sequence.to_u32 + WINDOW_MAX.to_u32) % SEQ_MODULUS).to_u16
-            if window_overflow < @next_rx_sequence
-              if envelope.sequence > window_overflow
-                RNS.log("Invalid packet sequence (#{envelope.sequence}) received on channel #{self}", RNS::LOG_EXTREME)
-                return
-              end
-            else
+        if envelope.sequence < @next_rx_sequence
+          window_overflow = ((@next_rx_sequence.to_u32 + WINDOW_MAX.to_u32) % SEQ_MODULUS).to_u16
+          if window_overflow < @next_rx_sequence
+            if envelope.sequence > window_overflow
               RNS.log("Invalid packet sequence (#{envelope.sequence}) received on channel #{self}", RNS::LOG_EXTREME)
               return
             end
+          else
+            RNS.log("Invalid packet sequence (#{envelope.sequence}) received on channel #{self}", RNS::LOG_EXTREME)
+            return
           end
-
-          is_new = _emplace_envelope(envelope, @rx_ring)
         end
 
-        if !is_new
-          RNS.log("Duplicate message received on channel #{self}", RNS::LOG_EXTREME)
-          return
-        end
+        is_new = _emplace_envelope(envelope, @rx_ring)
+      end
 
-        @lock.synchronize do
-          contiguous = [] of Envelope(TPacket)
-          @rx_ring.each do |e|
-            if e.sequence == @next_rx_sequence
-              contiguous << e
-              @next_rx_sequence = ((@next_rx_sequence.to_u32 + 1_u32) % SEQ_MODULUS).to_u16
-              if @next_rx_sequence == 0_u16
-                @rx_ring.each do |e2|
-                  if e2.sequence == @next_rx_sequence
-                    contiguous << e2
-                    @next_rx_sequence = ((@next_rx_sequence.to_u32 + 1_u32) % SEQ_MODULUS).to_u16
-                  end
+      if !is_new
+        RNS.log("Duplicate message received on channel #{self}", RNS::LOG_EXTREME)
+        return
+      end
+
+      @lock.synchronize do
+        contiguous = [] of Envelope(TPacket)
+        @rx_ring.each do |e|
+          if e.sequence == @next_rx_sequence
+            contiguous << e
+            @next_rx_sequence = ((@next_rx_sequence.to_u32 + 1_u32) % SEQ_MODULUS).to_u16
+            if @next_rx_sequence == 0_u16
+              @rx_ring.each do |e2|
+                if e2.sequence == @next_rx_sequence
+                  contiguous << e2
+                  @next_rx_sequence = ((@next_rx_sequence.to_u32 + 1_u32) % SEQ_MODULUS).to_u16
                 end
               end
             end
           end
-
-          contiguous.each do |e|
-            m = if !e.unpacked
-                  e.unpack(@message_factories)
-                else
-                  e.message.not_nil!
-                end
-            @rx_ring.delete(e)
-            _run_callbacks(m)
-          end
         end
-      rescue ex
-        RNS.log("An error occurred while receiving data on #{self}. The contained exception was: #{ex}", RNS::LOG_ERROR)
+
+        contiguous.each do |e|
+          m = if !e.unpacked
+                e.unpack(@message_factories)
+              else
+                e.message.not_nil!
+              end
+          @rx_ring.delete(e)
+          _run_callbacks(m)
+        end
       end
+    rescue ex
+      RNS.log("An error occurred while receiving data on #{self}. The contained exception was: #{ex}", RNS::LOG_ERROR)
     end
 
     # Shut down the channel, clearing callbacks and rings.

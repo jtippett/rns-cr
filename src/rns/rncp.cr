@@ -510,13 +510,13 @@ module RNS
         if allow_all
           RNS.log("Allowing unauthenticated fetch requests", RNS::LOG_WARNING)
           destination.register_request_handler("fetch_file",
-            response_generator: ->(path : String, data : Bytes, request_id : Bytes, link_id : Bytes, remote_identity : Identity?, requested_at : Float64) {
+            response_generator: ->(_path : String, data : Bytes, _request_id : Bytes, _link_id : Bytes, _remote_identity : Identity?, _requested_at : Float64) {
               handle_fetch_request(data, fetch_jail, fetch_auto_compress)
             },
             allow: Destination::ALLOW_ALL)
         else
           destination.register_request_handler("fetch_file",
-            response_generator: ->(path : String, data : Bytes, request_id : Bytes, link_id : Bytes, remote_identity : Identity?, requested_at : Float64) {
+            response_generator: ->(_path : String, data : Bytes, _request_id : Bytes, _link_id : Bytes, _remote_identity : Identity?, _requested_at : Float64) {
               handle_fetch_request(data, fetch_jail, fetch_auto_compress)
             },
             allow: Destination::ALLOW_LIST,
@@ -1000,7 +1000,7 @@ module RNS
           end
           request_resolved = true
         },
-        failed_callback: ->(receipt : RequestReceipt) {
+        failed_callback: ->(_receipt : RequestReceipt) {
           request_status = "unknown"
           request_resolved = true
         })

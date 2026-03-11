@@ -431,7 +431,7 @@ module RNS
     end
 
     def endpoint_via(endpoint_id : Bytes, via_switch_id : Bytes)
-      @endpoints[endpoint_id]?.try { |ep| ep.via = via_switch_id }
+      @endpoints[endpoint_id]?.try(&.via=(via_switch_id))
       @rns_interface.try(&.endpoint_via(endpoint_id, via_switch_id))
     end
 
@@ -929,7 +929,9 @@ module RNS
     end
 
     def add_peer(endpoint_addr : Bytes)
-      unless @peers.has_key?(endpoint_addr)
+      if @peers.has_key?(endpoint_addr)
+        refresh_peer(endpoint_addr)
+      else
         spawned_interface = WeaveInterfacePeer.new(self, endpoint_addr)
         spawned_interface.dir_out = @dir_out
         spawned_interface.dir_in = @dir_in
@@ -957,8 +959,6 @@ module RNS
         @peers[endpoint_addr] = [endpoint_addr, Time.utc.to_unix_f, spawned_interface] of Bytes | Float64 | WeaveInterfacePeer
 
         RNS.log("#{self} added peer #{RNS.hexrep(endpoint_addr)}", RNS::LOG_DEBUG)
-      else
-        refresh_peer(endpoint_addr)
       end
     end
 

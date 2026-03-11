@@ -303,7 +303,7 @@ describe "Protocol Compatibility" do
     end
 
     it "produces deterministic ciphertext for same key/IV/plaintext" do
-      key = Bytes.new(32) { |i| i.to_u8 }
+      key = Bytes.new(32, &.to_u8)
       iv = Bytes.new(16) { |i| (i + 0x10).to_u8 }
       plaintext = RNS::Cryptography::PKCS7.pad("test".to_slice)
 
@@ -461,7 +461,7 @@ describe "Protocol Compatibility" do
 
     it "key split: first 32 bytes = signing, last 32 bytes = encryption (64-byte key)" do
       # Python: signing_key = key[:32], encryption_key = key[32:]
-      key = Bytes.new(64) { |i| i.to_u8 }
+      key = Bytes.new(64, &.to_u8)
       token = RNS::Cryptography::Token.new(key)
 
       # Encrypt something and verify HMAC uses first 32 bytes as key
@@ -874,7 +874,7 @@ describe "Protocol Compatibility" do
   describe "Packet hash computation" do
     it "HEADER_1 hashable part: masked flags byte + raw[2:]" do
       # Python: hashable = bytes([raw[0] & 0x0F]) + raw[2:]
-      dest_hash = Bytes.new(16) { |i| i.to_u8 }
+      dest_hash = Bytes.new(16, &.to_u8)
       # flags = 0x15: header_type=0 (HEADER_1), context_flag=0, transport_type=1, dest_type=1, packet_type=1
       flags = 0x15_u8
       data = "test data".to_slice

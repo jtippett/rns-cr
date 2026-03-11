@@ -251,7 +251,7 @@ module RNS
       return "#{day_diff} days" if day_diff < 7
       return "#{day_diff // 7} weeks" if day_diff < 31
       return "#{day_diff // 30} months" if day_diff < 365
-      return "#{day_diff // 365} years"
+      "#{day_diff // 365} years"
     end
 
     # Validate a hex hash string, returning the bytes.
@@ -294,7 +294,7 @@ module RNS
     def self.format_rate_table(table : Array(RateTableEntry), destination_hash : Bytes? = nil) : String
       return "No information available" if table.empty?
 
-      sorted = table.sort_by { |e| e.last }
+      sorted = table.sort_by(&.last)
       output = [] of String
       displayed = 0
 

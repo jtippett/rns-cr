@@ -213,7 +213,7 @@ describe RNS do
     describe ".phyparams" do
       it "prints physical parameters without error" do
         # Capture stdout
-        output = String.build do |io|
+        output = String.build do |_|
           original_stdout = STDOUT
           # We can't easily redirect STDOUT in Crystal, so just verify it doesn't raise
         end

@@ -148,7 +148,7 @@ describe "Integration: File Transfer (Resource)" do
         original_data = "The quick brown fox jumps over the lazy dog. " * 20
         resource = RNS::Resource.new(original_data.to_slice, link, advertise: false)
         resource.sender_parts.size.should eq(resource.total_parts)
-        resource.sender_parts.each { |p| p.data.size.should be > 0 }
+        resource.sender_parts.each(&.data.size.should(be > 0))
       end
     end
 
@@ -212,7 +212,7 @@ describe "Integration: File Transfer (Resource)" do
       with_ft_resourcepath do
         link = create_ft_link
         resource = RNS::Resource.new(Random::Secure.random_bytes(256), link, advertise: false,
-          progress_callback: ->(r : RNS::Resource) { })
+          progress_callback: ->(_r : RNS::Resource) { })
         resource.should_not be_nil
       end
     end
@@ -221,7 +221,7 @@ describe "Integration: File Transfer (Resource)" do
       with_ft_resourcepath do
         link = create_ft_link
         resource = RNS::Resource.new(Random::Secure.random_bytes(256), link, advertise: false,
-          callback: ->(r : RNS::Resource) { })
+          callback: ->(_r : RNS::Resource) { })
         resource.should_not be_nil
       end
     end

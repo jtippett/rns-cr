@@ -146,16 +146,14 @@ module RNS
     # ─── Static methods ────────────────────────────────────────────
 
     def self.reject(advertisement_packet : Packet)
-      begin
-        adv = ResourceAdvertisement.unpack(advertisement_packet.plaintext || advertisement_packet.data)
-        link = advertisement_packet.destination.as?(Link)
-        if link
-          reject_packet = Packet.new(link, adv.h, context: Packet::RESOURCE_RCL)
-          reject_packet.send
-        end
-      rescue ex
-        RNS.log("An error occurred while rejecting advertised resource: #{ex}", RNS::LOG_ERROR)
+      adv = ResourceAdvertisement.unpack(advertisement_packet.plaintext || advertisement_packet.data)
+      link = advertisement_packet.destination.as?(Link)
+      if link
+        reject_packet = Packet.new(link, adv.h, context: Packet::RESOURCE_RCL)
+        reject_packet.send
       end
+    rescue ex
+      RNS.log("An error occurred while rejecting advertised resource: #{ex}", RNS::LOG_ERROR)
     end
 
     def self.accept(advertisement_packet : Packet, callback : Proc(Resource, Nil)? = nil,
@@ -210,7 +208,10 @@ module RNS
         resource.window = prev_window if prev_window
         resource.previous_eifr = prev_eifr if prev_eifr
 
-        unless link.has_incoming_resource?(resource.hash)
+        if link.has_incoming_resource?(resource.hash)
+          RNS.log("Ignoring resource advertisement for #{RNS.prettyhexrep(resource.hash)}, resource already transferring", RNS::LOG_DEBUG)
+          nil
+        else
           link.register_incoming_resource(resource.hash)
 
           RNS.log("Accepting resource advertisement for #{RNS.prettyhexrep(resource.hash)}. Transfer size is #{RNS.prettysize(resource.size)} in #{resource.total_parts} parts.", RNS::LOG_DEBUG)
@@ -225,14 +226,11 @@ module RNS
 
           resource.hashmap_update(0, adv.m)
           resource.watchdog_job
-          return resource
-        else
-          RNS.log("Ignoring resource advertisement for #{RNS.prettyhexrep(resource.hash)}, resource already transferring", RNS::LOG_DEBUG)
-          return nil
+          resource
         end
       rescue ex
         RNS.log("Could not decode resource advertisement, dropping resource", RNS::LOG_DEBUG)
-        return nil
+        nil
       end
     end
 
@@ -907,7 +905,7 @@ module RNS
 
           begin
             Dir.mkdir_p(File.dirname(@storagepath))
-            File.open(@storagepath, "ab") { |f| f.write(data) }
+            File.open(@storagepath, "ab", &.write(data))
           rescue ex
             RNS.log("Error writing resource data: #{ex}", RNS::LOG_ERROR)
           end

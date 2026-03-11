@@ -185,7 +185,7 @@ describe RNS::SerialInterface do
 
     it "calls inbound callback" do
       received = nil
-      callback = Proc(Bytes, RNS::Interface, Nil).new do |data, iface|
+      callback = Proc(Bytes, RNS::Interface, Nil).new do |data, _|
         received = data
       end
       si = RNS::SerialInterface.new(

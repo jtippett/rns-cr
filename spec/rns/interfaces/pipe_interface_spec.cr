@@ -98,7 +98,7 @@ describe RNS::PipeInterface do
 
     it "calls inbound callback" do
       received = nil
-      callback = Proc(Bytes, RNS::Interface, Nil).new do |data, iface|
+      callback = Proc(Bytes, RNS::Interface, Nil).new do |data, _|
         received = data
       end
       pi = RNS::PipeInterface.new(
@@ -246,7 +246,7 @@ describe RNS::PipeInterface do
       received_packets = [] of Bytes
       done = Channel(Nil).new(1)
 
-      callback = Proc(Bytes, RNS::Interface, Nil).new do |data, iface|
+      callback = Proc(Bytes, RNS::Interface, Nil).new do |data, _|
         received_packets << data.dup
         done.send(nil) if received_packets.size >= 1
       end
@@ -286,7 +286,7 @@ describe RNS::PipeInterface do
       done = Channel(Nil).new(1)
       expected_count = 3
 
-      callback = Proc(Bytes, RNS::Interface, Nil).new do |data, iface|
+      callback = Proc(Bytes, RNS::Interface, Nil).new do |data, _|
         received_packets << data.dup
         done.send(nil) if received_packets.size >= expected_count
       end
@@ -327,7 +327,7 @@ describe RNS::PipeInterface do
       received_packets = [] of Bytes
       done = Channel(Nil).new(1)
 
-      callback = Proc(Bytes, RNS::Interface, Nil).new do |data, iface|
+      callback = Proc(Bytes, RNS::Interface, Nil).new do |data, _|
         received_packets << data.dup
         done.send(nil)
       end
@@ -376,7 +376,7 @@ describe RNS::PipeInterface do
       done = Channel(Nil).new(1)
       count = 10
 
-      callback = Proc(Bytes, RNS::Interface, Nil).new do |data, iface|
+      callback = Proc(Bytes, RNS::Interface, Nil).new do |data, _|
         received_packets << data.dup
         done.send(nil) if received_packets.size >= count
       end

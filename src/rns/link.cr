@@ -521,120 +521,116 @@ module RNS
     # ─── Validate proof (initiator receives and verifies) ────────────
 
     def validate_proof(packet : Packet)
-      begin
-        if @status == PENDING
-          sig_len = Identity::SIGLENGTH // 8 # 64 bytes
-          ecpub_half = ECPUBSIZE // 2        # 32 bytes
+      if @status == PENDING
+        sig_len = Identity::SIGLENGTH // 8 # 64 bytes
+        ecpub_half = ECPUBSIZE // 2        # 32 bytes
 
-          signalling_bytes = Bytes.empty
-          confirmed_mtu : Int32? = nil
-          mode = Link.mode_from_lp_packet(packet)
-          raise TypeError.new("Invalid link mode #{mode} in link request proof") if mode != @mode
+        signalling_bytes = Bytes.empty
+        confirmed_mtu : Int32? = nil
+        mode = Link.mode_from_lp_packet(packet)
+        raise TypeError.new("Invalid link mode #{mode} in link request proof") if mode != @mode
 
-          if packet.data.size == sig_len + ecpub_half + LINK_MTU_SIZE
-            confirmed_mtu = Link.mtu_from_lp_packet(packet)
-            signalling_bytes = Link.signalling_bytes(confirmed_mtu.not_nil!.to_u32, mode) if confirmed_mtu
-            packet.data = packet.data[0, sig_len + ecpub_half]
-          end
+        if packet.data.size == sig_len + ecpub_half + LINK_MTU_SIZE
+          confirmed_mtu = Link.mtu_from_lp_packet(packet)
+          signalling_bytes = Link.signalling_bytes(confirmed_mtu.not_nil!.to_u32, mode) if confirmed_mtu
+          packet.data = packet.data[0, sig_len + ecpub_half]
+        end
 
-          if @initiator && packet.data.size == sig_len + ecpub_half
-            peer_pub_bytes = packet.data[sig_len, ecpub_half]
-            dest_identity = @destination.not_nil!.identity.not_nil!
-            peer_sig_pub_bytes = dest_identity.get_public_key[ecpub_half, ecpub_half]
+        if @initiator && packet.data.size == sig_len + ecpub_half
+          peer_pub_bytes = packet.data[sig_len, ecpub_half]
+          dest_identity = @destination.not_nil!.identity.not_nil!
+          peer_sig_pub_bytes = dest_identity.get_public_key[ecpub_half, ecpub_half]
 
-            load_peer(peer_pub_bytes, peer_sig_pub_bytes)
-            do_handshake
+          load_peer(peer_pub_bytes, peer_sig_pub_bytes)
+          do_handshake
 
-            @establishment_cost += packet.raw.not_nil!.size
+          @establishment_cost += packet.raw.not_nil!.size
 
-            signed_data = Bytes.new(@link_id.size + @peer_pub_bytes.not_nil!.size + @peer_sig_pub_bytes.not_nil!.size + signalling_bytes.size)
-            pos = 0
-            @link_id.copy_to(signed_data + pos); pos += @link_id.size
-            @peer_pub_bytes.not_nil!.copy_to(signed_data + pos); pos += @peer_pub_bytes.not_nil!.size
-            @peer_sig_pub_bytes.not_nil!.copy_to(signed_data + pos); pos += @peer_sig_pub_bytes.not_nil!.size
-            signalling_bytes.copy_to(signed_data + pos)
+          signed_data = Bytes.new(@link_id.size + @peer_pub_bytes.not_nil!.size + @peer_sig_pub_bytes.not_nil!.size + signalling_bytes.size)
+          pos = 0
+          @link_id.copy_to(signed_data + pos); pos += @link_id.size
+          @peer_pub_bytes.not_nil!.copy_to(signed_data + pos); pos += @peer_pub_bytes.not_nil!.size
+          @peer_sig_pub_bytes.not_nil!.copy_to(signed_data + pos); pos += @peer_sig_pub_bytes.not_nil!.size
+          signalling_bytes.copy_to(signed_data + pos)
 
-            signature = packet.data[0, sig_len]
+          signature = packet.data[0, sig_len]
 
-            if dest_identity.validate(signature, signed_data)
-              raise IO::Error.new("Invalid link state for proof validation: #{@status}") if @status != HANDSHAKE
+          if dest_identity.validate(signature, signed_data)
+            raise IO::Error.new("Invalid link state for proof validation: #{@status}") if @status != HANDSHAKE
 
-              @rtt = Time.utc.to_unix_f - @request_time.not_nil!
-              @attached_interface = nil # NOTE: Should be packet.receiving_interface when Packet uses Interface type
-              @remote_identity = dest_identity
-              @mtu = confirmed_mtu || Reticulum::MTU
-              update_mdu
-              @status = ACTIVE
-              @activated_at = Time.utc.to_unix_f
-              @last_proof = @activated_at.not_nil!
-              Transport.activate_link(self)
+            @rtt = Time.utc.to_unix_f - @request_time.not_nil!
+            @attached_interface = nil # NOTE: Should be packet.receiving_interface when Packet uses Interface type
+            @remote_identity = dest_identity
+            @mtu = confirmed_mtu || Reticulum::MTU
+            update_mdu
+            @status = ACTIVE
+            @activated_at = Time.utc.to_unix_f
+            @last_proof = @activated_at.not_nil!
+            Transport.activate_link(self)
 
-              rtt_val = @rtt.not_nil!
-              if rtt_val > 0 && @establishment_cost > 0
-                @establishment_rate = @establishment_cost.to_f64 / rtt_val
-              end
-
-              update_keepalive
-
-              rtt_data = IO::Memory.new
-              rtt_val.to_msgpack(rtt_data)
-              rtt_packet = Packet.new(self, rtt_data.to_slice, context: Packet::LRRTT)
-              rtt_packet.send
-              had_outbound
-
-              cb = @callbacks.link_established
-              if cb
-                spawn do
-                  cb.call(self)
-                end
-              end
-            else
-              RNS.log("Invalid link proof signature received by #{self}. Ignoring.", RNS::LOG_DEBUG)
+            rtt_val = @rtt.not_nil!
+            if rtt_val > 0 && @establishment_cost > 0
+              @establishment_rate = @establishment_cost.to_f64 / rtt_val
             end
+
+            update_keepalive
+
+            rtt_data = IO::Memory.new
+            rtt_val.to_msgpack(rtt_data)
+            rtt_packet = Packet.new(self, rtt_data.to_slice, context: Packet::LRRTT)
+            rtt_packet.send
+            had_outbound
+
+            cb = @callbacks.link_established
+            if cb
+              spawn do
+                cb.call(self)
+              end
+            end
+          else
+            RNS.log("Invalid link proof signature received by #{self}. Ignoring.", RNS::LOG_DEBUG)
           end
         end
-      rescue ex
-        @status = CLOSED
-        RNS.log("An error occurred while validating link request proof on #{self}.", RNS::LOG_ERROR)
-        RNS.log("The contained exception was: #{ex}", RNS::LOG_ERROR)
       end
+    rescue ex
+      @status = CLOSED
+      RNS.log("An error occurred while validating link request proof on #{self}.", RNS::LOG_ERROR)
+      RNS.log("The contained exception was: #{ex}", RNS::LOG_ERROR)
     end
 
     # ─── RTT packet handling (responder) ─────────────────────────────
 
     def rtt_packet(packet : Packet)
-      begin
-        measured_rtt = Time.utc.to_unix_f - @request_time.not_nil!
-        plaintext = decrypt_data(packet.data)
-        if plaintext
-          rtt = Float64.from_msgpack(IO::Memory.new(plaintext))
-          @rtt = Math.max(measured_rtt, rtt)
-          @status = ACTIVE
-          @activated_at = Time.utc.to_unix_f
+      measured_rtt = Time.utc.to_unix_f - @request_time.not_nil!
+      plaintext = decrypt_data(packet.data)
+      if plaintext
+        rtt = Float64.from_msgpack(IO::Memory.new(plaintext))
+        @rtt = Math.max(measured_rtt, rtt)
+        @status = ACTIVE
+        @activated_at = Time.utc.to_unix_f
 
-          rtt_val = @rtt.not_nil!
-          if rtt_val > 0 && @establishment_cost > 0
-            @establishment_rate = @establishment_cost.to_f64 / rtt_val
-          end
+        rtt_val = @rtt.not_nil!
+        if rtt_val > 0 && @establishment_cost > 0
+          @establishment_rate = @establishment_cost.to_f64 / rtt_val
+        end
 
-          update_keepalive
+        update_keepalive
 
-          owner_dest = @owner
-          if owner_dest
-            cb = owner_dest.callbacks.link_established
-            if cb
-              begin
-                cb.call(self)
-              rescue ex
-                RNS.log("Error occurred in external link establishment callback: #{ex}", RNS::LOG_ERROR)
-              end
+        owner_dest = @owner
+        if owner_dest
+          cb = owner_dest.callbacks.link_established
+          if cb
+            begin
+              cb.call(self)
+            rescue ex
+              RNS.log("Error occurred in external link establishment callback: #{ex}", RNS::LOG_ERROR)
             end
           end
         end
-      rescue ex
-        RNS.log("Error occurred while processing RTT packet, tearing down link: #{ex}", RNS::LOG_ERROR)
-        teardown
       end
+    rescue ex
+      RNS.log("Error occurred while processing RTT packet, tearing down link: #{ex}", RNS::LOG_ERROR)
+      teardown
     end
 
     # ─── Encryption and decryption ───────────────────────────────────
@@ -922,16 +918,14 @@ module RNS
     end
 
     def teardown_packet(packet : Packet)
-      begin
-        plaintext = decrypt_data(packet.data)
-        if plaintext && plaintext == @link_id
-          @status = CLOSED
-          @teardown_reason = @initiator ? DESTINATION_CLOSED : INITIATOR_CLOSED
-          link_closed
-        end
-      rescue ex
-        RNS.log("Error processing teardown packet: #{ex.message}", RNS::LOG_DEBUG)
+      plaintext = decrypt_data(packet.data)
+      if plaintext && plaintext == @link_id
+        @status = CLOSED
+        @teardown_reason = @initiator ? DESTINATION_CLOSED : INITIATOR_CLOSED
+        link_closed
       end
+    rescue ex
+      RNS.log("Error processing teardown packet: #{ex.message}", RNS::LOG_DEBUG)
     end
 
     def link_closed
@@ -1240,7 +1234,7 @@ module RNS
           RNS.log("Error while generating response for request #{RNS.prettyhexrep(request_id)}: #{ex}", RNS::LOG_ERROR)
         end
       else
-        identity_string = @remote_identity.try { |ri| ri.to_s } || "<Unknown>"
+        identity_string = @remote_identity.try(&.to_s) || "<Unknown>"
         RNS.log("Request #{RNS.prettyhexrep(request_id)} from #{identity_string} not allowed for: #{path}", RNS::LOG_DEBUG)
       end
     end
@@ -1421,14 +1415,14 @@ module RNS
       receipt = packet.receipt
       if receipt && callback
         receipt.set_timeout(timeout || (@link.rtt || 1.0) * Link::TRAFFIC_TIMEOUT_FACTOR)
-        receipt.set_timeout_callback(->(pr : PacketReceipt) { callback.call(packet); nil })
+        receipt.set_timeout_callback(->(_pr : PacketReceipt) { callback.call(packet); nil })
       end
     end
 
     def set_packet_delivered_callback(packet : Packet, callback : (Packet -> Nil)?)
       receipt = packet.receipt
       if receipt && callback
-        receipt.set_delivery_callback(->(pr : PacketReceipt) { callback.call(packet); nil })
+        receipt.set_delivery_callback(->(_pr : PacketReceipt) { callback.call(packet); nil })
       end
     end
 

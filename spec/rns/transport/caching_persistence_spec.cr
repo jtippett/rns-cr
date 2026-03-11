@@ -426,7 +426,7 @@ describe RNS::Transport do
         RNS::Transport.save_path_table(tmp).should be_true
 
         # Remember keys
-        original_keys = RNS::Transport.path_table.keys.sort
+        original_keys = RNS::Transport.path_table.keys.sort!
 
         # Reset and reload
         RNS::Transport.path_table.clear
@@ -434,7 +434,7 @@ describe RNS::Transport do
         loaded.should eq(3)
 
         # Verify keys match
-        RNS::Transport.path_table.keys.sort.should eq(original_keys)
+        RNS::Transport.path_table.keys.sort!.should eq(original_keys)
 
         # Verify hops incremented
         RNS::Transport.path_table.each_value do |entry|

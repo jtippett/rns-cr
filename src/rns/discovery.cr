@@ -287,192 +287,190 @@ module RNS
       end
 
       def received_announce(destination_hash : Bytes, announced_identity : Identity?, app_data : Bytes?, announce_packet_hash : Bytes? = nil)
-        begin
-          discovery_sources = Reticulum.interface_discovery_sources
-          if discovery_sources.size > 0 && announced_identity
-            id_hash = announced_identity.hash
-            unless id_hash && discovery_sources.any? { |s| s == id_hash }
-              RNS.log("Interface discovered from non-authorized network identity #{id_hash ? RNS.prettyhexrep(id_hash) : "unknown"}, ignoring", RNS::LOG_DEBUG)
-              return
-            end
-          end
-
-          return unless app_data
-          return unless app_data.size > STAMP_SIZE + 1
-
-          flags = app_data[0]
-          data = app_data[1..]
-          _signed = (flags & FLAG_SIGNED) != 0
-          encrypted = (flags & FLAG_ENCRYPTED) != 0
-
-          if encrypted
-            ni = Reticulum.network_identity
-            return unless ni
-            decrypted = ni.decrypt(data)
-            return unless decrypted
-            data = decrypted
-          end
-
-          stamp = data[data.size - STAMP_SIZE..]
-          packed = data[0, data.size - STAMP_SIZE]
-          infohash = Identity.full_hash(packed)
-
-          # Validate stamp (simplified — full LXStamper validation not ported)
-          value = validate_stamp(infohash, stamp)
-
-          if value < @required_value
-            RNS.log("Ignored discovered interface with stamp value #{value}", RNS::LOG_DEBUG)
+        discovery_sources = Reticulum.interface_discovery_sources
+        if discovery_sources.size > 0 && announced_identity
+          id_hash = announced_identity.hash
+          unless id_hash && discovery_sources.any? { |s| s == id_hash }
+            RNS.log("Interface discovered from non-authorized network identity #{id_hash ? RNS.prettyhexrep(id_hash) : "unknown"}, ignoring", RNS::LOG_DEBUG)
             return
           end
-
-          unpacked = unpack_info(packed)
-          return unless unpacked
-
-          itype_val = unpacked[INTERFACE_TYPE]?
-          return unless itype_val
-
-          interface_type = itype_val.to_s
-
-          info = Hash(String, String | Int64 | Float64 | Bool | Bytes | Nil).new
-          info["type"] = interface_type
-          info["transport"] = unpacked[TRANSPORT]? ? true : false
-          name_val = unpacked[NAME]?
-          info["name"] = (name_val && name_val.to_s.size > 0) ? name_val.to_s : "Discovered #{interface_type}"
-          info["received"] = Time.utc.to_unix_f
-          info["stamp"] = stamp.hexstring
-          info["value"] = value.to_i64
-
-          tid = unpacked[TRANSPORT_ID]?
-          info["transport_id"] = tid.is_a?(Bytes) ? RNS.hexrep(tid, delimit: false) : ""
-
-          if announced_identity && (ai_hash = announced_identity.hash)
-            info["network_id"] = RNS.hexrep(ai_hash, delimit: false)
-          else
-            info["network_id"] = ""
-          end
-
-          info["hops"] = Transport.hops_to(destination_hash).to_i64
-
-          lat = unpacked[LATITUDE]?
-          info["latitude"] = lat.is_a?(Float64) ? lat : (lat.is_a?(Int64) ? lat.to_f : nil)
-          lon = unpacked[LONGITUDE]?
-          info["longitude"] = lon.is_a?(Float64) ? lon : (lon.is_a?(Int64) ? lon.to_f : nil)
-          h = unpacked[HEIGHT]?
-          info["height"] = h.is_a?(Float64) ? h : (h.is_a?(Int64) ? h.to_f : nil)
-
-          # Validate reachable_on if present
-          ro = unpacked[REACHABLE_ON]?
-          if ro
-            ro_str = ro.to_s
-            unless Discovery.is_ip_address?(ro_str) || Discovery.is_hostname?(ro_str)
-              raise ArgumentError.new("Invalid data in reachable_on field of announce")
-            end
-          end
-
-          if unpacked.has_key?(IFAC_NETNAME)
-            info["ifac_netname"] = unpacked[IFAC_NETNAME].to_s
-          end
-          if unpacked.has_key?(IFAC_NETKEY)
-            info["ifac_netkey"] = unpacked[IFAC_NETKEY].to_s
-          end
-
-          # Per-type fields and config_entry generation
-          if interface_type.in?("BackboneInterface", "TCPServerInterface")
-            backbone_support = !RNS::PlatformUtils.is_windows?
-            info["reachable_on"] = unpacked[REACHABLE_ON]?.try(&.to_s)
-            info["port"] = unpacked[PORT]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
-
-            connection_interface = backbone_support ? "BackboneInterface" : "TCPClientInterface"
-            remote_str = backbone_support ? "remote" : "target_host"
-            cfg_name = info["name"].to_s
-            cfg_remote = info["reachable_on"].to_s
-            cfg_port = info["port"].to_s
-            cfg_identity = info["transport_id"].to_s
-            cfg_netname = info["ifac_netname"]?
-            cfg_netkey = info["ifac_netkey"]?
-            cfg_netname_str = cfg_netname ? "\n  network_name = #{cfg_netname}" : ""
-            cfg_netkey_str = cfg_netkey ? "\n  passphrase = #{cfg_netkey}" : ""
-            cfg_identity_str = "\n  transport_identity = #{cfg_identity}"
-            info["config_entry"] = "[[#{cfg_name}]]\n  type = #{connection_interface}\n  enabled = yes\n  #{remote_str} = #{cfg_remote}\n  target_port = #{cfg_port}#{cfg_identity_str}#{cfg_netname_str}#{cfg_netkey_str}"
-          end
-
-          if interface_type == "I2PInterface"
-            info["reachable_on"] = unpacked[REACHABLE_ON]?.try(&.to_s)
-            cfg_name = info["name"].to_s
-            cfg_remote = info["reachable_on"].to_s
-            cfg_identity = info["transport_id"].to_s
-            cfg_netname = info["ifac_netname"]?
-            cfg_netkey = info["ifac_netkey"]?
-            cfg_netname_str = cfg_netname ? "\n  network_name = #{cfg_netname}" : ""
-            cfg_netkey_str = cfg_netkey ? "\n  passphrase = #{cfg_netkey}" : ""
-            cfg_identity_str = "\n  transport_identity = #{cfg_identity}"
-            info["config_entry"] = "[[#{cfg_name}]]\n  type = I2PInterface\n  enabled = yes\n  peers = #{cfg_remote}#{cfg_identity_str}#{cfg_netname_str}#{cfg_netkey_str}"
-          end
-
-          if interface_type == "RNodeInterface"
-            info["frequency"] = unpacked[FREQUENCY]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
-            info["bandwidth"] = unpacked[BANDWIDTH]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
-            info["sf"] = unpacked[SPREADINGFACTOR]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
-            info["cr"] = unpacked[CODINGRATE]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
-            cfg_name = info["name"].to_s
-            cfg_frequency = info["frequency"].to_s
-            cfg_bandwidth = info["bandwidth"].to_s
-            cfg_sf = info["sf"].to_s
-            cfg_cr = info["cr"].to_s
-            cfg_identity = info["transport_id"].to_s
-            cfg_netname = info["ifac_netname"]?
-            cfg_netkey = info["ifac_netkey"]?
-            cfg_netname_str = cfg_netname ? "\n  network_name = #{cfg_netname}" : ""
-            cfg_netkey_str = cfg_netkey ? "\n  passphrase = #{cfg_netkey}" : ""
-            cfg_identity_str = "\n  transport_identity = #{cfg_identity}"
-            info["config_entry"] = "[[#{cfg_name}]]\n  type = RNodeInterface\n  enabled = yes\n  port = \n  frequency = #{cfg_frequency}\n  bandwidth = #{cfg_bandwidth}\n  spreadingfactor = #{cfg_sf}\n  codingrate = #{cfg_cr}\n  txpower = #{cfg_netname_str}#{cfg_netkey_str}"
-          end
-
-          if interface_type == "WeaveInterface"
-            info["frequency"] = unpacked[FREQUENCY]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
-            info["bandwidth"] = unpacked[BANDWIDTH]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
-            info["channel"] = unpacked[CHANNEL]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
-            info["modulation"] = unpacked[MODULATION]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
-            cfg_name = info["name"].to_s
-            cfg_identity = info["transport_id"].to_s
-            cfg_netname = info["ifac_netname"]?
-            cfg_netkey = info["ifac_netkey"]?
-            cfg_netname_str = cfg_netname ? "\n  network_name = #{cfg_netname}" : ""
-            cfg_netkey_str = cfg_netkey ? "\n  passphrase = #{cfg_netkey}" : ""
-            cfg_identity_str = "\n  transport_identity = #{cfg_identity}"
-            info["config_entry"] = "[[#{cfg_name}]]\n  type = WeaveInterface\n  enabled = yes\n  port = #{cfg_netname_str}#{cfg_netkey_str}"
-          end
-
-          if interface_type == "KISSInterface"
-            info["frequency"] = unpacked[FREQUENCY]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
-            info["bandwidth"] = unpacked[BANDWIDTH]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
-            info["modulation"] = unpacked[MODULATION]?.try(&.to_s)
-            cfg_name = info["name"].to_s
-            cfg_frequency = info["frequency"].to_s
-            cfg_bandwidth = info["bandwidth"].to_s
-            cfg_modulation = info["modulation"].to_s
-            cfg_identity = info["transport_id"].to_s
-            cfg_netname = info["ifac_netname"]?
-            cfg_netkey = info["ifac_netkey"]?
-            cfg_netname_str = cfg_netname ? "\n  network_name = #{cfg_netname}" : ""
-            cfg_netkey_str = cfg_netkey ? "\n  passphrase = #{cfg_netkey}" : ""
-            cfg_identity_str = "\n  transport_identity = #{cfg_identity}"
-            info["config_entry"] = "[[#{cfg_name}]]\n  type = KISSInterface\n  enabled = yes\n  port = \n  # Frequency: #{cfg_frequency}\n  # Bandwidth: #{cfg_bandwidth}\n  # Modulation: #{cfg_modulation}#{cfg_identity_str}#{cfg_netname_str}#{cfg_netkey_str}"
-          end
-
-          # Compute discovery_hash
-          tid_str = info["transport_id"].to_s
-          name_str = info["name"].to_s
-          discovery_hash_material = (tid_str + name_str).encode("UTF-8")
-          discovery_hash = Identity.full_hash(discovery_hash_material)
-          info["discovery_hash"] = RNS.hexrep(discovery_hash, delimit: false)
-
-          if cb = @callback
-            cb.call(info)
-          end
-        rescue ex
-          RNS.log("An error occurred while trying to decode discovered interface. The contained exception was: #{ex.message}", RNS::LOG_DEBUG)
         end
+
+        return unless app_data
+        return unless app_data.size > STAMP_SIZE + 1
+
+        flags = app_data[0]
+        data = app_data[1..]
+        _signed = (flags & FLAG_SIGNED) != 0
+        encrypted = (flags & FLAG_ENCRYPTED) != 0
+
+        if encrypted
+          ni = Reticulum.network_identity
+          return unless ni
+          decrypted = ni.decrypt(data)
+          return unless decrypted
+          data = decrypted
+        end
+
+        stamp = data[data.size - STAMP_SIZE..]
+        packed = data[0, data.size - STAMP_SIZE]
+        infohash = Identity.full_hash(packed)
+
+        # Validate stamp (simplified — full LXStamper validation not ported)
+        value = validate_stamp(infohash, stamp)
+
+        if value < @required_value
+          RNS.log("Ignored discovered interface with stamp value #{value}", RNS::LOG_DEBUG)
+          return
+        end
+
+        unpacked = unpack_info(packed)
+        return unless unpacked
+
+        itype_val = unpacked[INTERFACE_TYPE]?
+        return unless itype_val
+
+        interface_type = itype_val.to_s
+
+        info = Hash(String, String | Int64 | Float64 | Bool | Bytes | Nil).new
+        info["type"] = interface_type
+        info["transport"] = unpacked[TRANSPORT]? ? true : false
+        name_val = unpacked[NAME]?
+        info["name"] = (name_val && name_val.to_s.size > 0) ? name_val.to_s : "Discovered #{interface_type}"
+        info["received"] = Time.utc.to_unix_f
+        info["stamp"] = stamp.hexstring
+        info["value"] = value.to_i64
+
+        tid = unpacked[TRANSPORT_ID]?
+        info["transport_id"] = tid.is_a?(Bytes) ? RNS.hexrep(tid, delimit: false) : ""
+
+        if announced_identity && (ai_hash = announced_identity.hash)
+          info["network_id"] = RNS.hexrep(ai_hash, delimit: false)
+        else
+          info["network_id"] = ""
+        end
+
+        info["hops"] = Transport.hops_to(destination_hash).to_i64
+
+        lat = unpacked[LATITUDE]?
+        info["latitude"] = lat.is_a?(Float64) ? lat : (lat.is_a?(Int64) ? lat.to_f : nil)
+        lon = unpacked[LONGITUDE]?
+        info["longitude"] = lon.is_a?(Float64) ? lon : (lon.is_a?(Int64) ? lon.to_f : nil)
+        h = unpacked[HEIGHT]?
+        info["height"] = h.is_a?(Float64) ? h : (h.is_a?(Int64) ? h.to_f : nil)
+
+        # Validate reachable_on if present
+        ro = unpacked[REACHABLE_ON]?
+        if ro
+          ro_str = ro.to_s
+          unless Discovery.is_ip_address?(ro_str) || Discovery.is_hostname?(ro_str)
+            raise ArgumentError.new("Invalid data in reachable_on field of announce")
+          end
+        end
+
+        if unpacked.has_key?(IFAC_NETNAME)
+          info["ifac_netname"] = unpacked[IFAC_NETNAME].to_s
+        end
+        if unpacked.has_key?(IFAC_NETKEY)
+          info["ifac_netkey"] = unpacked[IFAC_NETKEY].to_s
+        end
+
+        # Per-type fields and config_entry generation
+        if interface_type.in?("BackboneInterface", "TCPServerInterface")
+          backbone_support = !RNS::PlatformUtils.is_windows?
+          info["reachable_on"] = unpacked[REACHABLE_ON]?.try(&.to_s)
+          info["port"] = unpacked[PORT]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
+
+          connection_interface = backbone_support ? "BackboneInterface" : "TCPClientInterface"
+          remote_str = backbone_support ? "remote" : "target_host"
+          cfg_name = info["name"].to_s
+          cfg_remote = info["reachable_on"].to_s
+          cfg_port = info["port"].to_s
+          cfg_identity = info["transport_id"].to_s
+          cfg_netname = info["ifac_netname"]?
+          cfg_netkey = info["ifac_netkey"]?
+          cfg_netname_str = cfg_netname ? "\n  network_name = #{cfg_netname}" : ""
+          cfg_netkey_str = cfg_netkey ? "\n  passphrase = #{cfg_netkey}" : ""
+          cfg_identity_str = "\n  transport_identity = #{cfg_identity}"
+          info["config_entry"] = "[[#{cfg_name}]]\n  type = #{connection_interface}\n  enabled = yes\n  #{remote_str} = #{cfg_remote}\n  target_port = #{cfg_port}#{cfg_identity_str}#{cfg_netname_str}#{cfg_netkey_str}"
+        end
+
+        if interface_type == "I2PInterface"
+          info["reachable_on"] = unpacked[REACHABLE_ON]?.try(&.to_s)
+          cfg_name = info["name"].to_s
+          cfg_remote = info["reachable_on"].to_s
+          cfg_identity = info["transport_id"].to_s
+          cfg_netname = info["ifac_netname"]?
+          cfg_netkey = info["ifac_netkey"]?
+          cfg_netname_str = cfg_netname ? "\n  network_name = #{cfg_netname}" : ""
+          cfg_netkey_str = cfg_netkey ? "\n  passphrase = #{cfg_netkey}" : ""
+          cfg_identity_str = "\n  transport_identity = #{cfg_identity}"
+          info["config_entry"] = "[[#{cfg_name}]]\n  type = I2PInterface\n  enabled = yes\n  peers = #{cfg_remote}#{cfg_identity_str}#{cfg_netname_str}#{cfg_netkey_str}"
+        end
+
+        if interface_type == "RNodeInterface"
+          info["frequency"] = unpacked[FREQUENCY]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
+          info["bandwidth"] = unpacked[BANDWIDTH]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
+          info["sf"] = unpacked[SPREADINGFACTOR]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
+          info["cr"] = unpacked[CODINGRATE]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
+          cfg_name = info["name"].to_s
+          cfg_frequency = info["frequency"].to_s
+          cfg_bandwidth = info["bandwidth"].to_s
+          cfg_sf = info["sf"].to_s
+          cfg_cr = info["cr"].to_s
+          cfg_identity = info["transport_id"].to_s
+          cfg_netname = info["ifac_netname"]?
+          cfg_netkey = info["ifac_netkey"]?
+          cfg_netname_str = cfg_netname ? "\n  network_name = #{cfg_netname}" : ""
+          cfg_netkey_str = cfg_netkey ? "\n  passphrase = #{cfg_netkey}" : ""
+          cfg_identity_str = "\n  transport_identity = #{cfg_identity}"
+          info["config_entry"] = "[[#{cfg_name}]]\n  type = RNodeInterface\n  enabled = yes\n  port = \n  frequency = #{cfg_frequency}\n  bandwidth = #{cfg_bandwidth}\n  spreadingfactor = #{cfg_sf}\n  codingrate = #{cfg_cr}\n  txpower = #{cfg_netname_str}#{cfg_netkey_str}"
+        end
+
+        if interface_type == "WeaveInterface"
+          info["frequency"] = unpacked[FREQUENCY]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
+          info["bandwidth"] = unpacked[BANDWIDTH]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
+          info["channel"] = unpacked[CHANNEL]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
+          info["modulation"] = unpacked[MODULATION]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
+          cfg_name = info["name"].to_s
+          cfg_identity = info["transport_id"].to_s
+          cfg_netname = info["ifac_netname"]?
+          cfg_netkey = info["ifac_netkey"]?
+          cfg_netname_str = cfg_netname ? "\n  network_name = #{cfg_netname}" : ""
+          cfg_netkey_str = cfg_netkey ? "\n  passphrase = #{cfg_netkey}" : ""
+          cfg_identity_str = "\n  transport_identity = #{cfg_identity}"
+          info["config_entry"] = "[[#{cfg_name}]]\n  type = WeaveInterface\n  enabled = yes\n  port = #{cfg_netname_str}#{cfg_netkey_str}"
+        end
+
+        if interface_type == "KISSInterface"
+          info["frequency"] = unpacked[FREQUENCY]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
+          info["bandwidth"] = unpacked[BANDWIDTH]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
+          info["modulation"] = unpacked[MODULATION]?.try(&.to_s)
+          cfg_name = info["name"].to_s
+          cfg_frequency = info["frequency"].to_s
+          cfg_bandwidth = info["bandwidth"].to_s
+          cfg_modulation = info["modulation"].to_s
+          cfg_identity = info["transport_id"].to_s
+          cfg_netname = info["ifac_netname"]?
+          cfg_netkey = info["ifac_netkey"]?
+          cfg_netname_str = cfg_netname ? "\n  network_name = #{cfg_netname}" : ""
+          cfg_netkey_str = cfg_netkey ? "\n  passphrase = #{cfg_netkey}" : ""
+          cfg_identity_str = "\n  transport_identity = #{cfg_identity}"
+          info["config_entry"] = "[[#{cfg_name}]]\n  type = KISSInterface\n  enabled = yes\n  port = \n  # Frequency: #{cfg_frequency}\n  # Bandwidth: #{cfg_bandwidth}\n  # Modulation: #{cfg_modulation}#{cfg_identity_str}#{cfg_netname_str}#{cfg_netkey_str}"
+        end
+
+        # Compute discovery_hash
+        tid_str = info["transport_id"].to_s
+        name_str = info["name"].to_s
+        discovery_hash_material = (tid_str + name_str).encode("UTF-8")
+        discovery_hash = Identity.full_hash(discovery_hash_material)
+        info["discovery_hash"] = RNS.hexrep(discovery_hash, delimit: false)
+
+        if cb = @callback
+          cb.call(info)
+        end
+      rescue ex
+        RNS.log("An error occurred while trying to decode discovered interface. The contained exception was: #{ex.message}", RNS::LOG_DEBUG)
       end
 
       private def validate_stamp(infohash : Bytes, stamp : Bytes) : Int32
@@ -835,7 +833,7 @@ module RNS
       end
 
       def bootstrap_interface_count : Int32
-        Transport.interface_objects.count { |i| i.bootstrap_only }.to_i32
+        Transport.interface_objects.count(&.bootstrap_only).to_i32
       end
 
       def connect_discovered
@@ -889,63 +887,61 @@ module RNS
       end
 
       def autoconnect(info : InfoHash)
-        begin
-          if Reticulum.should_autoconnect_discovered_interfaces?
-            autoconnected = autoconnect_count
-            if autoconnected < Reticulum.max_autoconnected_interfaces
-              interface_type = info["type"].to_s
-              if AUTOCONNECT_TYPES.includes?(interface_type)
-                ep_hash = endpoint_hash(info)
-                exists = interface_exists?(info)
+        if Reticulum.should_autoconnect_discovered_interfaces?
+          autoconnected = autoconnect_count
+          if autoconnected < Reticulum.max_autoconnected_interfaces
+            interface_type = info["type"].to_s
+            if AUTOCONNECT_TYPES.includes?(interface_type)
+              ep_hash = endpoint_hash(info)
+              exists = interface_exists?(info)
 
-                if exists
-                  RNS.log("Discovered #{interface_type} already exists, not auto-connecting", RNS::LOG_DEBUG)
-                else
-                  if interface_type == "TCPClientInterface"
-                    RNS.log("Your operating system does not support the Backbone interface type, and must degrade to using TCPClientInterface instead", RNS::LOG_WARNING)
-                    RNS.log("Auto-connecting discovered TCPClient interfaces is not yet implemented, aborting auto-connect", RNS::LOG_WARNING)
-                    RNS.log("You can obtain the configuration entry and add this interface manually instead using rnstatus -D", RNS::LOG_WARNING)
-                    return
+              if exists
+                RNS.log("Discovered #{interface_type} already exists, not auto-connecting", RNS::LOG_DEBUG)
+              else
+                if interface_type == "TCPClientInterface"
+                  RNS.log("Your operating system does not support the Backbone interface type, and must degrade to using TCPClientInterface instead", RNS::LOG_WARNING)
+                  RNS.log("Auto-connecting discovered TCPClient interfaces is not yet implemented, aborting auto-connect", RNS::LOG_WARNING)
+                  RNS.log("You can obtain the configuration entry and add this interface manually instead using rnstatus -D", RNS::LOG_WARNING)
+                  return
+                end
+
+                interface_name = info["name"].to_s
+                RNS.log("Auto-connecting discovered #{interface_type} #{interface_name}")
+
+                ifac_netname = info["ifac_netname"]?.try(&.to_s)
+                ifac_netkey = info["ifac_netkey"]?.try(&.to_s)
+
+                interface : Interface? = nil
+
+                if interface_type == "BackboneInterface"
+                  interface_config = Hash(String, String).new
+                  interface_config["name"] = interface_name
+                  interface_config["target_host"] = info["reachable_on"].to_s
+                  interface_config["target_port"] = info["port"].to_s
+                  interface = BackboneClientInterface.new(interface_config)
+                end
+
+                if iface = interface
+                  if iface.responds_to?(:autoconnect_hash=)
+                    iface.autoconnect_hash = ep_hash
+                  end
+                  if iface.responds_to?(:autoconnect_source=)
+                    iface.autoconnect_source = info["network_id"].to_s
                   end
 
-                  interface_name = info["name"].to_s
-                  RNS.log("Auto-connecting discovered #{interface_type} #{interface_name}")
-
-                  ifac_netname = info["ifac_netname"]?.try(&.to_s)
-                  ifac_netkey = info["ifac_netkey"]?.try(&.to_s)
-
-                  interface : Interface? = nil
-
-                  if interface_type == "BackboneInterface"
-                    interface_config = Hash(String, String).new
-                    interface_config["name"] = interface_name
-                    interface_config["target_host"] = info["reachable_on"].to_s
-                    interface_config["target_port"] = info["port"].to_s
-                    interface = BackboneClientInterface.new(interface_config)
-                  end
-
-                  if iface = interface
-                    if iface.responds_to?(:autoconnect_hash=)
-                      iface.autoconnect_hash = ep_hash
-                    end
-                    if iface.responds_to?(:autoconnect_source=)
-                      iface.autoconnect_source = info["network_id"].to_s
-                    end
-
-                    inst = Reticulum.get_instance
-                    if inst
-                      inst.add_interface(iface, ifac_netname: ifac_netname, ifac_netkey: ifac_netkey,
-                        configured_bitrate: 5_000_000_i32)
-                      monitor_interface(iface)
-                    end
+                  inst = Reticulum.get_instance
+                  if inst
+                    inst.add_interface(iface, ifac_netname: ifac_netname, ifac_netkey: ifac_netkey,
+                      configured_bitrate: 5_000_000_i32)
+                    monitor_interface(iface)
                   end
                 end
               end
             end
           end
-        rescue ex
-          RNS.log("Error while auto-connecting discovered interface: #{ex.message}", RNS::LOG_ERROR)
         end
+      rescue ex
+        RNS.log("Error while auto-connecting discovered interface: #{ex.message}", RNS::LOG_ERROR)
       end
 
       # Pack an info hash for persistence using msgpack

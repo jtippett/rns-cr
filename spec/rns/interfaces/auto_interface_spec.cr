@@ -1,7 +1,7 @@
 require "../../spec_helper"
 
 # Helper to wait with timeout
-private def wait_for(timeout = 2.seconds, &block)
+private def wait_for(timeout = 2.seconds, &)
   deadline = Time.utc + timeout
   while Time.utc < deadline
     return if yield
@@ -478,7 +478,7 @@ describe RNS::AutoInterface do
       ai.online = true
 
       received = [] of Bytes
-      ai.owner_inbound = ->(data : Bytes, iface : RNS::Interface) {
+      ai.owner_inbound = ->(data : Bytes, _iface : RNS::Interface) {
         received << data.dup
         nil
       }
@@ -500,7 +500,7 @@ describe RNS::AutoInterface do
       ai.online = true
 
       received = [] of Bytes
-      ai.owner_inbound = ->(data : Bytes, iface : RNS::Interface) {
+      ai.owner_inbound = ->(data : Bytes, _iface : RNS::Interface) {
         received << data.dup
         nil
       }
@@ -515,7 +515,7 @@ describe RNS::AutoInterface do
       # Online is false by default
 
       received = [] of Bytes
-      ai.owner_inbound = ->(data : Bytes, iface : RNS::Interface) {
+      ai.owner_inbound = ->(data : Bytes, _iface : RNS::Interface) {
         received << data.dup
         nil
       }
@@ -533,7 +533,7 @@ describe RNS::AutoInterface do
       ai.online = true
 
       received = [] of Bytes
-      ai.owner_inbound = ->(data : Bytes, iface : RNS::Interface) {
+      ai.owner_inbound = ->(data : Bytes, _iface : RNS::Interface) {
         received << data.dup
         nil
       }
@@ -557,7 +557,7 @@ describe RNS::AutoInterface do
       ai.online = true
 
       received = [] of Bytes
-      ai.owner_inbound = ->(data : Bytes, iface : RNS::Interface) {
+      ai.owner_inbound = ->(data : Bytes, _iface : RNS::Interface) {
         received << data.dup
         nil
       }
@@ -811,7 +811,7 @@ describe RNS::AutoInterfacePeer do
       owner.online = true
 
       received = [] of Bytes
-      owner.owner_inbound = ->(data : Bytes, iface : RNS::Interface) {
+      owner.owner_inbound = ->(data : Bytes, _iface : RNS::Interface) {
         received << data.dup
         nil
       }
@@ -833,7 +833,7 @@ describe RNS::AutoInterfacePeer do
       owner.online = true
 
       received = [] of Bytes
-      owner.owner_inbound = ->(data : Bytes, iface : RNS::Interface) {
+      owner.owner_inbound = ->(data : Bytes, _iface : RNS::Interface) {
         received << data.dup
         nil
       }
@@ -856,7 +856,7 @@ describe RNS::AutoInterfacePeer do
       owner.online = true
 
       received = [] of Bytes
-      owner.owner_inbound = ->(data : Bytes, iface : RNS::Interface) {
+      owner.owner_inbound = ->(data : Bytes, _iface : RNS::Interface) {
         received << data.dup
         nil
       }
@@ -874,7 +874,7 @@ describe RNS::AutoInterfacePeer do
       # owner is offline by default
 
       received = [] of Bytes
-      owner.owner_inbound = ->(data : Bytes, iface : RNS::Interface) {
+      owner.owner_inbound = ->(data : Bytes, _iface : RNS::Interface) {
         received << data.dup
         nil
       }
@@ -890,7 +890,7 @@ describe RNS::AutoInterfacePeer do
       config = {"name" => "TestAuto"}
       owner = RNS::AutoInterface.new(config)
       owner.online = true
-      owner.owner_inbound = ->(data : Bytes, iface : RNS::Interface) { nil }
+      owner.owner_inbound = ->(_data : Bytes, _iface : RNS::Interface) { nil }
 
       owner.add_peer("fe80::aaa", "en0")
       old_time = owner.peers["fe80::aaa"][1]
@@ -922,7 +922,7 @@ describe RNS::AutoInterfacePeer do
       config = {"name" => "TestAuto"}
       owner = RNS::AutoInterface.new(config)
       owner.online = true
-      owner.owner_inbound = ->(data : Bytes, iface : RNS::Interface) { nil }
+      owner.owner_inbound = ->(_data : Bytes, _iface : RNS::Interface) { nil }
 
       owner.add_peer("fe80::bbb", "en0")
       owner.spawned_peer_interfaces.has_key?("fe80::bbb").should be_true
@@ -938,7 +938,7 @@ describe RNS::AutoInterfacePeer do
       config = {"name" => "TestAuto"}
       owner = RNS::AutoInterface.new(config)
       owner.online = true
-      owner.owner_inbound = ->(data : Bytes, iface : RNS::Interface) { nil }
+      owner.owner_inbound = ->(_data : Bytes, _iface : RNS::Interface) { nil }
 
       owner.add_peer("fe80::ccc", "en0")
       peer = owner.spawned_peer_interfaces["fe80::ccc"]
@@ -985,7 +985,7 @@ describe RNS::AutoInterfacePeer do
       owner.online = true
 
       received = [] of Bytes
-      owner.owner_inbound = ->(data : Bytes, iface : RNS::Interface) {
+      owner.owner_inbound = ->(data : Bytes, _iface : RNS::Interface) {
         received << data.dup
         nil
       }
@@ -1005,7 +1005,7 @@ describe RNS::AutoInterfacePeer do
       config = {"name" => "TestAuto"}
       owner = RNS::AutoInterface.new(config)
       owner.online = true
-      owner.owner_inbound = ->(data : Bytes, iface : RNS::Interface) { nil }
+      owner.owner_inbound = ->(_data : Bytes, _iface : RNS::Interface) { nil }
 
       20.times do |i|
         addr = "fe80::#{i + 1}"

@@ -173,7 +173,7 @@ describe RNS::Discovery do
       it "ignores nil app_data" do
         handler = RNS::Discovery::InterfaceAnnounceHandler.new
         callback_called = false
-        handler.callback = ->(info : Hash(String, String | Int64 | Float64 | Bool | Bytes | Nil)) { callback_called = true; nil }
+        handler.callback = ->(_info : Hash(String, String | Int64 | Float64 | Bool | Bytes | Nil)) { callback_called = true; nil }
         handler.received_announce(Bytes.new(16), nil, nil)
         callback_called.should be_false
       end
@@ -181,7 +181,7 @@ describe RNS::Discovery do
       it "ignores app_data shorter than STAMP_SIZE + 1" do
         handler = RNS::Discovery::InterfaceAnnounceHandler.new
         callback_called = false
-        handler.callback = ->(info : Hash(String, String | Int64 | Float64 | Bool | Bytes | Nil)) { callback_called = true; nil }
+        handler.callback = ->(_info : Hash(String, String | Int64 | Float64 | Bool | Bytes | Nil)) { callback_called = true; nil }
         handler.received_announce(Bytes.new(16), nil, Bytes.new(10))
         callback_called.should be_false
       end

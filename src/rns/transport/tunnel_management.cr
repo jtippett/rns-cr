@@ -43,7 +43,7 @@ module RNS
           received_from = path_entry.next_hop
           announce_hops = path_entry.hops
           path_expires = path_entry.expires
-          random_blobs = path_entry.random_blobs.dup.uniq { |b| b.hexstring }
+          random_blobs = path_entry.random_blobs.dup.uniq(&.hexstring)
           packet_hash = path_entry.packet_hash
 
           new_entry = PathEntry.new(

@@ -435,7 +435,7 @@ describe RNS::Link do
   describe "callbacks" do
     it "sets link_established" do
       link = create_handshaken_link
-      link.set_link_established_callback(->(l : RNS::Link) { nil })
+      link.set_link_established_callback(->(_l : RNS::Link) { nil })
       link.callbacks.link_established.should_not be_nil
     end
 
@@ -446,20 +446,20 @@ describe RNS::Link do
       closed = false
       link = RNS::Link.new(owner: owner, peer_pub_bytes: peer_prv.public_key.public_bytes,
         peer_sig_pub_bytes: peer_sig_prv.public_key.public_bytes,
-        closed_callback: ->(l : RNS::Link) { closed = true; nil })
+        closed_callback: ->(_l : RNS::Link) { closed = true; nil })
       link.teardown
       closed.should be_true
     end
 
     it "sets packet callback" do
       link = create_handshaken_link
-      link.set_packet_callback(->(d : Bytes, p : RNS::Packet) { nil })
+      link.set_packet_callback(->(_d : Bytes, _p : RNS::Packet) { nil })
       link.callbacks.packet.should_not be_nil
     end
 
     it "sets remote_identified callback" do
       link = create_handshaken_link
-      link.set_remote_identified_callback(->(l : RNS::Link, i : RNS::Identity) { nil })
+      link.set_remote_identified_callback(->(_l : RNS::Link, _i : RNS::Identity) { nil })
       link.callbacks.remote_identified.should_not be_nil
     end
   end
@@ -817,7 +817,7 @@ describe RNS::Link do
       pr = RNS::PacketReceipt.new(pkt)
       got_response = false
       rr = RNS::RequestReceipt.new(link: link, packet_receipt: pr, timeout: 10.0,
-        response_callback: ->(r : RNS::RequestReceipt) { got_response = true; nil })
+        response_callback: ->(_r : RNS::RequestReceipt) { got_response = true; nil })
       rr.response_received(MessagePack::Any.new("resp"))
       rr.get_status.should eq RNS::RequestReceipt::READY
       rr.concluded?.should be_true
@@ -1015,19 +1015,19 @@ describe RNS::Link do
   describe "resource callbacks" do
     it "sets resource callback" do
       link = create_handshaken_link
-      link.set_resource_callback(->(data : Bytes) { true })
+      link.set_resource_callback(->(_data : Bytes) { true })
       link.callbacks.resource.should_not be_nil
     end
 
     it "sets resource_started callback" do
       link = create_handshaken_link
-      link.set_resource_started_callback(->(h : Bytes) { nil })
+      link.set_resource_started_callback(->(_h : Bytes) { nil })
       link.callbacks.resource_started.should_not be_nil
     end
 
     it "sets resource_concluded callback" do
       link = create_handshaken_link
-      link.set_resource_concluded_callback(->(h : Bytes) { nil })
+      link.set_resource_concluded_callback(->(_h : Bytes) { nil })
       link.callbacks.resource_concluded.should_not be_nil
     end
   end
@@ -1403,7 +1403,7 @@ describe RNS::Link do
 
       received_path = ""
       owner.register_request_handler("/test",
-        ->(path : String, data : Bytes?, req_id : Bytes, link_id : Bytes, identity : RNS::Identity?, requested_at : Float64) {
+        ->(path : String, _data : Bytes?, _req_id : Bytes, _link_id : Bytes, _identity : RNS::Identity?, _requested_at : Float64) {
           received_path = path
           "response".to_slice.as(Bytes?)
         },
@@ -1435,7 +1435,7 @@ describe RNS::Link do
 
       called = false
       owner.register_request_handler("/blocked",
-        ->(path : String, data : Bytes?, req_id : Bytes, link_id : Bytes, identity : RNS::Identity?, requested_at : Float64) {
+        ->(_path : String, _data : Bytes?, _req_id : Bytes, _link_id : Bytes, _identity : RNS::Identity?, _requested_at : Float64) {
           called = true
           nil.as(Bytes?)
         },
@@ -1497,7 +1497,7 @@ describe RNS::Link do
       pr = RNS::PacketReceipt.new(pkt)
       failed = false
       rr = RNS::RequestReceipt.new(link: link, packet_receipt: pr, timeout: 10.0,
-        failed_callback: ->(r : RNS::RequestReceipt) { failed = true; nil })
+        failed_callback: ->(_r : RNS::RequestReceipt) { failed = true; nil })
       rr.request_resource_concluded(0xFF_u8, 0x00_u8) # failure
       rr.status.should eq RNS::RequestReceipt::FAILED
       failed.should be_true

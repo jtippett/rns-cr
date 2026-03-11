@@ -348,7 +348,7 @@ describe RNS::BackboneClientInterface do
       client_sock = TCPSocket.new("127.0.0.1", port)
       accepted_sock = server.accept
 
-      callback = ->(data : Bytes, iface : RNS::Interface) {
+      callback = ->(data : Bytes, _iface : RNS::Interface) {
         received_frames << data.dup
         nil
       }
@@ -391,7 +391,7 @@ describe RNS::BackboneClientInterface do
       client_sock = TCPSocket.new("127.0.0.1", port)
       accepted_sock = server.accept
 
-      callback = ->(data : Bytes, iface : RNS::Interface) {
+      callback = ->(data : Bytes, _iface : RNS::Interface) {
         received_frames << data.dup
         nil
       }
@@ -421,7 +421,7 @@ describe RNS::BackboneClientInterface do
   describe "incoming connection (server + client integration)" do
     it "accepts incoming connections and creates spawned interfaces" do
       received_data = nil
-      callback = ->(data : Bytes, iface : RNS::Interface) {
+      callback = ->(data : Bytes, _iface : RNS::Interface) {
         received_data = data.dup
         nil
       }

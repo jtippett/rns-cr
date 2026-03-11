@@ -377,7 +377,7 @@ describe RNS::Resource do
       called = false
       data = Random::Secure.random_bytes(100)
       resource = RNS::Resource.new(data, link, advertise: false,
-        callback: ->(r : RNS::Resource) { called = true; nil })
+        callback: ->(_r : RNS::Resource) { called = true; nil })
       resource.cancel
       called.should be_true
     end
@@ -413,14 +413,14 @@ describe RNS::Resource do
     it "set_callback stores callback" do
       link = create_resource_link
       resource = RNS::Resource.new(nil, link, advertise: false)
-      resource.set_callback(->(r : RNS::Resource) { nil })
+      resource.set_callback(->(_r : RNS::Resource) { nil })
       resource.callback.should_not be_nil
     end
 
     it "set_progress_callback stores callback" do
       link = create_resource_link
       resource = RNS::Resource.new(nil, link, advertise: false)
-      resource.set_progress_callback(->(r : RNS::Resource) { nil })
+      resource.set_progress_callback(->(_r : RNS::Resource) { nil })
       resource.progress_callback_proc.should_not be_nil
     end
   end
@@ -503,7 +503,7 @@ describe RNS::Resource do
       called = false
       data = Random::Secure.random_bytes(200)
       resource = RNS::Resource.new(data, link, advertise: false,
-        callback: ->(r : RNS::Resource) { called = true; nil })
+        callback: ->(_r : RNS::Resource) { called = true; nil })
 
       proof_data = Bytes.new(resource.hash.size + resource.expected_proof.size)
       resource.hash.copy_to(proof_data)

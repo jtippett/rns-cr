@@ -2,7 +2,7 @@ require "../spec_helper"
 
 # Helper to create a test ReticulumInstance with a config, without starting interfaces
 private def make_test_instance(config_text : String, **opts) : RNS::ReticulumInstance
-  lines = config_text.lines.map { |l| l.lstrip }
+  lines = config_text.lines.map(&.lstrip)
   config = RNS::ConfigObj.new(lines)
   RNS::ReticulumInstance.new(
     config,
@@ -129,7 +129,7 @@ describe RNS::Reticulum do
         "blackholepath" => -> { RNS::Reticulum.blackholepath },
         "interfacepath" => -> { RNS::Reticulum.interfacepath },
       }
-      paths.each do |name, getter|
+      paths.each do |_, getter|
         getter.call.should be_a(String)
       end
     end

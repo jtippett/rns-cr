@@ -989,7 +989,7 @@ module RNS
       link.request("fetch_file", data: file.to_slice,
         response_callback: ->(receipt : RequestReceipt) {
           resp = receipt.response
-          if resp == false
+          if resp.is_a?(Bool) && !resp
             request_status = "not_found"
           elsif resp.nil?
             request_status = "remote_error"

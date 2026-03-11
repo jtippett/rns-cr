@@ -792,7 +792,8 @@ module RNS
       @online = false
       @serial.try do |s|
         s.close unless s.closed?
-      rescue
+      rescue ex
+        RNS.log("Error closing serial port: #{ex.message}", RNS::LOG_DEBUG)
       end
       if !@detached && !@reconnecting
         reconnect_port
@@ -883,7 +884,8 @@ module RNS
         quality = 100.0 if quality > 100.0
         quality = 0.0 if quality < 0.0
         subint.r_stat_q = quality
-      rescue
+      rescue ex
+        RNS.log("Error calculating signal quality: #{ex.message}", RNS::LOG_DEBUG)
       end
     end
 

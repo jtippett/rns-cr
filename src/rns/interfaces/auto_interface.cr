@@ -352,13 +352,13 @@ module RNS
           multicast_echo_received = @initial_echoes.has_key?(ifname)
 
           if now - last_multicast_echo > @multicast_echo_timeout
-            if @timed_out_interfaces.has_key?(ifname) && @timed_out_interfaces[ifname] == false
+            if @timed_out_interfaces.has_key?(ifname) && !@timed_out_interfaces[ifname]
               @carrier_changed = true
               RNS.log("Multicast echo timeout for #{ifname}. Carrier lost.", RNS::LOG_WARNING)
             end
             @timed_out_interfaces[ifname] = true
           else
-            if @timed_out_interfaces.has_key?(ifname) && @timed_out_interfaces[ifname] == true
+            if @timed_out_interfaces.has_key?(ifname) && @timed_out_interfaces[ifname]
               @carrier_changed = true
               RNS.log("#{self} Carrier recovered on #{ifname}", RNS::LOG_WARNING)
             end
@@ -389,7 +389,6 @@ module RNS
         )
         sock = UDPSocket.new(Socket::Family::INET6)
         begin
-          if_index = NetInfo.interface_name_to_index(ifname)
           target = "#{peer_addr}%#{ifname}"
           addr = Socket::IPAddress.new(target, @unicast_discovery_port)
           sock.send(discovery_token, addr)
@@ -421,7 +420,7 @@ module RNS
           sock.close
         end
       rescue ex
-        if (@timed_out_interfaces.has_key?(ifname) && @timed_out_interfaces[ifname] == false) || !@timed_out_interfaces.has_key?(ifname)
+        if (@timed_out_interfaces.has_key?(ifname) && !@timed_out_interfaces[ifname]) || !@timed_out_interfaces.has_key?(ifname)
           RNS.log("#{self} Detected possible carrier loss on #{ifname}: #{ex.message}", RNS::LOG_WARNING)
         end
       end

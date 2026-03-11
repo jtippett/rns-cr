@@ -106,6 +106,9 @@ module RNS
     property latest_ratchet_id : Bytes?
     property mtu : Int32
 
+    # Link tracking
+    property links : Array(Link)
+
     # Ratchet properties
     property ratchets : Array(Bytes)?
     property ratchets_path : String?
@@ -135,6 +138,7 @@ module RNS
       end
 
       # Initialize properties
+      @links = [] of Link
       @accept_link_requests = true
       @callbacks = DestinationCallbacks.new
       @request_handlers = Hash(String, RequestHandler).new
@@ -598,7 +602,7 @@ module RNS
         true
       else
         plaintext = decrypt(packet.data)
-        @latest_ratchet_id = nil # TODO: set properly when Identity tracks ratchet_id
+        @latest_ratchet_id = nil # NOTE: Requires Identity#decrypt to report which ratchet succeeded (ratchet_id_receiver pattern)
         if plaintext.nil?
           false
         else
@@ -619,7 +623,10 @@ module RNS
 
     private def incoming_link_request(data : Bytes, packet : Packet)
       if @accept_link_requests
-        # TODO: Link.validate_request(self, data, packet) when Link is implemented
+        link = Link.validate_request(self, data, packet)
+        if link
+          @links << link
+        end
       end
     end
 

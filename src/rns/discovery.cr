@@ -644,8 +644,6 @@ module RNS
               end
               if only_transport && !transport
                 should_append = false
-              elsif only_transport && transport == false
-                should_append = false
               end
               discovered_interfaces << info if should_append
             end

@@ -419,7 +419,6 @@ module RNS
         rescue ex : ArgumentError
           RNS.log("Invalid hexadecimal hash provided", RNS::LOG_ERROR)
           exit(7)
-          raise ex # unreachable but satisfies type checker
         end
       else
         # Try loading Identity from file

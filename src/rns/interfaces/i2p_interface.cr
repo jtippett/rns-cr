@@ -580,7 +580,8 @@ module RNS
     private def set_socket_options(sock : TCPSocket)
       sock.tcp_nodelay = true
       sock.keepalive = true
-    rescue
+    rescue ex
+      RNS.log("Error setting socket options: #{ex.message}", RNS::LOG_DEBUG)
     end
 
     def connect(initial : Bool = false) : Bool
@@ -892,7 +893,8 @@ module RNS
       if sock = @socket
         begin
           sock.close unless sock.closed?
-        rescue
+        rescue ex
+          RNS.log("Error closing socket: #{ex.message}", RNS::LOG_DEBUG)
         end
         @socket = nil
       end

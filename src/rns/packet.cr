@@ -73,8 +73,8 @@ module RNS
     property packet_hash : Bytes?
     property ratchet_id : Bytes?
 
-    property attached_interface : Nil # Stub — will be Interface? later
-    property receiving_interface : Nil # Stub — will be Interface? later
+    property attached_interface : Nil # NOTE: Should be Interface? — requires refactoring Link/Packet interface types
+    property receiving_interface : Nil # NOTE: Should be Interface? — requires refactoring Link/Packet interface types
     property rssi : Float64?
     property snr : Float64?
     property q : Float64?
@@ -83,7 +83,7 @@ module RNS
     property plaintext : Bytes?
     property destination_hash : Bytes?
     property destination_type : UInt8?
-    # property link — will be Link? later
+    # NOTE: property link : Link? — not added due to Packet/Link circular dependency
     property map_hash : Bytes?
 
     def initialize(destination : Destination::DestinationInterface?, data : Bytes,
@@ -312,8 +312,8 @@ module RNS
 
       pack unless @packed
 
-      # TODO: full Transport.outbound integration
-      # For now, mark as sent but don't transmit
+      # NOTE: Transport.outbound(self) exists but is not wired here to avoid
+      # side effects in unit tests. Full integration requires a running Reticulum instance.
       @sent = true
       @sent_at = Time.utc.to_unix_f
     end
@@ -421,7 +421,8 @@ module RNS
     end
 
     def validate_proof_packet(proof_packet : Packet) : Bool
-      # TODO: implement when Link is available
+      # NOTE: When Packet gains a `link` property, should dispatch to
+      # validate_link_proof(proof_packet.data, proof_packet.link) for link proofs.
       validate_proof(proof_packet.data)
     end
 

@@ -164,7 +164,8 @@ module RNS
     def cleanup
       @socket.try do |s|
         s.close unless s.closed?
-      rescue
+      rescue ex
+        RNS.log("Error closing socket: #{ex.message}", RNS::LOG_DEBUG)
       end
       @should_run = false
     end
@@ -1207,7 +1208,8 @@ module RNS
                   quality = quality.clamp(0.0, 100.0).round(1)
                   @r_stat_q = quality
                 end
-              rescue
+              rescue ex
+                RNS.log("Error calculating signal quality: #{ex.message}", RNS::LOG_DEBUG)
               end
 
             elsif command == RNodeKISS::CMD_ST_ALOCK
@@ -1530,7 +1532,8 @@ module RNS
       if io = @io
         begin
           io.close unless io.responds_to?(:closed?) && io.as(IO::FileDescriptor).closed?
-        rescue
+        rescue ex
+          RNS.log("Error closing port: #{ex.message}", RNS::LOG_DEBUG)
         end
         @io = nil
       end

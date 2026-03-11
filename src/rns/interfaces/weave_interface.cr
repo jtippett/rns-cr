@@ -659,7 +659,8 @@ module RNS
       @wdcl_connected = false
       @serial.try do |s|
         s.close unless s.closed?
-      rescue
+      rescue ex
+        RNS.log("Error closing serial port: #{ex.message}", RNS::LOG_DEBUG)
       end
       RNS.log("Closed serial port #{@port} for #{self}", RNS::LOG_VERBOSE)
     end
@@ -737,7 +738,8 @@ module RNS
       @wdcl_connected = false
       @serial.try do |s|
         s.close unless s.closed?
-      rescue
+      rescue ex
+        RNS.log("Error closing serial port: #{ex.message}", RNS::LOG_DEBUG)
       end
       reconnect_port if @should_run
     end

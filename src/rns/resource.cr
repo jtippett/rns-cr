@@ -1062,7 +1062,8 @@ module RNS
       if f = @input_file
         f.close if f.responds_to?(:close)
       end
-    rescue
+    rescue ex
+      RNS.log("Error closing input file: #{ex.message}", RNS::LOG_DEBUG)
     end
 
     # ─── Receive part (receiver side) ──────────────────────────────

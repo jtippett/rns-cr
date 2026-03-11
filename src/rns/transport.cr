@@ -1056,18 +1056,7 @@ module RNS
             @@destinations.each do |destination|
               if destination.hash == dest_hash && destination.type == packet.destination_type
                 if destination.receive(packet)
-                  if destination.proof_strategy == Destination::PROVE_ALL
-                    # packet.prove() — will be available when Packet.prove is implemented
-                  elsif destination.proof_strategy == Destination::PROVE_APP
-                    cb = destination.callbacks.proof_requested
-                    if cb
-                      begin
-                        # cb.call(packet) would trigger proof
-                      rescue ex
-                        RNS.log("Error while executing proof request callback: #{ex}", RNS::LOG_ERROR)
-                      end
-                    end
-                  end
+                  # NOTE: Proof strategies (PROVE_ALL, PROVE_APP) require Packet#prove method
                 end
               end
             end

@@ -219,7 +219,8 @@ module RNS
       if process = @process
         begin
           process.terminate unless process.terminated?
-        rescue
+        rescue ex
+          RNS.log("Error terminating process: #{ex.message}", RNS::LOG_DEBUG)
         end
         @process = nil
       end

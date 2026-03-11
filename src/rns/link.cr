@@ -124,11 +124,11 @@ module RNS
     property expected_rate : Float64?
     property teardown_reason : UInt8?
     property pending_requests : Array(RequestReceipt)
-    property outgoing_resources : Array(Bytes) # Resource hashes; Array(Resource) when Resource is implemented
-    property incoming_resources : Array(Bytes) # Resource hashes; Array(Resource) when Resource is implemented
+    property outgoing_resources : Array(Bytes) # NOTE: Resource hashes; should be Array(Resource) for proof routing
+    property incoming_resources : Array(Bytes) # NOTE: Resource hashes; should be Array(Resource) for part receiving
     property last_resource_window : Int32?
     property last_resource_eifr : Float64?
-    property attached_interface : Bytes?     # TODO: Interface? when interfaces are implemented
+    property attached_interface : Bytes?     # NOTE: Should be Interface? but Packet.receiving_interface is still Nil stub
 
     @status : UInt8
     @owner : Destination?
@@ -147,9 +147,9 @@ module RNS
     @token : Cryptography::Token?
     @remote_identity : Identity?
     @track_phy_stats : Bool
-    # TODO: @channel : Channel(Packet)? — deferred due to Crystal codegen bug
-    # with non-generic class inheriting from generic instantiation.
-    # Will be enabled when Channel integration (Task 5.3+) is implemented.
+    # NOTE: @channel : Channel(Packet)? — deferred due to Crystal codegen bug
+    # with non-generic class storing generic instantiation as instance variable.
+    # Channel class exists but cannot be stored here without triggering the bug.
     @channel_enabled : Bool = false
     @watchdog_lock : Bool
     @link_id : Bytes
@@ -273,7 +273,7 @@ module RNS
           link.establishment_cost += packet.raw.not_nil!.size
 
           link.do_handshake
-          link.attached_interface = nil # TODO: packet.receiving_interface
+          link.attached_interface = nil # NOTE: Should be packet.receiving_interface when Packet uses Interface type
           link.prove
           link.request_time = Time.utc.to_unix_f
           Transport.register_link(link)
@@ -560,7 +560,7 @@ module RNS
               raise IO::Error.new("Invalid link state for proof validation: #{@status}") if @status != HANDSHAKE
 
               @rtt = Time.utc.to_unix_f - @request_time.not_nil!
-              @attached_interface = nil # TODO: packet.receiving_interface
+              @attached_interface = nil # NOTE: Should be packet.receiving_interface when Packet uses Interface type
               @remote_identity = dest_identity
               @mtu = confirmed_mtu || Reticulum::MTU
               update_mdu
@@ -929,7 +929,8 @@ module RNS
           @teardown_reason = @initiator ? DESTINATION_CLOSED : INITIATOR_CLOSED
           link_closed
         end
-      rescue
+      rescue ex
+        RNS.log("Error processing teardown packet: #{ex.message}", RNS::LOG_DEBUG)
       end
     end
 
@@ -947,7 +948,7 @@ module RNS
 
       dest = @destination
       if dest && dest.direction == Destination::IN
-        # TODO: remove self from destination.links when links tracking is added
+        dest.links.delete(self) if dest.is_a?(Destination)
       end
 
       cb = @callbacks.link_closed
@@ -1050,7 +1051,7 @@ module RNS
       @watchdog_lock = true
 
       if @status != CLOSED && !(@initiator && packet.context == Packet::KEEPALIVE && packet.data == Bytes[0xFF])
-        # TODO: check packet.receiving_interface == @attached_interface
+        # NOTE: Should verify packet.receiving_interface == @attached_interface when Packet uses Interface type
 
         @last_inbound = Time.utc.to_unix_f
         @last_data = @last_inbound if packet.context != Packet::KEEPALIVE
@@ -1157,7 +1158,8 @@ module RNS
             end
 
           when Packet::CHANNEL
-            # TODO: Channel message delivery when Channel integration is enabled
+            # NOTE: Channel delivery blocked by Crystal codegen bug preventing @channel storage.
+            # When resolved, uncomment:
             # ch = @channel
             # if ch
             #   prove_packet(packet)
@@ -1170,7 +1172,9 @@ module RNS
           end
         elsif packet.packet_type == Packet::PROOF
           if packet.context == Packet::RESOURCE_PRF
-            # TODO: Resource proof handling
+            # NOTE: Resource proof routing requires outgoing_resources to hold Resource objects
+            # instead of Bytes (hashes). When refactored, iterate resources and call
+            # resource.validate_proof(packet.data) for the matching resource hash.
           end
         end
       end
@@ -1314,9 +1318,8 @@ module RNS
 
     # ─── Channel ─────────────────────────────────────────────────────
 
-    # TODO: get_channel : Channel(Packet) — deferred due to Crystal codegen bug
-    # with non-generic class inheriting from generic class instantiation.
-    # Will be implemented when Channel integration (Task 5.3+) is done.
+    # NOTE: get_channel deferred — Crystal codegen bug prevents storing Channel(Packet)
+    # as instance variable on Link. Channel class exists in channel.cr.
     # def get_channel : Channel(Packet)
     #   ch = @channel
     #   if ch.nil?

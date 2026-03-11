@@ -519,7 +519,8 @@ module RNS
       if io = @io
         begin
           io.close unless io.closed?
-        rescue
+        rescue ex
+          RNS.log("Error closing port: #{ex.message}", RNS::LOG_DEBUG)
         end
         @io = nil
       end

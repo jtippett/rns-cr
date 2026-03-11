@@ -289,7 +289,8 @@ module RNS
       if sock = @socket
         begin
           sock.close unless sock.closed?
-        rescue
+        rescue ex
+          RNS.log("Error closing socket: #{ex.message}", RNS::LOG_DEBUG)
         end
         @socket = nil
       end

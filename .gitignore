@@ -3,3 +3,4 @@
 /bin/
 *.dwarf
 *.o
+**/.DS_Store

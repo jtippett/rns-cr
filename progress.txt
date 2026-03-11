@@ -1906,3 +1906,41 @@
       different inputs produce different QR codes, short input handling)
     - Updated stress tests to include --qr combinations (22 combos)
   - Ran crystal spec — 102 examples, 0 failures, 0 errors
+
+2026-03-11 — Task 10.4: rncp and rnx utilities
+  - Created src/rns/rncp.cr (~620 LOC) porting RNS/Utilities/rncp.py (906 LOC)
+  - Created src/rns/rnx.cr (~560 LOC) porting RNS/Utilities/rnx.py (740 LOC)
+  - Created src/rncp.cr and src/rnx.cr binary entry points
+  - Added rncp and rnx targets to shard.yml
+  - Updated src/rns.cr to require rncp and rnx modules
+  - Created spec/rns/rncp_spec.cr (68 examples)
+  - Created spec/rns/rnx_spec.cr (55 examples)
+  - Ran crystal spec — 123 examples (68 rncp + 55 rnx), 0 failures
+  - Ran all CLI utility specs together — 383 examples, 0 failures
+
+2026-03-11 — Task 11.1: Port core examples
+  - Created examples/ directory
+  - Ported Examples/Minimal.py → examples/minimal.cr
+    - Initialises Reticulum, creates Identity and SINGLE Destination
+    - Sets PROVE_ALL proof strategy, runs announce loop on Enter key
+    - CLI: --config PATH, -h/--help
+  - Ported Examples/Echo.py → examples/echo.cr
+    - Server mode: creates echo destination with packet callback, shows RSSI/SNR stats
+    - Client mode: validates destination hash, sends echo request with random hash data,
+      tracks PacketReceipt with delivery/timeout callbacks, displays RTT
+    - EchoExample module holds ReticulumInstance reference for callbacks
+    - CLI: -s/--server, -t/--timeout SEC, --config PATH, DESTINATION positional arg
+  - Ported Examples/Announce.py → examples/announce.cr
+    - Creates two destinations (fruits and noble_gases) with random app_data announces
+    - ExampleAnnounceHandler class implementing Transport::AnnounceHandler interface
+    - Filters announces by aspect_filter, displays app_data from received announces
+    - CLI: --config PATH, -h/--help
+  - Ported Examples/Broadcast.py → examples/broadcast.cr
+    - Creates PLAIN destination for unencrypted broadcasts
+    - Packet callback prints received data, broadcast loop sends user input
+    - CLI: --config PATH, --channel NAME, -h/--help
+  - Created spec/examples_compile_spec.cr verifying all 4 examples type-check successfully
+    - Uses Process.run with `crystal build --no-codegen` for each example
+  - All examples are standalone Crystal programs matching Python API semantics exactly
+  - Ran crystal spec — 4 examples, 0 failures (compile checks)
+  - Ran crystal spec rns_spec.cr — 56 examples, 0 failures (no regressions)

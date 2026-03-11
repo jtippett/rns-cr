@@ -347,12 +347,12 @@ This is the largest module (3312 LOC). Split into manageable sub-modules.
 - [x] **10.3 — rnprobe and rnid utilities**
   Port `RNS/Utilities/rnprobe.py` (251 LOC) → `rnprobe` binary target. Network connectivity probe — send probe packet, measure RTT. Port `RNS/Utilities/rnid.py` (611 LOC) → `rnid` binary target. Identity management: create, import, export identities; sign/verify data; encrypt/decrypt. Integrate the `qr-code` shard for QR code generation of identity hashes. Write specs for identity operations.
 
-- [ ] **10.4 — rncp and rnx utilities**
+- [x] **10.4 — rncp and rnx utilities**
   Port `RNS/Utilities/rncp.py` (906 LOC) → `rncp` binary target. Remote file copy over RNS — uses Resources for file transfer. Port `RNS/Utilities/rnx.py` (740 LOC) → `rnx` binary target. Remote command execution over RNS — uses Links for encrypted command channels. Write specs for argument parsing and protocol message formatting.
 
 ### Phase 11: Examples and Documentation
 
-- [ ] **11.1 — Port core examples**
+- [x] **11.1 — Port core examples**
   Port `Examples/Minimal.py`, `Examples/Echo.py`, `Examples/Announce.py`, `Examples/Broadcast.py` → `examples/`. Each example should be a standalone Crystal program demonstrating the API. Ensure examples compile and can run with a local Reticulum instance.
 
 - [ ] **11.2 — Port advanced examples**

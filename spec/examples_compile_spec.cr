@@ -3,7 +3,7 @@ require "./spec_helper"
 # This spec verifies that example files can be type-checked by the Crystal compiler
 # by shelling out to `crystal build --no-codegen`.
 describe "Examples" do
-  {% for name in ["minimal", "echo", "announce", "broadcast"] %}
+  {% for name in ["minimal", "echo", "announce", "broadcast", "link", "request", "identify", "channel", "buffer"] %}
     it "{{name.id}}.cr compiles without errors" do
       result = Process.run(
         "crystal",

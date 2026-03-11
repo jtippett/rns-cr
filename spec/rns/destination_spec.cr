@@ -342,7 +342,7 @@ describe RNS::Destination do
     it "sets link established callback" do
       dest = RNS::Destination.new(nil, RNS::Destination::IN, RNS::Destination::SINGLE, "testapp", register: false)
       called = false
-      dest.set_link_established_callback(->{ called = true; nil })
+      dest.set_link_established_callback(->(link : RNS::Link) { called = true; nil })
       dest.callbacks.link_established.should_not be_nil
     end
 

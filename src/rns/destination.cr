@@ -36,7 +36,7 @@ module RNS
 
     # ─── Callbacks container ──────────────────────────────────────────
     class DestinationCallbacks
-      property link_established : Proc(Nil)?   # TODO: Proc(Link, Nil) when Link is implemented
+      property link_established : Proc(Link, Nil)?
       property packet : Proc(Bytes, Packet, Nil)?
       property proof_requested : Proc(Packet, Bool)?
 
@@ -541,7 +541,7 @@ module RNS
       @accept_link_requests = accepts
     end
 
-    def set_link_established_callback(callback : Proc(Nil))
+    def set_link_established_callback(callback : Proc(Link, Nil))
       @callbacks.link_established = callback
     end
 

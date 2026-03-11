@@ -624,7 +624,7 @@ module RNS
             cb = owner_dest.callbacks.link_established
             if cb
               begin
-                cb.call
+                cb.call(self)
               rescue ex
                 RNS.log("Error occurred in external link establishment callback: #{ex}", RNS::LOG_ERROR)
               end

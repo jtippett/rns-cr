@@ -2013,3 +2013,65 @@
   - All examples follow established Crystal patterns: module state, callback procs,
     CLI argument parsing, begin/rescue for Ctrl-C handling
   - Verified project compiles — crystal spec spec/rns_spec.cr: 56 examples, 0 failures
+
+2026-03-11 — Task 12.1: Protocol compatibility verification
+  - Created spec/rns/compatibility/protocol_compatibility_spec.cr (101 examples)
+  - 18 sections covering all critical wire-compatibility verification:
+    1. Constants (20 tests): MTU, TRUNCATED_HASHLENGTH, HEADER_MINSIZE/MAXSIZE,
+       Identity KEYSIZE/HASHLENGTH/NAME_HASH_LENGTH/RATCHETSIZE/SIGLENGTH,
+       Token TOKEN_OVERHEAD, IFAC_MIN_SIZE, Destination types/directions/proof strategies,
+       Packet types/header types/context types
+    2. Hash computation (8 tests): SHA-256/512 with NIST test vectors,
+       full_hash = SHA-256, truncated_hash = first 16 bytes,
+       1000 random SHA-256 consistency checks against OpenSSL
+    3. HMAC-SHA256 (3 tests): RFC 4231 Cases 1 & 2, class/instance method equivalence
+    4. HKDF (4 tests): RFC 5869 Case 1, nil salt defaults to 32 zero bytes,
+       nil context defaults to empty bytes, 64-byte key derivation for Identity
+    5. PKCS7 padding (4 tests): 12→16 bytes, 16→32 bytes, 1→16 bytes,
+       100 random pad/unpad roundtrips
+    6. AES-256-CBC (3 tests): encrypt/decrypt roundtrip, deterministic ciphertext,
+       50 random inputs always produce 16-byte-aligned ciphertext
+    7. X25519 key exchange (6 tests): two parties derive same shared secret,
+       32-byte key sizes, key serialization roundtrip, bytes vs object exchange,
+       100 random key exchange matches
+    8. Ed25519 signatures (5 tests): sign/verify roundtrip, invalid signature rejection,
+       cross-key rejection, key serialization roundtrip, 32-byte pub/64-byte sig sizes
+    9. Token encrypt/decrypt (7 tests): IV+ciphertext+HMAC structure,
+       decrypt recovers plaintext, key split verification (signing=first 32,
+       encryption=last 32), verify_hmac true/false, TOKEN_OVERHEAD = 48,
+       100 random roundtrips
+   10. Identity key format (6 tests): 64-byte public/private keys,
+       hash = truncated SHA-256 of public key, hexhash = hex(hash),
+       load_private_key splits 32+32, load_public_key preserves hash,
+       private key roundtrip preserves identity
+   11. Identity sign/verify (6 tests): 64-byte Ed25519 signatures,
+       validate true for valid, false for tampered/wrong message/wrong identity,
+       public-key-only identity validates
+   12. Identity encrypt/decrypt (5 tests): ciphertext starts with 32-byte
+       ephemeral key, decrypt recovers plaintext, overhead = 80 bytes minimum,
+       50 random roundtrips, cross-identity decryption fails
+   13. Destination hash derivation (8 tests): name_hash = first 10 bytes of
+       SHA-256(full_name), dest_hash = truncated SHA-256(name_hash + id_hash),
+       16-byte hash size, deterministic for same inputs, different aspects/identities
+       produce different hashes, static hash method matches instance, PLAIN
+       destination has no identity hash component
+   14. Packet header encoding (3 tests): flags byte = (ht<<6)|(cf<<5)|(tt<<4)|(dt<<2)|pt
+       with 11 representative cases, HEADER_1 unpack extracts dest_hash at [2:18],
+       HEADER_2 unpack extracts transport_id at [2:18] and dest_hash at [18:34]
+   15. Packet hash computation (4 tests): HEADER_1 hashable = masked_flags + raw[2:],
+       HEADER_2 hashable = masked_flags + raw[18:], get_hash = SHA-256(hashable),
+       get_truncated_hash = first 16 bytes
+   16. Announce format (4 tests): announce data contains pub_key(64) + name_hash(10)
+       + random_hash(10) + signature(64), signature validates against signed_data
+       (dest_hash + pub_key + name_hash + random_hash + [ratchet] + [app_data]),
+       app_data appears after signature, random_hash contains 5 random + 5 BE timestamp
+   17. Full encryption pipeline (2 tests): ECDH + HKDF + Token pipeline,
+       cross-identity encryption (encrypt with public, decrypt with private)
+   18. Wire format stress tests (5 tests): 50 identity hash consistency,
+       50 deterministic destination hashes, 100 sign/verify cycles,
+       50 cross-identity encrypt/decrypt, 30 announce generation/validation
+  - All tests verify byte-level compatibility with Python RNS behavior
+  - Test vectors derived from RFC standards (NIST SHA-256, RFC 4231 HMAC,
+    RFC 5869 HKDF) and Python RNS protocol specification
+  - Ran crystal spec — 101 examples, 0 failures
+  - No regressions: 546 core+crypto specs pass, 238 integration+API specs pass

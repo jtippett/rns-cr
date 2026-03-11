@@ -198,23 +198,23 @@ module RNS
     }
 
     TASK_DESCRIPTIONS = {
-      "taskLVGL"        => "Driver: UI Renderer",
-      "ui_service"      => "Service: User Interface",
-      "TinyUSB"         => "Driver: USB",
-      "drv_w80211"      => "Driver: W802.11",
-      "system_stats"    => "System: Stats",
-      "core"            => "System: Core",
-      "protocol_wdcl"   => "Protocol: WDCL",
-      "protocol_weave"  => "Protocol: Weave",
-      "tiT"             => "Protocol: TCP/IP",
-      "ipc0"            => "System: CPU 0 IPC",
-      "ipc1"            => "System: CPU 1 IPC",
-      "esp_timer"       => "Driver: Timers",
-      "Tmr Svc"         => "Service: Timers",
-      "kernel_logger"   => "Service: Logging",
-      "remote_display"  => "Service: Remote Display",
-      "wifi"            => "System: WiFi Hardware",
-      "sys_evt"         => "System: Kernel Events",
+      "taskLVGL"       => "Driver: UI Renderer",
+      "ui_service"     => "Service: User Interface",
+      "TinyUSB"        => "Driver: USB",
+      "drv_w80211"     => "Driver: W802.11",
+      "system_stats"   => "System: Stats",
+      "core"           => "System: Core",
+      "protocol_wdcl"  => "Protocol: WDCL",
+      "protocol_weave" => "Protocol: Weave",
+      "tiT"            => "Protocol: TCP/IP",
+      "ipc0"           => "System: CPU 0 IPC",
+      "ipc1"           => "System: CPU 1 IPC",
+      "esp_timer"      => "Driver: Timers",
+      "Tmr Svc"        => "Service: Timers",
+      "kernel_logger"  => "Service: Logging",
+      "remote_display" => "Service: Remote Display",
+      "wifi"           => "System: WiFi Hardware",
+      "sys_evt"        => "System: Kernel Events",
     }
 
     def self.level(level : UInt8) : String
@@ -266,9 +266,9 @@ module RNS
     WEAVE_HMAC_LEN        = 8
     WEAVE_AUTH_LEN        = WEAVE_ENDPOINT_ID_LEN + WEAVE_HMAC_LEN
 
-    WEAVE_PUBKEY_SIZE    = 32
-    WEAVE_PRVKEY_SIZE    = 64
-    WEAVE_SIGNATURE_LEN  = 64
+    WEAVE_PUBKEY_SIZE   = 32
+    WEAVE_PRVKEY_SIZE   = 64
+    WEAVE_SIGNATURE_LEN = 64
 
     property identity : Identity? = nil
     property switch_id : Bytes? = nil
@@ -460,7 +460,7 @@ module RNS
         src_endpoint = data[-(WEAVE_ENDPOINT_ID_LEN)..]
         received_packet(src_endpoint, payload)
 
-      # Discovery response
+        # Discovery response
       elsif data.size > WEAVE_SWITCH_ID_LEN + 1 && data[WEAVE_SWITCH_ID_LEN] == WeaveWDCL::WDCL_T_DISCOVER
         discovery_response_len = WEAVE_SWITCH_ID_LEN + 1 + WEAVE_PUBKEY_SIZE + WEAVE_SIGNATURE_LEN
         if data.size == discovery_response_len
@@ -486,7 +486,7 @@ module RNS
           end
         end
 
-      # Log frame
+        # Log frame
       elsif data.size > WEAVE_SWITCH_ID_LEN + 1 && data[WEAVE_SWITCH_ID_LEN] == WeaveWDCL::WDCL_T_LOG
         fd = data[WEAVE_SWITCH_ID_LEN + 2..]
         if fd.size >= 9
@@ -497,7 +497,7 @@ module RNS
           log_handle(WeaveLogFrame.new(timestamp: ts / 1000.0, level: lvl, event: evt, data: frame_data))
         end
 
-      # Display frame
+        # Display frame
       elsif data.size > WEAVE_SWITCH_ID_LEN + 10 && data[WEAVE_SWITCH_ID_LEN] == WeaveWDCL::WDCL_T_DISP
         fd = data[WEAVE_SWITCH_ID_LEN + 1..]
         if fd.size >= 10
@@ -590,8 +590,8 @@ module RNS
 
     def initialize(@owner : WeaveInterface, @device : WeaveDevice, @port : String, @as_interface : Bool = false)
       @switch_identity = @owner.switch_identity
-      @switch_id = @switch_identity.sign(Bytes.new(0))[-4..].dup  # Last 4 bytes of signing pub key
-      @switch_pub_bytes = @switch_identity.sign(Bytes.new(0))[0, 32]  # Signing pub key bytes
+      @switch_id = @switch_identity.sign(Bytes.new(0))[-4..].dup     # Last 4 bytes of signing pub key
+      @switch_pub_bytes = @switch_identity.sign(Bytes.new(0))[0, 32] # Signing pub key bytes
       @device.connection = self
 
       if @as_interface
@@ -625,7 +625,7 @@ module RNS
     def initialize(@owner : WeaveInterface, @device : WeaveDevice, @switch_identity : Identity, no_connect : Bool = true)
       @port = ""
       @as_interface = true
-      @switch_id = Bytes.new(4) # placeholder
+      @switch_id = Bytes.new(4)         # placeholder
       @switch_pub_bytes = Bytes.new(32) # placeholder
       @device.connection = self
     end
@@ -800,11 +800,11 @@ module RNS
     HW_MTU_VALUE   = 1024
     FIXED_MTU_FLAG = true
 
-    DEFAULT_IFAC_SIZE  = 16
-    PEERING_TIMEOUT    = 20.0
-    BITRATE_GUESS      = 250_i64 * 1000
+    DEFAULT_IFAC_SIZE =   16
+    PEERING_TIMEOUT   = 20.0
+    BITRATE_GUESS     = 250_i64 * 1000
 
-    MULTI_IF_DEQUE_LEN = 48
+    MULTI_IF_DEQUE_LEN =   48
     MULTI_IF_DEQUE_TTL = 0.75
 
     property dir_in : Bool = true

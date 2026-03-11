@@ -3,57 +3,57 @@ require "msgpack"
 module RNS
   class Resource
     # ─── Window constants ──────────────────────────────────────────
-    WINDOW               = 4
-    WINDOW_MIN           = 2
-    WINDOW_MAX_SLOW      = 10
-    WINDOW_MAX_VERY_SLOW = 4
-    WINDOW_MAX_FAST      = 75
-    WINDOW_MAX           = WINDOW_MAX_FAST
-    FAST_RATE_THRESHOLD  = WINDOW_MAX_SLOW - WINDOW - 2 # 4
+    WINDOW                   =  4
+    WINDOW_MIN               =  2
+    WINDOW_MAX_SLOW          = 10
+    WINDOW_MAX_VERY_SLOW     =  4
+    WINDOW_MAX_FAST          = 75
+    WINDOW_MAX               = WINDOW_MAX_FAST
+    FAST_RATE_THRESHOLD      = WINDOW_MAX_SLOW - WINDOW - 2 # 4
     VERY_SLOW_RATE_THRESHOLD = 2
-    WINDOW_FLEXIBILITY   = 4
+    WINDOW_FLEXIBILITY       = 4
 
     # ─── Rate constants ────────────────────────────────────────────
-    RATE_FAST      = (50 * 1000) / 8  # 50 Kbps in bytes/sec = 6250
-    RATE_VERY_SLOW = (2 * 1000) / 8   # 2 Kbps in bytes/sec = 250
+    RATE_FAST      = (50 * 1000) / 8 # 50 Kbps in bytes/sec = 6250
+    RATE_VERY_SLOW = (2 * 1000) / 8  # 2 Kbps in bytes/sec = 250
 
     # ─── Size constants ────────────────────────────────────────────
     MAPHASH_LEN      = 4
     SDU              = Packet::MDU
     RANDOM_HASH_SIZE = 4
 
-    MAX_EFFICIENT_SIZE      = 1 * 1024 * 1024 - 1   # 1048575 (0xFFFFF)
+    MAX_EFFICIENT_SIZE      = 1 * 1024 * 1024 - 1 # 1048575 (0xFFFFF)
     RESPONSE_MAX_GRACE_TIME = 10
-    METADATA_MAX_SIZE       = 16 * 1024 * 1024 - 1   # 16777215 (0xFFFFFF)
+    METADATA_MAX_SIZE       = 16 * 1024 * 1024 - 1 # 16777215 (0xFFFFFF)
     AUTO_COMPRESS_MAX_SIZE  = 64 * 1024 * 1024
 
     # ─── Timeout and retry constants ───────────────────────────────
-    PART_TIMEOUT_FACTOR           = 4
-    PART_TIMEOUT_FACTOR_AFTER_RTT = 2
-    PROOF_TIMEOUT_FACTOR          = 3
-    MAX_RETRIES                   = 16
-    MAX_ADV_RETRIES               = 4
+    PART_TIMEOUT_FACTOR           =    4
+    PART_TIMEOUT_FACTOR_AFTER_RTT =    2
+    PROOF_TIMEOUT_FACTOR          =    3
+    MAX_RETRIES                   =   16
+    MAX_ADV_RETRIES               =    4
     SENDER_GRACE_TIME             = 10.0
-    PROCESSING_GRACE              = 1.0
+    PROCESSING_GRACE              =  1.0
     RETRY_GRACE_TIME              = 0.25
-    PER_RETRY_DELAY               = 0.5
-    WATCHDOG_MAX_SLEEP            = 1.0
+    PER_RETRY_DELAY               =  0.5
+    WATCHDOG_MAX_SLEEP            =  1.0
 
     # ─── Hashmap flags ─────────────────────────────────────────────
     HASHMAP_IS_NOT_EXHAUSTED = 0x00_u8
     HASHMAP_IS_EXHAUSTED     = 0xFF_u8
 
     # ─── Status constants ──────────────────────────────────────────
-    STATUS_NONE     = 0x00_u8
-    QUEUED          = 0x01_u8
-    ADVERTISED      = 0x02_u8
-    TRANSFERRING    = 0x03_u8
-    AWAITING_PROOF  = 0x04_u8
-    ASSEMBLING      = 0x05_u8
-    COMPLETE        = 0x06_u8
-    FAILED          = 0x07_u8
-    CORRUPT         = 0x08_u8
-    REJECTED        = 0x00_u8 # Same as STATUS_NONE in Python
+    STATUS_NONE    = 0x00_u8
+    QUEUED         = 0x01_u8
+    ADVERTISED     = 0x02_u8
+    TRANSFERRING   = 0x03_u8
+    AWAITING_PROOF = 0x04_u8
+    ASSEMBLING     = 0x05_u8
+    COMPLETE       = 0x06_u8
+    FAILED         = 0x07_u8
+    CORRUPT        = 0x08_u8
+    REJECTED       = 0x00_u8 # Same as STATUS_NONE in Python
 
     # ─── Instance properties ───────────────────────────────────────
     property status : UInt8
@@ -61,8 +61,8 @@ module RNS
     property hash : Bytes
     property original_hash : Bytes
     property random_hash : Bytes
-    property size : Int64           # encrypted transfer size
-    property total_size : Int64     # uncompressed data size
+    property size : Int64       # encrypted transfer size
+    property total_size : Int64 # uncompressed data size
     property uncompressed_size : Int64
     property flags : UInt8
     property encrypted : Bool
@@ -122,8 +122,8 @@ module RNS
     # Receiver-side parts (nil or data bytes)
     property receiver_parts : Array(Bytes?)
     # Hashmap (sender: concatenated bytes, receiver: array of Bytes?)
-    property hashmap_raw_bytes : Bytes       # sender: full hashmap bytes
-    property hashmap : Array(Bytes?)         # receiver: per-part map hashes
+    property hashmap_raw_bytes : Bytes # sender: full hashmap bytes
+    property hashmap : Array(Bytes?)   # receiver: per-part map hashes
     property hashmap_height : Int32
     property waiting_for_hmu : Bool
     property receiving_part : Bool
@@ -507,7 +507,6 @@ module RNS
             bytes_read = data.read(buf)
             resource_data = buf[0, bytes_read]
           end
-
         when Bytes
           data_size = data.size.to_i64
           @total_size = data_size + @metadata_size
@@ -772,7 +771,6 @@ module RNS
               end
             end
           end
-
         elsif @status == TRANSFERRING
           if !@initiator
             retries_used = @max_retries - @retries_left
@@ -821,7 +819,6 @@ module RNS
               sleep_time = 0.001
             end
           end
-
         elsif @status == AWAITING_PROOF
           @timeout_factor = PROOF_TIMEOUT_FACTOR.to_f64
           rtt_val = @rtt || 0.5
@@ -845,7 +842,6 @@ module RNS
               sleep_time = 0.001
             end
           end
-
         elsif @status == REJECTED
           sleep_time = 0.001
         end
@@ -929,7 +925,7 @@ module RNS
       link = @link
       if link
         link.resource_concluded(@hash, @size, @started_transferring || Time.utc.to_unix_f,
-                                window: @window, eifr: @eifr, incoming: true)
+          window: @window, eifr: @eifr, incoming: true)
       end
 
       if @segment_index == @total_segments
@@ -1017,7 +1013,7 @@ module RNS
           link = @link
           if link
             link.resource_concluded(@hash, @size, @started_transferring || Time.utc.to_unix_f,
-                                    window: nil, eifr: nil, incoming: false)
+              window: nil, eifr: nil, incoming: false)
           end
 
           if @segment_index == @total_segments
@@ -1398,7 +1394,7 @@ module RNS
         if cb = @callback
           begin
             link.try(&.resource_concluded(@hash, @size, @started_transferring || Time.utc.to_unix_f,
-                                          window: @window, eifr: @eifr, incoming: !@initiator))
+              window: @window, eifr: @eifr, incoming: !@initiator))
             cb.call(self)
           rescue ex
             RNS.log("Error while executing callbacks on resource cancel from #{self}: #{ex}", RNS::LOG_ERROR)
@@ -1415,7 +1411,7 @@ module RNS
           if cb = @callback
             begin
               @link.try(&.resource_concluded(@hash, @size, @started_transferring || Time.utc.to_unix_f,
-                                             window: nil, eifr: nil, incoming: false))
+                window: nil, eifr: nil, incoming: false))
               spawn { cb.call(self) }
             rescue ex
               RNS.log("Error while executing callbacks on resource reject from #{self}: #{ex}", RNS::LOG_ERROR)
@@ -1547,23 +1543,23 @@ module RNS
     COLLISION_GUARD_SIZE = 2 * Resource::WINDOW_MAX + HASHMAP_MAX_LEN
 
     # Fields matching Python's single-letter attributes
-    property t : Int64      # Transfer size
-    property d : Int64      # Total uncompressed data size
-    property n : Int32      # Number of parts
-    property h : Bytes      # Resource hash
-    property r : Bytes      # Random hash
-    property o : Bytes      # Original hash (first segment)
-    property m : Bytes      # Hashmap (packed bytes)
-    property f : UInt8      # Flags
-    property i : Int32      # Segment index
-    property l : Int32      # Total segments
-    property q : Bytes?     # Request ID
-    property e : Bool       # Encrypted
-    property c : Bool       # Compressed
-    property s : Bool       # Split
-    property u : Bool       # Is request
-    property p : Bool       # Is response
-    property x : Bool       # Has metadata
+    property t : Int64  # Transfer size
+    property d : Int64  # Total uncompressed data size
+    property n : Int32  # Number of parts
+    property h : Bytes  # Resource hash
+    property r : Bytes  # Random hash
+    property o : Bytes  # Original hash (first segment)
+    property m : Bytes  # Hashmap (packed bytes)
+    property f : UInt8  # Flags
+    property i : Int32  # Segment index
+    property l : Int32  # Total segments
+    property q : Bytes? # Request ID
+    property e : Bool   # Encrypted
+    property c : Bool   # Compressed
+    property s : Bool   # Split
+    property u : Bool   # Is request
+    property p : Bool   # Is response
+    property x : Bool   # Has metadata
     property link : Link?
 
     def initialize(resource : Resource)

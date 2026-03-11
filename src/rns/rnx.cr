@@ -1,7 +1,7 @@
 module RNS
   module Rnx
-    APP_NAME           = "rnx"
-    REMOTE_EXEC_GRACE  = 2.0
+    APP_NAME          = "rnx"
+    REMOTE_EXEC_GRACE = 2.0
 
     # Spinner characters matching Python's braille spinner.
     SPINNER_SYMS = "⢄⢂⢁⡁⡈⡐⡠"
@@ -52,7 +52,7 @@ module RNS
         @stderr_limit = nil,
         @version = false,
         @destination = nil,
-        @command = nil
+        @command = nil,
       )
       end
     end
@@ -319,8 +319,8 @@ module RNS
     # Returns an array matching the Python protocol:
     #   [command_bytes, timeout, stdout_limit, stderr_limit, stdin_bytes]
     def self.format_request_data(command : String, timeout : Float64?,
-                                  stdout_limit : Int32?, stderr_limit : Int32?,
-                                  stdin_data : String?) : Array(Bytes | Float64? | Int32? | Nil)
+                                 stdout_limit : Int32?, stderr_limit : Int32?,
+                                 stdin_data : String?) : Array(Bytes | Float64? | Int32? | Nil)
       request_data = [] of Bytes | Float64? | Int32? | Nil
       request_data << command.encode("UTF-8").to_slice
       request_data << timeout
@@ -750,15 +750,15 @@ module RNS
       request_receipt = link.request(
         path: "command",
         data: request_data,
-        response_callback: ->(receipt : RequestReceipt) {},
-        failed_callback: ->(receipt : RequestReceipt) {},
+        response_callback: ->(receipt : RequestReceipt) { },
+        failed_callback: ->(receipt : RequestReceipt) { },
         timeout: rexec_timeout
       )
 
       spin("Sending execution request", timeout: rexec_timeout + 0.5) {
         link.status == Link::CLOSED ||
           (request_receipt.status != RequestReceipt::FAILED &&
-           request_receipt.status != RequestReceipt::SENT)
+            request_receipt.status != RequestReceipt::SENT)
       }
 
       if link.status == Link::CLOSED

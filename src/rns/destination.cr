@@ -69,24 +69,24 @@ module RNS
     TYPES  = [SINGLE, GROUP, PLAIN, LINK]
 
     # ─── Proof strategy constants ─────────────────────────────────────
-    PROVE_NONE = 0x21_u8
-    PROVE_APP  = 0x22_u8
-    PROVE_ALL  = 0x23_u8
+    PROVE_NONE       = 0x21_u8
+    PROVE_APP        = 0x22_u8
+    PROVE_ALL        = 0x23_u8
     PROOF_STRATEGIES = [PROVE_NONE, PROVE_APP, PROVE_ALL]
 
     # ─── Request policy constants ─────────────────────────────────────
-    ALLOW_NONE = 0x00_u8
-    ALLOW_ALL  = 0x01_u8
-    ALLOW_LIST = 0x02_u8
+    ALLOW_NONE       = 0x00_u8
+    ALLOW_ALL        = 0x01_u8
+    ALLOW_LIST       = 0x02_u8
     REQUEST_POLICIES = [ALLOW_NONE, ALLOW_ALL, ALLOW_LIST]
 
     # ─── Direction constants ──────────────────────────────────────────
-    IN  = 0x11_u8
-    OUT = 0x12_u8
+    IN         = 0x11_u8
+    OUT        = 0x12_u8
     DIRECTIONS = [IN, OUT]
 
     # ─── Ratchet constants ────────────────────────────────────────────
-    PR_TAG_WINDOW    = 30
+    PR_TAG_WINDOW    =  30
     RATCHET_COUNT    = 512
     RATCHET_INTERVAL = 30 * 60 # 1800 seconds
 
@@ -567,10 +567,10 @@ module RNS
     # ─── Request handlers ─────────────────────────────────────────────
 
     def register_request_handler(path : String,
-                                  response_generator : Proc(String, Bytes?, Bytes, Bytes, Identity?, Float64, Bytes?),
-                                  allow : UInt8 = ALLOW_NONE,
-                                  allowed_list : Array(Bytes)? = nil,
-                                  auto_compress : Bool = true)
+                                 response_generator : Proc(String, Bytes?, Bytes, Bytes, Identity?, Float64, Bytes?),
+                                 allow : UInt8 = ALLOW_NONE,
+                                 allowed_list : Array(Bytes)? = nil,
+                                 auto_compress : Bool = true)
       raise ArgumentError.new("Invalid path specified") if path.empty?
       raise ArgumentError.new("Invalid request policy") unless REQUEST_POLICIES.includes?(allow)
 

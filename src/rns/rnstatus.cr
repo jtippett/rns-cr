@@ -39,7 +39,7 @@ module RNS
         @monitor = false,
         @monitor_interval = 1.0,
         @filter = nil,
-        @version = false
+        @version = false,
       )
       end
     end
@@ -603,7 +603,6 @@ module RNS
 
         print result
       end
-
     rescue ex : ArgumentError
       STDERR.puts "rnstatus: #{ex.message}"
       STDERR.puts "Usage: rnstatus [--config PATH] [-a] [-A] [-l] [-t] [-s SORT] [-r] [-j] [-m] [-I SECS] [-d] [-D] [-v] [filter]"

@@ -67,7 +67,7 @@ module RNS
     SX1280 = 0x21_u8
 
     # Multi-interface selection command
-    CMD_SEL_INT   = 0x1F_u8
+    CMD_SEL_INT    = 0x1F_u8
     CMD_INTERFACES = 0x71_u8
 
     # Per-interface data commands (virtual port indices)
@@ -130,16 +130,16 @@ module RNS
   # Ports RNS/Interfaces/RNodeMultiInterface.py.
   # Manages multiple RNodeSubInterfaces through a single serial connection.
   class RNodeMultiInterface < Interface
-    MAX_CHUNK         = 32768
-    DEFAULT_IFAC_SIZE = 8
-    CALLSIGN_MAX_LEN  = 32
-    REQUIRED_FW_VER_MAJ = 1
-    REQUIRED_FW_VER_MIN = 74
-    RECONNECT_WAIT      = 5
-    MAX_SUBINTERFACES   = 11
+    MAX_CHUNK           = 32768
+    DEFAULT_IFAC_SIZE   =     8
+    CALLSIGN_MAX_LEN    =    32
+    REQUIRED_FW_VER_MAJ =     1
+    REQUIRED_FW_VER_MIN =    74
+    RECONNECT_WAIT      =     5
+    MAX_SUBINTERFACES   =    11
 
     FB_PIXEL_WIDTH     = 64
-    FB_BITS_PER_PIXEL  = 1
+    FB_BITS_PER_PIXEL  =  1
     FB_PIXELS_PER_BYTE = 8 // FB_BITS_PER_PIXEL
     FB_BYTES_PER_LINE  = FB_PIXEL_WIDTH // FB_PIXELS_PER_BYTE
 
@@ -492,7 +492,7 @@ module RNS
       RNS.log("The firmware version of the connected RNode is #{@maj_version}.#{@min_version}", RNS::LOG_ERROR)
       RNS.log("This version of Reticulum requires at least version #{REQUIRED_FW_VER_MAJ}.#{REQUIRED_FW_VER_MIN}", RNS::LOG_ERROR)
       RNS.log("Please update your RNode firmware with rnodeconf")
-      RNS.panic()
+      RNS.panic
     end
 
     def process_outgoing(data : Bytes)
@@ -906,7 +906,7 @@ module RNS
   # Individual virtual radio sub-interface on RNode multi-interface device.
   # Ports RNodeSubInterface from RNS/Interfaces/RNodeMultiInterface.py.
   class RNodeSubInterface < Interface
-    LOW_FREQ_MIN  = 137_000_000_i64
+    LOW_FREQ_MIN  =   137_000_000_i64
     LOW_FREQ_MAX  = 1_000_000_000_i64
     HIGH_FREQ_MIN = 2_200_000_000_i64
     HIGH_FREQ_MAX = 2_600_000_000_i64
@@ -914,8 +914,8 @@ module RNS
     RSSI_OFFSET = 157
 
     Q_SNR_MIN_BASE = -9
-    Q_SNR_MAX      = 6
-    Q_SNR_STEP     = 2
+    Q_SNR_MAX      =  6
+    Q_SNR_STEP     =  2
 
     property index : Int32
     property interface_type : String
@@ -974,7 +974,7 @@ module RNS
       cr : Int32? = nil,
       @flow_control : Bool = false,
       st_alock : Float64? = nil,
-      lt_alock : Float64? = nil
+      lt_alock : Float64? = nil,
     )
       super()
       @rnode_parent = parent_interface

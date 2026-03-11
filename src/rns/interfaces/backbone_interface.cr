@@ -7,7 +7,7 @@ module RNS
 
   class BackboneInterface < Interface
     BITRATE_GUESS     = 1_000_000_000_i64
-    DEFAULT_IFAC_SIZE = 16
+    DEFAULT_IFAC_SIZE =                16
     AUTOCONFIGURE_MTU = true
 
     getter bind_ip : String = ""
@@ -29,11 +29,11 @@ module RNS
     end
 
     private def configure(c : Hash(String, String))
-      name        = c["name"]? || ""
-      device      = c["device"]?
-      port        = c["port"]?.try(&.to_i)
-      bindip      = c["listen_ip"]?
-      bindport    = c["listen_port"]?.try(&.to_i)
+      name = c["name"]? || ""
+      device = c["device"]?
+      port = c["port"]?.try(&.to_i)
+      bindip = c["listen_ip"]?
+      bindport = c["listen_port"]?.try(&.to_i)
       prefer_ipv6 = c["prefer_ipv6"]?.try { |v| v.downcase == "true" } || false
 
       bindport = port if port
@@ -219,17 +219,17 @@ module RNS
   end
 
   class BackboneClientInterface < Interface
-    BITRATE_GUESS          = 100_000_000_i64
-    DEFAULT_IFAC_SIZE      = 16
-    AUTOCONFIGURE_MTU      = true
-    RECONNECT_WAIT         = 5
-    RECONNECT_MAX_TRIES    = nil
-    TCP_USER_TIMEOUT       = 24
-    TCP_PROBE_AFTER        = 5
-    TCP_PROBE_INTERVAL     = 2
-    TCP_PROBES             = 12
-    INITIAL_CONNECT_TIMEOUT = 5
-    SYNCHRONOUS_START      = true
+    BITRATE_GUESS           = 100_000_000_i64
+    DEFAULT_IFAC_SIZE       =              16
+    AUTOCONFIGURE_MTU       = true
+    RECONNECT_WAIT          = 5
+    RECONNECT_MAX_TRIES     = nil
+    TCP_USER_TIMEOUT        = 24
+    TCP_PROBE_AFTER         =  5
+    TCP_PROBE_INTERVAL      =  2
+    TCP_PROBES              = 12
+    INITIAL_CONNECT_TIMEOUT =  5
+    SYNCHRONOUS_START       = true
 
     getter? initiator : Bool = false
     property reconnecting : Bool = false
@@ -278,13 +278,13 @@ module RNS
     end
 
     private def configure(c : Hash(String, String))
-      name              = c["name"]? || ""
-      target_ip         = c["target_host"]?
-      target_port       = c["target_port"]?.try(&.to_i)
-      i2p_tunneled      = c["i2p_tunneled"]?.try { |v| v.downcase == "true" } || false
-      connect_timeout   = c["connect_timeout"]?.try(&.to_i)
+      name = c["name"]? || ""
+      target_ip = c["target_host"]?
+      target_port = c["target_port"]?.try(&.to_i)
+      i2p_tunneled = c["i2p_tunneled"]?.try { |v| v.downcase == "true" } || false
+      connect_timeout = c["connect_timeout"]?.try(&.to_i)
       max_reconnect_tries = c["max_reconnect_tries"]?.try(&.to_i)
-      prefer_ipv6       = c["prefer_ipv6"]?.try { |v| v.downcase == "true" } || false
+      prefer_ipv6 = c["prefer_ipv6"]?.try { |v| v.downcase == "true" } || false
 
       @hw_mtu = BackboneInterfaceConstants::HW_MTU
       @dir_in = true

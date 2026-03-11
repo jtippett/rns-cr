@@ -41,7 +41,7 @@ module RNS
 
     BITRATE_GUESS = 10_000_000_i64
 
-    MULTI_IF_DEQUE_LEN = 48
+    MULTI_IF_DEQUE_LEN =   48
     MULTI_IF_DEQUE_TTL = 0.75
 
     # IPv6 multicast socket options

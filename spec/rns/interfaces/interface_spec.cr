@@ -165,11 +165,11 @@ describe RNS::Interface do
     end
 
     it "defines ingress control timing constants" do
-      RNS::Interface::IC_NEW_TIME.should eq(7200)              # 2 hours
+      RNS::Interface::IC_NEW_TIME.should eq(7200) # 2 hours
       RNS::Interface::IC_BURST_FREQ_NEW.should eq(3.5)
       RNS::Interface::IC_BURST_FREQ.should eq(12.0)
       RNS::Interface::IC_BURST_HOLD.should eq(60)
-      RNS::Interface::IC_BURST_PENALTY.should eq(300)          # 5 minutes
+      RNS::Interface::IC_BURST_PENALTY.should eq(300) # 5 minutes
       RNS::Interface::IC_HELD_RELEASE_INTERVAL.should eq(30)
     end
 
@@ -474,7 +474,7 @@ describe RNS::Interface do
     it "releases lowest-hop announce when conditions are met" do
       iface = TestInterface.new
       iface.ingress_control = false # disable ingress control so should_ingress_limit? returns false
-      iface.ic_held_release = 0.0  # allow immediate release
+      iface.ic_held_release = 0.0   # allow immediate release
 
       dest1 = Bytes.new(16, 1_u8)
       dest2 = Bytes.new(16, 2_u8)
@@ -666,7 +666,7 @@ describe RNS::Interface do
 
     it "sets announce_allowed_at based on tx_time and announce_cap" do
       iface = TestInterface.new
-      iface.bitrate = 1000 # 1000 bits/second
+      iface.bitrate = 1000      # 1000 bits/second
       iface.announce_cap = 0.02 # 2%
       now = Time.utc.to_unix_f
       iface.announce_queue << RNS::Interface::AnnounceQueueEntry.new(
@@ -896,7 +896,7 @@ describe RNS::Interface do
       end
       iface.process_announce_queue
       iface.process_outgoing_calls.size.should eq(1) # one announce sent per call
-      iface.announce_queue.size.should eq(19) # one removed
+      iface.announce_queue.size.should eq(19)        # one removed
     end
   end
 end

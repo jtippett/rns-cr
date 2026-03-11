@@ -240,7 +240,7 @@ describe RNS::AutoInterface do
       ai.group_id.should eq("reticulum".encode("UTF-8"))
       ai.discovery_port.should eq(29716)
       ai.data_port.should eq(42671)
-      ai.discovery_scope.should eq("2") # SCOPE_LINK
+      ai.discovery_scope.should eq("2")        # SCOPE_LINK
       ai.multicast_address_type.should eq("1") # TEMPORARY
       ai.bitrate.should eq(10_000_000)
       ai.hw_mtu.should eq(1196)

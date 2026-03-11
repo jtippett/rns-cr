@@ -77,15 +77,15 @@ module RNS
   # Ports TCPConnection from RNS/Interfaces/RNodeInterface.py.
   class RNodeTCPConnection
     TARGET_PORT             = 7633
-    CONNECT_TIMEOUT         = 5.0
-    INITIAL_CONNECT_TIMEOUT = 5.0
-    RECONNECT_WAIT          = 4.0
-    ACTIVITY_TIMEOUT        = 6.0
+    CONNECT_TIMEOUT         =  5.0
+    INITIAL_CONNECT_TIMEOUT =  5.0
+    RECONNECT_WAIT          =  4.0
+    ACTIVITY_TIMEOUT        =  6.0
     ACTIVITY_KEEPALIVE      = ACTIVITY_TIMEOUT - 2.5
 
     TCP_USER_TIMEOUT   = 24
-    TCP_PROBE_AFTER    = 5
-    TCP_PROBE_INTERVAL = 2
+    TCP_PROBE_AFTER    =  5
+    TCP_PROBE_INTERVAL =  2
     TCP_PROBES         = 12
 
     property connected : Bool = false
@@ -257,23 +257,23 @@ module RNS
   # serial, TCP, or BLE connections.
   class RNodeInterface < Interface
     MAX_CHUNK         = 32768
-    DEFAULT_IFAC_SIZE = 8
+    DEFAULT_IFAC_SIZE =     8
 
-    FREQ_MIN = 137_000_000_i64
+    FREQ_MIN =   137_000_000_i64
     FREQ_MAX = 3_000_000_000_i64
 
     RSSI_OFFSET = 157
 
     CALLSIGN_MAX_LEN = 32
 
-    REQUIRED_FW_VER_MAJ = 1
+    REQUIRED_FW_VER_MAJ =  1
     REQUIRED_FW_VER_MIN = 52
 
     RECONNECT_WAIT = 5
 
     Q_SNR_MIN_BASE = -9
-    Q_SNR_MAX      = 6
-    Q_SNR_STEP     = 2
+    Q_SNR_MAX      =  6
+    Q_SNR_STEP     =  2
 
     BATTERY_STATE_UNKNOWN     = 0x00_u8
     BATTERY_STATE_DISCHARGING = 0x01_u8
@@ -283,7 +283,7 @@ module RNS
     DISPLAY_READ_INTERVAL = 1.0
 
     FB_PIXEL_WIDTH     = 64
-    FB_BITS_PER_PIXEL  = 1
+    FB_BITS_PER_PIXEL  =  1
     FB_PIXELS_PER_BYTE = 8 // FB_BITS_PER_PIXEL
     FB_BYTES_PER_LINE  = FB_PIXEL_WIDTH // FB_PIXELS_PER_BYTE
 
@@ -346,7 +346,7 @@ module RNS
     property r_symbol_time_ms : Float64? = nil
     property r_symbol_rate : Int32? = nil
     property r_preamble_symbols : Int32? = nil
-    property r_premable_time_ms : Int32? = nil  # Note: typo matches Python
+    property r_premable_time_ms : Int32? = nil # Note: typo matches Python
     property r_csma_slot_time_ms : Int32? = nil
     property r_csma_difs_ms : Int32? = nil
     property r_csma_cw_band : UInt8? = nil
@@ -668,13 +668,13 @@ module RNS
         speed.to_u64
       {% else %}
         case speed
-        when  115200 then SerialConstants::B115200
-        when  230400 then SerialConstants::B230400
-        when   57600 then SerialConstants::B57600
-        when   38400 then SerialConstants::B38400
-        when   19200 then SerialConstants::B19200
-        when    9600 then SerialConstants::B9600
-        else              SerialConstants::B115200
+        when 115200 then SerialConstants::B115200
+        when 230400 then SerialConstants::B230400
+        when  57600 then SerialConstants::B57600
+        when  38400 then SerialConstants::B38400
+        when  19200 then SerialConstants::B19200
+        when   9600 then SerialConstants::B9600
+        else             SerialConstants::B115200
         end
       {% end %}
     end
@@ -767,7 +767,7 @@ module RNS
         RNodeKISS::FEND, RNodeKISS::CMD_DETECT, RNodeKISS::DETECT_REQ, RNodeKISS::FEND,
         RNodeKISS::CMD_FW_VERSION, 0x00_u8, RNodeKISS::FEND,
         RNodeKISS::CMD_PLATFORM, 0x00_u8, RNodeKISS::FEND,
-        RNodeKISS::CMD_MCU, 0x00_u8, RNodeKISS::FEND
+        RNodeKISS::CMD_MCU, 0x00_u8, RNodeKISS::FEND,
       ]
       write_to_device(kiss_command)
     end
@@ -1094,17 +1094,14 @@ module RNS
             end
             data_buffer = IO::Memory.new(1024)
             command_buffer = IO::Memory.new(64)
-
           elsif byte == RNodeKISS::FEND
             in_frame = true
             command = RNodeKISS::CMD_UNKNOWN
             data_buffer = IO::Memory.new(1024)
             command_buffer = IO::Memory.new(64)
-
           elsif in_frame && data_buffer.pos < hw_mtu_value
             if data_buffer.pos == 0 && command == RNodeKISS::CMD_UNKNOWN
               command = byte
-
             elsif command == RNodeKISS::CMD_DATA
               if byte == RNodeKISS::FESC
                 escape = true
@@ -1116,7 +1113,6 @@ module RNS
                 end
                 data_buffer.write_byte(byte)
               end
-
             elsif command == RNodeKISS::CMD_FREQUENCY
               process_escaped_command_byte(byte, escape, command_buffer) do |esc|
                 escape = esc
@@ -1127,7 +1123,6 @@ module RNS
                 RNS.log("#{self} Radio reporting frequency is #{@r_frequency.not_nil! / 1_000_000.0} MHz", RNS::LOG_DEBUG)
                 update_bitrate
               end
-
             elsif command == RNodeKISS::CMD_BANDWIDTH
               process_escaped_command_byte(byte, escape, command_buffer) do |esc|
                 escape = esc
@@ -1138,30 +1133,24 @@ module RNS
                 RNS.log("#{self} Radio reporting bandwidth is #{@r_bandwidth.not_nil! / 1000.0} KHz", RNS::LOG_DEBUG)
                 update_bitrate
               end
-
             elsif command == RNodeKISS::CMD_TXPOWER
               @r_txpower = byte.to_i32
               RNS.log("#{self} Radio reporting TX power is #{@r_txpower} dBm", RNS::LOG_DEBUG)
-
             elsif command == RNodeKISS::CMD_SF
               @r_sf = byte.to_i32
               RNS.log("#{self} Radio reporting spreading factor is #{@r_sf}", RNS::LOG_DEBUG)
               update_bitrate
-
             elsif command == RNodeKISS::CMD_CR
               @r_cr = byte.to_i32
               RNS.log("#{self} Radio reporting coding rate is #{@r_cr}", RNS::LOG_DEBUG)
               update_bitrate
-
             elsif command == RNodeKISS::CMD_RADIO_STATE
               @r_state = byte
               unless byte != 0
                 RNS.log("#{self} Radio reporting state is offline", RNS::LOG_DEBUG)
               end
-
             elsif command == RNodeKISS::CMD_RADIO_LOCK
               @r_lock = byte
-
             elsif command == RNodeKISS::CMD_FW_VERSION
               process_escaped_command_byte(byte, escape, command_buffer) do |esc|
                 escape = esc
@@ -1172,7 +1161,6 @@ module RNS
                 @min_version = cb[1].to_i32
                 validate_firmware
               end
-
             elsif command == RNodeKISS::CMD_STAT_RX
               process_escaped_command_byte(byte, escape, command_buffer) do |esc|
                 escape = esc
@@ -1181,7 +1169,6 @@ module RNS
                 cb = command_buffer.to_slice
                 @r_stat_rx = (cb[0].to_i64 << 24) | (cb[1].to_i64 << 16) | (cb[2].to_i64 << 8) | cb[3].to_i64
               end
-
             elsif command == RNodeKISS::CMD_STAT_TX
               process_escaped_command_byte(byte, escape, command_buffer) do |esc|
                 escape = esc
@@ -1190,10 +1177,8 @@ module RNS
                 cb = command_buffer.to_slice
                 @r_stat_tx = (cb[0].to_i64 << 24) | (cb[1].to_i64 << 16) | (cb[2].to_i64 << 8) | cb[3].to_i64
               end
-
             elsif command == RNodeKISS::CMD_STAT_RSSI
               @r_stat_rssi = byte.to_i32 - RSSI_OFFSET
-
             elsif command == RNodeKISS::CMD_STAT_SNR
               # Signed byte interpretation
               signed = byte.to_i8
@@ -1211,7 +1196,6 @@ module RNS
               rescue ex
                 RNS.log("Error calculating signal quality: #{ex.message}", RNS::LOG_DEBUG)
               end
-
             elsif command == RNodeKISS::CMD_ST_ALOCK
               process_escaped_command_byte(byte, escape, command_buffer) do |esc|
                 escape = esc
@@ -1222,7 +1206,6 @@ module RNS
                 @r_st_alock = at / 100.0
                 RNS.log("#{self} Radio reporting short-term airtime limit is #{@r_st_alock}%", RNS::LOG_DEBUG)
               end
-
             elsif command == RNodeKISS::CMD_LT_ALOCK
               process_escaped_command_byte(byte, escape, command_buffer) do |esc|
                 escape = esc
@@ -1233,7 +1216,6 @@ module RNS
                 @r_lt_alock = at / 100.0
                 RNS.log("#{self} Radio reporting long-term airtime limit is #{@r_lt_alock}%", RNS::LOG_DEBUG)
               end
-
             elsif command == RNodeKISS::CMD_STAT_CHTM
               process_escaped_command_byte(byte, escape, command_buffer) do |esc|
                 escape = esc
@@ -1266,7 +1248,6 @@ module RNS
                   RNS.log("#{self} Radio detected interference at #{ri} dBm", RNS::LOG_DEBUG)
                 end
               end
-
             elsif command == RNodeKISS::CMD_STAT_PHYPRM
               process_escaped_command_byte(byte, escape, command_buffer) do |esc|
                 escape = esc
@@ -1293,7 +1274,6 @@ module RNS
                   RNS.log("#{self} Radio reporting DIFS time is #{@r_csma_difs_ms}ms", RNS::LOG_DEBUG)
                 end
               end
-
             elsif command == RNodeKISS::CMD_STAT_CSMA
               process_escaped_command_byte(byte, escape, command_buffer) do |esc|
                 escape = esc
@@ -1309,7 +1289,6 @@ module RNS
                   @r_csma_cw_max = cbh
                 end
               end
-
             elsif command == RNodeKISS::CMD_STAT_BAT
               process_escaped_command_byte(byte, escape, command_buffer) do |esc|
                 escape = esc
@@ -1322,7 +1301,6 @@ module RNS
                 @r_battery_state = cb[0]
                 @r_battery_percent = bat_percent
               end
-
             elsif command == RNodeKISS::CMD_STAT_TEMP
               process_escaped_command_byte(byte, escape, command_buffer) do |esc|
                 escape = esc
@@ -1337,16 +1315,12 @@ module RNS
                 end
                 @cpu_temp = @r_temperature
               end
-
             elsif command == RNodeKISS::CMD_RANDOM
               @r_random = byte
-
             elsif command == RNodeKISS::CMD_PLATFORM
               @platform = byte
-
             elsif command == RNodeKISS::CMD_MCU
               @mcu = byte
-
             elsif command == RNodeKISS::CMD_ERROR
               if byte == RNodeKISS::ERROR_INITRADIO
                 RNS.log("#{self} hardware initialisation error (code #{RNS.hexrep(Bytes[byte])})", RNS::LOG_ERROR)
@@ -1364,7 +1338,6 @@ module RNS
                 RNS.log("#{self} hardware error (code #{RNS.hexrep(Bytes[byte])})", RNS::LOG_ERROR)
                 raise IO::Error.new("Unknown hardware failure")
               end
-
             elsif command == RNodeKISS::CMD_RESET
               if byte == 0xF8_u8
                 if @platform == RNodeKISS::PLATFORM_ESP32
@@ -1374,10 +1347,8 @@ module RNS
                   end
                 end
               end
-
             elsif command == RNodeKISS::CMD_READY
               process_queue
-
             elsif command == RNodeKISS::CMD_FB_READ
               process_escaped_command_byte(byte, escape, command_buffer) do |esc|
                 escape = esc
@@ -1386,7 +1357,6 @@ module RNS
                 @r_framebuffer_latency = Time.utc.to_unix_f - @r_framebuffer_readtime
                 @r_framebuffer = command_buffer.to_slice.dup
               end
-
             elsif command == RNodeKISS::CMD_DISP_READ
               process_escaped_command_byte(byte, escape, command_buffer) do |esc|
                 escape = esc
@@ -1395,7 +1365,6 @@ module RNS
                 @r_disp_latency = Time.utc.to_unix_f - @r_disp_readtime
                 @r_disp = command_buffer.to_slice.dup
               end
-
             elsif command == RNodeKISS::CMD_DETECT
               if byte == RNodeKISS::DETECT_RESP
                 @detected = true

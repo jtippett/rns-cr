@@ -657,7 +657,7 @@ describe "Protocol Compatibility" do
 
       # Rest is Token-encrypted data
       token_part = ciphertext[32..]
-      token_part.size.should be >= 48  # At least TOKEN_OVERHEAD
+      token_part.size.should be >= 48 # At least TOKEN_OVERHEAD
     end
 
     it "decrypt recovers original plaintext" do
@@ -798,16 +798,16 @@ describe "Protocol Compatibility" do
       # Test representative flag combinations matching Python struct.pack("!B", flags)
       test_cases = [
         {ht: 0_u8, cf: 0_u8, tt: 0_u8, dt: 0_u8, pt: 0_u8, expected: 0x00_u8},
-        {ht: 0_u8, cf: 0_u8, tt: 0_u8, dt: 0_u8, pt: 1_u8, expected: 0x01_u8},  # DATA+ANNOUNCE
-        {ht: 0_u8, cf: 0_u8, tt: 0_u8, dt: 0_u8, pt: 2_u8, expected: 0x02_u8},  # LINKREQUEST
-        {ht: 0_u8, cf: 0_u8, tt: 0_u8, dt: 0_u8, pt: 3_u8, expected: 0x03_u8},  # PROOF
-        {ht: 0_u8, cf: 0_u8, tt: 0_u8, dt: 1_u8, pt: 0_u8, expected: 0x04_u8},  # GROUP+DATA
-        {ht: 0_u8, cf: 0_u8, tt: 0_u8, dt: 2_u8, pt: 0_u8, expected: 0x08_u8},  # PLAIN+DATA
-        {ht: 0_u8, cf: 0_u8, tt: 0_u8, dt: 3_u8, pt: 0_u8, expected: 0x0C_u8},  # LINK+DATA
-        {ht: 0_u8, cf: 0_u8, tt: 1_u8, dt: 0_u8, pt: 0_u8, expected: 0x10_u8},  # TRANSPORT
-        {ht: 0_u8, cf: 1_u8, tt: 0_u8, dt: 0_u8, pt: 0_u8, expected: 0x20_u8},  # context_flag
-        {ht: 1_u8, cf: 0_u8, tt: 0_u8, dt: 0_u8, pt: 0_u8, expected: 0x40_u8},  # HEADER_2
-        {ht: 1_u8, cf: 1_u8, tt: 1_u8, dt: 3_u8, pt: 3_u8, expected: 0x7F_u8},  # all bits set
+        {ht: 0_u8, cf: 0_u8, tt: 0_u8, dt: 0_u8, pt: 1_u8, expected: 0x01_u8}, # DATA+ANNOUNCE
+        {ht: 0_u8, cf: 0_u8, tt: 0_u8, dt: 0_u8, pt: 2_u8, expected: 0x02_u8}, # LINKREQUEST
+        {ht: 0_u8, cf: 0_u8, tt: 0_u8, dt: 0_u8, pt: 3_u8, expected: 0x03_u8}, # PROOF
+        {ht: 0_u8, cf: 0_u8, tt: 0_u8, dt: 1_u8, pt: 0_u8, expected: 0x04_u8}, # GROUP+DATA
+        {ht: 0_u8, cf: 0_u8, tt: 0_u8, dt: 2_u8, pt: 0_u8, expected: 0x08_u8}, # PLAIN+DATA
+        {ht: 0_u8, cf: 0_u8, tt: 0_u8, dt: 3_u8, pt: 0_u8, expected: 0x0C_u8}, # LINK+DATA
+        {ht: 0_u8, cf: 0_u8, tt: 1_u8, dt: 0_u8, pt: 0_u8, expected: 0x10_u8}, # TRANSPORT
+        {ht: 0_u8, cf: 1_u8, tt: 0_u8, dt: 0_u8, pt: 0_u8, expected: 0x20_u8}, # context_flag
+        {ht: 1_u8, cf: 0_u8, tt: 0_u8, dt: 0_u8, pt: 0_u8, expected: 0x40_u8}, # HEADER_2
+        {ht: 1_u8, cf: 1_u8, tt: 1_u8, dt: 3_u8, pt: 3_u8, expected: 0x7F_u8}, # all bits set
       ]
 
       test_cases.each do |tc|
@@ -819,7 +819,7 @@ describe "Protocol Compatibility" do
     it "HEADER_1 unpack extracts destination_hash at bytes 2-17" do
       # Build raw HEADER_1 packet
       dest_hash = Random::Secure.random_bytes(16)
-      flags = 0x01_u8  # ANNOUNCE, HEADER_1, SINGLE
+      flags = 0x01_u8 # ANNOUNCE, HEADER_1, SINGLE
       hops = 0x00_u8
       context = 0x00_u8
       data = "test announce data".to_slice
@@ -844,7 +844,7 @@ describe "Protocol Compatibility" do
     it "HEADER_2 unpack extracts transport_id at 2-17 and dest_hash at 18-33" do
       transport_id = Random::Secure.random_bytes(16)
       dest_hash = Random::Secure.random_bytes(16)
-      flags = 0x40_u8  # HEADER_2
+      flags = 0x40_u8 # HEADER_2
       hops = 0x02_u8
       context = 0x01_u8
       data = "transported data".to_slice
@@ -891,7 +891,7 @@ describe "Protocol Compatibility" do
 
       hashable = packet.get_hashable_part
       # First byte should be flags masked to lower 4 bits
-      hashable[0].should eq (flags & 0x0F_u8)
+      hashable[0].should eq(flags & 0x0F_u8)
       # Remaining should be raw[2:] (dest_hash + context + data)
       hashable[1..].should eq raw[2..]
     end
@@ -900,7 +900,7 @@ describe "Protocol Compatibility" do
       # Python: for HEADER_2, hashable = bytes([raw[0] & 0x0F]) + raw[18:]
       transport_id = Bytes.new(16) { |i| (i + 0x10).to_u8 }
       dest_hash = Bytes.new(16) { |i| (i + 0x20).to_u8 }
-      flags = 0x40_u8  # HEADER_2
+      flags = 0x40_u8 # HEADER_2
       data = "transported".to_slice
 
       raw = Bytes.new(2 + 16 + 16 + 1 + data.size)
@@ -915,13 +915,13 @@ describe "Protocol Compatibility" do
       packet.unpack
 
       hashable = packet.get_hashable_part
-      hashable[0].should eq (flags & 0x0F_u8)
+      hashable[0].should eq(flags & 0x0F_u8)
       hashable[1..].should eq raw[18..]
     end
 
     it "get_hash returns SHA-256 of hashable part (32 bytes)" do
       raw = Bytes.new(20)
-      raw[0] = 0x01_u8  # ANNOUNCE
+      raw[0] = 0x01_u8 # ANNOUNCE
       16.times { |i| raw[i + 2] = i.to_u8 }
       raw[18] = 0x00_u8
 
@@ -1081,7 +1081,7 @@ describe "Protocol Compatibility" do
       ciphertext = identity.encrypt(plaintext)
 
       # Structure: ephemeral_pub(32) + IV(16) + AES_ciphertext(variable) + HMAC(32)
-      ciphertext.size.should be >= 32 + 48  # ephemeral key + token overhead
+      ciphertext.size.should be >= 32 + 48 # ephemeral key + token overhead
 
       # The ephemeral key should be a valid X25519 public key (32 bytes)
       ephemeral_pub = ciphertext[0, 32]

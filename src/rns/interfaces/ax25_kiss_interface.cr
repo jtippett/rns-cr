@@ -44,9 +44,9 @@ module RNS
   # Adds AX.25 addressing (callsign/SSID) on top of KISS framing.
   # Ports RNS/Interfaces/AX25KISSInterface.py.
   class AX25KISSInterface < Interface
-    MAX_CHUNK         = 32768
+    MAX_CHUNK         =    32768
     BITRATE_GUESS     = 1200_i64
-    DEFAULT_IFAC_SIZE = 8
+    DEFAULT_IFAC_SIZE =        8
 
     PARITY_NONE = :none
     PARITY_EVEN = :even
@@ -134,31 +134,31 @@ module RNS
     end
 
     private def configure(c : Hash(String, String))
-      name        = c["name"]? || ""
-      port        = c["port"]?
-      speed       = c["speed"]?.try(&.to_i) || 9600
-      databits    = c["databits"]?.try(&.to_i) || 8
-      parity_str  = c["parity"]? || "N"
-      stopbits    = c["stopbits"]?.try(&.to_i) || 1
-      flow_ctrl   = c["flow_control"]?.try { |v| v.downcase == "true" } || false
-      preamble    = c["preamble"]?.try(&.to_i)
-      txtail      = c["txtail"]?.try(&.to_i)
+      name = c["name"]? || ""
+      port = c["port"]?
+      speed = c["speed"]?.try(&.to_i) || 9600
+      databits = c["databits"]?.try(&.to_i) || 8
+      parity_str = c["parity"]? || "N"
+      stopbits = c["stopbits"]?.try(&.to_i) || 1
+      flow_ctrl = c["flow_control"]?.try { |v| v.downcase == "true" } || false
+      preamble = c["preamble"]?.try(&.to_i)
+      txtail = c["txtail"]?.try(&.to_i)
       persistence = c["persistence"]?.try(&.to_i)
-      slottime    = c["slottime"]?.try(&.to_i)
-      callsign    = c["callsign"]? || ""
-      ssid        = c["ssid"]?.try(&.to_i) || -1
+      slottime = c["slottime"]?.try(&.to_i)
+      callsign = c["callsign"]? || ""
+      ssid = c["ssid"]?.try(&.to_i) || -1
 
       raise ArgumentError.new("No port specified for serial interface") unless port
 
-      @hw_mtu  = 564
-      @name    = name
-      @port    = port
-      @speed   = speed
+      @hw_mtu = 564
+      @name = name
+      @port = port
+      @speed = speed
       @databits = databits
-      @parity  = parse_parity(parity_str)
+      @parity = parse_parity(parity_str)
       @stopbits = stopbits
       @timeout = 100
-      @online  = false
+      @online = false
       @bitrate = BITRATE_GUESS
 
       @src_call = callsign.upcase.encode("ASCII")
@@ -173,10 +173,10 @@ module RNS
       @flow_control_timeout = 5
       @flow_control_locked = Time.utc.to_unix_f
 
-      @preamble    = preamble || 350
-      @txtail      = txtail || 20
+      @preamble = preamble || 350
+      @txtail = txtail || 20
       @persistence = persistence || 64
-      @slottime    = slottime || 20
+      @slottime = slottime || 20
 
       begin
         do_open_port
@@ -275,13 +275,13 @@ module RNS
         speed.to_u64
       {% else %}
         case speed
-        when    9600 then SerialConstants::B9600
-        when   19200 then SerialConstants::B19200
-        when   38400 then SerialConstants::B38400
-        when   57600 then SerialConstants::B57600
-        when  115200 then SerialConstants::B115200
-        when  230400 then SerialConstants::B230400
-        else              SerialConstants::B9600
+        when   9600 then SerialConstants::B9600
+        when  19200 then SerialConstants::B19200
+        when  38400 then SerialConstants::B38400
+        when  57600 then SerialConstants::B57600
+        when 115200 then SerialConstants::B115200
+        when 230400 then SerialConstants::B230400
+        else             SerialConstants::B9600
         end
       {% end %}
     end

@@ -28,9 +28,9 @@ module RNS
     #  InterfaceAnnouncer — periodically announces local interfaces
     # ═══════════════════════════════════════════════════════════════════
     class InterfaceAnnouncer
-      JOB_INTERVAL              = 60
-      DEFAULT_STAMP_VALUE       = 14
-      WORKBLOCK_EXPAND_ROUNDS   = 20
+      JOB_INTERVAL            = 60
+      DEFAULT_STAMP_VALUE     = 14
+      WORKBLOCK_EXPAND_ROUNDS = 20
 
       # Stamp size in bytes — matches LXStamper.STAMP_SIZE from the Python LXMF module
       STAMP_SIZE = 32
@@ -44,7 +44,7 @@ module RNS
 
       def initialize(@owner : Transport.class)
         @job_interval = JOB_INTERVAL
-        @stamp_cache  = {} of String => Bytes
+        @stamp_cache = {} of String => Bytes
 
         identity = Reticulum.network_identity || Transport.identity
         unless identity
@@ -105,7 +105,7 @@ module RNS
 
       def get_interface_announce_data(interface : Interface) : Bytes?
         interface_type = interface.class.name.split("::").last
-        stamp_value    = interface.discovery_stamp_value || DEFAULT_STAMP_VALUE
+        stamp_value = interface.discovery_stamp_value || DEFAULT_STAMP_VALUE
 
         return nil unless DISCOVERABLE_INTERFACE_TYPES.includes?(interface_type)
 
@@ -113,15 +113,15 @@ module RNS
 
         info = Hash(UInt8, MessagePack::Type).new
         info[INTERFACE_TYPE] = interface_type.as(MessagePack::Type)
-        info[TRANSPORT]      = Reticulum.transport_enabled?.as(MessagePack::Type)
+        info[TRANSPORT] = Reticulum.transport_enabled?.as(MessagePack::Type)
 
         transport_id = Transport.identity.try(&.hash)
         info[TRANSPORT_ID] = (transport_id ? transport_id.dup : Bytes.new(0)).as(MessagePack::Type)
 
-        info[NAME]      = sanitize(interface.discovery_name).as(MessagePack::Type)
-        info[LATITUDE]  = (interface.discovery_latitude || nil).as(MessagePack::Type)
+        info[NAME] = sanitize(interface.discovery_name).as(MessagePack::Type)
+        info[LATITUDE] = (interface.discovery_latitude || nil).as(MessagePack::Type)
         info[LONGITUDE] = (interface.discovery_longitude || nil).as(MessagePack::Type)
-        info[HEIGHT]    = (interface.discovery_height || nil).as(MessagePack::Type)
+        info[HEIGHT] = (interface.discovery_height || nil).as(MessagePack::Type)
 
         reachable_on = sanitize(interface.reachable_on)
 
@@ -167,8 +167,8 @@ module RNS
         end
 
         if interface_type == "RNodeInterface" && interface.responds_to?(:frequency) && interface.responds_to?(:bandwidth)
-          info[FREQUENCY]       = interface.frequency.to_i64.as(MessagePack::Type)
-          info[BANDWIDTH]       = interface.bandwidth.to_i64.as(MessagePack::Type)
+          info[FREQUENCY] = interface.frequency.to_i64.as(MessagePack::Type)
+          info[BANDWIDTH] = interface.bandwidth.to_i64.as(MessagePack::Type)
           if interface.responds_to?(:sf)
             info[SPREADINGFACTOR] = interface.sf.to_i64.as(MessagePack::Type)
           end
@@ -178,22 +178,22 @@ module RNS
         end
 
         if interface_type == "WeaveInterface"
-          info[FREQUENCY]  = (interface.discovery_frequency || 0).to_i64.as(MessagePack::Type)
-          info[BANDWIDTH]  = (interface.discovery_bandwidth || 0).to_i64.as(MessagePack::Type)
-          info[CHANNEL]    = (interface.discovery_modulation || 0).to_i64.as(MessagePack::Type) # maps CHANNEL
+          info[FREQUENCY] = (interface.discovery_frequency || 0).to_i64.as(MessagePack::Type)
+          info[BANDWIDTH] = (interface.discovery_bandwidth || 0).to_i64.as(MessagePack::Type)
+          info[CHANNEL] = (interface.discovery_modulation || 0).to_i64.as(MessagePack::Type) # maps CHANNEL
           info[MODULATION] = (interface.discovery_modulation || 0).to_i64.as(MessagePack::Type)
         end
 
         if interface_type == "KISSInterface" || (interface_type == "TCPClientInterface" && interface.responds_to?(:kiss_framing) && interface.kiss_framing)
           info[INTERFACE_TYPE] = "KISSInterface".as(MessagePack::Type)
-          info[FREQUENCY]      = (interface.discovery_frequency || 0).to_i64.as(MessagePack::Type)
-          info[BANDWIDTH]      = (interface.discovery_bandwidth || 0).to_i64.as(MessagePack::Type)
-          info[MODULATION]     = sanitize(interface.discovery_modulation.try(&.to_s)).as(MessagePack::Type)
+          info[FREQUENCY] = (interface.discovery_frequency || 0).to_i64.as(MessagePack::Type)
+          info[BANDWIDTH] = (interface.discovery_bandwidth || 0).to_i64.as(MessagePack::Type)
+          info[MODULATION] = sanitize(interface.discovery_modulation.try(&.to_s)).as(MessagePack::Type)
         end
 
         if interface.discovery_publish_ifac
           info[IFAC_NETNAME] = sanitize(interface.ifac_netname).as(MessagePack::Type)
-          info[IFAC_NETKEY]  = sanitize(interface.ifac_netkey).as(MessagePack::Type)
+          info[IFAC_NETKEY] = sanitize(interface.ifac_netkey).as(MessagePack::Type)
         end
 
         packed = pack_info(info)
@@ -247,13 +247,13 @@ module RNS
         info.each do |key, value|
           packer.write(key)
           case value
-          when Nil       then packer.write(nil)
-          when Bool      then packer.write(value)
-          when Int64     then packer.write(value)
-          when Float64   then packer.write(value)
-          when String    then packer.write(value)
-          when Bytes     then packer.write(value)
-          else                packer.write(value.to_s)
+          when Nil     then packer.write(nil)
+          when Bool    then packer.write(value)
+          when Int64   then packer.write(value)
+          when Float64 then packer.write(value)
+          when String  then packer.write(value)
+          when Bytes   then packer.write(value)
+          else              packer.write(value.to_s)
           end
         end
         io.to_slice.dup
@@ -300,9 +300,9 @@ module RNS
           return unless app_data
           return unless app_data.size > STAMP_SIZE + 1
 
-          flags    = app_data[0]
-          data     = app_data[1..]
-          _signed   = (flags & FLAG_SIGNED) != 0
+          flags = app_data[0]
+          data = app_data[1..]
+          _signed = (flags & FLAG_SIGNED) != 0
           encrypted = (flags & FLAG_ENCRYPTED) != 0
 
           if encrypted
@@ -313,8 +313,8 @@ module RNS
             data = decrypted
           end
 
-          stamp    = data[data.size - STAMP_SIZE..]
-          packed   = data[0, data.size - STAMP_SIZE]
+          stamp = data[data.size - STAMP_SIZE..]
+          packed = data[0, data.size - STAMP_SIZE]
           infohash = Identity.full_hash(packed)
 
           # Validate stamp (simplified — full LXStamper validation not ported)
@@ -334,13 +334,13 @@ module RNS
           interface_type = itype_val.to_s
 
           info = Hash(String, String | Int64 | Float64 | Bool | Bytes | Nil).new
-          info["type"]         = interface_type
-          info["transport"]    = unpacked[TRANSPORT]? ? true : false
+          info["type"] = interface_type
+          info["transport"] = unpacked[TRANSPORT]? ? true : false
           name_val = unpacked[NAME]?
-          info["name"]         = (name_val && name_val.to_s.size > 0) ? name_val.to_s : "Discovered #{interface_type}"
-          info["received"]     = Time.utc.to_unix_f
-          info["stamp"]        = stamp.hexstring
-          info["value"]        = value.to_i64
+          info["name"] = (name_val && name_val.to_s.size > 0) ? name_val.to_s : "Discovered #{interface_type}"
+          info["received"] = Time.utc.to_unix_f
+          info["stamp"] = stamp.hexstring
+          info["value"] = value.to_i64
 
           tid = unpacked[TRANSPORT_ID]?
           info["transport_id"] = tid.is_a?(Bytes) ? RNS.hexrep(tid, delimit: false) : ""
@@ -380,31 +380,31 @@ module RNS
           if interface_type.in?("BackboneInterface", "TCPServerInterface")
             backbone_support = !RNS::PlatformUtils.is_windows?
             info["reachable_on"] = unpacked[REACHABLE_ON]?.try(&.to_s)
-            info["port"]         = unpacked[PORT]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
+            info["port"] = unpacked[PORT]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
 
             connection_interface = backbone_support ? "BackboneInterface" : "TCPClientInterface"
-            remote_str           = backbone_support ? "remote" : "target_host"
-            cfg_name     = info["name"].to_s
-            cfg_remote   = info["reachable_on"].to_s
-            cfg_port     = info["port"].to_s
+            remote_str = backbone_support ? "remote" : "target_host"
+            cfg_name = info["name"].to_s
+            cfg_remote = info["reachable_on"].to_s
+            cfg_port = info["port"].to_s
             cfg_identity = info["transport_id"].to_s
-            cfg_netname  = info["ifac_netname"]?
-            cfg_netkey   = info["ifac_netkey"]?
-            cfg_netname_str  = cfg_netname ? "\n  network_name = #{cfg_netname}" : ""
-            cfg_netkey_str   = cfg_netkey ? "\n  passphrase = #{cfg_netkey}" : ""
+            cfg_netname = info["ifac_netname"]?
+            cfg_netkey = info["ifac_netkey"]?
+            cfg_netname_str = cfg_netname ? "\n  network_name = #{cfg_netname}" : ""
+            cfg_netkey_str = cfg_netkey ? "\n  passphrase = #{cfg_netkey}" : ""
             cfg_identity_str = "\n  transport_identity = #{cfg_identity}"
             info["config_entry"] = "[[#{cfg_name}]]\n  type = #{connection_interface}\n  enabled = yes\n  #{remote_str} = #{cfg_remote}\n  target_port = #{cfg_port}#{cfg_identity_str}#{cfg_netname_str}#{cfg_netkey_str}"
           end
 
           if interface_type == "I2PInterface"
             info["reachable_on"] = unpacked[REACHABLE_ON]?.try(&.to_s)
-            cfg_name     = info["name"].to_s
-            cfg_remote   = info["reachable_on"].to_s
+            cfg_name = info["name"].to_s
+            cfg_remote = info["reachable_on"].to_s
             cfg_identity = info["transport_id"].to_s
-            cfg_netname  = info["ifac_netname"]?
-            cfg_netkey   = info["ifac_netkey"]?
-            cfg_netname_str  = cfg_netname ? "\n  network_name = #{cfg_netname}" : ""
-            cfg_netkey_str   = cfg_netkey ? "\n  passphrase = #{cfg_netkey}" : ""
+            cfg_netname = info["ifac_netname"]?
+            cfg_netkey = info["ifac_netkey"]?
+            cfg_netname_str = cfg_netname ? "\n  network_name = #{cfg_netname}" : ""
+            cfg_netkey_str = cfg_netkey ? "\n  passphrase = #{cfg_netkey}" : ""
             cfg_identity_str = "\n  transport_identity = #{cfg_identity}"
             info["config_entry"] = "[[#{cfg_name}]]\n  type = I2PInterface\n  enabled = yes\n  peers = #{cfg_remote}#{cfg_identity_str}#{cfg_netname_str}#{cfg_netkey_str}"
           end
@@ -412,50 +412,50 @@ module RNS
           if interface_type == "RNodeInterface"
             info["frequency"] = unpacked[FREQUENCY]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
             info["bandwidth"] = unpacked[BANDWIDTH]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
-            info["sf"]        = unpacked[SPREADINGFACTOR]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
-            info["cr"]        = unpacked[CODINGRATE]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
-            cfg_name      = info["name"].to_s
+            info["sf"] = unpacked[SPREADINGFACTOR]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
+            info["cr"] = unpacked[CODINGRATE]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
+            cfg_name = info["name"].to_s
             cfg_frequency = info["frequency"].to_s
             cfg_bandwidth = info["bandwidth"].to_s
-            cfg_sf        = info["sf"].to_s
-            cfg_cr        = info["cr"].to_s
-            cfg_identity  = info["transport_id"].to_s
-            cfg_netname   = info["ifac_netname"]?
-            cfg_netkey    = info["ifac_netkey"]?
-            cfg_netname_str  = cfg_netname ? "\n  network_name = #{cfg_netname}" : ""
-            cfg_netkey_str   = cfg_netkey ? "\n  passphrase = #{cfg_netkey}" : ""
+            cfg_sf = info["sf"].to_s
+            cfg_cr = info["cr"].to_s
+            cfg_identity = info["transport_id"].to_s
+            cfg_netname = info["ifac_netname"]?
+            cfg_netkey = info["ifac_netkey"]?
+            cfg_netname_str = cfg_netname ? "\n  network_name = #{cfg_netname}" : ""
+            cfg_netkey_str = cfg_netkey ? "\n  passphrase = #{cfg_netkey}" : ""
             cfg_identity_str = "\n  transport_identity = #{cfg_identity}"
             info["config_entry"] = "[[#{cfg_name}]]\n  type = RNodeInterface\n  enabled = yes\n  port = \n  frequency = #{cfg_frequency}\n  bandwidth = #{cfg_bandwidth}\n  spreadingfactor = #{cfg_sf}\n  codingrate = #{cfg_cr}\n  txpower = #{cfg_netname_str}#{cfg_netkey_str}"
           end
 
           if interface_type == "WeaveInterface"
-            info["frequency"]  = unpacked[FREQUENCY]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
-            info["bandwidth"]  = unpacked[BANDWIDTH]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
-            info["channel"]    = unpacked[CHANNEL]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
+            info["frequency"] = unpacked[FREQUENCY]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
+            info["bandwidth"] = unpacked[BANDWIDTH]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
+            info["channel"] = unpacked[CHANNEL]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
             info["modulation"] = unpacked[MODULATION]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
-            cfg_name     = info["name"].to_s
+            cfg_name = info["name"].to_s
             cfg_identity = info["transport_id"].to_s
-            cfg_netname  = info["ifac_netname"]?
-            cfg_netkey   = info["ifac_netkey"]?
-            cfg_netname_str  = cfg_netname ? "\n  network_name = #{cfg_netname}" : ""
-            cfg_netkey_str   = cfg_netkey ? "\n  passphrase = #{cfg_netkey}" : ""
+            cfg_netname = info["ifac_netname"]?
+            cfg_netkey = info["ifac_netkey"]?
+            cfg_netname_str = cfg_netname ? "\n  network_name = #{cfg_netname}" : ""
+            cfg_netkey_str = cfg_netkey ? "\n  passphrase = #{cfg_netkey}" : ""
             cfg_identity_str = "\n  transport_identity = #{cfg_identity}"
             info["config_entry"] = "[[#{cfg_name}]]\n  type = WeaveInterface\n  enabled = yes\n  port = #{cfg_netname_str}#{cfg_netkey_str}"
           end
 
           if interface_type == "KISSInterface"
-            info["frequency"]  = unpacked[FREQUENCY]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
-            info["bandwidth"]  = unpacked[BANDWIDTH]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
+            info["frequency"] = unpacked[FREQUENCY]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
+            info["bandwidth"] = unpacked[BANDWIDTH]?.try { |v| v.is_a?(Int64) ? v : v.to_s.to_i64 }
             info["modulation"] = unpacked[MODULATION]?.try(&.to_s)
-            cfg_name       = info["name"].to_s
-            cfg_frequency  = info["frequency"].to_s
-            cfg_bandwidth  = info["bandwidth"].to_s
+            cfg_name = info["name"].to_s
+            cfg_frequency = info["frequency"].to_s
+            cfg_bandwidth = info["bandwidth"].to_s
             cfg_modulation = info["modulation"].to_s
-            cfg_identity   = info["transport_id"].to_s
-            cfg_netname    = info["ifac_netname"]?
-            cfg_netkey     = info["ifac_netkey"]?
-            cfg_netname_str  = cfg_netname ? "\n  network_name = #{cfg_netname}" : ""
-            cfg_netkey_str   = cfg_netkey ? "\n  passphrase = #{cfg_netkey}" : ""
+            cfg_identity = info["transport_id"].to_s
+            cfg_netname = info["ifac_netname"]?
+            cfg_netkey = info["ifac_netkey"]?
+            cfg_netname_str = cfg_netname ? "\n  network_name = #{cfg_netname}" : ""
+            cfg_netkey_str = cfg_netkey ? "\n  passphrase = #{cfg_netkey}" : ""
             cfg_identity_str = "\n  transport_identity = #{cfg_identity}"
             info["config_entry"] = "[[#{cfg_name}]]\n  type = KISSInterface\n  enabled = yes\n  port = \n  # Frequency: #{cfg_frequency}\n  # Bandwidth: #{cfg_bandwidth}\n  # Modulation: #{cfg_modulation}#{cfg_identity_str}#{cfg_netname_str}#{cfg_netkey_str}"
           end
@@ -500,14 +500,14 @@ module RNS
 
             val_token = unpacker.read_token
             value : MessagePack::Type = case val_token
-                                        when MessagePack::Token::StringT  then val_token.value
-                                        when MessagePack::Token::BytesT   then val_token.value
-                                        when MessagePack::Token::IntT     then val_token.value.to_i64
-                                        when MessagePack::Token::FloatT   then val_token.value.to_f64
-                                        when MessagePack::Token::BoolT    then val_token.value
-                                        when MessagePack::Token::NullT    then nil
-                                        else                                   nil
-                                        end
+            when MessagePack::Token::StringT then val_token.value
+            when MessagePack::Token::BytesT  then val_token.value
+            when MessagePack::Token::IntT    then val_token.value.to_i64
+            when MessagePack::Token::FloatT  then val_token.value.to_f64
+            when MessagePack::Token::BoolT   then val_token.value
+            when MessagePack::Token::NullT   then nil
+            else                                  nil
+            end
             result[key] = value
           end
         rescue
@@ -521,15 +521,15 @@ module RNS
     #  InterfaceDiscovery — coordinates discovery, persistence, autoconnect
     # ═══════════════════════════════════════════════════════════════════
     class InterfaceDiscovery
-      THRESHOLD_UNKNOWN = 24 * 60 * 60         # 24 hours
-      THRESHOLD_STALE   = 3 * 24 * 60 * 60     # 3 days
-      THRESHOLD_REMOVE  = 7 * 24 * 60 * 60     # 7 days
+      THRESHOLD_UNKNOWN = 24 * 60 * 60     # 24 hours
+      THRESHOLD_STALE   = 3 * 24 * 60 * 60 # 3 days
+      THRESHOLD_REMOVE  = 7 * 24 * 60 * 60 # 7 days
 
-      MONITOR_INTERVAL  = 5
-      DETACH_THRESHOLD  = 12
+      MONITOR_INTERVAL =  5
+      DETACH_THRESHOLD = 12
 
-      STATUS_STALE     = 0
-      STATUS_UNKNOWN   = 100
+      STATUS_STALE     =    0
+      STATUS_UNKNOWN   =  100
       STATUS_AVAILABLE = 1000
       STATUS_CODE_MAP  = {"available" => STATUS_AVAILABLE, "unknown" => STATUS_UNKNOWN, "stale" => STATUS_STALE}
 
@@ -551,10 +551,10 @@ module RNS
                      @discovery_callback : Proc(InfoHash, Nil)? = nil,
                      discover_interfaces : Bool = true)
         @required_value = InterfaceAnnouncer::DEFAULT_STAMP_VALUE if @required_value == 0
-        @monitored_interfaces    = [] of Interface
+        @monitored_interfaces = [] of Interface
         @monitoring_autoconnects = false
-        @monitor_interval        = MONITOR_INTERVAL
-        @detach_threshold        = DETACH_THRESHOLD
+        @monitor_interval = MONITOR_INTERVAL
+        @detach_threshold = DETACH_THRESHOLD
         @initial_autoconnect_ran = false
         @handler = nil
 
@@ -637,7 +637,7 @@ module RNS
               discovered_interfaces << info
             else
               should_append = true
-              status    = info["status"].to_s
+              status = info["status"].to_s
               transport = info["transport"]?
               if only_available && status != "available"
                 should_append = false
@@ -676,12 +676,12 @@ module RNS
 
       def interface_discovered(info : InfoHash)
         begin
-          name           = info["name"].to_s
-          value          = info["value"]?
+          name = info["name"].to_s
+          value = info["value"]?
           interface_type = info["type"].to_s
           discovery_hash_hex = info["discovery_hash"]?.try(&.to_s) || ""
-          hops           = info["hops"]?.try { |v| v.is_a?(Int64) ? v.to_i : 0 } || 0
-          ms             = hops == 1 ? "" : "s"
+          hops = info["hops"]?.try { |v| v.is_a?(Int64) ? v.to_i : 0 } || 0
+          ms = hops == 1 ? "" : "s"
 
           RNS.log("Discovered #{interface_type} #{hops} hop#{ms} away with stamp value #{value}: #{name}", RNS::LOG_DEBUG)
 
@@ -689,8 +689,8 @@ module RNS
 
           if !File.exists?(filepath)
             begin
-              info["discovered"]  = info["received"]
-              info["last_heard"]  = info["received"]
+              info["discovered"] = info["received"]
+              info["last_heard"] = info["received"]
               info["heard_count"] = 0_i64
               File.write(filepath, pack_persisted_info(info))
             rescue ex
@@ -711,8 +711,8 @@ module RNS
 
               discovered = info["received"] if discovered.nil?
 
-              info["discovered"]  = discovered
-              info["last_heard"]  = info["received"]
+              info["discovered"] = discovered
+              info["last_heard"] = info["received"]
               info["heard_count"] = heard_count + 1
 
               File.write(filepath, pack_persisted_info(info))
@@ -912,15 +912,15 @@ module RNS
                   RNS.log("Auto-connecting discovered #{interface_type} #{interface_name}")
 
                   ifac_netname = info["ifac_netname"]?.try(&.to_s)
-                  ifac_netkey  = info["ifac_netkey"]?.try(&.to_s)
+                  ifac_netkey = info["ifac_netkey"]?.try(&.to_s)
 
                   interface : Interface? = nil
 
                   if interface_type == "BackboneInterface"
                     interface_config = Hash(String, String).new
-                    interface_config["name"]        = interface_name
-                    interface_config["target_host"]  = info["reachable_on"].to_s
-                    interface_config["target_port"]  = info["port"].to_s
+                    interface_config["name"] = interface_name
+                    interface_config["target_host"] = info["reachable_on"].to_s
+                    interface_config["target_port"] = info["port"].to_s
                     interface = BackboneClientInterface.new(interface_config)
                   end
 
@@ -935,7 +935,7 @@ module RNS
                     inst = Reticulum.get_instance
                     if inst
                       inst.add_interface(iface, ifac_netname: ifac_netname, ifac_netkey: ifac_netkey,
-                                         configured_bitrate: 5_000_000_i32)
+                        configured_bitrate: 5_000_000_i32)
                       monitor_interface(iface)
                     end
                   end
@@ -985,14 +985,14 @@ module RNS
 
             val_token = unpacker.read_token
             value : (String | Int64 | Float64 | Bool | Bytes | Nil) = case val_token
-                                                                       when MessagePack::Token::StringT then val_token.value
-                                                                       when MessagePack::Token::BytesT  then val_token.value
-                                                                       when MessagePack::Token::IntT    then val_token.value.to_i64
-                                                                       when MessagePack::Token::FloatT  then val_token.value.to_f64
-                                                                       when MessagePack::Token::BoolT   then val_token.value
-                                                                       when MessagePack::Token::NullT   then nil
-                                                                       else                                  nil
-                                                                       end
+            when MessagePack::Token::StringT then val_token.value
+            when MessagePack::Token::BytesT  then val_token.value
+            when MessagePack::Token::IntT    then val_token.value.to_i64
+            when MessagePack::Token::FloatT  then val_token.value.to_f64
+            when MessagePack::Token::BoolT   then val_token.value
+            when MessagePack::Token::NullT   then nil
+            else                                  nil
+            end
             result[key] = value
           end
         rescue
@@ -1008,7 +1008,7 @@ module RNS
     class BlackholeUpdater
       INITIAL_WAIT    = 20
       JOB_INTERVAL    = 60
-      UPDATE_INTERVAL = 1 * 60 * 60  # 1 hour
+      UPDATE_INTERVAL = 1 * 60 * 60 # 1 hour
       SOURCE_TIMEOUT  = 25
 
       property last_updates : Hash(String, Float64)
@@ -1018,9 +1018,9 @@ module RNS
 
       def initialize
         @last_updates = {} of String => Float64
-        @should_run   = false
+        @should_run = false
         @job_interval = JOB_INTERVAL
-        @update_lock  = Mutex.new
+        @update_lock = Mutex.new
       end
 
       def start

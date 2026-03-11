@@ -219,7 +219,7 @@ describe RNS do
         end
         # Just verify the method exists and doesn't raise
         # (actual output goes to stdout)
-        typeof(->{ RNS.phyparams }).should_not be_nil
+        typeof(-> { RNS.phyparams }).should_not be_nil
       end
     end
 

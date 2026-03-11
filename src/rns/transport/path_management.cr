@@ -311,7 +311,7 @@ module RNS
             @@path_table[key] = PathEntry.new(
               timestamp: timestamp,
               next_hop: received_from,
-              hops: hops + 1,  # Increment hops as per Python behavior
+              hops: hops + 1, # Increment hops as per Python behavior
               expires: expires,
               random_blobs: random_blobs,
               receiving_interface: interface_hash,

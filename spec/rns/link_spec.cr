@@ -1138,7 +1138,7 @@ describe RNS::Link do
 
     it "no_data_for tracks last data exchange" do
       link = create_handshaken_link
-      link.had_outbound  # updates last_data
+      link.had_outbound # updates last_data
       sleep 0.01.seconds
       link.no_data_for.should be >= 0.01
       link.no_data_for.should be < 1.0

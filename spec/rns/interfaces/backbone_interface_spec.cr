@@ -22,8 +22,8 @@ describe RNS::BackboneInterface do
   describe "#initialize" do
     it "creates a server interface with bind IP and port" do
       config = {
-        "name"      => "TestBackbone",
-        "listen_ip" => "127.0.0.1",
+        "name"        => "TestBackbone",
+        "listen_ip"   => "127.0.0.1",
         "listen_port" => "4242",
       }
       iface = RNS::BackboneInterface.new(config)

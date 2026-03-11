@@ -26,25 +26,25 @@ module RNS
     # ─── Curve and key size constants ────────────────────────────────
     CURVE     = Identity::CURVE
     ECPUBSIZE = 32 + 32 # 64 bytes: 32 X25519 + 32 Ed25519 public key bytes
-    KEYSIZE   = 32       # Derived key size in bytes
+    KEYSIZE   = 32      # Derived key size in bytes
 
     # ─── MDU ─────────────────────────────────────────────────────────
     MDU = ((Reticulum::MTU - Reticulum::IFAC_MIN_SIZE - Reticulum::HEADER_MINSIZE - Identity::TOKEN_OVERHEAD) // Identity::AES128_BLOCKSIZE) * Identity::AES128_BLOCKSIZE - 1
 
     # ─── Timing constants ────────────────────────────────────────────
     ESTABLISHMENT_TIMEOUT_PER_HOP = Reticulum::DEFAULT_PER_HOP_TIMEOUT.to_f64
-    LINK_MTU_SIZE            = 3
-    TRAFFIC_TIMEOUT_MIN_MS   = 5
-    TRAFFIC_TIMEOUT_FACTOR   = 6
-    KEEPALIVE_MAX_RTT        = 1.75
-    KEEPALIVE_TIMEOUT_FACTOR = 4
-    STALE_GRACE              = 5.0
-    KEEPALIVE_MAX            = 360.0
-    KEEPALIVE_MIN            = 5.0
-    KEEPALIVE                = KEEPALIVE_MAX
-    STALE_FACTOR             = 2
-    STALE_TIME               = STALE_FACTOR * KEEPALIVE
-    WATCHDOG_MAX_SLEEP       = 5.0
+    LINK_MTU_SIZE                 =     3
+    TRAFFIC_TIMEOUT_MIN_MS        =     5
+    TRAFFIC_TIMEOUT_FACTOR        =     6
+    KEEPALIVE_MAX_RTT             =  1.75
+    KEEPALIVE_TIMEOUT_FACTOR      =     4
+    STALE_GRACE                   =   5.0
+    KEEPALIVE_MAX                 = 360.0
+    KEEPALIVE_MIN                 =   5.0
+    KEEPALIVE                     = KEEPALIVE_MAX
+    STALE_FACTOR                  = 2
+    STALE_TIME                    = STALE_FACTOR * KEEPALIVE
+    WATCHDOG_MAX_SLEEP            = 5.0
 
     # ─── Link states ─────────────────────────────────────────────────
     PENDING   = 0x00_u8
@@ -59,9 +59,9 @@ module RNS
     DESTINATION_CLOSED = 0x03_u8
 
     # ─── Resource strategies ─────────────────────────────────────────
-    ACCEPT_NONE = 0x00_u8
-    ACCEPT_APP  = 0x01_u8
-    ACCEPT_ALL  = 0x02_u8
+    ACCEPT_NONE         = 0x00_u8
+    ACCEPT_APP          = 0x01_u8
+    ACCEPT_ALL          = 0x02_u8
     RESOURCE_STRATEGIES = [ACCEPT_NONE, ACCEPT_APP, ACCEPT_ALL]
 
     # ─── Encryption modes ────────────────────────────────────────────
@@ -88,7 +88,7 @@ module RNS
 
     # ─── Byte masks for MTU signalling ───────────────────────────────
     MTU_BYTEMASK  = 0x1FFFFF_u32
-    MODE_BYTEMASK = 0xE0_u8
+    MODE_BYTEMASK =      0xE0_u8
 
     # ─── Instance properties ─────────────────────────────────────────
     getter? initiator : Bool
@@ -128,7 +128,7 @@ module RNS
     property incoming_resources : Array(Bytes) # NOTE: Resource hashes; should be Array(Resource) for part receiving
     property last_resource_window : Int32?
     property last_resource_eifr : Float64?
-    property attached_interface : Bytes?     # NOTE: Should be Interface? but Packet.receiving_interface is still Nil stub
+    property attached_interface : Bytes? # NOTE: Should be Interface? but Packet.receiving_interface is still Nil stub
 
     @status : UInt8
     @owner : Destination?
@@ -474,7 +474,7 @@ module RNS
         derived_key_length = case @mode
                              when MODE_AES128_CBC then 32
                              when MODE_AES256_CBC then 64
-                             else raise TypeError.new("Invalid link mode #{@mode} on #{self}")
+                             else                      raise TypeError.new("Invalid link mode #{@mode} on #{self}")
                              end
 
         @derived_key = Cryptography.hkdf(
@@ -523,8 +523,8 @@ module RNS
     def validate_proof(packet : Packet)
       begin
         if @status == PENDING
-          sig_len = Identity::SIGLENGTH // 8     # 64 bytes
-          ecpub_half = ECPUBSIZE // 2              # 32 bytes
+          sig_len = Identity::SIGLENGTH // 8 # 64 bytes
+          ecpub_half = ECPUBSIZE // 2        # 32 bytes
 
           signalling_bytes = Bytes.empty
           confirmed_mtu : Int32? = nil
@@ -1087,7 +1087,6 @@ module RNS
                 end
               end
             end
-
           when Packet::LINKIDENTIFY
             plaintext = decrypt_data(packet.data)
             if plaintext && !@initiator
@@ -1116,7 +1115,6 @@ module RNS
                 end
               end
             end
-
           when Packet::REQUEST
             begin
               plaintext = decrypt_data(packet.data)
@@ -1128,7 +1126,6 @@ module RNS
             rescue ex
               RNS.log("Error occurred while handling request: #{ex}", RNS::LOG_ERROR)
             end
-
           when Packet::RESPONSE
             begin
               plaintext = decrypt_data(packet.data)
@@ -1143,20 +1140,16 @@ module RNS
             rescue ex
               RNS.log("Error occurred while handling response: #{ex}", RNS::LOG_ERROR)
             end
-
           when Packet::LRRTT
             rtt_packet(packet) unless @initiator
-
           when Packet::LINKCLOSE
             teardown_packet(packet)
-
           when Packet::KEEPALIVE
             if !@initiator && packet.data == Bytes[0xFF]
               keepalive_response = Packet.new(self, Bytes[0xFE], context: Packet::KEEPALIVE)
               keepalive_response.send
               had_outbound(is_keepalive: true)
             end
-
           when Packet::CHANNEL
             # NOTE: Channel delivery blocked by Crystal codegen bug preventing @channel storage.
             # When resolved, uncomment:

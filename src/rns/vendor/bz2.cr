@@ -1,22 +1,22 @@
 @[Link("bz2")]
 lib LibBZ2
-  BZ_OK             =  0
-  BZ_RUN_OK         =  1
-  BZ_FLUSH_OK       =  2
-  BZ_FINISH_OK      =  3
-  BZ_STREAM_END     =  4
-  BZ_OUTBUFF_FULL   = -8
+  BZ_OK           =  0
+  BZ_RUN_OK       =  1
+  BZ_FLUSH_OK     =  2
+  BZ_FINISH_OK    =  3
+  BZ_STREAM_END   =  4
+  BZ_OUTBUFF_FULL = -8
 
   fun compress = BZ2_bzBuffToBuffCompress(
     dest : UInt8*, dest_len : UInt32*,
     source : UInt8*, source_len : UInt32,
-    block_size_100k : Int32, verbosity : Int32, work_factor : Int32
+    block_size_100k : Int32, verbosity : Int32, work_factor : Int32,
   ) : Int32
 
   fun decompress = BZ2_bzBuffToBuffDecompress(
     dest : UInt8*, dest_len : UInt32*,
     source : UInt8*, source_len : UInt32,
-    small : Int32, verbosity : Int32
+    small : Int32, verbosity : Int32,
   ) : Int32
 end
 

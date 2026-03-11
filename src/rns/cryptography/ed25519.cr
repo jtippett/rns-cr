@@ -7,33 +7,33 @@ lib LibCrypto
   type EVP_PKEY = Void*
 
   fun evp_pkey_new_raw_private_key = EVP_PKEY_new_raw_private_key(
-    type : Int32, e : Void*, key : UInt8*, keylen : LibC::SizeT
+    type : Int32, e : Void*, key : UInt8*, keylen : LibC::SizeT,
   ) : EVP_PKEY
 
   fun evp_pkey_new_raw_public_key = EVP_PKEY_new_raw_public_key(
-    type : Int32, e : Void*, key : UInt8*, keylen : LibC::SizeT
+    type : Int32, e : Void*, key : UInt8*, keylen : LibC::SizeT,
   ) : EVP_PKEY
 
   fun evp_pkey_get_raw_public_key = EVP_PKEY_get_raw_public_key(
-    pkey : EVP_PKEY, pub : UInt8*, len : LibC::SizeT*
+    pkey : EVP_PKEY, pub : UInt8*, len : LibC::SizeT*,
   ) : Int32
 
   fun evp_pkey_free = EVP_PKEY_free(pkey : EVP_PKEY) : Void
 
   fun evp_digest_sign_init = EVP_DigestSignInit(
-    ctx : EVP_MD_CTX, pctx : Void*, type : Void*, e : Void*, pkey : EVP_PKEY
+    ctx : EVP_MD_CTX, pctx : Void*, type : Void*, e : Void*, pkey : EVP_PKEY,
   ) : Int32
 
   fun evp_digest_sign = EVP_DigestSign(
-    ctx : EVP_MD_CTX, sigret : UInt8*, siglen : LibC::SizeT*, tbs : UInt8*, tbslen : LibC::SizeT
+    ctx : EVP_MD_CTX, sigret : UInt8*, siglen : LibC::SizeT*, tbs : UInt8*, tbslen : LibC::SizeT,
   ) : Int32
 
   fun evp_digest_verify_init = EVP_DigestVerifyInit(
-    ctx : EVP_MD_CTX, pctx : Void*, type : Void*, e : Void*, pkey : EVP_PKEY
+    ctx : EVP_MD_CTX, pctx : Void*, type : Void*, e : Void*, pkey : EVP_PKEY,
   ) : Int32
 
   fun evp_digest_verify = EVP_DigestVerify(
-    ctx : EVP_MD_CTX, sigret : UInt8*, siglen : LibC::SizeT, tbs : UInt8*, tbslen : LibC::SizeT
+    ctx : EVP_MD_CTX, sigret : UInt8*, siglen : LibC::SizeT, tbs : UInt8*, tbslen : LibC::SizeT,
   ) : Int32
 end
 

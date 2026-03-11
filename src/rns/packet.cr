@@ -73,7 +73,7 @@ module RNS
     property packet_hash : Bytes?
     property ratchet_id : Bytes?
 
-    property attached_interface : Nil # NOTE: Should be Interface? — requires refactoring Link/Packet interface types
+    property attached_interface : Nil  # NOTE: Should be Interface? — requires refactoring Link/Packet interface types
     property receiving_interface : Nil # NOTE: Should be Interface? — requires refactoring Link/Packet interface types
     property rssi : Float64?
     property snr : Float64?
@@ -182,7 +182,7 @@ module RNS
       header_io.write_byte(@hops)
 
       if @context == LRPROOF
-        link_id = dest.as(Destination::Stub).link_id  # LRPROOF only used with Stub/Link destinations
+        link_id = dest.as(Destination::Stub).link_id # LRPROOF only used with Stub/Link destinations
         header_io.write(link_id.not_nil!)
         @ciphertext = @data
       else
@@ -346,8 +346,8 @@ module RNS
     DELIVERED = 0x02_u8
     CULLED    = 0xFF_u8
 
-    EXPL_LENGTH = Identity::HASHLENGTH // 8 + Identity::SIGLENGTH // 8  # 32 + 64 = 96
-    IMPL_LENGTH = Identity::SIGLENGTH // 8                              # 64
+    EXPL_LENGTH = Identity::HASHLENGTH // 8 + Identity::SIGLENGTH // 8 # 32 + 64 = 96
+    IMPL_LENGTH = Identity::SIGLENGTH // 8                             # 64
 
     property hash : Bytes
     property truncated_hash : Bytes

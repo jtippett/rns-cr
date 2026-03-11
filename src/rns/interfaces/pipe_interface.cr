@@ -2,9 +2,9 @@ module RNS
   # Interface that communicates with external programs via stdin/stdout pipes.
   # Uses HDLC framing for packetization, matching RNS/Interfaces/PipeInterface.py.
   class PipeInterface < Interface
-    MAX_CHUNK         = 32768
+    MAX_CHUNK         =         32768
     BITRATE_GUESS     = 1_000_000_i64
-    DEFAULT_IFAC_SIZE = 8
+    DEFAULT_IFAC_SIZE =             8
 
     property command : String = ""
     property respawn_delay : Float64 = 5.0

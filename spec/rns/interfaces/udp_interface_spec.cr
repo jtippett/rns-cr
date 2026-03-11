@@ -90,10 +90,10 @@ describe RNS::UDPInterface do
     it "uses 'port' as default for both listen_port and forward_port" do
       port = free_port
       config = {
-        "name"      => "TestPort",
-        "listen_ip" => "127.0.0.1",
+        "name"       => "TestPort",
+        "listen_ip"  => "127.0.0.1",
         "forward_ip" => "127.0.0.1",
-        "port"      => port.to_s,
+        "port"       => port.to_s,
       }
 
       iface = RNS::UDPInterface.new(config)

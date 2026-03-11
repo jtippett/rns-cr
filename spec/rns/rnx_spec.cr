@@ -192,7 +192,7 @@ describe RNS::Rnx do
 
     it "parses a full execute command" do
       args = RNS::Rnx.parse_args(["-v", "--config", "/etc/rns", "-m", "-d",
-        "-w", "30", "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4", "uname -a"])
+                                  "-w", "30", "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4", "uname -a"])
       args.verbose.should eq 1
       args.config.should eq "/etc/rns"
       args.mirror.should be_true
@@ -212,8 +212,8 @@ describe RNS::Rnx do
 
     it "parses interactive execute with limits" do
       args = RNS::Rnx.parse_args(["-x", "-d", "--stdin", "input data",
-        "--stdout", "8192", "--stderr", "4096", "-W", "120",
-        "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4", "cat"])
+                                  "--stdout", "8192", "--stderr", "4096", "-W", "120",
+                                  "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4", "cat"])
       args.interactive.should be_true
       args.detailed.should be_true
       args.stdin_data.should eq "input data"

@@ -17,7 +17,7 @@ module RNS
         @service = false,
         @interactive = false,
         @example_config = false,
-        @version = false
+        @version = false,
       )
       end
     end

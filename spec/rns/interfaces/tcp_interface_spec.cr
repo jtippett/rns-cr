@@ -106,7 +106,7 @@ describe RNS::KISS do
     end
 
     it "escapes data within the frame" do
-      data = Bytes[0xC0]  # FEND byte
+      data = Bytes[0xC0] # FEND byte
       framed = RNS::KISS.frame(data)
       # FEND + CMD_DATA + escaped(FEND) + FEND = 0xC0 0x00 0xDB 0xDC 0xC0
       framed.should eq(Bytes[0xC0, 0x00, 0xDB, 0xDC, 0xC0])
@@ -217,10 +217,10 @@ describe RNS::TCPClientInterface do
       server = TCPServer.new("127.0.0.1", port)
 
       config = {
-        "name"          => "TestKISS",
-        "target_host"   => "127.0.0.1",
-        "target_port"   => port.to_s,
-        "kiss_framing"  => "true",
+        "name"         => "TestKISS",
+        "target_host"  => "127.0.0.1",
+        "target_port"  => port.to_s,
+        "kiss_framing" => "true",
       }
 
       iface = RNS::TCPClientInterface.new(config)
@@ -237,10 +237,10 @@ describe RNS::TCPClientInterface do
       server = TCPServer.new("127.0.0.1", port)
 
       config = {
-        "name"          => "TestI2P",
-        "target_host"   => "127.0.0.1",
-        "target_port"   => port.to_s,
-        "i2p_tunneled"  => "true",
+        "name"         => "TestI2P",
+        "target_host"  => "127.0.0.1",
+        "target_port"  => port.to_s,
+        "i2p_tunneled" => "true",
       }
 
       iface = RNS::TCPClientInterface.new(config)
@@ -429,8 +429,8 @@ describe RNS::TCPClientInterface do
       # Create a parent server interface
       parent_port = free_port
       parent_config = {
-        "name"      => "ParentServer",
-        "listen_ip" => "127.0.0.1",
+        "name"        => "ParentServer",
+        "listen_ip"   => "127.0.0.1",
         "listen_port" => parent_port.to_s,
       }
       parent = RNS::TCPServerInterface.new(parent_config)
@@ -874,8 +874,8 @@ describe RNS::TCPClientInterface do
 
       parent_port = free_port
       parent_config = {
-        "name"      => "Parent",
-        "listen_ip" => "127.0.0.1",
+        "name"        => "Parent",
+        "listen_ip"   => "127.0.0.1",
         "listen_port" => parent_port.to_s,
       }
       parent = RNS::TCPServerInterface.new(parent_config)
@@ -959,7 +959,7 @@ describe RNS::TCPClientInterface do
         connected_socket: client_socket,
         name: "OfflineTest"
       )
-      iface.teardown  # Take offline
+      iface.teardown # Take offline
       iface.process_outgoing(Bytes[0x01, 0x02, 0x03])
       iface.txb.should eq(0_i64)
 
@@ -1215,8 +1215,8 @@ describe RNS::TCPServerInterface do
     it "creates server listening on bind_ip and bind_port" do
       port = free_port
       config = {
-        "name"      => "TestServer",
-        "listen_ip" => "127.0.0.1",
+        "name"        => "TestServer",
+        "listen_ip"   => "127.0.0.1",
         "listen_port" => port.to_s,
       }
 
@@ -1275,8 +1275,8 @@ describe RNS::TCPServerInterface do
     it "sets direction flags" do
       port = free_port
       config = {
-        "name"      => "DirFlags",
-        "listen_ip" => "127.0.0.1",
+        "name"        => "DirFlags",
+        "listen_ip"   => "127.0.0.1",
         "listen_port" => port.to_s,
       }
 
@@ -1292,8 +1292,8 @@ describe RNS::TCPServerInterface do
     it "sets HW_MTU correctly" do
       port = free_port
       config = {
-        "name"      => "MTUCheck",
-        "listen_ip" => "127.0.0.1",
+        "name"        => "MTUCheck",
+        "listen_ip"   => "127.0.0.1",
         "listen_port" => port.to_s,
       }
 
@@ -1308,8 +1308,8 @@ describe RNS::TCPServerInterface do
     it "initializes with empty spawned_interfaces" do
       port = free_port
       config = {
-        "name"      => "SpawnCheck",
-        "listen_ip" => "127.0.0.1",
+        "name"        => "SpawnCheck",
+        "listen_ip"   => "127.0.0.1",
         "listen_port" => port.to_s,
       }
 
@@ -1326,8 +1326,8 @@ describe RNS::TCPServerInterface do
     it "accepts a client connection and spawns interface" do
       port = free_port
       config = {
-        "name"      => "AcceptTest",
-        "listen_ip" => "127.0.0.1",
+        "name"        => "AcceptTest",
+        "listen_ip"   => "127.0.0.1",
         "listen_port" => port.to_s,
       }
 
@@ -1349,8 +1349,8 @@ describe RNS::TCPServerInterface do
     it "accepts multiple client connections" do
       port = free_port
       config = {
-        "name"      => "MultiAccept",
-        "listen_ip" => "127.0.0.1",
+        "name"        => "MultiAccept",
+        "listen_ip"   => "127.0.0.1",
         "listen_port" => port.to_s,
       }
 
@@ -1382,8 +1382,8 @@ describe RNS::TCPServerInterface do
       end
 
       config = {
-        "name"      => "DataRecvTest",
-        "listen_ip" => "127.0.0.1",
+        "name"        => "DataRecvTest",
+        "listen_ip"   => "127.0.0.1",
         "listen_port" => port.to_s,
       }
 
@@ -1419,8 +1419,8 @@ describe RNS::TCPServerInterface do
       end
 
       config = {
-        "name"      => "RxBTrack",
-        "listen_ip" => "127.0.0.1",
+        "name"        => "RxBTrack",
+        "listen_ip"   => "127.0.0.1",
         "listen_port" => port.to_s,
       }
 
@@ -1452,8 +1452,8 @@ describe RNS::TCPServerInterface do
     it "only records when from_spawned is true" do
       port = free_port
       config = {
-        "name"      => "AnnounceTest",
-        "listen_ip" => "127.0.0.1",
+        "name"        => "AnnounceTest",
+        "listen_ip"   => "127.0.0.1",
         "listen_port" => port.to_s,
       }
 
@@ -1480,8 +1480,8 @@ describe RNS::TCPServerInterface do
     it "is a no-op" do
       port = free_port
       config = {
-        "name"      => "NoOpTest",
-        "listen_ip" => "127.0.0.1",
+        "name"        => "NoOpTest",
+        "listen_ip"   => "127.0.0.1",
         "listen_port" => port.to_s,
       }
 
@@ -1499,8 +1499,8 @@ describe RNS::TCPServerInterface do
     it "closes server and marks offline" do
       port = free_port
       config = {
-        "name"      => "DetachTest",
-        "listen_ip" => "127.0.0.1",
+        "name"        => "DetachTest",
+        "listen_ip"   => "127.0.0.1",
         "listen_port" => port.to_s,
       }
 
@@ -1519,14 +1519,14 @@ describe RNS::TCPServerInterface do
     it "is idempotent" do
       port = free_port
       config = {
-        "name"      => "IdempotentDetach",
-        "listen_ip" => "127.0.0.1",
+        "name"        => "IdempotentDetach",
+        "listen_ip"   => "127.0.0.1",
         "listen_port" => port.to_s,
       }
 
       iface = RNS::TCPServerInterface.new(config)
       iface.detach
-      iface.detach  # Should not raise
+      iface.detach # Should not raise
       iface.online.should be_false
     end
   end
@@ -1535,8 +1535,8 @@ describe RNS::TCPServerInterface do
     it "returns formatted string with name, IP and port" do
       port = free_port
       config = {
-        "name"      => "MyServer",
-        "listen_ip" => "127.0.0.1",
+        "name"        => "MyServer",
+        "listen_ip"   => "127.0.0.1",
         "listen_port" => port.to_s,
       }
 
@@ -1553,8 +1553,8 @@ describe RNS::TCPServerInterface do
     it "inherits from Interface" do
       port = free_port
       config = {
-        "name"      => "InheritTest",
-        "listen_ip" => "127.0.0.1",
+        "name"        => "InheritTest",
+        "listen_ip"   => "127.0.0.1",
         "listen_port" => port.to_s,
       }
 
@@ -1571,8 +1571,8 @@ describe RNS::TCPServerInterface do
     it "handles 10 rapid client connections" do
       port = free_port
       config = {
-        "name"      => "StressServer",
-        "listen_ip" => "127.0.0.1",
+        "name"        => "StressServer",
+        "listen_ip"   => "127.0.0.1",
         "listen_port" => port.to_s,
       }
 
@@ -1604,8 +1604,8 @@ describe RNS::TCPServerInterface do
       end
 
       config = {
-        "name"      => "MultiMsgServer",
-        "listen_ip" => "127.0.0.1",
+        "name"        => "MultiMsgServer",
+        "listen_ip"   => "127.0.0.1",
         "listen_port" => port.to_s,
       }
 

@@ -218,10 +218,10 @@ describe RNS::KISSInterface do
       # by verifying that missing port raises correctly
       expect_raises(ArgumentError, /No port specified/) do
         RNS::KISSInterface.new({
-          "name" => "kiss0",
-          "speed" => "19200",
+          "name"     => "kiss0",
+          "speed"    => "19200",
           "preamble" => "500",
-          "txtail" => "50",
+          "txtail"   => "50",
         })
       end
     end
@@ -354,12 +354,12 @@ describe RNS::KISSInterface do
     it "encodes data correctly" do
       data = Bytes[0x01, 0x02, 0x03]
       frame = RNS::KISS.frame(data)
-      frame[0].should eq 0xC0_u8  # FEND
-      frame[1].should eq 0x00_u8  # CMD_DATA
+      frame[0].should eq 0xC0_u8 # FEND
+      frame[1].should eq 0x00_u8 # CMD_DATA
       frame[2].should eq 0x01_u8
       frame[3].should eq 0x02_u8
       frame[4].should eq 0x03_u8
-      frame[5].should eq 0xC0_u8  # FEND
+      frame[5].should eq 0xC0_u8 # FEND
     end
 
     it "escapes FEND in data" do
@@ -985,8 +985,8 @@ describe RNS::AX25 do
       src = "N0CALL".encode("ASCII")
       dst = "APZRNS".encode("ASCII")
       header = RNS::AX25.build_header(src, 5, dst, 0)
-      header[6].should eq 0x60_u8   # dst SSID
-      header[13].should eq 0x6B_u8  # src SSID with last bit
+      header[6].should eq 0x60_u8  # dst SSID
+      header[13].should eq 0x6B_u8 # src SSID with last bit
     end
   end
 end
@@ -1535,9 +1535,9 @@ describe RNS::AX25KISSInterface do
 
     it "creates 20 interfaces with valid callsigns" do
       callsigns = ["N0CALL", "W1AW", "K7RLD", "VE3ABC", "JA1MRG",
-                    "DL4MDW", "G3RSD", "OH2GEX", "SP5EEP", "UA3AAA",
-                    "VK2TDS", "ZL1AAA", "PY1ABC", "LU1AAA", "XE1ABC",
-                    "HL2ABC", "BV2AAA", "A71AAA", "9V1AAA", "YB1AAA"]
+                   "DL4MDW", "G3RSD", "OH2GEX", "SP5EEP", "UA3AAA",
+                   "VK2TDS", "ZL1AAA", "PY1ABC", "LU1AAA", "XE1ABC",
+                   "HL2ABC", "BV2AAA", "A71AAA", "9V1AAA", "YB1AAA"]
       callsigns.each_with_index do |call, i|
         ssid = i % 16
         iface = RNS::AX25KISSInterface.new(

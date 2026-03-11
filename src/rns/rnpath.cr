@@ -47,7 +47,7 @@ module RNS
         @json = false,
         @destination = nil,
         @list_filter = nil,
-        @version = false
+        @version = false,
       )
       end
     end
@@ -374,7 +374,6 @@ module RNS
 
         table = get_path_table(args.max_hops)
         puts format_path_table(table, destination_hash)
-
       elsif args.rates
         destination_hash = nil.as(Bytes?)
         if dest_hex = args.destination
@@ -383,11 +382,9 @@ module RNS
 
         table = get_rate_table
         puts format_rate_table(table, destination_hash)
-
       elsif args.drop_announces
         puts "Dropping announce queues on all interfaces..."
         drop_announce_queues
-
       elsif args.drop
         dest_hex = args.destination || raise ArgumentError.new("--drop requires a destination hash")
         destination_hash = parse_hash(dest_hex)
@@ -398,7 +395,6 @@ module RNS
           puts "Unable to drop path to #{RNS.prettyhexrep(destination_hash)}. Does it exist?"
           exit(1)
         end
-
       elsif args.drop_via
         dest_hex = args.destination || raise ArgumentError.new("--drop-via requires a transport instance hash")
         destination_hash = parse_hash(dest_hex)
@@ -410,7 +406,6 @@ module RNS
           puts "Unable to drop paths via #{RNS.prettyhexrep(destination_hash)}. Does the transport instance exist?"
           exit(1)
         end
-
       else
         # Path request mode
         dest_hex = args.destination || raise ArgumentError.new("A destination hash is required")
@@ -451,7 +446,6 @@ module RNS
           exit(1)
         end
       end
-
     rescue ex : ArgumentError
       STDERR.puts "rnpath: #{ex.message}"
       exit(1)

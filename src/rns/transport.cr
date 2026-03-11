@@ -16,10 +16,10 @@ module RNS
     APP_NAME = "rnstransport"
 
     # ─── Pathfinder constants ──────────────────────────────────────
-    PATHFINDER_M  = 128       # Max hops
-    PATHFINDER_R  =   1       # Retransmit retries
-    PATHFINDER_G  =   5       # Retry grace period (seconds)
-    PATHFINDER_RW =   0.5     # Random window for announce rebroadcast
+    PATHFINDER_M  = 128        # Max hops
+    PATHFINDER_R  =   1        # Retransmit retries
+    PATHFINDER_G  =   5        # Retry grace period (seconds)
+    PATHFINDER_RW = 0.5        # Random window for announce rebroadcast
     PATHFINDER_E  = 60*60*24*7 # Path expiration: 1 week (604800s)
 
     AP_PATH_TIME      = 60*60*24 # Access Point path expiration: 1 day
@@ -28,10 +28,10 @@ module RNS
     LOCAL_REBROADCASTS_MAX = 2 # How many local rebroadcasts of an announce is allowed
 
     # ─── Path request constants ────────────────────────────────────
-    PATH_REQUEST_TIMEOUT = 15    # Default timeout for client path requests (seconds)
-    PATH_REQUEST_GRACE   =  0.4  # Grace time before path announcement
-    PATH_REQUEST_RG      =  1.5  # Extra grace for roaming-mode interfaces
-    PATH_REQUEST_MI      = 20    # Minimum interval for automated path requests (seconds)
+    PATH_REQUEST_TIMEOUT =  15 # Default timeout for client path requests (seconds)
+    PATH_REQUEST_GRACE   = 0.4 # Grace time before path announcement
+    PATH_REQUEST_RG      = 1.5 # Extra grace for roaming-mode interfaces
+    PATH_REQUEST_MI      =  20 # Minimum interval for automated path requests (seconds)
 
     # ─── State constants ───────────────────────────────────────────
     STATE_UNKNOWN      = 0x00_u8
@@ -40,28 +40,28 @@ module RNS
 
     # ─── Timeout and limit constants ───────────────────────────────
     # LINK_TIMEOUT is set after Link is defined; use class method for now
-    REVERSE_TIMEOUT     = 8 * 60         # 480 seconds (8 minutes)
-    DESTINATION_TIMEOUT = 60*60*24*7     # 1 week
-    MAX_RECEIPTS        = 1024
-    MAX_RATE_TIMESTAMPS = 16
-    PERSIST_RANDOM_BLOBS = 32
-    MAX_RANDOM_BLOBS     = 64
-    LOCAL_CLIENT_CACHE_MAXSIZE = 512
+    REVERSE_TIMEOUT            = 8 * 60     # 480 seconds (8 minutes)
+    DESTINATION_TIMEOUT        = 60*60*24*7 # 1 week
+    MAX_RECEIPTS               = 1024
+    MAX_RATE_TIMESTAMPS        =   16
+    PERSIST_RANDOM_BLOBS       =   32
+    MAX_RANDOM_BLOBS           =   64
+    LOCAL_CLIENT_CACHE_MAXSIZE =  512
 
     # ─── Job interval constants ────────────────────────────────────
-    JOB_INTERVAL              = 0.250
-    LINKS_CHECK_INTERVAL      = 1.0
-    RECEIPTS_CHECK_INTERVAL   = 1.0
-    ANNOUNCES_CHECK_INTERVAL  = 1.0
-    PENDING_PRS_CHECK_INTERVAL = 30.0
-    CACHE_CLEAN_INTERVAL      = 5 * 60   # 300 seconds
-    TABLES_CULL_INTERVAL      = 5.0
-    INTERFACE_JOBS_INTERVAL   = 5.0
-    MGMT_ANNOUNCE_INTERVAL    = 2 * 60 * 60 # 7200 seconds
-    BLACKHOLE_CHECK_INTERVAL  = 60
+    JOB_INTERVAL               = 0.250
+    LINKS_CHECK_INTERVAL       =   1.0
+    RECEIPTS_CHECK_INTERVAL    =   1.0
+    ANNOUNCES_CHECK_INTERVAL   =   1.0
+    PENDING_PRS_CHECK_INTERVAL =  30.0
+    CACHE_CLEAN_INTERVAL       = 5 * 60 # 300 seconds
+    TABLES_CULL_INTERVAL       = 5.0
+    INTERFACE_JOBS_INTERVAL    = 5.0
+    MGMT_ANNOUNCE_INTERVAL     = 2 * 60 * 60 # 7200 seconds
+    BLACKHOLE_CHECK_INTERVAL   = 60
 
     HASHLIST_MAXSIZE = 1_000_000
-    MAX_PR_TAGS      = 32_000
+    MAX_PR_TAGS      =    32_000
 
     # ─── Path table entry indices ──────────────────────────────────
     IDX_PT_TIMESTAMP = 0
@@ -114,7 +114,7 @@ module RNS
       hops : Int32,
       expires : Float64,
       random_blobs : Array(Bytes),
-      receiving_interface : Bytes?,   # Interface hash (Bytes) — actual interface resolved at runtime
+      receiving_interface : Bytes?, # Interface hash (Bytes) — actual interface resolved at runtime
       packet_hash : Bytes
 
     # ─── Announce table entry type ─────────────────────────────────
@@ -127,21 +127,21 @@ module RNS
       packet : Packet,
       local_rebroadcasts : Int32,
       block_rebroadcasts : Bool,
-      attached_interface : Bytes?   # Interface hash
+      attached_interface : Bytes? # Interface hash
 
     # ─── Reverse table entry type ──────────────────────────────────
     record ReverseEntry,
-      received_on : Bytes?,   # Interface hash
-      outbound : Bytes?,      # Interface hash
+      received_on : Bytes?, # Interface hash
+      outbound : Bytes?,    # Interface hash
       timestamp : Float64
 
     # ─── Link table entry type ─────────────────────────────────────
     record LinkEntry,
       timestamp : Float64,
       next_hop_transport_id : Bytes,
-      next_hop_interface : Bytes?,  # Interface hash
+      next_hop_interface : Bytes?, # Interface hash
       remaining_hops : Int32,
-      received_on : Bytes?,         # Interface hash
+      received_on : Bytes?, # Interface hash
       taken_hops : Int32,
       destination_hash : Bytes,
       validated : Bool,
@@ -150,8 +150,8 @@ module RNS
     # ─── Tunnel table entry type ───────────────────────────────────
     record TunnelEntry,
       tunnel_id : Bytes,
-      interface : Bytes?,             # Interface hash
-      paths : Hash(String, PathEntry),  # destination_hash hex -> PathEntry
+      interface : Bytes?,              # Interface hash
+      paths : Hash(String, PathEntry), # destination_hash hex -> PathEntry
       expires : Float64
 
     # ─── Announce rate entry type ──────────────────────────────────
@@ -165,8 +165,8 @@ module RNS
     LINK_TIMEOUT = (LinkLike::STALE_TIME * 1.25)
 
     # ─── Core state (class-level variables) ────────────────────────
-    @@interfaces = [] of Bytes         # Interface hashes (actual interface objects managed elsewhere)
-    @@interface_objects = [] of Interface  # Actual interface objects for discovery/iteration
+    @@interfaces = [] of Bytes            # Interface hashes (actual interface objects managed elsewhere)
+    @@interface_objects = [] of Interface # Actual interface objects for discovery/iteration
     @@destinations = [] of Destination
     @@pending_links = [] of LinkLike
     @@active_links = [] of LinkLike
@@ -178,15 +178,15 @@ module RNS
     @@transmit_log = [] of {Bytes, Bytes}
 
     # ─── Tables ────────────────────────────────────────────────────
-    @@announce_table = Hash(String, AnnounceEntry).new        # dest_hash hex -> entry
-    @@path_table = Hash(String, PathEntry).new                # dest_hash hex -> entry
-    @@reverse_table = Hash(String, ReverseEntry).new          # truncated_packet_hash hex -> entry
-    @@link_table = Hash(String, LinkEntry).new                # link_id hex -> entry
-    @@held_announces = Hash(String, AnnounceEntry).new        # dest_hash hex -> entry
-    @@tunnels = Hash(String, TunnelEntry).new                 # tunnel_id hex -> entry
+    @@announce_table = Hash(String, AnnounceEntry).new          # dest_hash hex -> entry
+    @@path_table = Hash(String, PathEntry).new                  # dest_hash hex -> entry
+    @@reverse_table = Hash(String, ReverseEntry).new            # truncated_packet_hash hex -> entry
+    @@link_table = Hash(String, LinkEntry).new                  # link_id hex -> entry
+    @@held_announces = Hash(String, AnnounceEntry).new          # dest_hash hex -> entry
+    @@tunnels = Hash(String, TunnelEntry).new                   # tunnel_id hex -> entry
     @@announce_rate_table = Hash(String, AnnounceRateEntry).new # dest_hash hex -> entry
-    @@path_requests = Hash(String, Float64).new               # dest_hash hex -> timestamp
-    @@path_states = Hash(String, UInt8).new                   # dest_hash hex -> STATE_*
+    @@path_requests = Hash(String, Float64).new                 # dest_hash hex -> timestamp
+    @@path_states = Hash(String, UInt8).new                     # dest_hash hex -> STATE_*
     @@blackholed_identities = Hash(String, Hash(String, String | Float64 | Nil)).new
 
     @@announce_handlers = [] of AnnounceHandler
@@ -652,7 +652,6 @@ module RNS
         if packet.packet_type != Packet::ANNOUNCE &&
            packet.destination.try { |d| d.type != Destination::PLAIN && d.type != Destination::GROUP } &&
            dest_hex && @@path_table.has_key?(dest_hex)
-
           path_entry = @@path_table[dest_hex]
           outbound_interface = path_entry.receiving_interface
 
@@ -684,7 +683,6 @@ module RNS
                 )
                 sent = true
               end
-
             elsif path_entry.hops == 1 && @@is_connected_to_shared_instance
               # Connected to shared instance and 1 hop away: add transport headers
               raw = packet.raw
@@ -711,7 +709,6 @@ module RNS
                 )
                 sent = true
               end
-
             else
               # Directly reachable: transmit as-is
               raw = packet.raw
@@ -722,7 +719,6 @@ module RNS
               end
             end
           end
-
         else
           # No known path: broadcast on all outgoing interfaces
           stored_hash = false
@@ -901,7 +897,7 @@ module RNS
                 new_raw = if remaining_hops > 1
                             # Update next hop and retransmit
                             io = IO::Memory.new
-                            io.write(raw[0, 1])     # flags
+                            io.write(raw[0, 1])        # flags
                             io.write_byte(packet.hops) # updated hops
                             io.write(next_hop)         # new next hop
                             truncated_hash_size = Identity::TRUNCATED_HASHLENGTH // 8
@@ -976,7 +972,6 @@ module RNS
              packet.packet_type != Packet::LINKREQUEST &&
              packet.context != Packet::LRPROOF &&
              dest_hex && @@link_table.has_key?(dest_hex)
-
             link_entry = @@link_table[dest_hex]
             outbound_interface = nil.as(Bytes?)
 
@@ -1028,7 +1023,7 @@ module RNS
         if packet.packet_type == Packet::ANNOUNCE
           inbound_announce(packet)
 
-        # Link request handling for local destinations
+          # Link request handling for local destinations
         elsif packet.packet_type == Packet::LINKREQUEST
           our_hash = @@identity.try(&.hash)
           if packet.transport_id.nil? || packet.transport_id == our_hash
@@ -1039,7 +1034,7 @@ module RNS
             end
           end
 
-        # Data packet handling
+          # Data packet handling
         elsif packet.packet_type == Packet::DATA
           if packet.destination_type == Destination::LINK
             # Deliver to active link
@@ -1062,7 +1057,7 @@ module RNS
             end
           end
 
-        # Proof handling
+          # Proof handling
         elsif packet.packet_type == Packet::PROOF
           if packet.context == Packet::LRPROOF
             # Link request proof handling
@@ -1138,7 +1133,6 @@ module RNS
                 end
               end
             end
-
           elsif packet.context == Packet::RESOURCE_PRF
             # Resource proof: deliver to active link
             @@active_links.each do |link|
@@ -1146,7 +1140,6 @@ module RNS
                 # link.receive(packet) — when Link is implemented
               end
             end
-
           else
             # Regular proof handling
             if packet.data.size == PacketReceipt::EXPL_LENGTH

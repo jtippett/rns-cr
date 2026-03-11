@@ -5,18 +5,18 @@ module RNS
   class Identity
     CURVE = "Curve25519"
 
-    KEYSIZE     = 256 * 2  # bits — 256 encryption + 256 signing
-    RATCHETSIZE = 256      # bits
+    KEYSIZE     = 256 * 2 # bits — 256 encryption + 256 signing
+    RATCHETSIZE = 256     # bits
 
     RATCHET_EXPIRY = 60 * 60 * 24 * 30 # 30 days in seconds
 
-    TOKEN_OVERHEAD            = Cryptography::Token::TOKEN_OVERHEAD
-    AES128_BLOCKSIZE          = 16       # bytes
-    HASHLENGTH                = 256      # bits
-    SIGLENGTH                 = KEYSIZE  # bits
+    TOKEN_OVERHEAD   = Cryptography::Token::TOKEN_OVERHEAD
+    AES128_BLOCKSIZE =  16     # bytes
+    HASHLENGTH       = 256     # bits
+    SIGLENGTH        = KEYSIZE # bits
 
-    NAME_HASH_LENGTH          = 80       # bits
-    TRUNCATED_HASHLENGTH      = 128      # bits
+    NAME_HASH_LENGTH     =  80 # bits
+    TRUNCATED_HASHLENGTH = 128 # bits
 
     DERIVED_KEY_LENGTH        = 512 // 8 # 64 bytes
     DERIVED_KEY_LENGTH_LEGACY = 256 // 8 # 32 bytes

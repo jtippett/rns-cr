@@ -148,13 +148,13 @@ module RNS
 
   class Channel(TPacket)
     # ─── Window constants ───────────────────────────────────────
-    WINDOW     = 2
-    WINDOW_MIN = 2
-    WINDOW_MIN_LIMIT_SLOW   = 2
-    WINDOW_MIN_LIMIT_MEDIUM = 5
+    WINDOW                  =  2
+    WINDOW_MIN              =  2
+    WINDOW_MIN_LIMIT_SLOW   =  2
+    WINDOW_MIN_LIMIT_MEDIUM =  5
     WINDOW_MIN_LIMIT_FAST   = 16
 
-    WINDOW_MAX_SLOW   = 5
+    WINDOW_MAX_SLOW   =  5
     WINDOW_MAX_MEDIUM = 12
     WINDOW_MAX_FAST   = 48
     WINDOW_MAX        = WINDOW_MAX_FAST
@@ -167,7 +167,7 @@ module RNS
 
     WINDOW_FLEXIBILITY = 4
 
-    SEQ_MAX     = 0xFFFF_u16
+    SEQ_MAX     =  0xFFFF_u16
     SEQ_MODULUS = 0x10000_u32
 
     # ─── Instance state ─────────────────────────────────────────

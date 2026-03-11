@@ -702,7 +702,7 @@ describe RNS::Destination do
 
     it "sets callable app data" do
       dest = RNS::Destination.new(nil, RNS::Destination::IN, RNS::Destination::SINGLE, "testapp", register: false)
-      dest.set_default_app_data(->{ "dynamic".to_slice.as(Bytes?) })
+      dest.set_default_app_data(-> { "dynamic".to_slice.as(Bytes?) })
       dest.default_app_data.should_not be_nil
     end
 
@@ -746,10 +746,10 @@ describe RNS::Destination do
       dest = RNS::Destination.new(nil, RNS::Destination::IN, RNS::Destination::SINGLE, "testapp", register: false)
       packet = dest.announce(send: false).not_nil!
 
-      pub_key_size = RNS::Identity::KEYSIZE // 8  # 64 bytes
-      name_hash_size = RNS::Identity::NAME_HASH_LENGTH // 8  # 10 bytes
+      pub_key_size = RNS::Identity::KEYSIZE // 8            # 64 bytes
+      name_hash_size = RNS::Identity::NAME_HASH_LENGTH // 8 # 10 bytes
       random_hash_size = 10
-      signature_size = RNS::Identity::SIGLENGTH // 8  # 64 bytes
+      signature_size = RNS::Identity::SIGLENGTH // 8 # 64 bytes
 
       # Without ratchet: pub_key(64) + name_hash(10) + random_hash(10) + signature(64) = 148
       expected_min_size = pub_key_size + name_hash_size + random_hash_size + signature_size
@@ -786,7 +786,7 @@ describe RNS::Destination do
     it "announce uses callable default app_data" do
       dest = RNS::Destination.new(nil, RNS::Destination::IN, RNS::Destination::SINGLE, "testapp", register: false)
       call_data = "callable data".to_slice
-      dest.set_default_app_data(->{ call_data.as(Bytes?) })
+      dest.set_default_app_data(-> { call_data.as(Bytes?) })
 
       packet = dest.announce(send: false).not_nil!
       packet.data[(packet.data.size - call_data.size)..].should eq call_data

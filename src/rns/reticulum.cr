@@ -5,34 +5,34 @@ module RNS
     LINK_MTU_DISCOVERY = true
 
     MAX_QUEUED_ANNOUNCES = 16384
-    QUEUED_ANNOUNCE_LIFE = 60 * 60 * 24  # 86400
+    QUEUED_ANNOUNCE_LIFE = 60 * 60 * 24 # 86400
 
-    ANNOUNCE_CAP    = 2   # percentage
-    MINIMUM_BITRATE = 5   # bits per second
+    ANNOUNCE_CAP    = 2 # percentage
+    MINIMUM_BITRATE = 5 # bits per second
 
     DEFAULT_PER_HOP_TIMEOUT = 6
 
-    TRUNCATED_HASHLENGTH = 128  # bits
+    TRUNCATED_HASHLENGTH = 128 # bits
 
-    HEADER_MINSIZE = 2 + 1 + (TRUNCATED_HASHLENGTH // 8) * 1  # 19
-    HEADER_MAXSIZE = 2 + 1 + (TRUNCATED_HASHLENGTH // 8) * 2  # 35
+    HEADER_MINSIZE = 2 + 1 + (TRUNCATED_HASHLENGTH // 8) * 1 # 19
+    HEADER_MAXSIZE = 2 + 1 + (TRUNCATED_HASHLENGTH // 8) * 2 # 35
     IFAC_MIN_SIZE  = 1
 
-    MDU = MTU - HEADER_MAXSIZE - IFAC_MIN_SIZE  # 464
+    MDU = MTU - HEADER_MAXSIZE - IFAC_MIN_SIZE # 464
 
     # IFAC (Interface Authentication Code) salt — must match Python exactly
     IFAC_SALT = "adf54d882c9a9b80771eb4995d702d4a3e733391b2a0f53f416d9f907e55cff8".hexbytes
 
     # ─── Time interval constants ─────────────────────────────────────
-    RESOURCE_CACHE             = 24 * 60 * 60       # 86400
-    JOB_INTERVAL               = 5 * 60             # 300
-    CLEAN_INTERVAL             = 15 * 60            # 900
-    PERSIST_INTERVAL           = 60 * 60 * 12       # 43200
-    GRACIOUS_PERSIST_INTERVAL  = 60 * 5             # 300
+    RESOURCE_CACHE            = 24 * 60 * 60 # 86400
+    JOB_INTERVAL              = 5 * 60       # 300
+    CLEAN_INTERVAL            = 15 * 60      # 900
+    PERSIST_INTERVAL          = 60 * 60 * 12 # 43200
+    GRACIOUS_PERSIST_INTERVAL = 60 * 5       # 300
 
     # ─── Default ports ───────────────────────────────────────────────
     DEFAULT_LOCAL_INTERFACE_PORT = 37428
-    DEFAULT_LOCAL_CONTROL_PORT  = 37429
+    DEFAULT_LOCAL_CONTROL_PORT   = 37429
 
     # ─── Class-level mutable state ───────────────────────────────────
     @@panic_on_interface_error : Bool = false
@@ -68,51 +68,177 @@ module RNS
     @@force_shared_instance_bitrate : Int64? = nil
 
     # ─── Class-level accessors ───────────────────────────────────────
-    def self.panic_on_interface_error; @@panic_on_interface_error; end
-    def self.panic_on_interface_error=(v); @@panic_on_interface_error = v; end
+    def self.panic_on_interface_error
+      @@panic_on_interface_error
+    end
 
-    def self.userdir; @@userdir; end
-    def self.configdir; @@configdir; end
-    def self.configdir=(v); @@configdir = v; end
-    def self.configpath; @@configpath; end
-    def self.configpath=(v); @@configpath = v; end
-    def self.storagepath; @@storagepath; end
-    def self.storagepath=(v); @@storagepath = v; end
-    def self.cachepath; @@cachepath; end
-    def self.cachepath=(v); @@cachepath = v; end
-    def self.resourcepath; @@resourcepath; end
-    def self.resourcepath=(v); @@resourcepath = v; end
-    def self.identitypath; @@identitypath; end
-    def self.identitypath=(v); @@identitypath = v; end
-    def self.blackholepath; @@blackholepath; end
-    def self.blackholepath=(v); @@blackholepath = v; end
-    def self.interfacepath; @@interfacepath; end
-    def self.interfacepath=(v); @@interfacepath = v; end
+    def self.panic_on_interface_error=(v)
+      @@panic_on_interface_error = v
+    end
 
-    def self.transport_enabled?; @@transport_enabled; end
-    def self.transport_enabled=(v); @@transport_enabled = v; end
-    def self.link_mtu_discovery?; @@link_mtu_discovery; end
-    def self.link_mtu_discovery=(v); @@link_mtu_discovery = v; end
-    def self.remote_management_enabled?; @@remote_management_enabled; end
-    def self.remote_management_enabled=(v); @@remote_management_enabled = v; end
-    def self.should_use_implicit_proof?; @@use_implicit_proof; end
-    def self.use_implicit_proof=(v); @@use_implicit_proof = v; end
-    def self.probe_destination_enabled?; @@allow_probes; end
-    def self.allow_probes=(v); @@allow_probes = v; end
-    def self.discovery_enabled?; @@discovery_enabled; end
-    def self.discovery_enabled=(v); @@discovery_enabled = v; end
-    def self.discover_interfaces?; @@discover_interfaces; end
-    def self.discover_interfaces_flag=(v); @@discover_interfaces = v; end
-    def self.required_discovery_value; @@required_discovery_value; end
-    def self.required_discovery_value=(v); @@required_discovery_value = v; end
-    def self.publish_blackhole_enabled?; @@publish_blackhole; end
-    def self.publish_blackhole=(v); @@publish_blackhole = v; end
-    def self.blackhole_sources; @@blackhole_sources; end
-    def self.interface_discovery_sources; @@interface_sources; end
-    def self.network_identity; @@network_identity; end
-    def self.network_identity=(v); @@network_identity = v; end
-    def self.force_shared_instance_bitrate; @@force_shared_instance_bitrate; end
-    def self.force_shared_instance_bitrate=(v); @@force_shared_instance_bitrate = v; end
+    def self.userdir
+      @@userdir
+    end
+
+    def self.configdir
+      @@configdir
+    end
+
+    def self.configdir=(v)
+      @@configdir = v
+    end
+
+    def self.configpath
+      @@configpath
+    end
+
+    def self.configpath=(v)
+      @@configpath = v
+    end
+
+    def self.storagepath
+      @@storagepath
+    end
+
+    def self.storagepath=(v)
+      @@storagepath = v
+    end
+
+    def self.cachepath
+      @@cachepath
+    end
+
+    def self.cachepath=(v)
+      @@cachepath = v
+    end
+
+    def self.resourcepath
+      @@resourcepath
+    end
+
+    def self.resourcepath=(v)
+      @@resourcepath = v
+    end
+
+    def self.identitypath
+      @@identitypath
+    end
+
+    def self.identitypath=(v)
+      @@identitypath = v
+    end
+
+    def self.blackholepath
+      @@blackholepath
+    end
+
+    def self.blackholepath=(v)
+      @@blackholepath = v
+    end
+
+    def self.interfacepath
+      @@interfacepath
+    end
+
+    def self.interfacepath=(v)
+      @@interfacepath = v
+    end
+
+    def self.transport_enabled?
+      @@transport_enabled
+    end
+
+    def self.transport_enabled=(v)
+      @@transport_enabled = v
+    end
+
+    def self.link_mtu_discovery?
+      @@link_mtu_discovery
+    end
+
+    def self.link_mtu_discovery=(v)
+      @@link_mtu_discovery = v
+    end
+
+    def self.remote_management_enabled?
+      @@remote_management_enabled
+    end
+
+    def self.remote_management_enabled=(v)
+      @@remote_management_enabled = v
+    end
+
+    def self.should_use_implicit_proof?
+      @@use_implicit_proof
+    end
+
+    def self.use_implicit_proof=(v)
+      @@use_implicit_proof = v
+    end
+
+    def self.probe_destination_enabled?
+      @@allow_probes
+    end
+
+    def self.allow_probes=(v)
+      @@allow_probes = v
+    end
+
+    def self.discovery_enabled?
+      @@discovery_enabled
+    end
+
+    def self.discovery_enabled=(v)
+      @@discovery_enabled = v
+    end
+
+    def self.discover_interfaces?
+      @@discover_interfaces
+    end
+
+    def self.discover_interfaces_flag=(v)
+      @@discover_interfaces = v
+    end
+
+    def self.required_discovery_value
+      @@required_discovery_value
+    end
+
+    def self.required_discovery_value=(v)
+      @@required_discovery_value = v
+    end
+
+    def self.publish_blackhole_enabled?
+      @@publish_blackhole
+    end
+
+    def self.publish_blackhole=(v)
+      @@publish_blackhole = v
+    end
+
+    def self.blackhole_sources
+      @@blackhole_sources
+    end
+
+    def self.interface_discovery_sources
+      @@interface_sources
+    end
+
+    def self.network_identity
+      @@network_identity
+    end
+
+    def self.network_identity=(v)
+      @@network_identity = v
+    end
+
+    def self.force_shared_instance_bitrate
+      @@force_shared_instance_bitrate
+    end
+
+    def self.force_shared_instance_bitrate=(v)
+      @@force_shared_instance_bitrate = v
+    end
 
     def self.should_autoconnect_discovered_interfaces?
       @@autoconnect_discovered_interfaces > 0
@@ -352,7 +478,7 @@ module RNS
       logdest : (Int32 | Proc(String, Nil))? = nil,
       verbosity : Int32? = nil,
       require_shared_instance : Bool = false,
-      shared_instance_type : String? = nil
+      shared_instance_type : String? = nil,
     )
       # Singleton guard
       if Reticulum.get_instance
@@ -569,12 +695,10 @@ module RNS
             case option
             when "share_instance"
               @share_instance = ret_section.as_bool(option)
-
             when "instance_name"
               if RNS::PlatformUtils.use_af_unix?
                 @local_socket_path = ret_section[option].as(String)
               end
-
             when "shared_instance_type"
               if @shared_instance_type.nil?
                 val = ret_section[option].as(String).downcase
@@ -582,13 +706,10 @@ module RNS
                   @shared_instance_type = val
                 end
               end
-
             when "shared_instance_port"
               @local_interface_port = ret_section.as_int(option)
-
             when "instance_control_port"
               @local_control_port = ret_section.as_int(option)
-
             when "rpc_key"
               begin
                 @rpc_key = ret_section[option].as(String).hexbytes
@@ -596,12 +717,10 @@ module RNS
                 RNS.log("Invalid shared instance RPC key specified, falling back to default key", RNS::LOG_ERROR)
                 @rpc_key = nil
               end
-
             when "enable_transport"
               if ret_section.as_bool(option)
                 Reticulum.transport_enabled = true
               end
-
             when "network_identity"
               if Reticulum.network_identity.nil?
                 path = ret_section[option].as(String)
@@ -625,17 +744,14 @@ module RNS
                   raise Exception.new("Could not set network identity from #{path}: #{ex.message}")
                 end
               end
-
             when "link_mtu_discovery"
               if ret_section.as_bool(option)
                 Reticulum.link_mtu_discovery = true
               end
-
             when "enable_remote_management"
               if ret_section.as_bool(option)
                 Reticulum.remote_management_enabled = true
               end
-
             when "remote_management_allowed"
               v = ret_section.as_list(option)
               dest_len = (Reticulum::TRUNCATED_HASHLENGTH // 8) * 2
@@ -650,33 +766,25 @@ module RNS
                   raise Exception.new("Invalid identity hash for remote management ACL: #{hexhash}")
                 end
               end
-
             when "respond_to_probes"
               if ret_section.as_bool(option)
                 Reticulum.allow_probes = true
               end
-
             when "force_shared_instance_bitrate"
               Reticulum.force_shared_instance_bitrate = ret_section.as_int(option).to_i64
-
             when "panic_on_interface_error"
               if ret_section.as_bool(option)
                 Reticulum.panic_on_interface_error = true
               end
-
             when "use_implicit_proof"
               Reticulum.use_implicit_proof = ret_section.as_bool(option)
-
             when "discover_interfaces"
               Reticulum.discover_interfaces_flag = ret_section.as_bool(option)
-
             when "required_discovery_value"
               v = ret_section.as_int(option)
               Reticulum.required_discovery_value = v > 0 ? v : nil
-
             when "publish_blackhole"
               Reticulum.publish_blackhole = ret_section.as_bool(option)
-
             when "blackhole_sources"
               v = ret_section.as_list(option)
               dest_len = (Reticulum::TRUNCATED_HASHLENGTH // 8) * 2
@@ -693,7 +801,6 @@ module RNS
                   raise Exception.new("Invalid identity hash for remote blackhole source: #{hexhash}")
                 end
               end
-
             when "interface_discovery_sources"
               v = ret_section.as_list(option)
               dest_len = (Reticulum::TRUNCATED_HASHLENGTH // 8) * 2
@@ -710,7 +817,6 @@ module RNS
                   raise Exception.new("Invalid identity hash for interface discovery source: #{hexhash}")
                 end
               end
-
             when "autoconnect_discovered_interfaces"
               v = ret_section.as_int(option)
               Reticulum.autoconnect_discovered_interfaces = v if v > 0
@@ -742,10 +848,10 @@ module RNS
         begin
           # Try to be the shared instance (server)
           interface = if @use_af_unix && (sp = @local_socket_path)
-            LocalServerInterface.new(socket_path: sp)
-          else
-            LocalServerInterface.new(bindport: @local_interface_port)
-          end
+                        LocalServerInterface.new(socket_path: sp)
+                      else
+                        LocalServerInterface.new(bindport: @local_interface_port)
+                      end
           interface.dir_out = true
 
           if fsib = Reticulum.force_shared_instance_bitrate
@@ -769,10 +875,10 @@ module RNS
           begin
             # Try to connect as a client
             client = if @use_af_unix && (sp = @local_socket_path)
-              LocalClientInterface.new(socket_path: sp)
-            else
-              LocalClientInterface.new(target_port: @local_interface_port)
-            end
+                       LocalClientInterface.new(socket_path: sp)
+                     else
+                       LocalClientInterface.new(target_port: @local_interface_port)
+                     end
             client.name = "Local shared instance"
             client.dir_out = true
 
@@ -1011,7 +1117,6 @@ module RNS
           case interface_type
           when "AutoInterface"
             interface = AutoInterface.new(interface_config)
-
           when "BackboneInterface", "BackboneClientInterface"
             # Normalize config aliases
             if config.has_key?("port")
@@ -1035,42 +1140,31 @@ module RNS
             else
               interface = BackboneClientInterface.new(interface_config)
             end
-
           when "UDPInterface"
             interface = UDPInterface.new(interface_config)
-
           when "TCPServerInterface"
             interface = TCPServerInterface.new(interface_config)
-
           when "TCPClientInterface"
             interface = TCPClientInterface.new(interface_config)
-
           when "I2PInterface"
             interface_config["storagepath"] = Reticulum.storagepath
             interface_config["ifac_netname"] = ifac_netname.to_s if ifac_netname
             interface_config["ifac_netkey"] = ifac_netkey.to_s if ifac_netkey
             interface_config["ifac_size"] = ifac_size.to_s if ifac_size
             interface = I2PInterface.new(interface_config)
-
           when "SerialInterface"
             interface = SerialInterface.new(interface_config)
-
           when "PipeInterface"
             interface = PipeInterface.new(interface_config)
-
           when "KISSInterface"
             interface = KISSInterface.new(interface_config)
-
           when "AX25KISSInterface"
             interface = AX25KISSInterface.new(interface_config)
-
           when "RNodeInterface"
             interface = RNodeInterface.new(interface_config)
-
           when "RNodeMultiInterface"
             iface = RNodeMultiInterface.new(interface_config)
             interface = iface
-
           when "WeaveInterface"
             interface = WeaveInterface.new(interface_config)
           end
@@ -1136,38 +1230,38 @@ module RNS
     end
 
     protected def interface_post_init(interface : Interface, *,
-                                       interface_mode : UInt8,
-                                       announce_cap : Float64,
-                                       bootstrap_only : Bool,
-                                       configured_bitrate : Int32?,
-                                       ifac_size : Int32?,
-                                       ifac_netname : String?,
-                                       ifac_netkey : String?,
-                                       ingress_control : Bool,
-                                       ic_max_held_announces : Int32?,
-                                       ic_burst_hold : Float64?,
-                                       ic_burst_freq_new : Float64?,
-                                       ic_burst_freq : Float64?,
-                                       ic_new_time : Float64?,
-                                       ic_burst_penalty : Float64?,
-                                       ic_held_release_interval : Float64?,
-                                       announce_rate_target : Int32?,
-                                       announce_rate_grace : Int32?,
-                                       announce_rate_penalty : Int32?,
-                                       discoverable : Bool,
-                                       discovery_announce_interval : Int32?,
-                                       discovery_publish_ifac : Bool,
-                                       reachable_on : String?,
-                                       discovery_name : String?,
-                                       discovery_encrypt : Bool,
-                                       discovery_stamp_value : Int32?,
-                                       discovery_latitude : Float64?,
-                                       discovery_longitude : Float64?,
-                                       discovery_height : Float64?,
-                                       discovery_frequency : Int32?,
-                                       discovery_bandwidth : Int32?,
-                                       discovery_modulation : Int32?,
-                                       outgoing : Bool)
+                                      interface_mode : UInt8,
+                                      announce_cap : Float64,
+                                      bootstrap_only : Bool,
+                                      configured_bitrate : Int32?,
+                                      ifac_size : Int32?,
+                                      ifac_netname : String?,
+                                      ifac_netkey : String?,
+                                      ingress_control : Bool,
+                                      ic_max_held_announces : Int32?,
+                                      ic_burst_hold : Float64?,
+                                      ic_burst_freq_new : Float64?,
+                                      ic_burst_freq : Float64?,
+                                      ic_new_time : Float64?,
+                                      ic_burst_penalty : Float64?,
+                                      ic_held_release_interval : Float64?,
+                                      announce_rate_target : Int32?,
+                                      announce_rate_grace : Int32?,
+                                      announce_rate_penalty : Int32?,
+                                      discoverable : Bool,
+                                      discovery_announce_interval : Int32?,
+                                      discovery_publish_ifac : Bool,
+                                      reachable_on : String?,
+                                      discovery_name : String?,
+                                      discovery_encrypt : Bool,
+                                      discovery_stamp_value : Int32?,
+                                      discovery_latitude : Float64?,
+                                      discovery_longitude : Float64?,
+                                      discovery_height : Float64?,
+                                      discovery_frequency : Int32?,
+                                      discovery_bandwidth : Int32?,
+                                      discovery_modulation : Int32?,
+                                      outgoing : Bool)
       # Set direction
       if interface.responds_to?(:dir_out=)
         interface.dir_out = outgoing
@@ -1254,21 +1348,21 @@ module RNS
     # Get the default IFAC size for a given interface type
     private def get_default_ifac_size(interface : Interface) : Int32
       case interface
-      when AutoInterface          then 16
-      when BackboneInterface      then 16
+      when AutoInterface           then 16
+      when BackboneInterface       then 16
       when BackboneClientInterface then 16
-      when TCPServerInterface     then 16
-      when TCPClientInterface     then 16
-      when UDPInterface           then 16
-      when I2PInterface           then 16
-      when WeaveInterface         then 16
-      when RNodeInterface         then 8
-      when RNodeMultiInterface    then 8
-      when SerialInterface        then 8
-      when KISSInterface          then 8
-      when AX25KISSInterface      then 8
-      when PipeInterface          then 8
-      else                             8
+      when TCPServerInterface      then 16
+      when TCPClientInterface      then 16
+      when UDPInterface            then 16
+      when I2PInterface            then 16
+      when WeaveInterface          then 16
+      when RNodeInterface          then 8
+      when RNodeMultiInterface     then 8
+      when SerialInterface         then 8
+      when KISSInterface           then 8
+      when AX25KISSInterface       then 8
+      when PipeInterface           then 8
+      else                              8
       end
     end
 

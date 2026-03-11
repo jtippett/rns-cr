@@ -42,9 +42,9 @@ module RNS
         raise ArgumentError.new("X25519 private key must be 32 bytes, got #{data.size}") unless data.size == 32
         # Clamp the scalar per RFC 7748 / Curve25519 spec
         clamped = data.dup
-        clamped[0] &= 248_u8    # Clear 3 least significant bits
-        clamped[31] &= 127_u8   # Clear most significant bit (bit 255)
-        clamped[31] |= 64_u8    # Set second most significant bit (bit 254)
+        clamped[0] &= 248_u8  # Clear 3 least significant bits
+        clamped[31] &= 127_u8 # Clear most significant bit (bit 255)
+        clamped[31] |= 64_u8  # Set second most significant bit (bit 254)
         X25519PrivateKey.new(clamped)
       end
 

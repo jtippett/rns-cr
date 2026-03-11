@@ -1,6 +1,6 @@
 module RNS
   module Rnprobe
-    DEFAULT_PROBE_SIZE = 16
+    DEFAULT_PROBE_SIZE =   16
     DEFAULT_TIMEOUT    = 12.0
 
     # Parsed command-line arguments for rnprobe
@@ -24,7 +24,7 @@ module RNS
         @verbose = 0,
         @full_name = nil,
         @destination_hash = nil,
-        @version = false
+        @version = false,
       )
       end
     end
@@ -323,7 +323,6 @@ module RNS
       else
         exit(0)
       end
-
     rescue ex : ArgumentError
       STDERR.puts "rnprobe: #{ex.message}"
       exit(1)

@@ -431,21 +431,21 @@ describe RNS::Discovery do
 
           # Simulate discovering an interface
           info = RNS::Discovery::InterfaceDiscovery::InfoHash.new
-          info["type"]           = "BackboneInterface"
-          info["transport"]      = true
-          info["name"]           = "Test Interface"
-          info["received"]       = Time.utc.to_unix_f
-          info["stamp"]          = "abcd1234"
-          info["value"]          = 14_i64
-          info["transport_id"]   = "aabbccdd"
-          info["network_id"]     = ""
-          info["hops"]           = 1_i64
-          info["latitude"]       = nil
-          info["longitude"]      = nil
-          info["height"]         = nil
-          info["reachable_on"]   = "192.168.1.100"
-          info["port"]           = 4242_i64
-          info["config_entry"]   = "[[Test Interface]]\n  type = BackboneInterface"
+          info["type"] = "BackboneInterface"
+          info["transport"] = true
+          info["name"] = "Test Interface"
+          info["received"] = Time.utc.to_unix_f
+          info["stamp"] = "abcd1234"
+          info["value"] = 14_i64
+          info["transport_id"] = "aabbccdd"
+          info["network_id"] = ""
+          info["hops"] = 1_i64
+          info["latitude"] = nil
+          info["longitude"] = nil
+          info["height"] = nil
+          info["reachable_on"] = "192.168.1.100"
+          info["port"] = 4242_i64
+          info["config_entry"] = "[[Test Interface]]\n  type = BackboneInterface"
 
           # Compute discovery_hash
           dh_material = ("aabbccdd" + "Test Interface").encode("UTF-8")
@@ -483,18 +483,18 @@ describe RNS::Discovery do
           discovery.storagepath = storage
 
           info = RNS::Discovery::InterfaceDiscovery::InfoHash.new
-          info["type"]           = "BackboneInterface"
-          info["transport"]      = true
-          info["name"]           = "Counter Test"
-          info["received"]       = Time.utc.to_unix_f
-          info["stamp"]          = "stamp123"
-          info["value"]          = 14_i64
-          info["transport_id"]   = "11223344"
-          info["network_id"]     = ""
-          info["hops"]           = 2_i64
-          info["latitude"]       = nil
-          info["longitude"]      = nil
-          info["height"]         = nil
+          info["type"] = "BackboneInterface"
+          info["transport"] = true
+          info["name"] = "Counter Test"
+          info["received"] = Time.utc.to_unix_f
+          info["stamp"] = "stamp123"
+          info["value"] = 14_i64
+          info["transport_id"] = "11223344"
+          info["network_id"] = ""
+          info["hops"] = 2_i64
+          info["latitude"] = nil
+          info["longitude"] = nil
+          info["height"] = nil
 
           dh_material = ("11223344" + "Counter Test").encode("UTF-8")
           dh = RNS::Identity.full_hash(dh_material)
@@ -514,7 +514,7 @@ describe RNS::Discovery do
           interfaces = discovery.list_discovered_interfaces
           interfaces.size.should eq(1)
           heard_count = interfaces[0]["heard_count"]
-          heard_count.should eq(2_i64)  # 0-based: first writes 0, second writes 1, third writes 2
+          heard_count.should eq(2_i64) # 0-based: first writes 0, second writes 1, third writes 2
         ensure
           FileUtils.rm_rf(tmpdir) if Dir.exists?(tmpdir)
         end
@@ -532,18 +532,18 @@ describe RNS::Discovery do
 
           # Create a recent (available) interface
           info_available = RNS::Discovery::InterfaceDiscovery::InfoHash.new
-          info_available["type"]           = "BackboneInterface"
-          info_available["transport"]      = true
-          info_available["name"]           = "Available"
-          info_available["received"]       = Time.utc.to_unix_f
-          info_available["stamp"]          = "stamp1"
-          info_available["value"]          = 14_i64
-          info_available["transport_id"]   = "aaaa"
-          info_available["network_id"]     = ""
-          info_available["hops"]           = 1_i64
-          info_available["latitude"]       = nil
-          info_available["longitude"]      = nil
-          info_available["height"]         = nil
+          info_available["type"] = "BackboneInterface"
+          info_available["transport"] = true
+          info_available["name"] = "Available"
+          info_available["received"] = Time.utc.to_unix_f
+          info_available["stamp"] = "stamp1"
+          info_available["value"] = 14_i64
+          info_available["transport_id"] = "aaaa"
+          info_available["network_id"] = ""
+          info_available["hops"] = 1_i64
+          info_available["latitude"] = nil
+          info_available["longitude"] = nil
+          info_available["height"] = nil
           dh1 = RNS::Identity.full_hash(("aaaa" + "Available").encode("UTF-8"))
           info_available["discovery_hash"] = RNS.hexrep(dh1, delimit: false)
 
@@ -551,21 +551,21 @@ describe RNS::Discovery do
 
           # Create an old (unknown) interface — manually write with old timestamp
           info_old = RNS::Discovery::InterfaceDiscovery::InfoHash.new
-          info_old["type"]           = "BackboneInterface"
-          info_old["transport"]      = true
-          info_old["name"]           = "Old One"
-          info_old["received"]       = Time.utc.to_unix_f - (25 * 60 * 60)  # 25 hours ago
-          info_old["stamp"]          = "stamp2"
-          info_old["value"]          = 14_i64
-          info_old["transport_id"]   = "bbbb"
-          info_old["network_id"]     = ""
-          info_old["hops"]           = 3_i64
-          info_old["latitude"]       = nil
-          info_old["longitude"]      = nil
-          info_old["height"]         = nil
-          info_old["discovered"]     = info_old["received"]
-          info_old["last_heard"]     = info_old["received"]
-          info_old["heard_count"]    = 0_i64
+          info_old["type"] = "BackboneInterface"
+          info_old["transport"] = true
+          info_old["name"] = "Old One"
+          info_old["received"] = Time.utc.to_unix_f - (25 * 60 * 60) # 25 hours ago
+          info_old["stamp"] = "stamp2"
+          info_old["value"] = 14_i64
+          info_old["transport_id"] = "bbbb"
+          info_old["network_id"] = ""
+          info_old["hops"] = 3_i64
+          info_old["latitude"] = nil
+          info_old["longitude"] = nil
+          info_old["height"] = nil
+          info_old["discovered"] = info_old["received"]
+          info_old["last_heard"] = info_old["received"]
+          info_old["heard_count"] = 0_i64
           dh2 = RNS::Identity.full_hash(("bbbb" + "Old One").encode("UTF-8"))
           info_old["discovery_hash"] = RNS.hexrep(dh2, delimit: false)
 
@@ -613,21 +613,21 @@ describe RNS::Discovery do
 
           # Create a very old entry (8 days old, beyond THRESHOLD_REMOVE of 7 days)
           info = RNS::Discovery::InterfaceDiscovery::InfoHash.new
-          info["type"]           = "BackboneInterface"
-          info["transport"]      = true
-          info["name"]           = "Ancient"
-          info["received"]       = Time.utc.to_unix_f - (8 * 24 * 60 * 60)
-          info["stamp"]          = "stampold"
-          info["value"]          = 14_i64
-          info["transport_id"]   = "cccc"
-          info["network_id"]     = ""
-          info["hops"]           = 1_i64
-          info["latitude"]       = nil
-          info["longitude"]      = nil
-          info["height"]         = nil
-          info["discovered"]     = info["received"]
-          info["last_heard"]     = info["received"]
-          info["heard_count"]    = 0_i64
+          info["type"] = "BackboneInterface"
+          info["transport"] = true
+          info["name"] = "Ancient"
+          info["received"] = Time.utc.to_unix_f - (8 * 24 * 60 * 60)
+          info["stamp"] = "stampold"
+          info["value"] = 14_i64
+          info["transport_id"] = "cccc"
+          info["network_id"] = ""
+          info["hops"] = 1_i64
+          info["latitude"] = nil
+          info["longitude"] = nil
+          info["height"] = nil
+          info["discovered"] = info["received"]
+          info["last_heard"] = info["received"]
+          info["heard_count"] = 0_i64
           dh = RNS::Identity.full_hash(("cccc" + "Ancient").encode("UTF-8"))
           info["discovery_hash"] = RNS.hexrep(dh, delimit: false)
 
@@ -676,26 +676,26 @@ describe RNS::Discovery do
 
           # Write entries with different ages/values
           [
-            {"name" => "Stale", "last_heard" => now - (4 * 24 * 60 * 60), "value" => 14_i64},  # stale
-            {"name" => "Fresh", "last_heard" => now - 100.0, "value" => 14_i64},                 # available
-            {"name" => "Unknown", "last_heard" => now - (25 * 60 * 60), "value" => 20_i64},      # unknown
+            {"name" => "Stale", "last_heard" => now - (4 * 24 * 60 * 60), "value" => 14_i64}, # stale
+            {"name" => "Fresh", "last_heard" => now - 100.0, "value" => 14_i64},              # available
+            {"name" => "Unknown", "last_heard" => now - (25 * 60 * 60), "value" => 20_i64},   # unknown
           ].each_with_index do |entry, idx|
             info = RNS::Discovery::InterfaceDiscovery::InfoHash.new
-            info["type"]           = "BackboneInterface"
-            info["transport"]      = true
-            info["name"]           = entry["name"]
-            info["received"]       = entry["last_heard"]
-            info["stamp"]          = "stamp#{idx}"
-            info["value"]          = entry["value"]
-            info["transport_id"]   = "id#{idx}"
-            info["network_id"]     = ""
-            info["hops"]           = 1_i64
-            info["latitude"]       = nil
-            info["longitude"]      = nil
-            info["height"]         = nil
-            info["discovered"]     = entry["last_heard"]
-            info["last_heard"]     = entry["last_heard"]
-            info["heard_count"]    = 0_i64
+            info["type"] = "BackboneInterface"
+            info["transport"] = true
+            info["name"] = entry["name"]
+            info["received"] = entry["last_heard"]
+            info["stamp"] = "stamp#{idx}"
+            info["value"] = entry["value"]
+            info["transport_id"] = "id#{idx}"
+            info["network_id"] = ""
+            info["hops"] = 1_i64
+            info["latitude"] = nil
+            info["longitude"] = nil
+            info["height"] = nil
+            info["discovered"] = entry["last_heard"]
+            info["last_heard"] = entry["last_heard"]
+            info["heard_count"] = 0_i64
             dh = RNS::Identity.full_hash(("id#{idx}" + entry["name"].to_s).encode("UTF-8"))
             info["discovery_hash"] = RNS.hexrep(dh, delimit: false)
 
@@ -742,7 +742,7 @@ describe RNS::Discovery do
 
         info = RNS::Discovery::InterfaceDiscovery::InfoHash.new
         info["reachable_on"] = "192.168.1.1"
-        info["port"]         = 4242_i64
+        info["port"] = 4242_i64
 
         hash1 = discovery.endpoint_hash(info)
         hash2 = discovery.endpoint_hash(info)

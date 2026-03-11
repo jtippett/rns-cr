@@ -15,7 +15,7 @@ module RNS
       # Minimal sockaddr for reading sa_family
       struct Sockaddr
         {% if flag?(:darwin) %}
-        sa_len : UInt8
+          sa_len : UInt8
         {% end %}
         sa_family : UInt8
       end
@@ -112,7 +112,6 @@ module RNS
               addr_bytes.copy_from(in6_addr_ptr, 16)
               addr_str = format_ipv6(addr_bytes)
               yield name, family, addr_str
-
             elsif family == AF_INET.to_i32
               # IPv4: extract 4-byte address at offset 4 in sockaddr_in
               in_addr_ptr = (addr.as(Pointer(UInt8)) + 4)

@@ -56,7 +56,7 @@ module RNS
         @phy_rates = false,
         @version = false,
         @file = nil,
-        @destination = nil
+        @destination = nil,
       )
       end
     end

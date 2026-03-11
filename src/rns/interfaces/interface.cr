@@ -63,20 +63,20 @@ module RNS
 
   # KISS framing helpers used by TCP (kiss_framing mode), KISS, and AX.25 interfaces.
   module KISS
-    FEND    = 0xC0_u8
-    FESC    = 0xDB_u8
-    TFEND   = 0xDC_u8
-    TFESC   = 0xDD_u8
-    CMD_DATA       = 0x00_u8
-    CMD_TXDELAY    = 0x01_u8
-    CMD_P          = 0x02_u8
-    CMD_SLOTTIME   = 0x03_u8
-    CMD_TXTAIL     = 0x04_u8
-    CMD_FULLDUPLEX = 0x05_u8
+    FEND            = 0xC0_u8
+    FESC            = 0xDB_u8
+    TFEND           = 0xDC_u8
+    TFESC           = 0xDD_u8
+    CMD_DATA        = 0x00_u8
+    CMD_TXDELAY     = 0x01_u8
+    CMD_P           = 0x02_u8
+    CMD_SLOTTIME    = 0x03_u8
+    CMD_TXTAIL      = 0x04_u8
+    CMD_FULLDUPLEX  = 0x05_u8
     CMD_SETHARDWARE = 0x06_u8
-    CMD_READY      = 0x0F_u8
-    CMD_UNKNOWN    = 0xFE_u8
-    CMD_RETURN     = 0xFF_u8
+    CMD_READY       = 0x0F_u8
+    CMD_UNKNOWN     = 0xFE_u8
+    CMD_RETURN      = 0xFF_u8
 
     def self.escape(data : Bytes) : Bytes
       io = IO::Memory.new(data.size)
@@ -156,7 +156,7 @@ module RNS
 
     # Spawned interface new time (2 hours)
     IC_NEW_TIME              = 2 * 60 * 60
-    IC_BURST_FREQ_NEW        = 3.5
+    IC_BURST_FREQ_NEW        =  3.5
     IC_BURST_FREQ            = 12.0
     IC_BURST_HOLD            = 1 * 60
     IC_BURST_PENALTY         = 5 * 60

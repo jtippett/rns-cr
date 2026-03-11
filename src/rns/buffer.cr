@@ -214,7 +214,7 @@ module RNS
 
   class RawChannelWriter(TPacket)
     MAX_CHUNK_LEN     = 1024 * 16 # 16 KiB
-    COMPRESSION_TRIES =         4
+    COMPRESSION_TRIES = 4
 
     @stream_id : Int32
     @channel : Channel(TPacket)
@@ -267,7 +267,6 @@ module RNS
         message = StreamDataMessage.new(@stream_id, chunk, @eof, comp_success)
         @channel.send(message)
         return processed_length
-
       rescue cex : ChannelException
         if cex.type != CEType::ME_LINK_NOT_READY
           raise cex

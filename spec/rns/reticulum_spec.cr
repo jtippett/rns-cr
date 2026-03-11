@@ -122,12 +122,12 @@ describe RNS::Reticulum do
 
     it "all path accessors work" do
       paths = {
-        "storagepath"   => ->{ RNS::Reticulum.storagepath },
-        "cachepath"     => ->{ RNS::Reticulum.cachepath },
-        "resourcepath"  => ->{ RNS::Reticulum.resourcepath },
-        "identitypath"  => ->{ RNS::Reticulum.identitypath },
-        "blackholepath" => ->{ RNS::Reticulum.blackholepath },
-        "interfacepath" => ->{ RNS::Reticulum.interfacepath },
+        "storagepath"   => -> { RNS::Reticulum.storagepath },
+        "cachepath"     => -> { RNS::Reticulum.cachepath },
+        "resourcepath"  => -> { RNS::Reticulum.resourcepath },
+        "identitypath"  => -> { RNS::Reticulum.identitypath },
+        "blackholepath" => -> { RNS::Reticulum.blackholepath },
+        "interfacepath" => -> { RNS::Reticulum.interfacepath },
       }
       paths.each do |name, getter|
         getter.call.should be_a(String)
@@ -407,7 +407,7 @@ describe RNS::Reticulum do
       begin
         RNS.loglevel = 3
         inst.apply_config
-        RNS.loglevel.should eq 3  # Should NOT change
+        RNS.loglevel.should eq 3 # Should NOT change
       ensure
         RNS.loglevel = original_ll
       end
@@ -419,7 +419,7 @@ describe RNS::Reticulum do
       original_ll = RNS.loglevel
       begin
         inst.apply_config
-        RNS.loglevel.should eq 6  # 4 + 2
+        RNS.loglevel.should eq 6 # 4 + 2
       ensure
         RNS.loglevel = original_ll
       end
@@ -431,7 +431,7 @@ describe RNS::Reticulum do
       original_ll = RNS.loglevel
       begin
         inst.apply_config
-        RNS.loglevel.should eq 7  # Clamped
+        RNS.loglevel.should eq 7 # Clamped
       ensure
         RNS.loglevel = original_ll
       end
@@ -589,7 +589,7 @@ describe RNS::Reticulum do
     end
 
     it "handles rpc_key" do
-      valid_hex = "deadbeef" * 8  # 32 bytes
+      valid_hex = "deadbeef" * 8 # 32 bytes
       inst = make_test_instance("[reticulum]\nrpc_key = #{valid_hex}\nshare_instance = No")
       inst.apply_config
       inst.rpc_key.should eq valid_hex.hexbytes
@@ -598,12 +598,12 @@ describe RNS::Reticulum do
     it "handles invalid rpc_key gracefully" do
       inst = make_test_instance("[reticulum]\nrpc_key = not_hex\nshare_instance = No")
       inst.apply_config
-      inst.rpc_key.should be_nil  # Falls back to nil
+      inst.rpc_key.should be_nil # Falls back to nil
     end
 
     it "handles empty config gracefully" do
       inst = make_test_instance("")
-      inst.apply_config  # Should not raise
+      inst.apply_config # Should not raise
     end
   end
 
@@ -799,7 +799,7 @@ describe RNS::Reticulum do
 
         begin
           inst = RNS::ReticulumInstance.new(configdir: tmpdir, loglevel: 99)
-          RNS.loglevel.should eq RNS::LOG_EXTREME  # 7
+          RNS.loglevel.should eq RNS::LOG_EXTREME # 7
         ensure
           RNS.loglevel = original_ll
           RNS::Reticulum.reset_instance!
@@ -821,7 +821,7 @@ describe RNS::Reticulum do
     it "is idempotent" do
       RNS::Reticulum.reset_instance!
       RNS::Reticulum.exit_handler
-      RNS::Reticulum.exit_handler  # Should be a no-op
+      RNS::Reticulum.exit_handler # Should be a no-op
     end
 
     it "signal handlers run without errors" do

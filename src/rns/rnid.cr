@@ -63,7 +63,7 @@ module RNS
         @base64 = false,
         @base32 = false,
         @qr = false,
-        @version = false
+        @version = false,
       )
       end
     end
@@ -861,7 +861,6 @@ module RNS
       elsif args.decrypt
         handle_decrypt(args, identity)
       end
-
     rescue ex : ArgumentError
       STDERR.puts "rnid: #{ex.message}"
       exit(1)

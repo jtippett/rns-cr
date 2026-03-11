@@ -6,21 +6,21 @@ module RNS
   end
 
   class TCPClientInterface < Interface
-    BITRATE_GUESS      = 10_000_000_i64
-    DEFAULT_IFAC_SIZE  = 16
-    AUTOCONFIGURE_MTU  = true
-    RECONNECT_WAIT     = 5
-    RECONNECT_MAX_TRIES = nil
-    TCP_USER_TIMEOUT   = 24
-    TCP_PROBE_AFTER    = 5
-    TCP_PROBE_INTERVAL = 2
-    TCP_PROBES         = 12
-    INITIAL_CONNECT_TIMEOUT = 5
-    SYNCHRONOUS_START  = true
-    I2P_USER_TIMEOUT   = 45
-    I2P_PROBE_AFTER    = 10
-    I2P_PROBE_INTERVAL = 9
-    I2P_PROBES         = 5
+    BITRATE_GUESS           = 10_000_000_i64
+    DEFAULT_IFAC_SIZE       =             16
+    AUTOCONFIGURE_MTU       = true
+    RECONNECT_WAIT          = 5
+    RECONNECT_MAX_TRIES     = nil
+    TCP_USER_TIMEOUT        = 24
+    TCP_PROBE_AFTER         =  5
+    TCP_PROBE_INTERVAL      =  2
+    TCP_PROBES              = 12
+    INITIAL_CONNECT_TIMEOUT =  5
+    SYNCHRONOUS_START       = true
+    I2P_USER_TIMEOUT        = 45
+    I2P_PROBE_AFTER         = 10
+    I2P_PROBE_INTERVAL      =  9
+    I2P_PROBES              =  5
 
     getter? receives : Bool = false
     getter? initiator : Bool = false
@@ -71,14 +71,14 @@ module RNS
     end
 
     private def configure(c : Hash(String, String))
-      name         = c["name"]? || ""
-      target_ip    = c["target_host"]?
-      target_port  = c["target_port"]?.try(&.to_i)
+      name = c["name"]? || ""
+      target_ip = c["target_host"]?
+      target_port = c["target_port"]?.try(&.to_i)
       kiss_framing = c["kiss_framing"]?.try { |v| v.downcase == "true" } || false
       i2p_tunneled = c["i2p_tunneled"]?.try { |v| v.downcase == "true" } || false
-      connect_timeout    = c["connect_timeout"]?.try(&.to_i)
+      connect_timeout = c["connect_timeout"]?.try(&.to_i)
       max_reconnect_tries = c["max_reconnect_tries"]?.try(&.to_i)
-      fixed_mtu    = c["fixed_mtu"]?.try(&.to_i)
+      fixed_mtu = c["fixed_mtu"]?.try(&.to_i)
 
       @hw_mtu = fixed_mtu ? fixed_mtu : TCPInterfaceConstants::HW_MTU
       @dir_in = true
@@ -415,9 +415,9 @@ module RNS
   end
 
   class TCPServerInterface < Interface
-    BITRATE_GUESS      = 10_000_000_i64
-    DEFAULT_IFAC_SIZE  = 16
-    AUTOCONFIGURE_MTU  = true
+    BITRATE_GUESS     = 10_000_000_i64
+    DEFAULT_IFAC_SIZE =             16
+    AUTOCONFIGURE_MTU = true
 
     getter bind_ip : String = ""
     getter bind_port : Int32 = 0
@@ -439,12 +439,12 @@ module RNS
     end
 
     private def configure(c : Hash(String, String))
-      name         = c["name"]? || ""
-      port         = c["port"]?.try(&.to_i)
-      bindip       = c["listen_ip"]?
-      bindport     = c["listen_port"]?.try(&.to_i)
+      name = c["name"]? || ""
+      port = c["port"]?.try(&.to_i)
+      bindip = c["listen_ip"]?
+      bindport = c["listen_port"]?.try(&.to_i)
       i2p_tunneled = c["i2p_tunneled"]?.try { |v| v.downcase == "true" } || false
-      prefer_ipv6  = c["prefer_ipv6"]?.try { |v| v.downcase == "true" } || false
+      prefer_ipv6 = c["prefer_ipv6"]?.try { |v| v.downcase == "true" } || false
 
       bindport = port if port
 

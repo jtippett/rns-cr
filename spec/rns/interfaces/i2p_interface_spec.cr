@@ -226,7 +226,7 @@ describe RNS::I2PInterfacePeer do
     end
 
     it "computes I2P_READ_TIMEOUT correctly" do
-      expected = (9 * 5 + 10) * 2  # (PROBE_INTERVAL * PROBES + PROBE_AFTER) * 2 = 110
+      expected = (9 * 5 + 10) * 2 # (PROBE_INTERVAL * PROBES + PROBE_AFTER) * 2 = 110
       RNS::I2PInterfacePeer::I2P_READ_TIMEOUT.should eq(expected)
     end
 
@@ -407,7 +407,7 @@ describe RNS::I2PInterfacePeer do
       peer.socket = sock
       peer.online = true
 
-      test_data = Bytes[0x41, 0x42, 0x43]  # ABC
+      test_data = Bytes[0x41, 0x42, 0x43] # ABC
       peer.process_outgoing(test_data)
       sleep 100.milliseconds
 

@@ -4,13 +4,21 @@ module RNS
   # I2P SAM protocol exception types matching Python i2plib.exceptions
   module I2PExceptions
     class I2PError < Exception; end
+
     class CantReachPeer < I2PError; end
+
     class DuplicatedDest < I2PError; end
+
     class DuplicatedId < I2PError; end
+
     class InvalidId < I2PError; end
+
     class InvalidKey < I2PError; end
+
     class KeyNotFound < I2PError; end
+
     class PeerNotFound < I2PError; end
+
     class Timeout < I2PError; end
 
     def self.from_sam_result(result : String) : I2PError?
@@ -223,7 +231,6 @@ module RNS
 
         RNS.log("#{owner} tunnel setup complete", RNS::LOG_VERBOSE)
         true
-
       rescue ex : IO::Error | Socket::Error | I2PExceptions::I2PError
         RNS.log("Error setting up I2P client tunnel: #{ex.message}", RNS::LOG_ERROR)
         log_i2p_exception(ex, i2p_destination)
@@ -297,7 +304,6 @@ module RNS
         end
 
         true
-
       rescue ex : IO::Error | Socket::Error | I2PExceptions::I2PError
         RNS.log("Error setting up I2P server tunnel: #{ex.message}", RNS::LOG_ERROR)
         log_i2p_exception(ex)
@@ -381,8 +387,8 @@ module RNS
     # I2P TCP socket timeouts (matching Python I2PInterfacePeer constants)
     I2P_USER_TIMEOUT   = 45
     I2P_PROBE_AFTER    = 10
-    I2P_PROBE_INTERVAL = 9
-    I2P_PROBES         = 5
+    I2P_PROBE_INTERVAL =  9
+    I2P_PROBES         =  5
     I2P_READ_TIMEOUT   = (I2P_PROBE_INTERVAL * I2P_PROBES + I2P_PROBE_AFTER) * 2
 
     TUNNEL_STATE_INIT   = 0x00_u8
@@ -937,7 +943,7 @@ module RNS
 
   class I2PInterface < Interface
     BITRATE_GUESS     = 256_000_i64
-    DEFAULT_IFAC_SIZE = 16
+    DEFAULT_IFAC_SIZE =          16
 
     getter i2p : I2PController
     property b32 : String? = nil

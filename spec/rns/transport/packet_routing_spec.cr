@@ -500,10 +500,10 @@ describe RNS::Transport do
       flags = (RNS::Packet::HEADER_2.to_u8 << 6) | (RNS::Transport::TRANSPORT.to_u8 << 4) | (RNS::Destination::SINGLE.to_u8 << 2) | RNS::Packet::DATA.to_u8
       io = IO::Memory.new
       io.write_byte(flags)
-      io.write_byte(0x00_u8)   # hops
-      io.write(our_hash)       # transport_id (our hash)
-      io.write(dest_hash)      # destination_hash
-      io.write_byte(0x00_u8)   # context: NONE
+      io.write_byte(0x00_u8)           # hops
+      io.write(our_hash)               # transport_id (our hash)
+      io.write(dest_hash)              # destination_hash
+      io.write_byte(0x00_u8)           # context: NONE
       io.write(Bytes.new(10, 0xAA_u8)) # payload
       raw = io.to_slice.dup
 
@@ -553,10 +553,10 @@ describe RNS::Transport do
       flags = (RNS::Packet::HEADER_2.to_u8 << 6) | (RNS::Transport::TRANSPORT.to_u8 << 4) | (RNS::Destination::SINGLE.to_u8 << 2) | RNS::Packet::LINKREQUEST.to_u8
       io = IO::Memory.new
       io.write_byte(flags)
-      io.write_byte(0x00_u8)   # hops
-      io.write(our_hash)       # transport_id
-      io.write(dest_hash)      # destination_hash
-      io.write_byte(0x00_u8)   # context: NONE
+      io.write_byte(0x00_u8)           # hops
+      io.write(our_hash)               # transport_id
+      io.write(dest_hash)              # destination_hash
+      io.write_byte(0x00_u8)           # context: NONE
       io.write(Bytes.new(64, 0xBB_u8)) # link request data
       raw = io.to_slice.dup
 
@@ -593,9 +593,9 @@ describe RNS::Transport do
       flags = (RNS::Packet::HEADER_1.to_u8 << 6) | (RNS::Transport::BROADCAST.to_u8 << 4) | (RNS::Destination::LINK.to_u8 << 2) | RNS::Packet::DATA.to_u8
       io = IO::Memory.new
       io.write_byte(flags)
-      io.write_byte(0x00_u8)   # hops = 0 (becomes 1 after inbound increment, matches taken_hops)
-      io.write(link_id)        # destination = link_id
-      io.write_byte(0x00_u8)   # context: NONE
+      io.write_byte(0x00_u8) # hops = 0 (becomes 1 after inbound increment, matches taken_hops)
+      io.write(link_id)      # destination = link_id
+      io.write_byte(0x00_u8) # context: NONE
       io.write(Bytes.new(10))
       raw = io.to_slice.dup
 
@@ -1096,8 +1096,8 @@ describe RNS::Transport do
 
       # Create reverse table entry pointing from iface2 back to iface1
       RNS::Transport.reverse_table[proof_hex] = RNS::Transport::ReverseEntry.new(
-        received_on: iface1,    # Originally received on iface1
-        outbound: iface2,       # Was forwarded to iface2
+        received_on: iface1, # Originally received on iface1
+        outbound: iface2,    # Was forwarded to iface2
         timestamp: Time.utc.to_unix_f,
       )
 
@@ -1105,9 +1105,9 @@ describe RNS::Transport do
       flags = (RNS::Packet::HEADER_1.to_u8 << 6) | (RNS::Transport::BROADCAST.to_u8 << 4) | (RNS::Destination::SINGLE.to_u8 << 2) | RNS::Packet::PROOF.to_u8
       io = IO::Memory.new
       io.write_byte(flags)
-      io.write_byte(0x01_u8)        # hops
-      io.write(proof_dest_hash)     # destination hash
-      io.write_byte(RNS::Packet::NONE) # context
+      io.write_byte(0x01_u8)                    # hops
+      io.write(proof_dest_hash)                 # destination hash
+      io.write_byte(RNS::Packet::NONE)          # context
       io.write(Random::Secure.random_bytes(64)) # proof data
       raw = io.to_slice.dup
 

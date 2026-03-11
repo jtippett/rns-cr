@@ -5,7 +5,9 @@ module RNS
   # and file I/O.
   class ConfigObj
     class ValueError < Exception; end
+
     class ParseError < Exception; end
+
     class NestingError < Exception; end
 
     # Boolean map matching Python configobj._bools

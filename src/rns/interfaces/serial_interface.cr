@@ -39,12 +39,12 @@ module RNS
     # Baud rate constants
     {% if flag?(:darwin) %}
       # macOS uses actual baud rate values directly
-      B9600   =     9600_u64
-      B19200  =    19200_u64
-      B38400  =    38400_u64
-      B57600  =    57600_u64
-      B115200 =   115200_u64
-      B230400 =   230400_u64
+      B9600   =   9600_u64
+      B19200  =  19200_u64
+      B38400  =  38400_u64
+      B57600  =  57600_u64
+      B115200 = 115200_u64
+      B230400 = 230400_u64
     {% else %}
       B9600   = 0o000015_u64
       B19200  = 0o000016_u64
@@ -59,7 +59,7 @@ module RNS
   # Ports RNS/Interfaces/SerialInterface.py using POSIX termios.
   class SerialInterface < Interface
     MAX_CHUNK         = 32768
-    DEFAULT_IFAC_SIZE = 8
+    DEFAULT_IFAC_SIZE =     8
 
     # Parity modes
     PARITY_NONE = :none
@@ -71,7 +71,7 @@ module RNS
     property databits : Int32 = 8
     property parity : Symbol = PARITY_NONE
     property stopbits : Int32 = 1
-    property timeout : Int32 = 100  # milliseconds
+    property timeout : Int32 = 100 # milliseconds
 
     @fd : Int32? = nil
     @io : IO::FileDescriptor? = nil
@@ -110,24 +110,24 @@ module RNS
     end
 
     private def configure(c : Hash(String, String))
-      name     = c["name"]? || ""
-      port     = c["port"]?
-      speed    = c["speed"]?.try(&.to_i) || 9600
+      name = c["name"]? || ""
+      port = c["port"]?
+      speed = c["speed"]?.try(&.to_i) || 9600
       databits = c["databits"]?.try(&.to_i) || 8
-      parity   = c["parity"]? || "N"
+      parity = c["parity"]? || "N"
       stopbits = c["stopbits"]?.try(&.to_i) || 1
 
       raise ArgumentError.new("No port specified for serial interface") unless port
 
-      @hw_mtu  = 564
-      @name    = name
-      @port    = port
-      @speed   = speed
+      @hw_mtu = 564
+      @name = name
+      @port = port
+      @speed = speed
       @databits = databits
-      @parity  = parse_parity(parity)
+      @parity = parse_parity(parity)
       @stopbits = stopbits
       @timeout = 100
-      @online  = false
+      @online = false
       @bitrate = speed.to_i64
 
       begin
@@ -229,13 +229,13 @@ module RNS
         speed.to_u64
       {% else %}
         case speed
-        when    9600 then SerialConstants::B9600
-        when   19200 then SerialConstants::B19200
-        when   38400 then SerialConstants::B38400
-        when   57600 then SerialConstants::B57600
-        when  115200 then SerialConstants::B115200
-        when  230400 then SerialConstants::B230400
-        else              SerialConstants::B9600
+        when   9600 then SerialConstants::B9600
+        when  19200 then SerialConstants::B19200
+        when  38400 then SerialConstants::B38400
+        when  57600 then SerialConstants::B57600
+        when 115200 then SerialConstants::B115200
+        when 230400 then SerialConstants::B230400
+        else             SerialConstants::B9600
         end
       {% end %}
     end

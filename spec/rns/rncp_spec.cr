@@ -212,7 +212,7 @@ describe RNS::Rncp do
 
     it "parses a full send command" do
       args = RNS::Rncp.parse_args(["-v", "--config", "/etc/rns", "-w", "30",
-        "test.dat", "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4"])
+                                   "test.dat", "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4"])
       args.verbose.should eq 1
       args.config.should eq "/etc/rns"
       args.timeout.should eq 30.0
@@ -222,7 +222,7 @@ describe RNS::Rncp do
 
     it "parses a full listen command" do
       args = RNS::Rncp.parse_args(["-l", "-F", "-j", "/tmp/files", "-s", "/tmp/recv",
-        "-a", "aabb", "-n", "-b", "60"])
+                                   "-a", "aabb", "-n", "-b", "60"])
       args.listen.should be_true
       args.allow_fetch.should be_true
       args.jail.should eq "/tmp/files"
@@ -234,7 +234,7 @@ describe RNS::Rncp do
 
     it "parses a full fetch command" do
       args = RNS::Rncp.parse_args(["-f", "-s", "/tmp/out", "-O",
-        "remote_file.bin", "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4"])
+                                   "remote_file.bin", "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4"])
       args.fetch.should be_true
       args.save.should eq "/tmp/out"
       args.overwrite.should be_true

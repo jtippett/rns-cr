@@ -387,7 +387,7 @@ describe RNS::Rnid do
 
       message = "Hello, RNS!".to_slice
       signature = identity.sign(message)
-      signature.size.should eq 64  # Ed25519 signature length
+      signature.size.should eq 64 # Ed25519 signature length
 
       identity.validate(signature, message).should be_true
       identity.validate(signature, "Wrong message".to_slice).should be_false

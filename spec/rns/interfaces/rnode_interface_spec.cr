@@ -261,12 +261,12 @@ describe RNS::RNodeInterface do
   describe "configuration parsing" do
     it "raises if no port specified" do
       config = {
-        "name"             => "TestRNode",
-        "frequency"        => "868000000",
-        "bandwidth"        => "125000",
-        "txpower"          => "17",
-        "spreadingfactor"  => "7",
-        "codingrate"       => "5",
+        "name"            => "TestRNode",
+        "frequency"       => "868000000",
+        "bandwidth"       => "125000",
+        "txpower"         => "17",
+        "spreadingfactor" => "7",
+        "codingrate"      => "5",
       } of String => String
       expect_raises(ArgumentError, /No port/) do
         RNS::RNodeInterface.new(config)
@@ -951,7 +951,7 @@ describe RNS::RNodeInterface do
     it "encodes airtime limit as 2-byte xx.xx format" do
       # 25.50% → 2550 → 0x09F6
       val = 25.50
-      at = (val * 100).to_i32  # 2550
+      at = (val * 100).to_i32 # 2550
       c1 = ((at >> 8) & 0xFF).to_u8
       c2 = (at & 0xFF).to_u8
       c1.should eq(0x09_u8)
@@ -963,7 +963,7 @@ describe RNS::RNodeInterface do
         RNS::RNodeKISS::FEND, RNS::RNodeKISS::CMD_DETECT, RNS::RNodeKISS::DETECT_REQ, RNS::RNodeKISS::FEND,
         RNS::RNodeKISS::CMD_FW_VERSION, 0x00_u8, RNS::RNodeKISS::FEND,
         RNS::RNodeKISS::CMD_PLATFORM, 0x00_u8, RNS::RNodeKISS::FEND,
-        RNS::RNodeKISS::CMD_MCU, 0x00_u8, RNS::RNodeKISS::FEND
+        RNS::RNodeKISS::CMD_MCU, 0x00_u8, RNS::RNodeKISS::FEND,
       ]
       detect_cmd.size.should eq(13)
       detect_cmd[0].should eq(RNS::RNodeKISS::FEND)
@@ -988,13 +988,13 @@ describe RNS::RNodeInterface do
     end
 
     it "escapes FEND in data" do
-      data = Bytes[0xC0]  # FEND byte in payload
+      data = Bytes[0xC0] # FEND byte in payload
       escaped = RNS::RNodeKISS.escape(data)
       escaped.should eq(Bytes[0xDB, 0xDC])
     end
 
     it "escapes FESC in data" do
-      data = Bytes[0xDB]  # FESC byte in payload
+      data = Bytes[0xDB] # FESC byte in payload
       escaped = RNS::RNodeKISS.escape(data)
       escaped.should eq(Bytes[0xDB, 0xDD])
     end
@@ -1018,7 +1018,7 @@ describe RNS::RNodeInterface do
       received_data = nil
 
       # Build a data frame: FEND CMD_DATA data FEND
-      payload = Bytes[0x48, 0x65, 0x6C, 0x6C, 0x6F]  # "Hello"
+      payload = Bytes[0x48, 0x65, 0x6C, 0x6C, 0x6F] # "Hello"
       frame = IO::Memory.new
       frame.write_byte(RNS::RNodeKISS::FEND)
       frame.write_byte(RNS::RNodeKISS::CMD_DATA)
@@ -1145,7 +1145,7 @@ describe RNS::RNodeInterface do
       frame = IO::Memory.new
       frame.write_byte(RNS::RNodeKISS::FEND)
       frame.write_byte(RNS::RNodeKISS::CMD_FW_VERSION)
-      frame.write(RNS::KISS.escape(Bytes[0x01_u8, 0x34_u8]))  # version 1.52
+      frame.write(RNS::KISS.escape(Bytes[0x01_u8, 0x34_u8])) # version 1.52
       frame.write_byte(RNS::RNodeKISS::FEND)
 
       in_frame = false
@@ -1217,18 +1217,18 @@ describe RNS::RNodeInterface do
     it "parses SNR response and computes quality" do
       # SNR: signed byte * 0.25 = dB
       # For SNR = 3.0 dB: signed_byte = 12 (12 * 0.25 = 3.0)
-      snr_byte = 12_u8  # 3.0 dB
+      snr_byte = 12_u8 # 3.0 dB
       rsf = 7
 
       signed = snr_byte.to_i8
       snr = signed.to_f64 * 0.25
       snr.should eq(3.0)
 
-      sfs = rsf - 7  # 0
-      q_snr_min = RNS::RNodeInterface::Q_SNR_MIN_BASE - sfs * RNS::RNodeInterface::Q_SNR_STEP  # -9
-      q_snr_max = RNS::RNodeInterface::Q_SNR_MAX  # 6
-      q_snr_span = q_snr_max - q_snr_min  # 15
-      quality = ((snr - q_snr_min) / q_snr_span) * 100.0  # (3 - (-9)) / 15 * 100 = 80%
+      sfs = rsf - 7                                                                           # 0
+      q_snr_min = RNS::RNodeInterface::Q_SNR_MIN_BASE - sfs * RNS::RNodeInterface::Q_SNR_STEP # -9
+      q_snr_max = RNS::RNodeInterface::Q_SNR_MAX                                              # 6
+      q_snr_span = q_snr_max - q_snr_min                                                      # 15
+      quality = ((snr - q_snr_min) / q_snr_span) * 100.0                                      # (3 - (-9)) / 15 * 100 = 80%
       quality = quality.clamp(0.0, 100.0).round(1)
       quality.should eq(80.0)
     end
@@ -1462,7 +1462,7 @@ describe RNS::RNodeInterface do
         sf: 7,
         cr: 5
       )
-      iface.r_frequency = 915_000_000_i64  # Wrong frequency
+      iface.r_frequency = 915_000_000_i64 # Wrong frequency
       iface.r_bandwidth = 125_000_i64
       iface.r_txpower = 17
       iface.r_sf = 7

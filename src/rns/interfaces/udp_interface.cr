@@ -2,8 +2,8 @@ require "socket"
 
 module RNS
   class UDPInterface < Interface
-    BITRATE_GUESS    = 10_000_000_i64
-    DEFAULT_IFAC_SIZE = 16
+    BITRATE_GUESS     = 10_000_000_i64
+    DEFAULT_IFAC_SIZE =             16
 
     getter? receives : Bool = false
     getter? forwards : Bool = false
@@ -34,12 +34,12 @@ module RNS
     end
 
     private def configure(c : Hash(String, String))
-      name        = c["name"]? || ""
-      device      = c["device"]?
-      port        = c["port"]?.try(&.to_i)
-      bindip      = c["listen_ip"]?
-      bindport    = c["listen_port"]?.try(&.to_i)
-      forwardip   = c["forward_ip"]?
+      name = c["name"]? || ""
+      device = c["device"]?
+      port = c["port"]?.try(&.to_i)
+      bindip = c["listen_ip"]?
+      bindport = c["listen_port"]?.try(&.to_i)
+      forwardip = c["forward_ip"]?
       forwardport = c["forward_port"]?.try(&.to_i)
 
       if p = port

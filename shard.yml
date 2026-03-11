@@ -21,6 +21,10 @@ dependencies:
   bindata:
     github: spider-gazelle/bindata
 
+targets:
+  rnsd:
+    main: src/rnsd.cr
+
 development_dependencies:
   ameba:
     github: crystal-ameba/ameba

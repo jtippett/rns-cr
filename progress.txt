@@ -1811,3 +1811,30 @@
     (handler registration/deregistration + path table + Identity recall)
   - UDP/TCP interface tests use random ports to avoid conflicts
 - Ran crystal spec — 2496 examples, 0 failures, 0 errors, 5 pending
+
+2026-03-11 — Task 10.1: rnsd daemon
+  - Created src/rns/rnsd.cr — RNS::Rnsd module with full daemon implementation
+    - Args class: structured parsed arguments (config, verbose, quiet, service, interactive, example_config, version)
+    - parse_args(): command-line argument parser matching Python argparse behavior
+      - Supports: --config PATH, -v (repeatable), -q (repeatable), -s/--service, -i/--interactive, --exampleconfig, --version
+      - Handles combined short flags (e.g. -vvqs)
+    - compute_verbosity(): returns verbosity-quietness, nil for service mode (matches Python targetverbosity = None)
+    - compute_logdest(): returns LOG_FILE for service mode, LOG_STDOUT otherwise
+    - version_string(): returns "rnsd {version}" matching Python format
+    - program_setup(): initializes ReticulumInstance, logs startup, blocks forever
+    - main(): entry point — parses args, handles --version/--exampleconfig, calls program_setup
+    - EXAMPLE_RNS_CONFIG: verbose example configuration matching Python __example_rns_config__ exactly
+      - All interface examples: AutoInterface, UDP, TCP Server/Client, I2P, RNode LoRa, KISS, AX.25 KISS
+      - All reticulum settings: transport, sharing, discovery, blackhole, probes, remote management
+  - Created src/rnsd.cr — binary entry point (requires rns, calls RNS::Rnsd.main)
+  - Added targets section to shard.yml with rnsd binary target (main: src/rnsd.cr)
+  - Updated src/rns.cr to require rns/rnsd module (Section 7: Utilities / CLI modules)
+  - Created spec/rns/rnsd_spec.cr (27 examples)
+    - example_config: non-empty, contains [reticulum]/[logging]/[interfaces] sections,
+      contains all interface type examples (AutoInterface, TCP, UDP, RNode, KISS, AX25, I2P)
+    - parse_args: defaults, --config, -v, -vvv, -q, -qqq, -s/--service, -i/--interactive,
+      --exampleconfig, --version, combined flags (-vvqs --config)
+    - compute_verbosity: verbose-quiet delta, nil in service mode, zero with no flags
+    - compute_logdest: LOG_STDOUT default, LOG_FILE in service mode
+    - version_string: contains "rnsd" and version number
+  - Ran crystal spec — 2523 examples, 0 failures (1 pre-existing flaky UDP test), 0 errors, 5 pending

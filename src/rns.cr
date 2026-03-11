@@ -63,6 +63,9 @@ require "./rns/interfaces/weave_interface"
 # ── 6. System integration ─────────────────────────────────────────────
 require "./rns/discovery"
 
+# ── 7. Utilities / CLI modules ────────────────────────────────────────
+require "./rns/rnsd"
+
 # ═══════════════════════════════════════════════════════════════════════
 # Module-level public API
 #

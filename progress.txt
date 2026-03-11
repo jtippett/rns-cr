@@ -2117,3 +2117,40 @@
     - interfaces/: 885 examples, 0 failures
     - crypto + buffer + reticulum + discovery: 418 examples, 0 failures
   - 2 pre-existing failures in resource_spec.cr (Reticulum path constants) unrelated to changes
+
+2026-03-11 — Task 12.3: Performance benchmarking
+  - Verified existing benchmark files in benchmarks/ directory:
+    - crypto_bench.cr (186 LOC): SHA-256/512 throughput at 5 data sizes, truncated/full hash,
+      HMAC-SHA256 throughput at 4 sizes, HKDF key derivation at 3 output lengths,
+      AES-256-CBC encrypt/decrypt at 4 sizes, Token encrypt/decrypt at 3 sizes,
+      Ed25519 sign/verify/keygen, X25519 keygen/pub/exchange, SHA-256 MB/s summary
+    - packet_bench.cr (171 LOC): plaintext packet pack at 3 sizes, encrypted packet pack
+      at 3 sizes, packet unpack at 2 sizes, packet hash computation (get_hash,
+      get_truncated_hash, get_hashable_part), Identity encrypt/decrypt at 2 sizes,
+      Identity creation/hash, pack/unpack roundtrip throughput (10K iterations)
+    - link_bench.cr (197 LOC): X25519/Ed25519/both keypair generation, ECDH exchange,
+      HKDF key derivation (32B/64B), full handshake simulation (initiator/responder/
+      complete), link encrypt/decrypt at 3 sizes including MDU, link sign/verify,
+      handshake throughput (1K iterations with avg ms/handshake)
+    - resource_bench.cr (234 LOC): data segmentation throughput at 4 sizes,
+      segmentation+hashing at 4 sizes, ResourceAdvertisement msgpack pack/unpack,
+      integrity hash per-part (SHA-256, map hash, truncated hash), simulated transfer
+      pipeline (segment+encrypt+hash) at 5 sizes (1KB-1MB) with throughput MB/s,
+      window sizing impact (WINDOW_MIN/WINDOW/MAX_SLOW/MAX_FAST), data reassembly
+    - run_all.sh: runner script with --release compilation and individual bench selection
+  - Formatted all benchmark files with `crystal tool format` (all 4 had minor changes)
+  - Created spec/benchmarks_spec.cr (29 examples) validating all benchmark code paths:
+    - Crypto ops: SHA-256/512 at various sizes, truncated/full hash, HMAC-SHA256,
+      HKDF derivation, AES-256-CBC roundtrip, Token roundtrip, Ed25519 sign/verify,
+      X25519 shared secret matching, throughput measurement
+    - Packet ops: plaintext pack, encrypted pack, unpack, hash computation,
+      Identity encrypt/decrypt, pack/unpack roundtrip throughput
+    - Link ops: X25519 keypair, ECDH exchange, HKDF link key derivation,
+      full handshake simulation with matching derived keys, link encrypt/decrypt,
+      handshake throughput measurement
+    - Resource ops: segmentation/reassembly roundtrip, segmentation with hashing,
+      ResourceAdvertisement msgpack roundtrip, simulated transfer pipeline,
+      data reassembly, window sizing exercise
+    - Benchmark.ips compatibility verification
+  - Ran crystal spec spec/benchmarks_spec.cr — 29 examples, 0 failures
+  - Full suite: 3011 examples, 0 failures (1 pre-existing flaky TCP stress test), 5 pending

@@ -369,7 +369,7 @@ This is the largest module (3312 LOC). Split into manageable sub-modules.
 - [x] **12.2 — Run ameba linter and fix all issues**
   Run `crystal tool format` on all source files. Run `ameba` linter. Fix all warnings and errors. Ensure consistent code style throughout. Review all `# TODO` and `# FIXME` comments and resolve them.
 
-- [ ] **12.3 — Performance benchmarking**
+- [x] **12.3 — Performance benchmarking**
   Create `benchmarks/` directory. Write benchmarks for: crypto operations (encrypt/decrypt throughput, sign/verify throughput, hash throughput), packet encoding/decoding, link establishment time, resource transfer throughput. Compare against Python RNS performance where possible. Optimize any hot paths that are slower than expected.
 
 - [ ] **12.4 — Final review and shard release preparation**

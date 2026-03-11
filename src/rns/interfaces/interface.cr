@@ -473,6 +473,13 @@ module RNS
       @detached = true
     end
 
+    # Tear down the interface, releasing any resources (sockets, fibers, etc.).
+    # Subclasses should override to close their specific resources.
+    def teardown
+      @online = false
+      @detached = true
+    end
+
     # Access the ia/oa frequency deques for testing
     def ia_freq_deque
       @ia_freq_deque

@@ -242,7 +242,7 @@ describe "Integration: Multi-Interface Routing" do
     end
   end
 
-  describe "UDP interface send/receive between two interfaces" do
+  describe "UDP interface send/receive between two interfaces", tags: "network" do
     it "sends and receives data between UDP interfaces" do
       port = Random.rand(40000..50000)
       received = Channel(Bytes).new(1)
@@ -257,18 +257,20 @@ describe "Integration: Multi-Interface Routing" do
         "name" => "test_sender", "forward_ip" => "127.0.0.1", "forward_port" => port.to_s,
       })
 
-      test_data = "Multi-interface UDP test".to_slice
-      sender.process_outgoing(test_data)
+      begin
+        test_data = "Multi-interface UDP test".to_slice
+        sender.process_outgoing(test_data)
 
-      select
-      when result = received.receive
-        result.should eq(test_data)
-      when timeout(2.seconds)
-        raise "Timeout waiting for UDP data"
+        select
+        when result = received.receive
+          result.should eq(test_data)
+        when timeout(2.seconds)
+          raise "Timeout waiting for UDP data"
+        end
+      ensure
+        sender.teardown
+        receiver.teardown
       end
-
-      sender.teardown
-      receiver.teardown
     end
 
     it "two UDP interface pairs operate independently" do
@@ -295,28 +297,30 @@ describe "Integration: Multi-Interface Routing" do
         "name" => "send_b", "forward_ip" => "127.0.0.1", "forward_port" => port_b.to_s,
       })
 
-      send_a.process_outgoing("Data for A".to_slice)
-      send_b.process_outgoing("Data for B".to_slice)
+      begin
+        send_a.process_outgoing("Data for A".to_slice)
+        send_b.process_outgoing("Data for B".to_slice)
 
-      select
-      when r = received_a.receive
-        r.should eq("Data for A".to_slice)
-      when timeout(2.seconds)
-        raise "Timeout on interface A"
+        select
+        when r = received_a.receive
+          r.should eq("Data for A".to_slice)
+        when timeout(2.seconds)
+          raise "Timeout on interface A"
+        end
+
+        select
+        when r = received_b.receive
+          r.should eq("Data for B".to_slice)
+        when timeout(2.seconds)
+          raise "Timeout on interface B"
+        end
+      ensure
+        [send_a, send_b, recv_a, recv_b].each(&.teardown)
       end
-
-      select
-      when r = received_b.receive
-        r.should eq("Data for B".to_slice)
-      when timeout(2.seconds)
-        raise "Timeout on interface B"
-      end
-
-      [send_a, send_b, recv_a, recv_b].each(&.teardown)
     end
   end
 
-  describe "TCP LocalInterface client-server communication" do
+  describe "TCP LocalInterface client-server communication", tags: "network" do
     it "LocalServer accepts LocalClient connection" do
       port = Random.rand(40000..50000)
       server = RNS::LocalServerInterface.new(port)
@@ -325,12 +329,16 @@ describe "Integration: Multi-Interface Routing" do
       client = RNS::LocalClientInterface.new(target_port: port, name: "test_client")
       sleep(100.milliseconds)
 
-      # Verify connection was established
-      server.clients.should be >= 1
-      client.online.should be_true
-
-      client.detach
-      server.detach
+      begin
+        # Verify connection was established
+        server.clients.should be >= 1
+        client.online.should be_true
+      ensure
+        client.detach
+        client.teardown
+        server.detach
+        server.teardown
+      end
     end
   end
 
@@ -348,7 +356,7 @@ describe "Integration: Multi-Interface Routing" do
     end
   end
 
-  describe "Stress tests" do
+  describe "Stress tests", tags: "network" do
     it "registers and routes through 20 interfaces with 50 paths" do
       dir = start_mi_transport
       interfaces = (0...20).map do |i|

@@ -43,6 +43,7 @@ module RNS
 
     MULTI_IF_DEQUE_LEN =   48
     MULTI_IF_DEQUE_TTL = 0.75
+    DISABLE_LIVE_INTERFACE_SETUP_ENV = "RNS_TEST_DISABLE_AUTO_INTERFACE_NETWORK"
 
     # IPv6 multicast socket options
     IPPROTO_IPV6        = 41
@@ -193,49 +194,54 @@ module RNS
       @group_hash = RNS::Identity.full_hash(@group_id)
       @mcast_discovery_address = compute_mcast_address(@group_hash)
 
-      # Enumerate network interfaces and find suitable ones
+      # Enumerate network interfaces and find suitable ones unless tests disable
+      # live socket setup to avoid touching host network state.
       suitable_interfaces = 0
-      begin
-        NetInfo.interfaces.each do |ifname|
-          begin
-            if should_skip_interface?(ifname)
-              RNS.log("#{self} skipping interface #{ifname}", RNS::LOG_EXTREME)
-              next
-            end
+      unless disable_live_interface_setup?(configuration)
+        begin
+          NetInfo.interfaces.each do |ifname|
+            begin
+              if should_skip_interface?(ifname)
+                RNS.log("#{self} skipping interface #{ifname}", RNS::LOG_EXTREME)
+                next
+              end
 
-            if @allowed_interfaces.size > 0 && !@allowed_interfaces.includes?(ifname)
-              RNS.log("#{self} ignoring interface #{ifname} since it was not allowed", RNS::LOG_EXTREME)
-              next
-            end
+              if @allowed_interfaces.size > 0 && !@allowed_interfaces.includes?(ifname)
+                RNS.log("#{self} ignoring interface #{ifname} since it was not allowed", RNS::LOG_EXTREME)
+                next
+              end
 
-            addresses = NetInfo.ifaddresses(ifname)
-            af_inet6 = NetInfo::AF_INET6.to_i32
-            if addresses.has_key?(af_inet6)
-              link_local_addr : String? = nil
-              addresses[af_inet6].each do |address|
-                if address.addr.starts_with?("fe80:")
-                  link_local_addr = NetInfo.descope_linklocal(address.addr)
-                  @link_local_addresses << link_local_addr
-                  @adopted_interfaces[ifname] = link_local_addr
-                  @multicast_echoes[ifname] = Time.utc.to_unix_f
-                  RNS.log("#{self} Selecting link-local address #{link_local_addr} for interface #{ifname}", RNS::LOG_EXTREME)
+              addresses = NetInfo.ifaddresses(ifname)
+              af_inet6 = NetInfo::AF_INET6.to_i32
+              if addresses.has_key?(af_inet6)
+                link_local_addr : String? = nil
+                addresses[af_inet6].each do |address|
+                  if address.addr.starts_with?("fe80:")
+                    link_local_addr = NetInfo.descope_linklocal(address.addr)
+                    @link_local_addresses << link_local_addr
+                    @adopted_interfaces[ifname] = link_local_addr
+                    @multicast_echoes[ifname] = Time.utc.to_unix_f
+                    RNS.log("#{self} Selecting link-local address #{link_local_addr} for interface #{ifname}", RNS::LOG_EXTREME)
+                  end
+                end
+
+                if link_local_addr.nil?
+                  RNS.log("#{self} No link-local IPv6 address configured for #{ifname}, skipping interface", RNS::LOG_EXTREME)
+                else
+                  # Start discovery listeners
+                  start_discovery_listeners(ifname, link_local_addr.not_nil!)
+                  suitable_interfaces += 1
                 end
               end
-
-              if link_local_addr.nil?
-                RNS.log("#{self} No link-local IPv6 address configured for #{ifname}, skipping interface", RNS::LOG_EXTREME)
-              else
-                # Start discovery listeners
-                start_discovery_listeners(ifname, link_local_addr.not_nil!)
-                suitable_interfaces += 1
-              end
+            rescue ex
+              RNS.log("Could not configure the system interface #{ifname} for use with #{self}, skipping it. The contained exception was: #{ex.message}", RNS::LOG_ERROR)
             end
-          rescue ex
-            RNS.log("Could not configure the system interface #{ifname} for use with #{self}, skipping it. The contained exception was: #{ex.message}", RNS::LOG_ERROR)
           end
+        rescue ex
+          RNS.log("Error enumerating network interfaces: #{ex.message}", RNS::LOG_ERROR)
         end
-      rescue ex
-        RNS.log("Error enumerating network interfaces: #{ex.message}", RNS::LOG_ERROR)
+      else
+        RNS.log("#{self} live interface setup disabled by configuration", RNS::LOG_EXTREME)
       end
 
       if suitable_interfaces == 0
@@ -573,6 +579,20 @@ module RNS
       return true if ALL_IGNORE_IFS.includes?(ifname)
 
       false
+    end
+
+    private def disable_live_interface_setup?(configuration : Hash(String, String)) : Bool
+      truthy_string?(configuration["disable_live_interface_setup"]?) ||
+        truthy_string?(ENV[DISABLE_LIVE_INTERFACE_SETUP_ENV]?)
+    end
+
+    private def truthy_string?(value : String?) : Bool
+      case value.try(&.downcase)
+      when "1", "true", "yes", "on"
+        true
+      else
+        false
+      end
     end
 
     # Start multicast and unicast discovery listeners on an interface

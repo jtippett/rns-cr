@@ -576,7 +576,7 @@ describe RNS::UDPInterface do
     end
   end
 
-  describe "stress tests" do
+  describe "stress tests", tags: "network" do
     it "handles 50 rapid sends" do
       recv_port = free_port
       recv_socket = UDPSocket.new

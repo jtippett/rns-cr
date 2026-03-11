@@ -358,7 +358,7 @@ This is the largest module (3312 LOC). Split into manageable sub-modules.
 - [x] **11.2 — Port advanced examples**
   Port `Examples/Link.py`, `Examples/Request.py`, `Examples/Identify.py`, `Examples/Channel.py`, `Examples/Buffer.py` → `examples/`. These demonstrate encrypted links, request/response patterns, identity verification, and channel/buffer usage.
 
-- [ ] **11.3 — Port file transfer and performance examples**
+- [x] **11.3 — Port file transfer and performance examples**
   Port `Examples/Resource.py`, `Examples/Filetransfer.py`, `Examples/Speedtest.py`, `Examples/Ratchets.py` → `examples/`. These demonstrate large file transfers, performance testing, and forward secrecy with ratchets.
 
 ### Phase 12: Quality and Compatibility

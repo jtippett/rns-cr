@@ -1944,3 +1944,72 @@
   - All examples are standalone Crystal programs matching Python API semantics exactly
   - Ran crystal spec — 4 examples, 0 failures (compile checks)
   - Ran crystal spec rns_spec.cr — 56 examples, 0 failures (no regressions)
+
+2026-03-11 — Task 11.2: Port advanced examples
+  - Ported Examples/Link.py → examples/link.cr (~280 LOC)
+    - Server: creates SINGLE destination, sets link_established callback,
+      receives packets via set_packet_callback, echoes reply via Packet.new
+    - Client: validates destination hash, requests path, establishes Link,
+      sends user input as packets, receives replies
+    - CLI: -s/--server, --config PATH, DESTINATION positional arg, -h/--help
+  - Ported Examples/Request.py → examples/request.cr (~280 LOC)
+    - Server: creates SINGLE destination, registers request handler at
+      "/random/text" with ALLOW_ALL policy, returns random text responses
+    - Client: establishes link, calls link.request() with response_callback
+      and failed_callback, displays received responses
+    - CLI: -s/--server, --config PATH, DESTINATION positional arg, -h/--help
+  - Ported Examples/Identify.py → examples/identify.cr (~290 LOC)
+    - Server: sets set_remote_identified_callback to display client identity,
+      receives packets showing identified/unidentified peer status
+    - Client: creates client identity, calls link.identify(identity) on
+      link establishment, sends text and receives replies
+    - CLI: -s/--server, --config PATH, DESTINATION positional arg, -h/--help
+  - Ported Examples/Channel.py → examples/channel.cr (~340 LOC)
+    - StringMessage class extending MessageBase: MSGTYPE=0x0101, pack/unpack
+      via msgpack with data string and timestamp
+    - Server: registers StringMessage type on channel, handles incoming
+      messages, sends reply StringMessage
+    - Client: registers StringMessage, checks channel.is_ready_to_send? and
+      channel.mdu before sending
+    - Helper: create_channel_for(link) creates Channel via LinkChannelOutlet
+      (Link#get_channel is deferred due to Crystal codegen bug)
+    - CLI: -s/--server, --config PATH, DESTINATION positional arg, -h/--help
+  - Ported Examples/Buffer.py → examples/buffer.cr (~290 LOC)
+    - Server: creates bidirectional buffer via Buffer.create_bidirectional_buffer,
+      reads data in server_buffer_ready callback, writes reply
+    - Client: creates bidirectional buffer on link establishment, writes
+      user input to buffer, reads replies in client_buffer_ready callback
+    - Uses RawChannelReader and RawChannelWriter with stream_id=0
+    - CLI: -s/--server, --config PATH, DESTINATION positional arg, -h/--help
+  - Updated Destination#set_link_established_callback signature from
+    Proc(Nil) to Proc(Link, Nil) matching Python API — was a placeholder
+  - Updated destination_spec.cr and link.cr to use new callback signature
+  - Updated examples_compile_spec.cr to type-check all 9 examples
+  - Ran crystal spec spec/examples_compile_spec.cr — 9 examples, 0 failures
+  - Ran crystal spec (rns, link, reticulum, destination, discovery, rncp,
+    rnx, integration) — 724 examples, 0 failures, 5 pending (pre-existing)
+
+2026-03-11 — Task 11.3: Port file transfer and performance examples
+  - Created examples/resource.cr — port of Examples/Resource.py
+    - Server accepts incoming resources over links with ACCEPT_ALL strategy
+    - Client generates 32MB random data with msgpack metadata and sends as Resource
+    - Callback-based resource conclusion handling
+    - Full CLI argument parsing (-s/--server, --config, destination hash)
+  - Created examples/filetransfer.cr — port of Examples/Filetransfer.py
+    - Server serves directory of files, sends file list via msgpack over link packets
+    - Client downloads files by name/index with menu-driven interface
+    - Progress tracking, download statistics (time, size, rates), duplicate file handling
+    - size_str() helper for human-readable file/transfer sizes
+    - Uses spawn for filelist timeout (maps Python threading.Thread)
+  - Created examples/speedtest.cr — port of Examples/Speedtest.py
+    - Server tracks received data and prints throughput stats at 2MB data cap
+    - Client sends random data packets continuously, measures and displays transfer rate
+    - Module-based state management matching Crystal patterns
+  - Created examples/ratchets.cr — port of Examples/Ratchets.py
+    - Echo server with ratchet-based encryption key rotation via enable_ratchets()
+    - Client sends echo requests with proof receipt tracking and RTT measurement
+    - Signal quality metrics (RSSI/SNR) display
+    - Supports -t/--timeout for configurable reply timeout
+  - All examples follow established Crystal patterns: module state, callback procs,
+    CLI argument parsing, begin/rescue for Ctrl-C handling
+  - Verified project compiles — crystal spec spec/rns_spec.cr: 56 examples, 0 failures

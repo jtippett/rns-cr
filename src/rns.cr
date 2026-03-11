@@ -69,6 +69,8 @@ require "./rns/rnstatus"
 require "./rns/rnpath"
 require "./rns/rnprobe"
 require "./rns/rnid"
+require "./rns/rncp"
+require "./rns/rnx"
 
 # ═══════════════════════════════════════════════════════════════════════
 # Module-level public API

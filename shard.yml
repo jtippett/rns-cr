@@ -32,6 +32,10 @@ targets:
     main: src/rnprobe.cr
   rnid:
     main: src/rnid.cr
+  rncp:
+    main: src/rncp.cr
+  rnx:
+    main: src/rnx.cr
 
 development_dependencies:
   ameba:

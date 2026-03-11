@@ -4,6 +4,12 @@ module RNS
   # Ports RNS/Buffer.py StreamDataMessage
   # ═══════════════════════════════════════════════════════════════
 
+  # Channel message type that carries binary stream data.
+  #
+  # Each message encodes a 14-bit stream ID, EOF and compression flags
+  # into a 2-byte header, followed by an optional data payload.
+  # Used internally by `RawChannelReader` and `RawChannelWriter` to
+  # multiplex byte streams over a single `Channel`.
   class StreamDataMessage < MessageBase
     class_getter msgtype : UInt16 = SystemMessageTypes::SMT_STREAM_DATA
 
@@ -57,6 +63,13 @@ module RNS
   # Ports RNS/Buffer.py RawChannelReader.
   # ═══════════════════════════════════════════════════════════════
 
+  # Provides an IO-like read interface over a `Channel`.
+  #
+  # Listens for `StreamDataMessage` packets matching a given *stream_id*,
+  # buffers incoming data, and exposes `#read` / `#readinto` for
+  # consumption. Supports ready-callbacks so callers can be notified
+  # when new data arrives. Generic over `TPacket` to match the
+  # channel's packet type.
   class RawChannelReader(TPacket)
     @stream_id : Int32
     @channel : Channel(TPacket)
@@ -212,6 +225,12 @@ module RNS
   # Ports RNS/Buffer.py RawChannelWriter.
   # ═══════════════════════════════════════════════════════════════
 
+  # Provides an IO-like write interface over a `Channel`.
+  #
+  # Chunks outgoing data (up to 16 KiB), optionally compresses via
+  # BZip2, and sends it as `StreamDataMessage` packets on a given
+  # *stream_id*. Call `#close` to send an EOF marker. Generic over
+  # `TPacket` to match the channel's packet type.
   class RawChannelWriter(TPacket)
     MAX_CHUNK_LEN     = 1024 * 16 # 16 KiB
     COMPRESSION_TRIES = 4
@@ -310,6 +329,11 @@ module RNS
   # Ports RNS/Buffer.py Buffer class.
   # ═══════════════════════════════════════════════════════════════
 
+  # Factory module for creating buffered stream readers, writers, and
+  # bidirectional pairs over a `Channel`.
+  #
+  # Convenience wrappers around `RawChannelReader` and `RawChannelWriter`
+  # that handle construction and optional ready-callback registration.
   module Buffer
     # Create a reader that receives binary data from a Channel.
     def self.create_reader(stream_id : Int32, channel : Channel(TPacket),

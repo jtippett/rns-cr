@@ -2,6 +2,8 @@ require "file_utils"
 require "msgpack"
 
 module RNS
+  # Manages cryptographic identities using X25519 encryption and Ed25519 signing key pairs.
+  # Provides encryption, decryption, signing, validation, and destination tracking for the Reticulum network.
   class Identity
     CURVE = "Curve25519"
 
@@ -50,6 +52,7 @@ module RNS
     property hexhash : String?
     property app_data : Bytes?
 
+    # Creates a new Identity instance. When *create_keys* is true, generates fresh key pairs immediately.
     def initialize(create_keys : Bool = true)
       @prv = nil
       @prv_bytes = nil
@@ -68,6 +71,7 @@ module RNS
       self.create_keys if create_keys
     end
 
+    # Generates new X25519 encryption and Ed25519 signing key pairs, then updates identity hashes.
     def create_keys
       @prv = Cryptography::X25519PrivateKey.generate
       @prv_bytes = @prv.not_nil!.private_bytes
@@ -88,6 +92,7 @@ module RNS
 
     # ─── Key accessors ─────────────────────────────────────────────────
 
+    # Returns the concatenated private key bytes (encryption key + signing key).
     def get_private_key : Bytes
       prv_b = @prv_bytes.not_nil!
       sig_b = @sig_prv_bytes.not_nil!
@@ -97,6 +102,7 @@ module RNS
       result
     end
 
+    # Returns the concatenated public key bytes (encryption key + signing key).
     def get_public_key : Bytes
       pub_b = @pub_bytes.not_nil!
       sig_b = @sig_pub_bytes.not_nil!
@@ -106,6 +112,7 @@ module RNS
       result
     end
 
+    # Loads encryption and signing key pairs from raw private key bytes. Returns true on success.
     def load_private_key(prv_bytes : Bytes) : Bool
       half = KEYSIZE // 8 // 2
 
@@ -129,6 +136,7 @@ module RNS
       false
     end
 
+    # Loads encryption and signing public keys from raw public key bytes.
     def load_public_key(pub_bytes : Bytes)
       half = KEYSIZE // 8 // 2
 
@@ -148,6 +156,7 @@ module RNS
       @hexhash = @hash.not_nil!.hexstring
     end
 
+    # Loads an identity's private key from a file and derives all key pairs from it.
     def load(path : String) : Bool
       prv_bytes = File.read(path).to_slice
       load_private_key(prv_bytes)
@@ -167,6 +176,7 @@ module RNS
 
     # ─── Encryption ────────────────────────────────────────────────────
 
+    # Encrypts plaintext using ECDH key exchange with an ephemeral key and Token-based symmetric encryption.
     def encrypt(plaintext : Bytes, ratchet : Bytes? = nil) : Bytes
       pub_key = @pub
       raise KeyError.new("Encryption failed because identity does not hold a public key") if pub_key.nil?
@@ -210,6 +220,7 @@ module RNS
       token.decrypt(ciphertext)
     end
 
+    # Decrypts ciphertext, optionally trying ratchet keys first. Returns nil on failure.
     def decrypt(ciphertext_token : Bytes, ratchets : Array(Bytes)? = nil, enforce_ratchets : Bool = false) : Bytes?
       prv_key = @prv
       raise KeyError.new("Decryption failed because identity does not hold a private key") if prv_key.nil?
@@ -258,6 +269,7 @@ module RNS
 
     # ─── Signing ───────────────────────────────────────────────────────
 
+    # Signs a message using the Ed25519 private signing key.
     def sign(message : Bytes) : Bytes
       sig_prv_key = @sig_prv
       raise KeyError.new("Signing failed because identity does not hold a private key") if sig_prv_key.nil?
@@ -270,6 +282,7 @@ module RNS
       end
     end
 
+    # Validates an Ed25519 signature against a message. Returns true if the signature is valid.
     def validate(signature : Bytes, message : Bytes) : Bool
       pub_key = @pub
       raise KeyError.new("Signature validation failed because identity does not hold a public key") if pub_key.nil?
@@ -284,6 +297,7 @@ module RNS
 
     # ─── File I/O ──────────────────────────────────────────────────────
 
+    # Saves the identity's private key to a file at the given path.
     def to_file(path : String) : Bool
       File.write(path, get_private_key)
       true
@@ -304,6 +318,7 @@ module RNS
 
     # ─── Static Methods ────────────────────────────────────────────────
 
+    # Stores a destination's public key and app data in the known destinations table.
     def self.remember(packet_hash : Bytes, destination_hash : Bytes, public_key : Bytes, app_data : Bytes? = nil)
       if public_key.size != KEYSIZE // 8
         raise ArgumentError.new("Can't remember #{RNS.prettyhexrep(destination_hash)}, the public key size of #{public_key.size} is not valid.")
@@ -317,6 +332,7 @@ module RNS
       @@known_destinations[destination_hash] = entry
     end
 
+    # Recalls a known Identity by destination hash or identity hash. Returns nil if not found.
     def self.recall(target_hash : Bytes, from_identity_hash : Bool = false) : Identity?
       if from_identity_hash
         @@known_destinations.each do |_, identity_data|
@@ -341,6 +357,7 @@ module RNS
       end
     end
 
+    # Retrieves the stored app data for a known destination, or nil if not found.
     def self.recall_app_data(destination_hash : Bytes) : Bytes?
       if @@known_destinations.has_key?(destination_hash)
         @@known_destinations[destination_hash][3].as?(Bytes)
@@ -586,14 +603,17 @@ module RNS
 
     # ─── Hash Functions ────────────────────────────────────────────────
 
+    # Computes a full SHA-256 hash of the given data.
     def self.full_hash(data : Bytes) : Bytes
       Cryptography.sha256(data)
     end
 
+    # Computes a truncated hash (first 128 bits of the full SHA-256 hash).
     def self.truncated_hash(data : Bytes) : Bytes
       full_hash(data)[0, TRUNCATED_HASHLENGTH // 8]
     end
 
+    # Generates a random truncated hash from secure random bytes.
     def self.get_random_hash : Bytes
       truncated_hash(Random::Secure.random_bytes(TRUNCATED_HASHLENGTH // 8))
     end
@@ -693,6 +713,7 @@ module RNS
 
     # ─── Factory Methods ───────────────────────────────────────────────
 
+    # Creates an Identity from raw private key bytes. Returns nil if the key is invalid.
     def self.from_bytes(prv_bytes : Bytes) : Identity?
       identity = Identity.new(create_keys: false)
       if identity.load_private_key(prv_bytes)
@@ -702,6 +723,7 @@ module RNS
       end
     end
 
+    # Loads an Identity from a file containing private key bytes. Returns nil on failure.
     def self.from_file(path : String) : Identity?
       identity = Identity.new(create_keys: false)
       if identity.load(path)

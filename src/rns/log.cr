@@ -1,4 +1,5 @@
 module RNS
+  # Log level constants, matching the Python RNS log levels exactly.
   LOG_NONE     = -1
   LOG_CRITICAL =  0
   LOG_ERROR    =  1
@@ -9,22 +10,31 @@ module RNS
   LOG_DEBUG    =  6
   LOG_EXTREME  =  7
 
+  # Log destination constants.
   LOG_STDOUT   = 0x91
   LOG_FILE     = 0x92
   LOG_CALLBACK = 0x93
 
+  # Maximum log file size before rotation (5 MB).
   LOG_MAXSIZE = 5 * 1024 * 1024
 
+  # Current log level. Messages above this level are suppressed.
   class_property loglevel : Int32 = LOG_NOTICE
+  # Path to log file when `logdest` is `LOG_FILE`.
   class_property logfile : String? = nil
+  # Log destination: `LOG_STDOUT`, `LOG_FILE`, or `LOG_CALLBACK`.
   class_property logdest : Int32 = LOG_STDOUT
+  # Callback proc invoked for each log line when `logdest` is `LOG_CALLBACK`.
   class_property logcall : Proc(String, Nil)? = nil
+  # Timestamp format string for log output.
   class_property logtimefmt : String = "%Y-%m-%d %H:%M:%S"
+  # When true, omits the log level tag from output.
   class_property compact_log_fmt : Bool = false
 
   @@logging_mutex = Mutex.new
   @@always_override_destination = false
 
+  # Returns a human-readable label for the given log level.
   def self.loglevelname(level : Int32) : String
     case level
     when LOG_CRITICAL then "[Critical]"
@@ -39,11 +49,14 @@ module RNS
     end
   end
 
+  # Formats a Unix timestamp as a human-readable string using the configured format.
   def self.timestamp_str(time_s : Float64) : String
     time = Time.unix(time_s.to_i64)
     time.to_s(@@logtimefmt)
   end
 
+  # Emits a log message at the given *level*. The message is routed to
+  # stdout, a file, or a callback depending on the current `logdest`.
   def self.log(msg, level : Int32 = LOG_NOTICE, _override_destination : Bool = false)
     return if @@loglevel == LOG_NONE
     msg = msg.to_s
@@ -90,6 +103,7 @@ module RNS
     end
   end
 
+  # Returns the host operating system name (e.g. `"linux"`, `"darwin"`).
   def self.host_os : String
     PlatformUtils.get_platform
   end

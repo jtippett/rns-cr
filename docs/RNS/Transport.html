@@ -1,0 +1,4357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Crystal Docs 1.18.2">
+<meta name="crystal_docs.project_version" content="master-dev">
+<meta name="crystal_docs.project_name" content="rns">
+
+
+
+<link href="../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../js/doc.js"></script>
+
+  <meta name="repository-name" content="rns">
+  <title>RNS::Transport - rns master-dev</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<input type="checkbox" id="sidebar-btn">
+<label for="sidebar-btn" id="sidebar-btn-label">
+  <svg class="open" xmlns="http://www.w3.org/2000/svg" height="2em" width="2em" viewBox="0 0 512 512"><title>Open Sidebar</title><path fill="currentColor" d="M80 96v64h352V96H80zm0 112v64h352v-64H80zm0 112v64h352v-64H80z"></path></svg>
+  <svg class="close" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 512 512"><title>Close Sidebar</title><path fill="currentColor" d="m118.6 73.4-45.2 45.2L210.7 256 73.4 393.4l45.2 45.2L256 301.3l137.4 137.3 45.2-45.2L301.3 256l137.3-137.4-45.2-45.2L256 210.7Z"></path></svg>
+</label>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="../index.html">
+          rns
+        </a>
+      </h1>
+
+      <span class="project-version">
+        master-dev
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class="parent open current" data-id="rns/RNS" data-name="rns">
+      <a href="../RNS.html">RNS</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="rns/RNS/AutoInterface" data-name="rns::autointerface">
+      <a href="../RNS/AutoInterface.html">AutoInterface</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/AutoInterface/PeerEntry" data-name="rns::autointerface::peerentry">
+      <a href="../RNS/AutoInterface/PeerEntry.html">PeerEntry</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/AutoInterfacePeer" data-name="rns::autointerfacepeer">
+      <a href="../RNS/AutoInterfacePeer.html">AutoInterfacePeer</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/AX25" data-name="rns::ax25">
+      <a href="../RNS/AX25.html">AX25</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/AX25KISSInterface" data-name="rns::ax25kissinterface">
+      <a href="../RNS/AX25KISSInterface.html">AX25KISSInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/BackboneClientInterface" data-name="rns::backboneclientinterface">
+      <a href="../RNS/BackboneClientInterface.html">BackboneClientInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/BackboneInterface" data-name="rns::backboneinterface">
+      <a href="../RNS/BackboneInterface.html">BackboneInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/BackboneInterfaceConstants" data-name="rns::backboneinterfaceconstants">
+      <a href="../RNS/BackboneInterfaceConstants.html">BackboneInterfaceConstants</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Base32" data-name="rns::base32">
+      <a href="../RNS/Base32.html">Base32</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Buffer" data-name="rns::buffer">
+      <a href="../RNS/Buffer.html">Buffer</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/BZip2" data-name="rns::bzip2">
+      <a href="../RNS/BZip2.html">BZip2</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/BZip2/Error" data-name="rns::bzip2::error">
+      <a href="../RNS/BZip2/Error.html">Error</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/CEType" data-name="rns::cetype">
+      <a href="../RNS/CEType.html">CEType</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Channel" data-name="rns::channel(tpacket)">
+      <a href="../RNS/Channel.html">Channel</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ChannelException" data-name="rns::channelexception">
+      <a href="../RNS/ChannelException.html">ChannelException</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ChannelOutletBase" data-name="rns::channeloutletbase(tpacket)">
+      <a href="../RNS/ChannelOutletBase.html">ChannelOutletBase</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/ConfigObj" data-name="rns::configobj">
+      <a href="../RNS/ConfigObj.html">ConfigObj</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/ConfigObj/NestingError" data-name="rns::configobj::nestingerror">
+      <a href="../RNS/ConfigObj/NestingError.html">NestingError</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ConfigObj/ParseError" data-name="rns::configobj::parseerror">
+      <a href="../RNS/ConfigObj/ParseError.html">ParseError</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ConfigObj/Section" data-name="rns::configobj::section">
+      <a href="../RNS/ConfigObj/Section.html">Section</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ConfigObj/Value" data-name="rns::configobj::value">
+      <a href="../RNS/ConfigObj/Value.html">Value</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ConfigObj/ValueError" data-name="rns::configobj::valueerror">
+      <a href="../RNS/ConfigObj/ValueError.html">ValueError</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Cryptography" data-name="rns::cryptography">
+      <a href="../RNS/Cryptography.html">Cryptography</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/AES128CBC" data-name="rns::cryptography::aes128cbc">
+      <a href="../RNS/Cryptography/AES128CBC.html">AES128CBC</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/AES256CBC" data-name="rns::cryptography::aes256cbc">
+      <a href="../RNS/Cryptography/AES256CBC.html">AES256CBC</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/Ed25519PrivateKey" data-name="rns::cryptography::ed25519privatekey">
+      <a href="../RNS/Cryptography/Ed25519PrivateKey.html">Ed25519PrivateKey</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/Ed25519PublicKey" data-name="rns::cryptography::ed25519publickey">
+      <a href="../RNS/Cryptography/Ed25519PublicKey.html">Ed25519PublicKey</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/HMAC" data-name="rns::cryptography::hmac">
+      <a href="../RNS/Cryptography/HMAC.html">HMAC</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/PKCS7" data-name="rns::cryptography::pkcs7">
+      <a href="../RNS/Cryptography/PKCS7.html">PKCS7</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Cryptography/Token" data-name="rns::cryptography::token">
+      <a href="../RNS/Cryptography/Token.html">Token</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/Token/Mode" data-name="rns::cryptography::token::mode">
+      <a href="../RNS/Cryptography/Token/Mode.html">Mode</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/X25519PrivateKey" data-name="rns::cryptography::x25519privatekey">
+      <a href="../RNS/Cryptography/X25519PrivateKey.html">X25519PrivateKey</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/X25519PublicKey" data-name="rns::cryptography::x25519publickey">
+      <a href="../RNS/Cryptography/X25519PublicKey.html">X25519PublicKey</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Destination" data-name="rns::destination">
+      <a href="../RNS/Destination.html">Destination</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Destination/DestinationCallbacks" data-name="rns::destination::destinationcallbacks">
+      <a href="../RNS/Destination/DestinationCallbacks.html">DestinationCallbacks</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Destination/DestinationInterface" data-name="rns::destination::destinationinterface">
+      <a href="../RNS/Destination/DestinationInterface.html">DestinationInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Destination/RequestHandler" data-name="rns::destination::requesthandler">
+      <a href="../RNS/Destination/RequestHandler.html">RequestHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Destination/Stub" data-name="rns::destination::stub">
+      <a href="../RNS/Destination/Stub.html">Stub</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Discovery" data-name="rns::discovery">
+      <a href="../RNS/Discovery.html">Discovery</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Discovery/BlackholeUpdater" data-name="rns::discovery::blackholeupdater">
+      <a href="../RNS/Discovery/BlackholeUpdater.html">BlackholeUpdater</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Discovery/InterfaceAnnounceHandler" data-name="rns::discovery::interfaceannouncehandler">
+      <a href="../RNS/Discovery/InterfaceAnnounceHandler.html">InterfaceAnnounceHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Discovery/InterfaceAnnouncer" data-name="rns::discovery::interfaceannouncer">
+      <a href="../RNS/Discovery/InterfaceAnnouncer.html">InterfaceAnnouncer</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Discovery/InterfaceDiscovery" data-name="rns::discovery::interfacediscovery">
+      <a href="../RNS/Discovery/InterfaceDiscovery.html">InterfaceDiscovery</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Discovery/InterfaceDiscovery/InfoHash" data-name="rns::discovery::interfacediscovery::infohash">
+      <a href="../RNS/Discovery/InterfaceDiscovery/InfoHash.html">InfoHash</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Envelope" data-name="rns::envelope(tpacket)">
+      <a href="../RNS/Envelope.html">Envelope</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/HDLC" data-name="rns::hdlc">
+      <a href="../RNS/HDLC.html">HDLC</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PController" data-name="rns::i2pcontroller">
+      <a href="../RNS/I2PController.html">I2PController</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/I2PExceptions" data-name="rns::i2pexceptions">
+      <a href="../RNS/I2PExceptions.html">I2PExceptions</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/CantReachPeer" data-name="rns::i2pexceptions::cantreachpeer">
+      <a href="../RNS/I2PExceptions/CantReachPeer.html">CantReachPeer</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/DuplicatedDest" data-name="rns::i2pexceptions::duplicateddest">
+      <a href="../RNS/I2PExceptions/DuplicatedDest.html">DuplicatedDest</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/DuplicatedId" data-name="rns::i2pexceptions::duplicatedid">
+      <a href="../RNS/I2PExceptions/DuplicatedId.html">DuplicatedId</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/I2PError" data-name="rns::i2pexceptions::i2perror">
+      <a href="../RNS/I2PExceptions/I2PError.html">I2PError</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/InvalidId" data-name="rns::i2pexceptions::invalidid">
+      <a href="../RNS/I2PExceptions/InvalidId.html">InvalidId</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/InvalidKey" data-name="rns::i2pexceptions::invalidkey">
+      <a href="../RNS/I2PExceptions/InvalidKey.html">InvalidKey</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/KeyNotFound" data-name="rns::i2pexceptions::keynotfound">
+      <a href="../RNS/I2PExceptions/KeyNotFound.html">KeyNotFound</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/PeerNotFound" data-name="rns::i2pexceptions::peernotfound">
+      <a href="../RNS/I2PExceptions/PeerNotFound.html">PeerNotFound</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/Timeout" data-name="rns::i2pexceptions::timeout">
+      <a href="../RNS/I2PExceptions/Timeout.html">Timeout</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PInterface" data-name="rns::i2pinterface">
+      <a href="../RNS/I2PInterface.html">I2PInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PInterfacePeer" data-name="rns::i2pinterfacepeer">
+      <a href="../RNS/I2PInterfacePeer.html">I2PInterfacePeer</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Identity" data-name="rns::identity">
+      <a href="../RNS/Identity.html">Identity</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Interface" data-name="rns::interface">
+      <a href="../RNS/Interface.html">Interface</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Interface/AnnounceQueueEntry" data-name="rns::interface::announcequeueentry">
+      <a href="../RNS/Interface/AnnounceQueueEntry.html">AnnounceQueueEntry</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Interface/HeldAnnounce" data-name="rns::interface::heldannounce">
+      <a href="../RNS/Interface/HeldAnnounce.html">HeldAnnounce</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/InterfaceAnnouncer" data-name="rns::interfaceannouncer">
+      <a href="../RNS/InterfaceAnnouncer.html">InterfaceAnnouncer</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/KISS" data-name="rns::kiss">
+      <a href="../RNS/KISS.html">KISS</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/KISSInterface" data-name="rns::kissinterface">
+      <a href="../RNS/KISSInterface.html">KISSInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Link" data-name="rns::link">
+      <a href="../RNS/Link.html">Link</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/LinkCallbacks" data-name="rns::linkcallbacks">
+      <a href="../RNS/LinkCallbacks.html">LinkCallbacks</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/LinkChannelOutlet" data-name="rns::linkchanneloutlet">
+      <a href="../RNS/LinkChannelOutlet.html">LinkChannelOutlet</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/LinkLike" data-name="rns::linklike">
+      <a href="../RNS/LinkLike.html">LinkLike</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/LinkStub" data-name="rns::linkstub">
+      <a href="../RNS/LinkStub.html">LinkStub</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/LocalClientInterface" data-name="rns::localclientinterface">
+      <a href="../RNS/LocalClientInterface.html">LocalClientInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/LocalServerInterface" data-name="rns::localserverinterface">
+      <a href="../RNS/LocalServerInterface.html">LocalServerInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/MessageBase" data-name="rns::messagebase">
+      <a href="../RNS/MessageBase.html">MessageBase</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/MessageState" data-name="rns::messagestate">
+      <a href="../RNS/MessageState.html">MessageState</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/NetInfo" data-name="rns::netinfo">
+      <a href="../RNS/NetInfo.html">NetInfo</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/NetInfo/AddressInfo" data-name="rns::netinfo::addressinfo">
+      <a href="../RNS/NetInfo/AddressInfo.html">AddressInfo</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Packet" data-name="rns::packet">
+      <a href="../RNS/Packet.html">Packet</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/PacketReceipt" data-name="rns::packetreceipt">
+      <a href="../RNS/PacketReceipt.html">PacketReceipt</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/PacketReceiptCallbacks" data-name="rns::packetreceiptcallbacks">
+      <a href="../RNS/PacketReceiptCallbacks.html">PacketReceiptCallbacks</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/PipeInterface" data-name="rns::pipeinterface">
+      <a href="../RNS/PipeInterface.html">PipeInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/PlatformUtils" data-name="rns::platformutils">
+      <a href="../RNS/PlatformUtils.html">PlatformUtils</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ProofDestination" data-name="rns::proofdestination">
+      <a href="../RNS/ProofDestination.html">ProofDestination</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RawChannelReader" data-name="rns::rawchannelreader(tpacket)">
+      <a href="../RNS/RawChannelReader.html">RawChannelReader</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RawChannelWriter" data-name="rns::rawchannelwriter(tpacket)">
+      <a href="../RNS/RawChannelWriter.html">RawChannelWriter</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RequestReceipt" data-name="rns::requestreceipt">
+      <a href="../RNS/RequestReceipt.html">RequestReceipt</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RequestReceiptCallbacks" data-name="rns::requestreceiptcallbacks">
+      <a href="../RNS/RequestReceiptCallbacks.html">RequestReceiptCallbacks</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Resolver" data-name="rns::resolver">
+      <a href="../RNS/Resolver.html">Resolver</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Resource" data-name="rns::resource">
+      <a href="../RNS/Resource.html">Resource</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ResourceAdvertisement" data-name="rns::resourceadvertisement">
+      <a href="../RNS/ResourceAdvertisement.html">ResourceAdvertisement</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Reticulum" data-name="rns::reticulum">
+      <a href="../RNS/Reticulum.html">Reticulum</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ReticulumInstance" data-name="rns::reticuluminstance">
+      <a href="../RNS/ReticulumInstance.html">ReticulumInstance</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Rncp" data-name="rns::rncp">
+      <a href="../RNS/Rncp.html">Rncp</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Rncp/Args" data-name="rns::rncp::args">
+      <a href="../RNS/Rncp/Args.html">Args</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Rnid" data-name="rns::rnid">
+      <a href="../RNS/Rnid.html">Rnid</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Rnid/Args" data-name="rns::rnid::args">
+      <a href="../RNS/Rnid/Args.html">Args</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RNodeInterface" data-name="rns::rnodeinterface">
+      <a href="../RNS/RNodeInterface.html">RNodeInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RNodeKISS" data-name="rns::rnodekiss">
+      <a href="../RNS/RNodeKISS.html">RNodeKISS</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RNodeMultiInterface" data-name="rns::rnodemultiinterface">
+      <a href="../RNS/RNodeMultiInterface.html">RNodeMultiInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RNodeMultiKISS" data-name="rns::rnodemultikiss">
+      <a href="../RNS/RNodeMultiKISS.html">RNodeMultiKISS</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RNodeSubInterface" data-name="rns::rnodesubinterface">
+      <a href="../RNS/RNodeSubInterface.html">RNodeSubInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RNodeTCPConnection" data-name="rns::rnodetcpconnection">
+      <a href="../RNS/RNodeTCPConnection.html">RNodeTCPConnection</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Rnpath" data-name="rns::rnpath">
+      <a href="../RNS/Rnpath.html">Rnpath</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Rnpath/Args" data-name="rns::rnpath::args">
+      <a href="../RNS/Rnpath/Args.html">Args</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Rnpath/PathTableEntry" data-name="rns::rnpath::pathtableentry">
+      <a href="../RNS/Rnpath/PathTableEntry.html">PathTableEntry</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Rnpath/RateTableEntry" data-name="rns::rnpath::ratetableentry">
+      <a href="../RNS/Rnpath/RateTableEntry.html">RateTableEntry</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Rnprobe" data-name="rns::rnprobe">
+      <a href="../RNS/Rnprobe.html">Rnprobe</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Rnprobe/Args" data-name="rns::rnprobe::args">
+      <a href="../RNS/Rnprobe/Args.html">Args</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Rnsd" data-name="rns::rnsd">
+      <a href="../RNS/Rnsd.html">Rnsd</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Rnsd/Args" data-name="rns::rnsd::args">
+      <a href="../RNS/Rnsd/Args.html">Args</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Rnstatus" data-name="rns::rnstatus">
+      <a href="../RNS/Rnstatus.html">Rnstatus</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Rnstatus/Args" data-name="rns::rnstatus::args">
+      <a href="../RNS/Rnstatus/Args.html">Args</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Rnstatus/InterfaceStat" data-name="rns::rnstatus::interfacestat">
+      <a href="../RNS/Rnstatus/InterfaceStat.html">InterfaceStat</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Rnstatus/TransportStats" data-name="rns::rnstatus::transportstats">
+      <a href="../RNS/Rnstatus/TransportStats.html">TransportStats</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Rnx" data-name="rns::rnx">
+      <a href="../RNS/Rnx.html">Rnx</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Rnx/Args" data-name="rns::rnx::args">
+      <a href="../RNS/Rnx/Args.html">Args</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/SAMClient" data-name="rns::samclient">
+      <a href="../RNS/SAMClient.html">SAMClient</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/SerialConstants" data-name="rns::serialconstants">
+      <a href="../RNS/SerialConstants.html">SerialConstants</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/SerialInterface" data-name="rns::serialinterface">
+      <a href="../RNS/SerialInterface.html">SerialInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/StreamDataMessage" data-name="rns::streamdatamessage">
+      <a href="../RNS/StreamDataMessage.html">StreamDataMessage</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/SubIntConfig" data-name="rns::subintconfig">
+      <a href="../RNS/SubIntConfig.html">SubIntConfig</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/SystemMessageTypes" data-name="rns::systemmessagetypes">
+      <a href="../RNS/SystemMessageTypes.html">SystemMessageTypes</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/TCPClientInterface" data-name="rns::tcpclientinterface">
+      <a href="../RNS/TCPClientInterface.html">TCPClientInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/TCPInterfaceConstants" data-name="rns::tcpinterfaceconstants">
+      <a href="../RNS/TCPInterfaceConstants.html">TCPInterfaceConstants</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/TCPServerInterface" data-name="rns::tcpserverinterface">
+      <a href="../RNS/TCPServerInterface.html">TCPServerInterface</a>
+      
+    </li>
+  
+  <li class="parent open current" data-id="rns/RNS/Transport" data-name="rns::transport">
+      <a href="../RNS/Transport.html">Transport</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Transport/AnnounceEntry" data-name="rns::transport::announceentry">
+      <a href="../RNS/Transport/AnnounceEntry.html">AnnounceEntry</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Transport/AnnounceHandler" data-name="rns::transport::announcehandler">
+      <a href="../RNS/Transport/AnnounceHandler.html">AnnounceHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Transport/AnnounceRateEntry" data-name="rns::transport::announcerateentry">
+      <a href="../RNS/Transport/AnnounceRateEntry.html">AnnounceRateEntry</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Transport/LinkEntry" data-name="rns::transport::linkentry">
+      <a href="../RNS/Transport/LinkEntry.html">LinkEntry</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Transport/OwnerRef" data-name="rns::transport::ownerref">
+      <a href="../RNS/Transport/OwnerRef.html">OwnerRef</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Transport/PathEntry" data-name="rns::transport::pathentry">
+      <a href="../RNS/Transport/PathEntry.html">PathEntry</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Transport/ReverseEntry" data-name="rns::transport::reverseentry">
+      <a href="../RNS/Transport/ReverseEntry.html">ReverseEntry</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Transport/TunnelEntry" data-name="rns::transport::tunnelentry">
+      <a href="../RNS/Transport/TunnelEntry.html">TunnelEntry</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/TypeError" data-name="rns::typeerror">
+      <a href="../RNS/TypeError.html">TypeError</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/UDPInterface" data-name="rns::udpinterface">
+      <a href="../RNS/UDPInterface.html">UDPInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveCmd" data-name="rns::weavecmd">
+      <a href="../RNS/WeaveCmd.html">WeaveCmd</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveDevice" data-name="rns::weavedevice">
+      <a href="../RNS/WeaveDevice.html">WeaveDevice</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveEndpoint" data-name="rns::weaveendpoint">
+      <a href="../RNS/WeaveEndpoint.html">WeaveEndpoint</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveEvt" data-name="rns::weaveevt">
+      <a href="../RNS/WeaveEvt.html">WeaveEvt</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveInterface" data-name="rns::weaveinterface">
+      <a href="../RNS/WeaveInterface.html">WeaveInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveInterfacePeer" data-name="rns::weaveinterfacepeer">
+      <a href="../RNS/WeaveInterfacePeer.html">WeaveInterfacePeer</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveLogFrame" data-name="rns::weavelogframe">
+      <a href="../RNS/WeaveLogFrame.html">WeaveLogFrame</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveWDCL" data-name="rns::weavewdcl">
+      <a href="../RNS/WeaveWDCL.html">WeaveWDCL</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveWDCLConnection" data-name="rns::weavewdclconnection">
+      <a href="../RNS/WeaveWDCLConnection.html">WeaveWDCLConnection</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">
+    module
+  </span> RNS::<wbr>Transport
+
+</h1>
+
+
+
+
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>The routing and packet delivery engine for Reticulum.
+Transport manages the full lifecycle of packets: outbound routing via
+path and link tables, inbound processing (validation, announce handling,
+link requests, data delivery, and proof forwarding), and periodic
+maintenance of routing state. All state is held at the module level
+and accessed through class methods.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      rns/transport.cr
+    
+    <br/>
+  
+    
+      rns/transport/announce_handler.cr
+    
+    <br/>
+  
+    
+      rns/transport/path_management.cr
+    
+    <br/>
+  
+    
+      rns/transport/tunnel_management.cr
+    
+    <br/>
+  
+
+
+
+  
+    <h2>
+      <a id="constant-summary" class="anchor" href="#constant-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+      Constant Summary
+    </h2>
+  
+  <dl>
+    
+      <dt class="entry-const" id="ANNOUNCES_CHECK_INTERVAL">
+        <strong>ANNOUNCES_CHECK_INTERVAL</strong> = <code><span class="n">1.0</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="AP_PATH_TIME">
+        <strong>AP_PATH_TIME</strong> = <code>(<span class="n">60</span> <span class="o">*</span> <span class="n">60</span>) <span class="o">*</span> <span class="n">24</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="APP_NAME">
+        <strong>APP_NAME</strong> = <code><span class="s">&quot;rnstransport&quot;</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>─── App name ──────────────────────────────────────────────────</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="BLACKHOLE_CHECK_INTERVAL">
+        <strong>BLACKHOLE_CHECK_INTERVAL</strong> = <code><span class="n">60</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="BROADCAST">
+        <strong>BROADCAST</strong> = <code><span class="n">0_u8</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Transport type constants: identify how a packet traverses the network.
+BROADCAST is a direct, one-hop delivery; TRANSPORT uses multi-hop
+routing; RELAY and TUNNEL provide indirect forwarding paths.</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="CACHE_CLEAN_INTERVAL">
+        <strong>CACHE_CLEAN_INTERVAL</strong> = <code><span class="n">5</span> <span class="o">*</span> <span class="n">60</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="DESTINATION_TIMEOUT">
+        <strong>DESTINATION_TIMEOUT</strong> = <code>((<span class="n">60</span> <span class="o">*</span> <span class="n">60</span>) <span class="o">*</span> <span class="n">24</span>) <span class="o">*</span> <span class="n">7</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="HASHLIST_MAXSIZE">
+        <strong>HASHLIST_MAXSIZE</strong> = <code><span class="n">1000000</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="IDX_AT_ATTCHD_IF">
+        <strong>IDX_AT_ATTCHD_IF</strong> = <code><span class="n">8</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="IDX_AT_BLCK_RBRD">
+        <strong>IDX_AT_BLCK_RBRD</strong> = <code><span class="n">7</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="IDX_AT_HOPS">
+        <strong>IDX_AT_HOPS</strong> = <code><span class="n">4</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="IDX_AT_LCL_RBRD">
+        <strong>IDX_AT_LCL_RBRD</strong> = <code><span class="n">6</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="IDX_AT_PACKET">
+        <strong>IDX_AT_PACKET</strong> = <code><span class="n">5</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="IDX_AT_RCVD_IF">
+        <strong>IDX_AT_RCVD_IF</strong> = <code><span class="n">3</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="IDX_AT_RETRIES">
+        <strong>IDX_AT_RETRIES</strong> = <code><span class="n">2</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="IDX_AT_RTRNS_TMO">
+        <strong>IDX_AT_RTRNS_TMO</strong> = <code><span class="n">1</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="IDX_AT_TIMESTAMP">
+        <strong>IDX_AT_TIMESTAMP</strong> = <code><span class="n">0</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>─── Announce table entry indices ──────────────────────────────</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="IDX_LT_DSTHASH">
+        <strong>IDX_LT_DSTHASH</strong> = <code><span class="n">6</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="IDX_LT_HOPS">
+        <strong>IDX_LT_HOPS</strong> = <code><span class="n">5</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="IDX_LT_NH_IF">
+        <strong>IDX_LT_NH_IF</strong> = <code><span class="n">2</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="IDX_LT_NH_TRID">
+        <strong>IDX_LT_NH_TRID</strong> = <code><span class="n">1</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="IDX_LT_PROOF_TMO">
+        <strong>IDX_LT_PROOF_TMO</strong> = <code><span class="n">8</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="IDX_LT_RCVD_IF">
+        <strong>IDX_LT_RCVD_IF</strong> = <code><span class="n">4</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="IDX_LT_REM_HOPS">
+        <strong>IDX_LT_REM_HOPS</strong> = <code><span class="n">3</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="IDX_LT_TIMESTAMP">
+        <strong>IDX_LT_TIMESTAMP</strong> = <code><span class="n">0</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>─── Link table entry indices ──────────────────────────────────</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="IDX_LT_VALIDATED">
+        <strong>IDX_LT_VALIDATED</strong> = <code><span class="n">7</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="IDX_PT_EXPIRES">
+        <strong>IDX_PT_EXPIRES</strong> = <code><span class="n">3</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="IDX_PT_HOPS">
+        <strong>IDX_PT_HOPS</strong> = <code><span class="n">2</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="IDX_PT_NEXT_HOP">
+        <strong>IDX_PT_NEXT_HOP</strong> = <code><span class="n">1</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="IDX_PT_PACKET">
+        <strong>IDX_PT_PACKET</strong> = <code><span class="n">6</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="IDX_PT_RANDBLOBS">
+        <strong>IDX_PT_RANDBLOBS</strong> = <code><span class="n">4</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="IDX_PT_RVCD_IF">
+        <strong>IDX_PT_RVCD_IF</strong> = <code><span class="n">5</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="IDX_PT_TIMESTAMP">
+        <strong>IDX_PT_TIMESTAMP</strong> = <code><span class="n">0</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Path table entry indices: positional offsets used when
+interoperating with the Python-format path table arrays.</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="IDX_RT_OUTB_IF">
+        <strong>IDX_RT_OUTB_IF</strong> = <code><span class="n">1</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="IDX_RT_RCVD_IF">
+        <strong>IDX_RT_RCVD_IF</strong> = <code><span class="n">0</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>─── Reverse table entry indices ───────────────────────────────</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="IDX_RT_TIMESTAMP">
+        <strong>IDX_RT_TIMESTAMP</strong> = <code><span class="n">2</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="IDX_TT_EXPIRES">
+        <strong>IDX_TT_EXPIRES</strong> = <code><span class="n">3</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="IDX_TT_IF">
+        <strong>IDX_TT_IF</strong> = <code><span class="n">1</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="IDX_TT_PATHS">
+        <strong>IDX_TT_PATHS</strong> = <code><span class="n">2</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="IDX_TT_TUNNEL_ID">
+        <strong>IDX_TT_TUNNEL_ID</strong> = <code><span class="n">0</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>─── Tunnel table entry indices ────────────────────────────────</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="INTERFACE_JOBS_INTERVAL">
+        <strong>INTERFACE_JOBS_INTERVAL</strong> = <code><span class="n">5.0</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="JOB_INTERVAL">
+        <strong>JOB_INTERVAL</strong> = <code><span class="n">0.250</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Job interval constants: how often each periodic maintenance task runs.</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="LINK_TIMEOUT">
+        <strong>LINK_TIMEOUT</strong> = <code>(<span class="t">LinkLike</span><span class="t">::</span><span class="t">STALE_TIME</span> <span class="o">*</span> <span class="n">1.25</span>)</code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Link timeout derived from Link stale time</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="LINKS_CHECK_INTERVAL">
+        <strong>LINKS_CHECK_INTERVAL</strong> = <code><span class="n">1.0</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="LOCAL_CLIENT_CACHE_MAXSIZE">
+        <strong>LOCAL_CLIENT_CACHE_MAXSIZE</strong> = <code><span class="n">512</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="LOCAL_REBROADCASTS_MAX">
+        <strong>LOCAL_REBROADCASTS_MAX</strong> = <code><span class="n">2</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="MAX_PR_TAGS">
+        <strong>MAX_PR_TAGS</strong> = <code><span class="n">32000</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="MAX_RANDOM_BLOBS">
+        <strong>MAX_RANDOM_BLOBS</strong> = <code><span class="n">64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="MAX_RATE_TIMESTAMPS">
+        <strong>MAX_RATE_TIMESTAMPS</strong> = <code><span class="n">16</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="MAX_RECEIPTS">
+        <strong>MAX_RECEIPTS</strong> = <code><span class="n">1024</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="MGMT_ANNOUNCE_INTERVAL">
+        <strong>MGMT_ANNOUNCE_INTERVAL</strong> = <code>(<span class="n">2</span> <span class="o">*</span> <span class="n">60</span>) <span class="o">*</span> <span class="n">60</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="PATH_REQUEST_GRACE">
+        <strong>PATH_REQUEST_GRACE</strong> = <code><span class="n">0.4</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="PATH_REQUEST_MI">
+        <strong>PATH_REQUEST_MI</strong> = <code><span class="n">20</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="PATH_REQUEST_RG">
+        <strong>PATH_REQUEST_RG</strong> = <code><span class="n">1.5</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="PATH_REQUEST_TIMEOUT">
+        <strong>PATH_REQUEST_TIMEOUT</strong> = <code><span class="n">15</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Path request constants: control timing and rate-limiting for
+on-demand path discovery requests.</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="PATHFINDER_E">
+        <strong>PATHFINDER_E</strong> = <code>((<span class="n">60</span> <span class="o">*</span> <span class="n">60</span>) <span class="o">*</span> <span class="n">24</span>) <span class="o">*</span> <span class="n">7</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="PATHFINDER_G">
+        <strong>PATHFINDER_G</strong> = <code><span class="n">5</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="PATHFINDER_M">
+        <strong>PATHFINDER_M</strong> = <code><span class="n">128</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Pathfinder constants: govern path discovery and announce propagation
+limits, including maximum hop count, retry policy, and path expiry.</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="PATHFINDER_R">
+        <strong>PATHFINDER_R</strong> = <code><span class="n">1</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="PATHFINDER_RW">
+        <strong>PATHFINDER_RW</strong> = <code><span class="n">0.5</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="PENDING_PRS_CHECK_INTERVAL">
+        <strong>PENDING_PRS_CHECK_INTERVAL</strong> = <code><span class="n">30.0</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="PERSIST_RANDOM_BLOBS">
+        <strong>PERSIST_RANDOM_BLOBS</strong> = <code><span class="n">32</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="REACHABILITY_DIRECT">
+        <strong>REACHABILITY_DIRECT</strong> = <code><span class="n">1_u8</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="REACHABILITY_TRANSPORT">
+        <strong>REACHABILITY_TRANSPORT</strong> = <code><span class="n">2_u8</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="REACHABILITY_UNREACHABLE">
+        <strong>REACHABILITY_UNREACHABLE</strong> = <code><span class="n">0_u8</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Reachability constants: describe how a destination can be reached.
+DIRECT means the destination is on a locally attached interface;
+TRANSPORT means it is reachable via multi-hop routing.</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="RECEIPTS_CHECK_INTERVAL">
+        <strong>RECEIPTS_CHECK_INTERVAL</strong> = <code><span class="n">1.0</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="RELAY">
+        <strong>RELAY</strong> = <code><span class="n">2_u8</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="REVERSE_TIMEOUT">
+        <strong>REVERSE_TIMEOUT</strong> = <code><span class="n">8</span> <span class="o">*</span> <span class="n">60</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Timeout and capacity limits for routing table entries, receipts,
+and in-memory caches.
+LINK_TIMEOUT is set after Link is defined; use class method for now</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="ROAMING_PATH_TIME">
+        <strong>ROAMING_PATH_TIME</strong> = <code>(<span class="n">60</span> <span class="o">*</span> <span class="n">60</span>) <span class="o">*</span> <span class="n">6</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="STATE_RESPONSIVE">
+        <strong>STATE_RESPONSIVE</strong> = <code><span class="n">2_u8</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="STATE_UNKNOWN">
+        <strong>STATE_UNKNOWN</strong> = <code><span class="n">0_u8</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Path state constants: track responsiveness of known destinations.</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="STATE_UNRESPONSIVE">
+        <strong>STATE_UNRESPONSIVE</strong> = <code><span class="n">1_u8</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="TABLES_CULL_INTERVAL">
+        <strong>TABLES_CULL_INTERVAL</strong> = <code><span class="n">5.0</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="TRANSPORT">
+        <strong>TRANSPORT</strong> = <code><span class="n">1_u8</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="TUNNEL">
+        <strong>TUNNEL</strong> = <code><span class="n">3_u8</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="TYPES">
+        <strong>TYPES</strong> = <code>[<span class="t">BROADCAST</span>, <span class="t">TRANSPORT</span>, <span class="t">RELAY</span>, <span class="t">TUNNEL</span>]</code>
+      </dt>
+      
+    
+  </dl>
+
+
+
+  
+
+  
+  <h2>
+    <a id="class-method-summary" class="anchor" href="#class-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Class Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#activate_link%28link%3ALinkLike%29-class-method" class="signature"><strong>.activate_link</strong>(link : LinkLike)</a>
+        
+          <div class="summary"><p>Activates a link by moving it from pending to active.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#active_links-class-method" class="signature"><strong>.active_links</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#add_packet_hash%28packet_hash%3ABytes%29-class-method" class="signature"><strong>.add_packet_hash</strong>(packet_hash : Bytes)</a>
+        
+          <div class="summary"><p>Adds a packet hash to the deduplication hashlist.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#add_remote_management_allowed%28hash%3ABytes%29-class-method" class="signature"><strong>.add_remote_management_allowed</strong>(hash : Bytes)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#announce_emitted%28packet%3APacket%29%3AInt64-class-method" class="signature"><strong>.announce_emitted</strong>(packet : Packet) : Int64</a>
+        
+          <div class="summary"><p>Extracts the announce emission timebase from a packet's data.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#announce_handlers-class-method" class="signature"><strong>.announce_handlers</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#announce_rate_table-class-method" class="signature"><strong>.announce_rate_table</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#announce_table-class-method" class="signature"><strong>.announce_table</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#blackhole_identity%28identity_hash%3ABytes%2Cuntil_time%3AFloat64%7CNil%3Dnil%2Creason%3AString%7CNil%3Dnil%29%3ABool%7CNil-class-method" class="signature"><strong>.blackhole_identity</strong>(identity_hash : Bytes, until_time : Float64 | Nil = <span class="n">nil</span>, reason : String | Nil = <span class="n">nil</span>) : Bool | Nil</a>
+        
+          <div class="summary"><p>Blackhole an identity so that its announces and packets are dropped.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#blackhole_last_checked-class-method" class="signature"><strong>.blackhole_last_checked</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#blackhole_last_checked%3D%28value%3AFloat64%29-class-method" class="signature"><strong>.blackhole_last_checked=</strong>(value : Float64)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#blackholed_identities-class-method" class="signature"><strong>.blackholed_identities</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#cache%28packet%3APacket%2Cforce_cache%3ABool%3Dfalse%2Cpacket_type%3AString%7CNil%3Dnil%29-class-method" class="signature"><strong>.cache</strong>(packet : Packet, force_cache : Bool = <span class="n">false</span>, packet_type : String | Nil = <span class="n">nil</span>)</a>
+        
+          <div class="summary"><p>Caches a packet to storage.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#cache_packet%28packet%3APacket%2Ccache_path%3AString%2Cforce_cache%3ABool%3Dfalse%2Cpacket_type%3AString%7CNil%3Dnil%29-class-method" class="signature"><strong>.cache_packet</strong>(packet : Packet, cache_path : String, force_cache : Bool = <span class="n">false</span>, packet_type : String | Nil = <span class="n">nil</span>)</a>
+        
+          <div class="summary"><p>Caches a packet to storage.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#cache_request%28packet_hash%3ABytes%2Cdestination%3ADestination%3A%3ADestinationInterface%29-class-method" class="signature"><strong>.cache_request</strong>(packet_hash : Bytes, destination : Destination::DestinationInterface)</a>
+        
+          <div class="summary"><p>Requests a cached packet either from local cache or from the network.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#cache_request_packet%28packet%3APacket%29%3ABool-class-method" class="signature"><strong>.cache_request_packet</strong>(packet : Packet) : Bool</a>
+        
+          <div class="summary"><p>Handles a cache request packet.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#check_announce_rate%28dest_hex%3AString%2Cnow%3AFloat64%29%3ABool-class-method" class="signature"><strong>.check_announce_rate</strong>(dest_hex : String, now : Float64) : Bool</a>
+        
+          <div class="summary"><p>Checks announce rate limiting for a destination.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#clean_announce_cache%28cache_path%3AString%29-class-method" class="signature"><strong>.clean_announce_cache</strong>(cache_path : String)</a>
+        
+          <div class="summary"><p>Cleans the announce file cache.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#clean_cache-class-method" class="signature"><strong>.clean_cache</strong></a>
+        
+          <div class="summary"><p>Cleans the packet cache by removing stale announce files.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#clear_destinations-class-method" class="signature"><strong>.clear_destinations</strong></a>
+        
+          <div class="summary"><p>Alias for backward compat with existing specs</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#control_destinations-class-method" class="signature"><strong>.control_destinations</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#control_hashes-class-method" class="signature"><strong>.control_hashes</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#deregister_announce_handler%28handler%3AAnnounceHandler%29-class-method" class="signature"><strong>.deregister_announce_handler</strong>(handler : AnnounceHandler)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#deregister_destination%28destination%3ADestination%29-class-method" class="signature"><strong>.deregister_destination</strong>(destination : Destination)</a>
+        
+          <div class="summary"><p>Removes a previously registered destination from Transport.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#deregister_interface%28interface_hash%3ABytes%29-class-method" class="signature"><strong>.deregister_interface</strong>(interface_hash : Bytes)</a>
+        
+          <div class="summary"><p>Deregister an interface (by hash).</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#destinations-class-method" class="signature"><strong>.destinations</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#detach_interfaces-class-method" class="signature"><strong>.detach_interfaces</strong></a>
+        
+          <div class="summary"><p>Detach all registered interfaces</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#discovery_path_requests-class-method" class="signature"><strong>.discovery_path_requests</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#discovery_pr_tags-class-method" class="signature"><strong>.discovery_pr_tags</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#drop_announce_queues-class-method" class="signature"><strong>.drop_announce_queues</strong></a>
+        
+          <div class="summary"><p>Drops all announce queues on all interfaces.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#exit_handler-class-method" class="signature"><strong>.exit_handler</strong></a>
+        
+          <div class="summary"><p>Exit handler: persists all transport state to disk.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#expire_path%28destination_hash%3ABytes%29%3ABool-class-method" class="signature"><strong>.expire_path</strong>(destination_hash : Bytes) : Bool</a>
+        
+          <div class="summary"><p>Expires the path to the specified destination by setting its timestamp to 0, which will cause it to be culled on the next jobs pass.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#find_best_link%28destination_hash%3ABytes%29%3ALinkLike%7CNil-class-method" class="signature"><strong>.find_best_link</strong>(destination_hash : Bytes) : LinkLike | Nil</a>
+        
+          <div class="summary"><p>Finds the best active link for a destination hash.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#find_interface_from_hash%28interface_hash%3ABytes%29%3ABytes%7CNil-class-method" class="signature"><strong>.find_interface_from_hash</strong>(interface_hash : Bytes) : Bytes | Nil</a>
+        
+          <div class="summary"><p>Utility to find an interface hash in the interfaces list.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#find_link_for_destination%28destination_hash%3ABytes%29%3ALinkLike%7CNil-class-method" class="signature"><strong>.find_link_for_destination</strong>(destination_hash : Bytes) : LinkLike | Nil</a>
+        
+          <div class="summary"><p>Finds an active link matching the given destination hash (link_id).</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#first_hop_timeout%28destination_hash%3ABytes%29%3AFloat64-class-method" class="signature"><strong>.first_hop_timeout</strong>(destination_hash : Bytes) : Float64</a>
+        
+          <div class="summary"><p>Returns the first hop timeout for the specified destination.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#from_local_client%3F%28packet%3APacket%29%3ABool-class-method" class="signature"><strong>.from_local_client?</strong>(packet : Packet) : Bool</a>
+        
+          <div class="summary"><p>Checks if a packet is from a local client.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#get_cached_packet%28packet_hash%3ABytes%2Cpacket_type%3AString%7CNil%3Dnil%29%3APacket%7CNil-class-method" class="signature"><strong>.get_cached_packet</strong>(packet_hash : Bytes, packet_type : String | Nil = <span class="n">nil</span>) : Packet | Nil</a>
+        
+          <div class="summary"><p>Retrieves a cached packet from storage.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#handle_tunnel%28tunnel_id%3ABytes%2Cinterface_hash%3ABytes%7CNil%29-class-method" class="signature"><strong>.handle_tunnel</strong>(tunnel_id : Bytes, interface_hash : Bytes | Nil)</a>
+        
+          <div class="summary"><p>Handles a tunnel establishment or restoration.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#has_path%28destination_hash%3ABytes%29%3ABool-class-method" class="signature"><strong>.has_path</strong>(destination_hash : Bytes) : Bool</a>
+        
+          <div class="summary"><p>Returns true if a path to the destination is known.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#held_announces-class-method" class="signature"><strong>.held_announces</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#hops_to%28destination_hash%3ABytes%29%3AInt32-class-method" class="signature"><strong>.hops_to</strong>(destination_hash : Bytes) : Int32</a>
+        
+          <div class="summary"><p>Returns the number of hops to the specified destination, or PATHFINDER_M if the number of hops is unknown.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#identity-class-method" class="signature"><strong>.identity</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#identity%3D%28value%3AIdentity%7CNil%29-class-method" class="signature"><strong>.identity=</strong>(value : Identity | Nil)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#inbound%28raw%3ABytes%2Cinterface_hash%3ABytes%7CNil%3Dnil%29-class-method" class="signature"><strong>.inbound</strong>(raw : Bytes, interface_hash : Bytes | Nil = <span class="n">nil</span>)</a>
+        
+          <div class="summary"><p>Processes a raw inbound packet received from a network interface.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#inbound_announce%28packet%3APacket%29%3ABool-class-method" class="signature"><strong>.inbound_announce</strong>(packet : Packet) : Bool</a>
+        
+          <div class="summary"><p>Processes an inbound announce packet.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#inbound_announce_lock-class-method" class="signature"><strong>.inbound_announce_lock</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#interface_objects-class-method" class="signature"><strong>.interface_objects</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#interfaces-class-method" class="signature"><strong>.interfaces</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#invoke_announce_handlers%28packet%3APacket%2Cdestination_hash%3ABytes%29-class-method" class="signature"><strong>.invoke_announce_handlers</strong>(packet : Packet, destination_hash : Bytes)</a>
+        
+          <div class="summary"><p>Invokes registered announce handler callbacks for a processed announce.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#is_connected_to_shared_instance%3D%28value%3ABool%29-class-method" class="signature"><strong>.is_connected_to_shared_instance=</strong>(value : Bool)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#is_connected_to_shared_instance%3F-class-method" class="signature"><strong>.is_connected_to_shared_instance?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#is_local_client_interface%3F%28interface_hash%3ABytes%7CNil%29%3ABool-class-method" class="signature"><strong>.is_local_client_interface?</strong>(interface_hash : Bytes | Nil) : Bool</a>
+        
+          <div class="summary"><p>Checks if a destination hash corresponds to a local client interface.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#job_loop_running%3F-class-method" class="signature"><strong>.job_loop_running?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#jobs-class-method" class="signature"><strong>.jobs</strong></a>
+        
+          <div class="summary"><p>Runs all periodic maintenance tasks.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#jobs_locked-class-method" class="signature"><strong>.jobs_locked</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#jobs_locked%3D%28value%3ABool%29-class-method" class="signature"><strong>.jobs_locked=</strong>(value : Bool)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#jobs_running-class-method" class="signature"><strong>.jobs_running</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#jobs_running%3D%28value%3ABool%29-class-method" class="signature"><strong>.jobs_running=</strong>(value : Bool)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#link_table-class-method" class="signature"><strong>.link_table</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#load_packet_hashlist%28storage_path%3AString%29%3AInt32-class-method" class="signature"><strong>.load_packet_hashlist</strong>(storage_path : String) : Int32</a>
+        
+          <div class="summary"><p>Loads the packet hashlist from disk.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#load_path_table%28storage_path%3AString%29%3AInt32-class-method" class="signature"><strong>.load_path_table</strong>(storage_path : String) : Int32</a>
+        
+          <div class="summary"><p>Loads the path table from disk.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#load_tunnel_table%28storage_path%3AString%29%3AInt32-class-method" class="signature"><strong>.load_tunnel_table</strong>(storage_path : String) : Int32</a>
+        
+          <div class="summary"><p>Loads the tunnel table from disk.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#local_client_interfaces-class-method" class="signature"><strong>.local_client_interfaces</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#mark_path_responsive%28destination_hash%3ABytes%29%3ABool-class-method" class="signature"><strong>.mark_path_responsive</strong>(destination_hash : Bytes) : Bool</a>
+        
+          <div class="summary"><p>Marks the path to the specified destination as responsive.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#mark_path_unknown_for_destination%28destination_hash%3ABytes%29-class-method" class="signature"><strong>.mark_path_unknown_for_destination</strong>(destination_hash : Bytes)</a>
+        
+          <div class="summary"><p>Marks the path for a destination as unknown, used when the announce table entry should be reconsidered.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#mark_path_unknown_state%28destination_hash%3ABytes%29%3ABool-class-method" class="signature"><strong>.mark_path_unknown_state</strong>(destination_hash : Bytes) : Bool</a>
+        
+          <div class="summary"><p>Marks the path to the specified destination as unknown state.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#mark_path_unresponsive%28destination_hash%3ABytes%29%3ABool-class-method" class="signature"><strong>.mark_path_unresponsive</strong>(destination_hash : Bytes) : Bool</a>
+        
+          <div class="summary"><p>Marks the path to the specified destination as unresponsive.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#next_hop%28destination_hash%3ABytes%29%3ABytes%7CNil-class-method" class="signature"><strong>.next_hop</strong>(destination_hash : Bytes) : Bytes | Nil</a>
+        
+          <div class="summary"><p>Returns the next hop hash for the specified destination, or nil if unknown.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#next_hop_interface%28destination_hash%3ABytes%29%3ABytes%7CNil-class-method" class="signature"><strong>.next_hop_interface</strong>(destination_hash : Bytes) : Bytes | Nil</a>
+        
+          <div class="summary"><p>Returns the receiving interface hash for the specified destination, or nil if unknown.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#outbound%28packet%3APacket%29%3ABool-class-method" class="signature"><strong>.outbound</strong>(packet : Packet) : Bool</a>
+        
+          <div class="summary"><p>Routes an outbound packet for delivery.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#owner-class-method" class="signature"><strong>.owner</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#owner%3D%28value%3AOwnerRef%7CNil%29-class-method" class="signature"><strong>.owner=</strong>(value : OwnerRef | Nil)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#packet_filter%28packet%3APacket%29%3ABool-class-method" class="signature"><strong>.packet_filter</strong>(packet : Packet) : Bool</a>
+        
+          <div class="summary"><p>Filters packets for deduplication and validity.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#packet_hash_in_list%3F%28packet_hash%3ABytes%29%3ABool-class-method" class="signature"><strong>.packet_hash_in_list?</strong>(packet_hash : Bytes) : Bool</a>
+        
+          <div class="summary"><p>Checks if a packet hash is in the deduplication hashlist.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#packet_hashlist-class-method" class="signature"><strong>.packet_hashlist</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#packet_hashlist_prev-class-method" class="signature"><strong>.packet_hashlist_prev</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#path_is_unresponsive%28destination_hash%3ABytes%29%3ABool-class-method" class="signature"><strong>.path_is_unresponsive</strong>(destination_hash : Bytes) : Bool</a>
+        
+          <div class="summary"><p>Returns true if the path to the specified destination is marked as unresponsive.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#path_requests-class-method" class="signature"><strong>.path_requests</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#path_states-class-method" class="signature"><strong>.path_states</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#path_table-class-method" class="signature"><strong>.path_table</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#pending_links-class-method" class="signature"><strong>.pending_links</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#pending_local_path_requests-class-method" class="signature"><strong>.pending_local_path_requests</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#persist_data%28storage_path%3AString%29-class-method" class="signature"><strong>.persist_data</strong>(storage_path : String)</a>
+        
+          <div class="summary"><p>Calls all persistence methods.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#process_announce_table%3AArray%28Packet%29-class-method" class="signature"><strong>.process_announce_table</strong> : Array(Packet)</a>
+        
+          <div class="summary"><p>Processes the announce retransmission table.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#receipts-class-method" class="signature"><strong>.receipts</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#register_announce_handler%28handler%3AAnnounceHandler%29-class-method" class="signature"><strong>.register_announce_handler</strong>(handler : AnnounceHandler)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#register_destination%28destination%3ADestination%29-class-method" class="signature"><strong>.register_destination</strong>(destination : Destination)</a>
+        
+          <div class="summary"><p>Registers a destination with Transport so it can receive packets.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#register_interface%28interface_hash%3ABytes%29-class-method" class="signature"><strong>.register_interface</strong>(interface_hash : Bytes)</a>
+        
+          <div class="summary"><p>Register an interface (by hash).</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#register_link%28link%3ALinkLike%29-class-method" class="signature"><strong>.register_link</strong>(link : LinkLike)</a>
+        
+          <div class="summary"><p>Registers a link.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#remote_management_allowed-class-method" class="signature"><strong>.remote_management_allowed</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#remove_path%28destination_hash%3ABytes%29%3ABool-class-method" class="signature"><strong>.remove_path</strong>(destination_hash : Bytes) : Bool</a>
+        
+          <div class="summary"><p>Removes a path table entry for the given destination hash.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#request_path%28destination_hash%3ABytes%2Con_interface%3ABytes%7CNil%3Dnil%2Ctag%3ABytes%7CNil%3Dnil%2Crecursive%3ABool%3Dfalse%29-class-method" class="signature"><strong>.request_path</strong>(destination_hash : Bytes, on_interface : Bytes | Nil = <span class="n">nil</span>, tag : Bytes | Nil = <span class="n">nil</span>, recursive : Bool = <span class="n">false</span>)</a>
+        
+          <div class="summary"><p>Requests a path to the destination from the network.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#reset-class-method" class="signature"><strong>.reset</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#reverse_table-class-method" class="signature"><strong>.reverse_table</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#save_packet_hashlist%28storage_path%3AString%29%3ABool-class-method" class="signature"><strong>.save_packet_hashlist</strong>(storage_path : String) : Bool</a>
+        
+          <div class="summary"><p>Saves the packet hashlist to disk using MessagePack.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#save_path_table%28storage_path%3AString%29%3ABool-class-method" class="signature"><strong>.save_path_table</strong>(storage_path : String) : Bool</a>
+        
+          <div class="summary"><p>Saves the path table to disk using MessagePack serialization.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#save_tunnel_table%28storage_path%3AString%29%3ABool-class-method" class="signature"><strong>.save_tunnel_table</strong>(storage_path : String) : Bool</a>
+        
+          <div class="summary"><p>Saves the tunnel table to disk using MessagePack.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#shared_connection_disappeared-class-method" class="signature"><strong>.shared_connection_disappeared</strong></a>
+        
+          <div class="summary"><p>Called when a shared instance connection is lost.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#shared_connection_reappeared-class-method" class="signature"><strong>.shared_connection_reappeared</strong></a>
+        
+          <div class="summary"><p>Called when a shared instance connection is re-established.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#should_cache%28packet%3APacket%29%3ABool-class-method" class="signature"><strong>.should_cache</strong>(packet : Packet) : Bool</a>
+        
+          <div class="summary"><p>Determines whether a packet should be cached.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#speed_rx-class-method" class="signature"><strong>.speed_rx</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#speed_tx-class-method" class="signature"><strong>.speed_tx</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#start%28owner_ref%3AOwnerRef%29-class-method" class="signature"><strong>.start</strong>(owner_ref : OwnerRef)</a>
+        
+          <div class="summary"><p>Initializes and starts the Transport layer.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#start_job_loop-class-method" class="signature"><strong>.start_job_loop</strong></a>
+        
+          <div class="summary"><p>Starts the periodic job loop fiber.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#start_time-class-method" class="signature"><strong>.start_time</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#stop_job_loop-class-method" class="signature"><strong>.stop_job_loop</strong></a>
+        
+          <div class="summary"><p>Stops the periodic job loop fiber.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#synthesize_tunnel_data%28interface_hash%3ABytes%29%3ATuple%28Bytes%2CBytes%29%7CNil-class-method" class="signature"><strong>.synthesize_tunnel_data</strong>(interface_hash : Bytes) : Tuple(Bytes, Bytes) | Nil</a>
+        
+          <div class="summary"><p>Creates and returns a tunnel synthesis packet data payload.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#tables_last_culled-class-method" class="signature"><strong>.tables_last_culled</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#tables_last_culled%3D%28value%3AFloat64%29-class-method" class="signature"><strong>.tables_last_culled=</strong>(value : Float64)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#timebase_from_random_blob%28random_blob%3ABytes%29%3AInt64-class-method" class="signature"><strong>.timebase_from_random_blob</strong>(random_blob : Bytes) : Int64</a>
+        
+          <div class="summary"><p>Extracts a timebase value from a random blob (bytes 5..9).</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#timebase_from_random_blobs%28random_blobs%3AArray%28Bytes%29%29%3AInt64-class-method" class="signature"><strong>.timebase_from_random_blobs</strong>(random_blobs : Array(Bytes)) : Int64</a>
+        
+          <div class="summary"><p>Extracts the maximum timebase from an array of random blobs.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#traffic_rxb-class-method" class="signature"><strong>.traffic_rxb</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#traffic_txb-class-method" class="signature"><strong>.traffic_txb</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#transmit%28interface_hash%3ABytes%2Craw%3ABytes%29-class-method" class="signature"><strong>.transmit</strong>(interface_hash : Bytes, raw : Bytes)</a>
+        
+          <div class="summary"><p>Transmits raw data on an interface (identified by hash).</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#transmit_log-class-method" class="signature"><strong>.transmit_log</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#transport_enabled%3D%28value%3ABool%29-class-method" class="signature"><strong>.transport_enabled=</strong>(value : Bool)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#transport_enabled%3F-class-method" class="signature"><strong>.transport_enabled?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#tunnel_synthesize_handler%28data%3ABytes%2Cpacket%3APacket%29-class-method" class="signature"><strong>.tunnel_synthesize_handler</strong>(data : Bytes, packet : Packet)</a>
+        
+          <div class="summary"><p>Validates and processes a tunnel synthesis request.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#tunnels-class-method" class="signature"><strong>.tunnels</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#unblackhole_identity%28identity_hash%3ABytes%29%3ABool%7CNil-class-method" class="signature"><strong>.unblackhole_identity</strong>(identity_hash : Bytes) : Bool | Nil</a>
+        
+          <div class="summary"><p>Remove an identity from the blackhole list.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#update_path%28destination_hash%3ABytes%2Cnext_hop%3ABytes%2Chops%3AInt32%2Cexpires%3AFloat64%2Creceiving_interface%3ABytes%7CNil%3Dnil%2Cpacket_hash%3ABytes%3DBytes.empty%2Crandom_blobs%3AArray%28Bytes%29%3D%5B%5DofBytes%29-class-method" class="signature"><strong>.update_path</strong>(destination_hash : Bytes, next_hop : Bytes, hops : Int32, expires : Float64, receiving_interface : Bytes | Nil = <span class="n">nil</span>, packet_hash : Bytes = <span class="t">Bytes</span>.empty, random_blobs : Array(Bytes) = <span class="o">[]</span> <span class="k">of</span> <span class="t">Bytes</span>)</a>
+        
+          <div class="summary"><p>Inserts or updates a path table entry for the given destination hash.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#void_tunnel_interface%28tunnel_id%3ABytes%29-class-method" class="signature"><strong>.void_tunnel_interface</strong>(tunnel_id : Bytes)</a>
+        
+          <div class="summary"><p>Voids the interface reference for a tunnel, keeping paths intact.</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+  
+
+  
+
+
+  <div class="methods-inherited">
+    
+  </div>
+
+  
+
+  
+  <h2>
+    <a id="class-method-detail" class="anchor" href="#class-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Class Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="activate_link(link:LinkLike)-class-method">
+      <div class="signature">
+        
+        def self.<strong>activate_link</strong>(link : <a href="../RNS/LinkLike.html">LinkLike</a>)
+
+        <a class="method-permalink" href="#activate_link%28link%3ALinkLike%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Activates a link by moving it from pending to active.
+The link must be in pending_links and have ACTIVE status.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="active_links-class-method">
+      <div class="signature">
+        
+        def self.<strong>active_links</strong>
+
+        <a class="method-permalink" href="#active_links-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="add_packet_hash(packet_hash:Bytes)-class-method">
+      <div class="signature">
+        
+        def self.<strong>add_packet_hash</strong>(packet_hash : Bytes)
+
+        <a class="method-permalink" href="#add_packet_hash%28packet_hash%3ABytes%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Adds a packet hash to the deduplication hashlist.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="add_remote_management_allowed(hash:Bytes)-class-method">
+      <div class="signature">
+        
+        def self.<strong>add_remote_management_allowed</strong>(hash : Bytes)
+
+        <a class="method-permalink" href="#add_remote_management_allowed%28hash%3ABytes%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="announce_emitted(packet:Packet):Int64-class-method">
+      <div class="signature">
+        
+        def self.<strong>announce_emitted</strong>(packet : <a href="../RNS/Packet.html">Packet</a>) : Int64
+
+        <a class="method-permalink" href="#announce_emitted%28packet%3APacket%29%3AInt64-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Extracts the announce emission timebase from a packet's data.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="announce_handlers-class-method">
+      <div class="signature">
+        
+        def self.<strong>announce_handlers</strong>
+
+        <a class="method-permalink" href="#announce_handlers-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="announce_rate_table-class-method">
+      <div class="signature">
+        
+        def self.<strong>announce_rate_table</strong>
+
+        <a class="method-permalink" href="#announce_rate_table-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="announce_table-class-method">
+      <div class="signature">
+        
+        def self.<strong>announce_table</strong>
+
+        <a class="method-permalink" href="#announce_table-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="blackhole_identity(identity_hash:Bytes,until_time:Float64|Nil=nil,reason:String|Nil=nil):Bool|Nil-class-method">
+      <div class="signature">
+        
+        def self.<strong>blackhole_identity</strong>(identity_hash : Bytes, until_time : Float64 | Nil = <span class="n">nil</span>, reason : String | Nil = <span class="n">nil</span>) : Bool | Nil
+
+        <a class="method-permalink" href="#blackhole_identity%28identity_hash%3ABytes%2Cuntil_time%3AFloat64%7CNil%3Dnil%2Creason%3AString%7CNil%3Dnil%29%3ABool%7CNil-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Blackhole an identity so that its announces and packets are
+dropped.  Returns true on success, nil if already blackholed,
+false on error.  Matches Python Transport.blackhole_identity().</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="blackhole_last_checked-class-method">
+      <div class="signature">
+        
+        def self.<strong>blackhole_last_checked</strong>
+
+        <a class="method-permalink" href="#blackhole_last_checked-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="blackhole_last_checked=(value:Float64)-class-method">
+      <div class="signature">
+        
+        def self.<strong>blackhole_last_checked=</strong>(value : Float64)
+
+        <a class="method-permalink" href="#blackhole_last_checked%3D%28value%3AFloat64%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="blackholed_identities-class-method">
+      <div class="signature">
+        
+        def self.<strong>blackholed_identities</strong>
+
+        <a class="method-permalink" href="#blackholed_identities-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="cache(packet:Packet,force_cache:Bool=false,packet_type:String|Nil=nil)-class-method">
+      <div class="signature">
+        
+        def self.<strong>cache</strong>(packet : <a href="../RNS/Packet.html">Packet</a>, force_cache : Bool = <span class="n">false</span>, packet_type : String | Nil = <span class="n">nil</span>)
+
+        <a class="method-permalink" href="#cache%28packet%3APacket%2Cforce_cache%3ABool%3Dfalse%2Cpacket_type%3AString%7CNil%3Dnil%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Caches a packet to storage. Packets are stored exactly as they
+arrived over their interface (hop count not yet incremented).
+When force_cache is false, should_cache() is consulted.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="cache_packet(packet:Packet,cache_path:String,force_cache:Bool=false,packet_type:String|Nil=nil)-class-method">
+      <div class="signature">
+        
+        def self.<strong>cache_packet</strong>(packet : <a href="../RNS/Packet.html">Packet</a>, cache_path : String, force_cache : Bool = <span class="n">false</span>, packet_type : String | Nil = <span class="n">nil</span>)
+
+        <a class="method-permalink" href="#cache_packet%28packet%3APacket%2Ccache_path%3AString%2Cforce_cache%3ABool%3Dfalse%2Cpacket_type%3AString%7CNil%3Dnil%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Caches a packet to storage.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="cache_request(packet_hash:Bytes,destination:Destination::DestinationInterface)-class-method">
+      <div class="signature">
+        
+        def self.<strong>cache_request</strong>(packet_hash : Bytes, destination : <a href="../RNS/Destination/DestinationInterface.html">Destination::DestinationInterface</a>)
+
+        <a class="method-permalink" href="#cache_request%28packet_hash%3ABytes%2Cdestination%3ADestination%3A%3ADestinationInterface%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Requests a cached packet either from local cache or from the network.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="cache_request_packet(packet:Packet):Bool-class-method">
+      <div class="signature">
+        
+        def self.<strong>cache_request_packet</strong>(packet : <a href="../RNS/Packet.html">Packet</a>) : Bool
+
+        <a class="method-permalink" href="#cache_request_packet%28packet%3APacket%29%3ABool-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Handles a cache request packet. Retrieves the requested packet
+from the local cache and replays it to Transport.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="check_announce_rate(dest_hex:String,now:Float64):Bool-class-method">
+      <div class="signature">
+        
+        def self.<strong>check_announce_rate</strong>(dest_hex : String, now : Float64) : Bool
+
+        <a class="method-permalink" href="#check_announce_rate%28dest_hex%3AString%2Cnow%3AFloat64%29%3ABool-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Checks announce rate limiting for a destination.
+Returns true if the announce should be rate-blocked.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="clean_announce_cache(cache_path:String)-class-method">
+      <div class="signature">
+        
+        def self.<strong>clean_announce_cache</strong>(cache_path : String)
+
+        <a class="method-permalink" href="#clean_announce_cache%28cache_path%3AString%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Cleans the announce file cache. Removes cached announce files
+that are no longer referenced by the path table or tunnel table.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="clean_cache-class-method">
+      <div class="signature">
+        
+        def self.<strong>clean_cache</strong>
+
+        <a class="method-permalink" href="#clean_cache-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Cleans the packet cache by removing stale announce files.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="clear_destinations-class-method">
+      <div class="signature">
+        
+        def self.<strong>clear_destinations</strong>
+
+        <a class="method-permalink" href="#clear_destinations-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Alias for backward compat with existing specs</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="control_destinations-class-method">
+      <div class="signature">
+        
+        def self.<strong>control_destinations</strong>
+
+        <a class="method-permalink" href="#control_destinations-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="control_hashes-class-method">
+      <div class="signature">
+        
+        def self.<strong>control_hashes</strong>
+
+        <a class="method-permalink" href="#control_hashes-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="deregister_announce_handler(handler:AnnounceHandler)-class-method">
+      <div class="signature">
+        
+        def self.<strong>deregister_announce_handler</strong>(handler : <a href="../RNS/Transport/AnnounceHandler.html">AnnounceHandler</a>)
+
+        <a class="method-permalink" href="#deregister_announce_handler%28handler%3AAnnounceHandler%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="deregister_destination(destination:Destination)-class-method">
+      <div class="signature">
+        
+        def self.<strong>deregister_destination</strong>(destination : <a href="../RNS/Destination.html">Destination</a>)
+
+        <a class="method-permalink" href="#deregister_destination%28destination%3ADestination%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Removes a previously registered destination from Transport.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="deregister_interface(interface_hash:Bytes)-class-method">
+      <div class="signature">
+        
+        def self.<strong>deregister_interface</strong>(interface_hash : Bytes)
+
+        <a class="method-permalink" href="#deregister_interface%28interface_hash%3ABytes%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Deregister an interface (by hash).</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="destinations-class-method">
+      <div class="signature">
+        
+        def self.<strong>destinations</strong>
+
+        <a class="method-permalink" href="#destinations-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="detach_interfaces-class-method">
+      <div class="signature">
+        
+        def self.<strong>detach_interfaces</strong>
+
+        <a class="method-permalink" href="#detach_interfaces-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Detach all registered interfaces</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="discovery_path_requests-class-method">
+      <div class="signature">
+        
+        def self.<strong>discovery_path_requests</strong>
+
+        <a class="method-permalink" href="#discovery_path_requests-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="discovery_pr_tags-class-method">
+      <div class="signature">
+        
+        def self.<strong>discovery_pr_tags</strong>
+
+        <a class="method-permalink" href="#discovery_pr_tags-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="drop_announce_queues-class-method">
+      <div class="signature">
+        
+        def self.<strong>drop_announce_queues</strong>
+
+        <a class="method-permalink" href="#drop_announce_queues-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Drops all announce queues on all interfaces.
+Currently a no-op since interface objects are not yet implemented.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="exit_handler-class-method">
+      <div class="signature">
+        
+        def self.<strong>exit_handler</strong>
+
+        <a class="method-permalink" href="#exit_handler-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Exit handler: persists all transport state to disk.
+Should be called before shutdown.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="expire_path(destination_hash:Bytes):Bool-class-method">
+      <div class="signature">
+        
+        def self.<strong>expire_path</strong>(destination_hash : Bytes) : Bool
+
+        <a class="method-permalink" href="#expire_path%28destination_hash%3ABytes%29%3ABool-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Expires the path to the specified destination by setting its
+timestamp to 0, which will cause it to be culled on the next
+jobs pass. Returns true if a path existed, false otherwise.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="find_best_link(destination_hash:Bytes):LinkLike|Nil-class-method">
+      <div class="signature">
+        
+        def self.<strong>find_best_link</strong>(destination_hash : Bytes) : <a href="../RNS/LinkLike.html">LinkLike</a> | Nil
+
+        <a class="method-permalink" href="#find_best_link%28destination_hash%3ABytes%29%3ALinkLike%7CNil-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Finds the best active link for a destination hash.
+Currently returns the first match; future versions may
+score links by quality metrics.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="find_interface_from_hash(interface_hash:Bytes):Bytes|Nil-class-method">
+      <div class="signature">
+        
+        def self.<strong>find_interface_from_hash</strong>(interface_hash : Bytes) : Bytes | Nil
+
+        <a class="method-permalink" href="#find_interface_from_hash%28interface_hash%3ABytes%29%3ABytes%7CNil-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Utility to find an interface hash in the interfaces list.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="find_link_for_destination(destination_hash:Bytes):LinkLike|Nil-class-method">
+      <div class="signature">
+        
+        def self.<strong>find_link_for_destination</strong>(destination_hash : Bytes) : <a href="../RNS/LinkLike.html">LinkLike</a> | Nil
+
+        <a class="method-permalink" href="#find_link_for_destination%28destination_hash%3ABytes%29%3ALinkLike%7CNil-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Finds an active link matching the given destination hash (link_id).</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="first_hop_timeout(destination_hash:Bytes):Float64-class-method">
+      <div class="signature">
+        
+        def self.<strong>first_hop_timeout</strong>(destination_hash : Bytes) : Float64
+
+        <a class="method-permalink" href="#first_hop_timeout%28destination_hash%3ABytes%29%3AFloat64-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the first hop timeout for the specified destination.
+Without interface bitrate info (not yet available), returns DEFAULT_PER_HOP_TIMEOUT.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="from_local_client?(packet:Packet):Bool-class-method">
+      <div class="signature">
+        
+        def self.<strong>from_local_client?</strong>(packet : <a href="../RNS/Packet.html">Packet</a>) : Bool
+
+        <a class="method-permalink" href="#from_local_client%3F%28packet%3APacket%29%3ABool-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Checks if a packet is from a local client.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="get_cached_packet(packet_hash:Bytes,packet_type:String|Nil=nil):Packet|Nil-class-method">
+      <div class="signature">
+        
+        def self.<strong>get_cached_packet</strong>(packet_hash : Bytes, packet_type : String | Nil = <span class="n">nil</span>) : <a href="../RNS/Packet.html">Packet</a> | Nil
+
+        <a class="method-permalink" href="#get_cached_packet%28packet_hash%3ABytes%2Cpacket_type%3AString%7CNil%3Dnil%29%3APacket%7CNil-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Retrieves a cached packet from storage.
+Returns the packet if found, nil otherwise.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="handle_tunnel(tunnel_id:Bytes,interface_hash:Bytes|Nil)-class-method">
+      <div class="signature">
+        
+        def self.<strong>handle_tunnel</strong>(tunnel_id : Bytes, interface_hash : Bytes | Nil)
+
+        <a class="method-permalink" href="#handle_tunnel%28tunnel_id%3ABytes%2Cinterface_hash%3ABytes%7CNil%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Handles a tunnel establishment or restoration.
+For new tunnels, creates an entry in the tunnels table.
+For existing tunnels, restores paths and updates the interface.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="has_path(destination_hash:Bytes):Bool-class-method">
+      <div class="signature">
+        
+        def self.<strong>has_path</strong>(destination_hash : Bytes) : Bool
+
+        <a class="method-permalink" href="#has_path%28destination_hash%3ABytes%29%3ABool-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns true if a path to the destination is known.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="held_announces-class-method">
+      <div class="signature">
+        
+        def self.<strong>held_announces</strong>
+
+        <a class="method-permalink" href="#held_announces-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="hops_to(destination_hash:Bytes):Int32-class-method">
+      <div class="signature">
+        
+        def self.<strong>hops_to</strong>(destination_hash : Bytes) : Int32
+
+        <a class="method-permalink" href="#hops_to%28destination_hash%3ABytes%29%3AInt32-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the number of hops to the specified destination,
+or PATHFINDER_M if the number of hops is unknown.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="identity-class-method">
+      <div class="signature">
+        
+        def self.<strong>identity</strong>
+
+        <a class="method-permalink" href="#identity-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="identity=(value:Identity|Nil)-class-method">
+      <div class="signature">
+        
+        def self.<strong>identity=</strong>(value : <a href="../RNS/Identity.html">Identity</a> | Nil)
+
+        <a class="method-permalink" href="#identity%3D%28value%3AIdentity%7CNil%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="inbound(raw:Bytes,interface_hash:Bytes|Nil=nil)-class-method">
+      <div class="signature">
+        
+        def self.<strong>inbound</strong>(raw : Bytes, interface_hash : Bytes | Nil = <span class="n">nil</span>)
+
+        <a class="method-permalink" href="#inbound%28raw%3ABytes%2Cinterface_hash%3ABytes%7CNil%3Dnil%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Processes a raw inbound packet received from a network interface.
+Validates IFAC flags, unpacks the packet, checks for duplicates,
+and dispatches to the appropriate handler: announce processing,
+link request/proof handling, data delivery to local destinations,
+or multi-hop forwarding via the path and link tables.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="inbound_announce(packet:Packet):Bool-class-method">
+      <div class="signature">
+        
+        def self.<strong>inbound_announce</strong>(packet : <a href="../RNS/Packet.html">Packet</a>) : Bool
+
+        <a class="method-permalink" href="#inbound_announce%28packet%3APacket%29%3ABool-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Processes an inbound announce packet. This is the core of the
+announce handling logic from RNS/Transport.py's inbound() method.</p>
+<p>Returns true if the announce was valid and processed, false otherwise.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="inbound_announce_lock-class-method">
+      <div class="signature">
+        
+        def self.<strong>inbound_announce_lock</strong>
+
+        <a class="method-permalink" href="#inbound_announce_lock-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="interface_objects-class-method">
+      <div class="signature">
+        
+        def self.<strong>interface_objects</strong>
+
+        <a class="method-permalink" href="#interface_objects-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="interfaces-class-method">
+      <div class="signature">
+        
+        def self.<strong>interfaces</strong>
+
+        <a class="method-permalink" href="#interfaces-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="invoke_announce_handlers(packet:Packet,destination_hash:Bytes)-class-method">
+      <div class="signature">
+        
+        def self.<strong>invoke_announce_handlers</strong>(packet : <a href="../RNS/Packet.html">Packet</a>, destination_hash : Bytes)
+
+        <a class="method-permalink" href="#invoke_announce_handlers%28packet%3APacket%2Cdestination_hash%3ABytes%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Invokes registered announce handler callbacks for a processed announce.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="is_connected_to_shared_instance=(value:Bool)-class-method">
+      <div class="signature">
+        
+        def self.<strong>is_connected_to_shared_instance=</strong>(value : Bool)
+
+        <a class="method-permalink" href="#is_connected_to_shared_instance%3D%28value%3ABool%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="is_connected_to_shared_instance?-class-method">
+      <div class="signature">
+        
+        def self.<strong>is_connected_to_shared_instance?</strong>
+
+        <a class="method-permalink" href="#is_connected_to_shared_instance%3F-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="is_local_client_interface?(interface_hash:Bytes|Nil):Bool-class-method">
+      <div class="signature">
+        
+        def self.<strong>is_local_client_interface?</strong>(interface_hash : Bytes | Nil) : Bool
+
+        <a class="method-permalink" href="#is_local_client_interface%3F%28interface_hash%3ABytes%7CNil%29%3ABool-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Checks if a destination hash corresponds to a local client interface.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="job_loop_running?-class-method">
+      <div class="signature">
+        
+        def self.<strong>job_loop_running?</strong>
+
+        <a class="method-permalink" href="#job_loop_running%3F-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="jobs-class-method">
+      <div class="signature">
+        
+        def self.<strong>jobs</strong>
+
+        <a class="method-permalink" href="#jobs-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Runs all periodic maintenance tasks.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="jobs_locked-class-method">
+      <div class="signature">
+        
+        def self.<strong>jobs_locked</strong>
+
+        <a class="method-permalink" href="#jobs_locked-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="jobs_locked=(value:Bool)-class-method">
+      <div class="signature">
+        
+        def self.<strong>jobs_locked=</strong>(value : Bool)
+
+        <a class="method-permalink" href="#jobs_locked%3D%28value%3ABool%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="jobs_running-class-method">
+      <div class="signature">
+        
+        def self.<strong>jobs_running</strong>
+
+        <a class="method-permalink" href="#jobs_running-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="jobs_running=(value:Bool)-class-method">
+      <div class="signature">
+        
+        def self.<strong>jobs_running=</strong>(value : Bool)
+
+        <a class="method-permalink" href="#jobs_running%3D%28value%3ABool%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="link_table-class-method">
+      <div class="signature">
+        
+        def self.<strong>link_table</strong>
+
+        <a class="method-permalink" href="#link_table-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="load_packet_hashlist(storage_path:String):Int32-class-method">
+      <div class="signature">
+        
+        def self.<strong>load_packet_hashlist</strong>(storage_path : String) : Int32
+
+        <a class="method-permalink" href="#load_packet_hashlist%28storage_path%3AString%29%3AInt32-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Loads the packet hashlist from disk.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="load_path_table(storage_path:String):Int32-class-method">
+      <div class="signature">
+        
+        def self.<strong>load_path_table</strong>(storage_path : String) : Int32
+
+        <a class="method-permalink" href="#load_path_table%28storage_path%3AString%29%3AInt32-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Loads the path table from disk.
+Returns the number of entries loaded, or -1 on error.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="load_tunnel_table(storage_path:String):Int32-class-method">
+      <div class="signature">
+        
+        def self.<strong>load_tunnel_table</strong>(storage_path : String) : Int32
+
+        <a class="method-permalink" href="#load_tunnel_table%28storage_path%3AString%29%3AInt32-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Loads the tunnel table from disk.
+Returns the number of tunnel entries loaded, or -1 on error.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="local_client_interfaces-class-method">
+      <div class="signature">
+        
+        def self.<strong>local_client_interfaces</strong>
+
+        <a class="method-permalink" href="#local_client_interfaces-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="mark_path_responsive(destination_hash:Bytes):Bool-class-method">
+      <div class="signature">
+        
+        def self.<strong>mark_path_responsive</strong>(destination_hash : Bytes) : Bool
+
+        <a class="method-permalink" href="#mark_path_responsive%28destination_hash%3ABytes%29%3ABool-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Marks the path to the specified destination as responsive.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="mark_path_unknown_for_destination(destination_hash:Bytes)-class-method">
+      <div class="signature">
+        
+        def self.<strong>mark_path_unknown_for_destination</strong>(destination_hash : Bytes)
+
+        <a class="method-permalink" href="#mark_path_unknown_for_destination%28destination_hash%3ABytes%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Marks the path for a destination as unknown, used when the
+announce table entry should be reconsidered.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="mark_path_unknown_state(destination_hash:Bytes):Bool-class-method">
+      <div class="signature">
+        
+        def self.<strong>mark_path_unknown_state</strong>(destination_hash : Bytes) : Bool
+
+        <a class="method-permalink" href="#mark_path_unknown_state%28destination_hash%3ABytes%29%3ABool-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Marks the path to the specified destination as unknown state.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="mark_path_unresponsive(destination_hash:Bytes):Bool-class-method">
+      <div class="signature">
+        
+        def self.<strong>mark_path_unresponsive</strong>(destination_hash : Bytes) : Bool
+
+        <a class="method-permalink" href="#mark_path_unresponsive%28destination_hash%3ABytes%29%3ABool-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Marks the path to the specified destination as unresponsive.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="next_hop(destination_hash:Bytes):Bytes|Nil-class-method">
+      <div class="signature">
+        
+        def self.<strong>next_hop</strong>(destination_hash : Bytes) : Bytes | Nil
+
+        <a class="method-permalink" href="#next_hop%28destination_hash%3ABytes%29%3ABytes%7CNil-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the next hop hash for the specified destination, or nil if unknown.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="next_hop_interface(destination_hash:Bytes):Bytes|Nil-class-method">
+      <div class="signature">
+        
+        def self.<strong>next_hop_interface</strong>(destination_hash : Bytes) : Bytes | Nil
+
+        <a class="method-permalink" href="#next_hop_interface%28destination_hash%3ABytes%29%3ABytes%7CNil-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the receiving interface hash for the specified destination, or nil if unknown.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="outbound(packet:Packet):Bool-class-method">
+      <div class="signature">
+        
+        def self.<strong>outbound</strong>(packet : <a href="../RNS/Packet.html">Packet</a>) : Bool
+
+        <a class="method-permalink" href="#outbound%28packet%3APacket%29%3ABool-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Routes an outbound packet for delivery. Consults the path table,
+link table, and tunnel table to determine the correct next-hop
+interface. Handles broadcast, transport, and direct destination
+types. Returns <code>true</code> if the packet was successfully sent.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="owner-class-method">
+      <div class="signature">
+        
+        def self.<strong>owner</strong>
+
+        <a class="method-permalink" href="#owner-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="owner=(value:OwnerRef|Nil)-class-method">
+      <div class="signature">
+        
+        def self.<strong>owner=</strong>(value : <a href="../RNS/Transport/OwnerRef.html">OwnerRef</a> | Nil)
+
+        <a class="method-permalink" href="#owner%3D%28value%3AOwnerRef%7CNil%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="packet_filter(packet:Packet):Bool-class-method">
+      <div class="signature">
+        
+        def self.<strong>packet_filter</strong>(packet : <a href="../RNS/Packet.html">Packet</a>) : Bool
+
+        <a class="method-permalink" href="#packet_filter%28packet%3APacket%29%3ABool-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Filters packets for deduplication and validity.
+Returns true if the packet should be processed.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="packet_hash_in_list?(packet_hash:Bytes):Bool-class-method">
+      <div class="signature">
+        
+        def self.<strong>packet_hash_in_list?</strong>(packet_hash : Bytes) : Bool
+
+        <a class="method-permalink" href="#packet_hash_in_list%3F%28packet_hash%3ABytes%29%3ABool-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Checks if a packet hash is in the deduplication hashlist.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="packet_hashlist-class-method">
+      <div class="signature">
+        
+        def self.<strong>packet_hashlist</strong>
+
+        <a class="method-permalink" href="#packet_hashlist-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="packet_hashlist_prev-class-method">
+      <div class="signature">
+        
+        def self.<strong>packet_hashlist_prev</strong>
+
+        <a class="method-permalink" href="#packet_hashlist_prev-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="path_is_unresponsive(destination_hash:Bytes):Bool-class-method">
+      <div class="signature">
+        
+        def self.<strong>path_is_unresponsive</strong>(destination_hash : Bytes) : Bool
+
+        <a class="method-permalink" href="#path_is_unresponsive%28destination_hash%3ABytes%29%3ABool-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns true if the path to the specified destination is marked
+as unresponsive.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="path_requests-class-method">
+      <div class="signature">
+        
+        def self.<strong>path_requests</strong>
+
+        <a class="method-permalink" href="#path_requests-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="path_states-class-method">
+      <div class="signature">
+        
+        def self.<strong>path_states</strong>
+
+        <a class="method-permalink" href="#path_states-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="path_table-class-method">
+      <div class="signature">
+        
+        def self.<strong>path_table</strong>
+
+        <a class="method-permalink" href="#path_table-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="pending_links-class-method">
+      <div class="signature">
+        
+        def self.<strong>pending_links</strong>
+
+        <a class="method-permalink" href="#pending_links-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="pending_local_path_requests-class-method">
+      <div class="signature">
+        
+        def self.<strong>pending_local_path_requests</strong>
+
+        <a class="method-permalink" href="#pending_local_path_requests-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="persist_data(storage_path:String)-class-method">
+      <div class="signature">
+        
+        def self.<strong>persist_data</strong>(storage_path : String)
+
+        <a class="method-permalink" href="#persist_data%28storage_path%3AString%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Calls all persistence methods.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="process_announce_table:Array(Packet)-class-method">
+      <div class="signature">
+        
+        def self.<strong>process_announce_table</strong> : Array(<a href="../RNS/Packet.html">Packet</a>)
+
+        <a class="method-permalink" href="#process_announce_table%3AArray%28Packet%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Processes the announce retransmission table. Called periodically
+by the Transport jobs loop. Returns an array of packets to send.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="receipts-class-method">
+      <div class="signature">
+        
+        def self.<strong>receipts</strong>
+
+        <a class="method-permalink" href="#receipts-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="register_announce_handler(handler:AnnounceHandler)-class-method">
+      <div class="signature">
+        
+        def self.<strong>register_announce_handler</strong>(handler : <a href="../RNS/Transport/AnnounceHandler.html">AnnounceHandler</a>)
+
+        <a class="method-permalink" href="#register_announce_handler%28handler%3AAnnounceHandler%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="register_destination(destination:Destination)-class-method">
+      <div class="signature">
+        
+        def self.<strong>register_destination</strong>(destination : <a href="../RNS/Destination.html">Destination</a>)
+
+        <a class="method-permalink" href="#register_destination%28destination%3ADestination%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Registers a destination with Transport so it can receive packets.
+Sets the destination's MTU and ensures no duplicate inbound
+destinations are registered (raises <code>KeyError</code> on conflict).</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="register_interface(interface_hash:Bytes)-class-method">
+      <div class="signature">
+        
+        def self.<strong>register_interface</strong>(interface_hash : Bytes)
+
+        <a class="method-permalink" href="#register_interface%28interface_hash%3ABytes%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Register an interface (by hash). Full interface support will come with Interface implementation.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="register_link(link:LinkLike)-class-method">
+      <div class="signature">
+        
+        def self.<strong>register_link</strong>(link : <a href="../RNS/LinkLike.html">LinkLike</a>)
+
+        <a class="method-permalink" href="#register_link%28link%3ALinkLike%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Registers a link. Initiator links go to pending_links,
+responder links go directly to active_links.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="remote_management_allowed-class-method">
+      <div class="signature">
+        
+        def self.<strong>remote_management_allowed</strong>
+
+        <a class="method-permalink" href="#remote_management_allowed-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="remove_path(destination_hash:Bytes):Bool-class-method">
+      <div class="signature">
+        
+        def self.<strong>remove_path</strong>(destination_hash : Bytes) : Bool
+
+        <a class="method-permalink" href="#remove_path%28destination_hash%3ABytes%29%3ABool-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Removes a path table entry for the given destination hash.
+Returns true if the entry existed, false otherwise.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="request_path(destination_hash:Bytes,on_interface:Bytes|Nil=nil,tag:Bytes|Nil=nil,recursive:Bool=false)-class-method">
+      <div class="signature">
+        
+        def self.<strong>request_path</strong>(destination_hash : Bytes, on_interface : Bytes | Nil = <span class="n">nil</span>, tag : Bytes | Nil = <span class="n">nil</span>, recursive : Bool = <span class="n">false</span>)
+
+        <a class="method-permalink" href="#request_path%28destination_hash%3ABytes%2Con_interface%3ABytes%7CNil%3Dnil%2Ctag%3ABytes%7CNil%3Dnil%2Crecursive%3ABool%3Dfalse%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Requests a path to the destination from the network.
+Creates a path request packet and broadcasts it.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="reset-class-method">
+      <div class="signature">
+        
+        def self.<strong>reset</strong>
+
+        <a class="method-permalink" href="#reset-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="reverse_table-class-method">
+      <div class="signature">
+        
+        def self.<strong>reverse_table</strong>
+
+        <a class="method-permalink" href="#reverse_table-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="save_packet_hashlist(storage_path:String):Bool-class-method">
+      <div class="signature">
+        
+        def self.<strong>save_packet_hashlist</strong>(storage_path : String) : Bool
+
+        <a class="method-permalink" href="#save_packet_hashlist%28storage_path%3AString%29%3ABool-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Saves the packet hashlist to disk using MessagePack.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="save_path_table(storage_path:String):Bool-class-method">
+      <div class="signature">
+        
+        def self.<strong>save_path_table</strong>(storage_path : String) : Bool
+
+        <a class="method-permalink" href="#save_path_table%28storage_path%3AString%29%3ABool-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Saves the path table to disk using MessagePack serialization.
+Each entry is serialized as:
+[destination_hash, timestamp, received_from, hops, expires, random_blobs, interface_hash, packet_hash]</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="save_tunnel_table(storage_path:String):Bool-class-method">
+      <div class="signature">
+        
+        def self.<strong>save_tunnel_table</strong>(storage_path : String) : Bool
+
+        <a class="method-permalink" href="#save_tunnel_table%28storage_path%3AString%29%3ABool-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Saves the tunnel table to disk using MessagePack.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="shared_connection_disappeared-class-method">
+      <div class="signature">
+        
+        def self.<strong>shared_connection_disappeared</strong>
+
+        <a class="method-permalink" href="#shared_connection_disappeared-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Called when a shared instance connection is lost.
+Notifies relevant subsystems to handle the disconnection.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="shared_connection_reappeared-class-method">
+      <div class="signature">
+        
+        def self.<strong>shared_connection_reappeared</strong>
+
+        <a class="method-permalink" href="#shared_connection_reappeared-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Called when a shared instance connection is re-established.
+Notifies relevant subsystems to handle the reconnection.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="should_cache(packet:Packet):Bool-class-method">
+      <div class="signature">
+        
+        def self.<strong>should_cache</strong>(packet : <a href="../RNS/Packet.html">Packet</a>) : Bool
+
+        <a class="method-permalink" href="#should_cache%28packet%3APacket%29%3ABool-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Determines whether a packet should be cached.
+Currently returns false — the Python implementation has this
+disabled with a TODO to rework the caching system.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="speed_rx-class-method">
+      <div class="signature">
+        
+        def self.<strong>speed_rx</strong>
+
+        <a class="method-permalink" href="#speed_rx-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="speed_tx-class-method">
+      <div class="signature">
+        
+        def self.<strong>speed_tx</strong>
+
+        <a class="method-permalink" href="#speed_tx-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="start(owner_ref:OwnerRef)-class-method">
+      <div class="signature">
+        
+        def self.<strong>start</strong>(owner_ref : <a href="../RNS/Transport/OwnerRef.html">OwnerRef</a>)
+
+        <a class="method-permalink" href="#start%28owner_ref%3AOwnerRef%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Initializes and starts the Transport layer.
+Creates or loads the transport identity, loads persisted state
+(packet hashlist, path table, tunnel table), sets up control
+destinations, and starts the periodic job fiber.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="start_job_loop-class-method">
+      <div class="signature">
+        
+        def self.<strong>start_job_loop</strong>
+
+        <a class="method-permalink" href="#start_job_loop-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Starts the periodic job loop fiber.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="start_time-class-method">
+      <div class="signature">
+        
+        def self.<strong>start_time</strong>
+
+        <a class="method-permalink" href="#start_time-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="stop_job_loop-class-method">
+      <div class="signature">
+        
+        def self.<strong>stop_job_loop</strong>
+
+        <a class="method-permalink" href="#stop_job_loop-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Stops the periodic job loop fiber.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="synthesize_tunnel_data(interface_hash:Bytes):Tuple(Bytes,Bytes)|Nil-class-method">
+      <div class="signature">
+        
+        def self.<strong>synthesize_tunnel_data</strong>(interface_hash : Bytes) : Tuple(Bytes, Bytes) | Nil
+
+        <a class="method-permalink" href="#synthesize_tunnel_data%28interface_hash%3ABytes%29%3ATuple%28Bytes%2CBytes%29%7CNil-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Creates and returns a tunnel synthesis packet data payload.
+Returns {tunnel_id, data} or nil if no identity is set.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="tables_last_culled-class-method">
+      <div class="signature">
+        
+        def self.<strong>tables_last_culled</strong>
+
+        <a class="method-permalink" href="#tables_last_culled-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="tables_last_culled=(value:Float64)-class-method">
+      <div class="signature">
+        
+        def self.<strong>tables_last_culled=</strong>(value : Float64)
+
+        <a class="method-permalink" href="#tables_last_culled%3D%28value%3AFloat64%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="timebase_from_random_blob(random_blob:Bytes):Int64-class-method">
+      <div class="signature">
+        
+        def self.<strong>timebase_from_random_blob</strong>(random_blob : Bytes) : Int64
+
+        <a class="method-permalink" href="#timebase_from_random_blob%28random_blob%3ABytes%29%3AInt64-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Extracts a timebase value from a random blob (bytes 5..9).
+The random blob is 10 bytes; bytes 5..9 encode an emission timestamp.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="timebase_from_random_blobs(random_blobs:Array(Bytes)):Int64-class-method">
+      <div class="signature">
+        
+        def self.<strong>timebase_from_random_blobs</strong>(random_blobs : Array(Bytes)) : Int64
+
+        <a class="method-permalink" href="#timebase_from_random_blobs%28random_blobs%3AArray%28Bytes%29%29%3AInt64-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Extracts the maximum timebase from an array of random blobs.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="traffic_rxb-class-method">
+      <div class="signature">
+        
+        def self.<strong>traffic_rxb</strong>
+
+        <a class="method-permalink" href="#traffic_rxb-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="traffic_txb-class-method">
+      <div class="signature">
+        
+        def self.<strong>traffic_txb</strong>
+
+        <a class="method-permalink" href="#traffic_txb-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="transmit(interface_hash:Bytes,raw:Bytes)-class-method">
+      <div class="signature">
+        
+        def self.<strong>transmit</strong>(interface_hash : Bytes, raw : Bytes)
+
+        <a class="method-permalink" href="#transmit%28interface_hash%3ABytes%2Craw%3ABytes%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Transmits raw data on an interface (identified by hash).
+In the full implementation, this resolves the interface object
+and handles IFAC masking. For now, records the transmission
+in the transmit log for testing and verification.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="transmit_log-class-method">
+      <div class="signature">
+        
+        def self.<strong>transmit_log</strong>
+
+        <a class="method-permalink" href="#transmit_log-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="transport_enabled=(value:Bool)-class-method">
+      <div class="signature">
+        
+        def self.<strong>transport_enabled=</strong>(value : Bool)
+
+        <a class="method-permalink" href="#transport_enabled%3D%28value%3ABool%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="transport_enabled?-class-method">
+      <div class="signature">
+        
+        def self.<strong>transport_enabled?</strong>
+
+        <a class="method-permalink" href="#transport_enabled%3F-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="tunnel_synthesize_handler(data:Bytes,packet:Packet)-class-method">
+      <div class="signature">
+        
+        def self.<strong>tunnel_synthesize_handler</strong>(data : Bytes, packet : <a href="../RNS/Packet.html">Packet</a>)
+
+        <a class="method-permalink" href="#tunnel_synthesize_handler%28data%3ABytes%2Cpacket%3APacket%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Validates and processes a tunnel synthesis request.
+Called when a tunnel synthesis DATA packet is received.
+data format: public_key + interface_hash + random_hash + signature</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="tunnels-class-method">
+      <div class="signature">
+        
+        def self.<strong>tunnels</strong>
+
+        <a class="method-permalink" href="#tunnels-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="unblackhole_identity(identity_hash:Bytes):Bool|Nil-class-method">
+      <div class="signature">
+        
+        def self.<strong>unblackhole_identity</strong>(identity_hash : Bytes) : Bool | Nil
+
+        <a class="method-permalink" href="#unblackhole_identity%28identity_hash%3ABytes%29%3ABool%7CNil-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Remove an identity from the blackhole list.
+Returns true on success, nil if not blackholed, false on error.
+Matches Python Transport.unblackhole_identity().</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="update_path(destination_hash:Bytes,next_hop:Bytes,hops:Int32,expires:Float64,receiving_interface:Bytes|Nil=nil,packet_hash:Bytes=Bytes.empty,random_blobs:Array(Bytes)=[]ofBytes)-class-method">
+      <div class="signature">
+        
+        def self.<strong>update_path</strong>(destination_hash : Bytes, next_hop : Bytes, hops : Int32, expires : Float64, receiving_interface : Bytes | Nil = <span class="n">nil</span>, packet_hash : Bytes = <span class="t">Bytes</span>.empty, random_blobs : Array(Bytes) = <span class="o">[]</span> <span class="k">of</span> <span class="t">Bytes</span>)
+
+        <a class="method-permalink" href="#update_path%28destination_hash%3ABytes%2Cnext_hop%3ABytes%2Chops%3AInt32%2Cexpires%3AFloat64%2Creceiving_interface%3ABytes%7CNil%3Dnil%2Cpacket_hash%3ABytes%3DBytes.empty%2Crandom_blobs%3AArray%28Bytes%29%3D%5B%5DofBytes%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Inserts or updates a path table entry for the given destination hash.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="void_tunnel_interface(tunnel_id:Bytes)-class-method">
+      <div class="signature">
+        
+        def self.<strong>void_tunnel_interface</strong>(tunnel_id : Bytes)
+
+        <a class="method-permalink" href="#void_tunnel_interface%28tunnel_id%3ABytes%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Voids the interface reference for a tunnel, keeping paths intact.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+
+
+  
+
+  
+
+
+</div>
+
+</body>
+</html>

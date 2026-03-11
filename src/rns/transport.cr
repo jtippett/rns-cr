@@ -1,13 +1,23 @@
 module RNS
+  # The routing and packet delivery engine for Reticulum.
+  # Transport manages the full lifecycle of packets: outbound routing via
+  # path and link tables, inbound processing (validation, announce handling,
+  # link requests, data delivery, and proof forwarding), and periodic
+  # maintenance of routing state. All state is held at the module level
+  # and accessed through class methods.
   module Transport
-    # ─── Transport type constants ──────────────────────────────────
+    # Transport type constants: identify how a packet traverses the network.
+    # BROADCAST is a direct, one-hop delivery; TRANSPORT uses multi-hop
+    # routing; RELAY and TUNNEL provide indirect forwarding paths.
     BROADCAST = 0x00_u8
     TRANSPORT = 0x01_u8
     RELAY     = 0x02_u8
     TUNNEL    = 0x03_u8
     TYPES     = [BROADCAST, TRANSPORT, RELAY, TUNNEL]
 
-    # ─── Reachability constants ────────────────────────────────────
+    # Reachability constants: describe how a destination can be reached.
+    # DIRECT means the destination is on a locally attached interface;
+    # TRANSPORT means it is reachable via multi-hop routing.
     REACHABILITY_UNREACHABLE = 0x00_u8
     REACHABILITY_DIRECT      = 0x01_u8
     REACHABILITY_TRANSPORT   = 0x02_u8
@@ -15,7 +25,8 @@ module RNS
     # ─── App name ──────────────────────────────────────────────────
     APP_NAME = "rnstransport"
 
-    # ─── Pathfinder constants ──────────────────────────────────────
+    # Pathfinder constants: govern path discovery and announce propagation
+    # limits, including maximum hop count, retry policy, and path expiry.
     PATHFINDER_M  = 128        # Max hops
     PATHFINDER_R  =   1        # Retransmit retries
     PATHFINDER_G  =   5        # Retry grace period (seconds)
@@ -27,18 +38,20 @@ module RNS
 
     LOCAL_REBROADCASTS_MAX = 2 # How many local rebroadcasts of an announce is allowed
 
-    # ─── Path request constants ────────────────────────────────────
+    # Path request constants: control timing and rate-limiting for
+    # on-demand path discovery requests.
     PATH_REQUEST_TIMEOUT =  15 # Default timeout for client path requests (seconds)
     PATH_REQUEST_GRACE   = 0.4 # Grace time before path announcement
     PATH_REQUEST_RG      = 1.5 # Extra grace for roaming-mode interfaces
     PATH_REQUEST_MI      =  20 # Minimum interval for automated path requests (seconds)
 
-    # ─── State constants ───────────────────────────────────────────
+    # Path state constants: track responsiveness of known destinations.
     STATE_UNKNOWN      = 0x00_u8
     STATE_UNRESPONSIVE = 0x01_u8
     STATE_RESPONSIVE   = 0x02_u8
 
-    # ─── Timeout and limit constants ───────────────────────────────
+    # Timeout and capacity limits for routing table entries, receipts,
+    # and in-memory caches.
     # LINK_TIMEOUT is set after Link is defined; use class method for now
     REVERSE_TIMEOUT            = 8 * 60     # 480 seconds (8 minutes)
     DESTINATION_TIMEOUT        = 60*60*24*7 # 1 week
@@ -48,7 +61,7 @@ module RNS
     MAX_RANDOM_BLOBS           =   64
     LOCAL_CLIENT_CACHE_MAXSIZE =  512
 
-    # ─── Job interval constants ────────────────────────────────────
+    # Job interval constants: how often each periodic maintenance task runs.
     JOB_INTERVAL               = 0.250
     LINKS_CHECK_INTERVAL       =   1.0
     RECEIPTS_CHECK_INTERVAL    =   1.0
@@ -63,7 +76,8 @@ module RNS
     HASHLIST_MAXSIZE = 1_000_000
     MAX_PR_TAGS      =    32_000
 
-    # ─── Path table entry indices ──────────────────────────────────
+    # Path table entry indices: positional offsets used when
+    # interoperating with the Python-format path table arrays.
     IDX_PT_TIMESTAMP = 0
     IDX_PT_NEXT_HOP  = 1
     IDX_PT_HOPS      = 2
@@ -460,6 +474,9 @@ module RNS
     #  Registration
     # ════════════════════════════════════════════════════════════════
 
+    # Registers a destination with Transport so it can receive packets.
+    # Sets the destination's MTU and ensures no duplicate inbound
+    # destinations are registered (raises `KeyError` on conflict).
     def self.register_destination(destination : Destination)
       destination.mtu = Reticulum::MTU
 
@@ -474,6 +491,7 @@ module RNS
       @@destinations << destination
     end
 
+    # Removes a previously registered destination from Transport.
     def self.deregister_destination(destination : Destination)
       @@destinations.delete(destination)
     end
@@ -623,8 +641,10 @@ module RNS
     #  Outbound Packet Routing
     # ════════════════════════════════════════════════════════════════
 
-    # Main outbound packet routing. Determines how to send a packet
-    # based on path table and destination type.
+    # Routes an outbound packet for delivery. Consults the path table,
+    # link table, and tunnel table to determine the correct next-hop
+    # interface. Handles broadcast, transport, and direct destination
+    # types. Returns `true` if the packet was successfully sent.
     def self.outbound(packet : Packet) : Bool
       # Wait for jobs to finish
       while @@jobs_running
@@ -775,9 +795,11 @@ module RNS
     #  Inbound Packet Processing
     # ════════════════════════════════════════════════════════════════
 
-    # Main inbound packet processing pipeline.
-    # Handles IFAC validation, packet unpacking, routing,
-    # announce processing, link requests, data delivery, and proofs.
+    # Processes a raw inbound packet received from a network interface.
+    # Validates IFAC flags, unpacks the packet, checks for duplicates,
+    # and dispatches to the appropriate handler: announce processing,
+    # link request/proof handling, data delivery to local destinations,
+    # or multi-hop forwarding via the path and link tables.
     def self.inbound(raw : Bytes, interface_hash : Bytes? = nil)
       # Minimum size check
       return if raw.size <= 2

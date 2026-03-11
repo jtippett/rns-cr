@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Crystal Docs 1.18.2">
+<meta name="crystal_docs.project_version" content="master-dev">
+<meta name="crystal_docs.project_name" content="rns">
+
+
+
+<link href="../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../js/doc.js"></script>
+
+  <meta name="repository-name" content="rns">
+  <title>RNS::Rnsd - rns master-dev</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<input type="checkbox" id="sidebar-btn">
+<label for="sidebar-btn" id="sidebar-btn-label">
+  <svg class="open" xmlns="http://www.w3.org/2000/svg" height="2em" width="2em" viewBox="0 0 512 512"><title>Open Sidebar</title><path fill="currentColor" d="M80 96v64h352V96H80zm0 112v64h352v-64H80zm0 112v64h352v-64H80z"></path></svg>
+  <svg class="close" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 512 512"><title>Close Sidebar</title><path fill="currentColor" d="m118.6 73.4-45.2 45.2L210.7 256 73.4 393.4l45.2 45.2L256 301.3l137.4 137.3 45.2-45.2L301.3 256l137.3-137.4-45.2-45.2L256 210.7Z"></path></svg>
+</label>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="../index.html">
+          rns
+        </a>
+      </h1>
+
+      <span class="project-version">
+        master-dev
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class="parent open current" data-id="rns/RNS" data-name="rns">
+      <a href="../RNS.html">RNS</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="rns/RNS/AutoInterface" data-name="rns::autointerface">
+      <a href="../RNS/AutoInterface.html">AutoInterface</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/AutoInterface/PeerEntry" data-name="rns::autointerface::peerentry">
+      <a href="../RNS/AutoInterface/PeerEntry.html">PeerEntry</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/AutoInterfacePeer" data-name="rns::autointerfacepeer">
+      <a href="../RNS/AutoInterfacePeer.html">AutoInterfacePeer</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/AX25" data-name="rns::ax25">
+      <a href="../RNS/AX25.html">AX25</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/AX25KISSInterface" data-name="rns::ax25kissinterface">
+      <a href="../RNS/AX25KISSInterface.html">AX25KISSInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/BackboneClientInterface" data-name="rns::backboneclientinterface">
+      <a href="../RNS/BackboneClientInterface.html">BackboneClientInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/BackboneInterface" data-name="rns::backboneinterface">
+      <a href="../RNS/BackboneInterface.html">BackboneInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/BackboneInterfaceConstants" data-name="rns::backboneinterfaceconstants">
+      <a href="../RNS/BackboneInterfaceConstants.html">BackboneInterfaceConstants</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Base32" data-name="rns::base32">
+      <a href="../RNS/Base32.html">Base32</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Buffer" data-name="rns::buffer">
+      <a href="../RNS/Buffer.html">Buffer</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/BZip2" data-name="rns::bzip2">
+      <a href="../RNS/BZip2.html">BZip2</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/BZip2/Error" data-name="rns::bzip2::error">
+      <a href="../RNS/BZip2/Error.html">Error</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/CEType" data-name="rns::cetype">
+      <a href="../RNS/CEType.html">CEType</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Channel" data-name="rns::channel(tpacket)">
+      <a href="../RNS/Channel.html">Channel</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ChannelException" data-name="rns::channelexception">
+      <a href="../RNS/ChannelException.html">ChannelException</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ChannelOutletBase" data-name="rns::channeloutletbase(tpacket)">
+      <a href="../RNS/ChannelOutletBase.html">ChannelOutletBase</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/ConfigObj" data-name="rns::configobj">
+      <a href="../RNS/ConfigObj.html">ConfigObj</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/ConfigObj/NestingError" data-name="rns::configobj::nestingerror">
+      <a href="../RNS/ConfigObj/NestingError.html">NestingError</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ConfigObj/ParseError" data-name="rns::configobj::parseerror">
+      <a href="../RNS/ConfigObj/ParseError.html">ParseError</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ConfigObj/Section" data-name="rns::configobj::section">
+      <a href="../RNS/ConfigObj/Section.html">Section</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ConfigObj/Value" data-name="rns::configobj::value">
+      <a href="../RNS/ConfigObj/Value.html">Value</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ConfigObj/ValueError" data-name="rns::configobj::valueerror">
+      <a href="../RNS/ConfigObj/ValueError.html">ValueError</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Cryptography" data-name="rns::cryptography">
+      <a href="../RNS/Cryptography.html">Cryptography</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/AES128CBC" data-name="rns::cryptography::aes128cbc">
+      <a href="../RNS/Cryptography/AES128CBC.html">AES128CBC</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/AES256CBC" data-name="rns::cryptography::aes256cbc">
+      <a href="../RNS/Cryptography/AES256CBC.html">AES256CBC</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/Ed25519PrivateKey" data-name="rns::cryptography::ed25519privatekey">
+      <a href="../RNS/Cryptography/Ed25519PrivateKey.html">Ed25519PrivateKey</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/Ed25519PublicKey" data-name="rns::cryptography::ed25519publickey">
+      <a href="../RNS/Cryptography/Ed25519PublicKey.html">Ed25519PublicKey</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/HMAC" data-name="rns::cryptography::hmac">
+      <a href="../RNS/Cryptography/HMAC.html">HMAC</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/PKCS7" data-name="rns::cryptography::pkcs7">
+      <a href="../RNS/Cryptography/PKCS7.html">PKCS7</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Cryptography/Token" data-name="rns::cryptography::token">
+      <a href="../RNS/Cryptography/Token.html">Token</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/Token/Mode" data-name="rns::cryptography::token::mode">
+      <a href="../RNS/Cryptography/Token/Mode.html">Mode</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/X25519PrivateKey" data-name="rns::cryptography::x25519privatekey">
+      <a href="../RNS/Cryptography/X25519PrivateKey.html">X25519PrivateKey</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/X25519PublicKey" data-name="rns::cryptography::x25519publickey">
+      <a href="../RNS/Cryptography/X25519PublicKey.html">X25519PublicKey</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Destination" data-name="rns::destination">
+      <a href="../RNS/Destination.html">Destination</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Destination/DestinationCallbacks" data-name="rns::destination::destinationcallbacks">
+      <a href="../RNS/Destination/DestinationCallbacks.html">DestinationCallbacks</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Destination/DestinationInterface" data-name="rns::destination::destinationinterface">
+      <a href="../RNS/Destination/DestinationInterface.html">DestinationInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Destination/RequestHandler" data-name="rns::destination::requesthandler">
+      <a href="../RNS/Destination/RequestHandler.html">RequestHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Destination/Stub" data-name="rns::destination::stub">
+      <a href="../RNS/Destination/Stub.html">Stub</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Discovery" data-name="rns::discovery">
+      <a href="../RNS/Discovery.html">Discovery</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Discovery/BlackholeUpdater" data-name="rns::discovery::blackholeupdater">
+      <a href="../RNS/Discovery/BlackholeUpdater.html">BlackholeUpdater</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Discovery/InterfaceAnnounceHandler" data-name="rns::discovery::interfaceannouncehandler">
+      <a href="../RNS/Discovery/InterfaceAnnounceHandler.html">InterfaceAnnounceHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Discovery/InterfaceAnnouncer" data-name="rns::discovery::interfaceannouncer">
+      <a href="../RNS/Discovery/InterfaceAnnouncer.html">InterfaceAnnouncer</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Discovery/InterfaceDiscovery" data-name="rns::discovery::interfacediscovery">
+      <a href="../RNS/Discovery/InterfaceDiscovery.html">InterfaceDiscovery</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Discovery/InterfaceDiscovery/InfoHash" data-name="rns::discovery::interfacediscovery::infohash">
+      <a href="../RNS/Discovery/InterfaceDiscovery/InfoHash.html">InfoHash</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Envelope" data-name="rns::envelope(tpacket)">
+      <a href="../RNS/Envelope.html">Envelope</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/HDLC" data-name="rns::hdlc">
+      <a href="../RNS/HDLC.html">HDLC</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PController" data-name="rns::i2pcontroller">
+      <a href="../RNS/I2PController.html">I2PController</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/I2PExceptions" data-name="rns::i2pexceptions">
+      <a href="../RNS/I2PExceptions.html">I2PExceptions</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/CantReachPeer" data-name="rns::i2pexceptions::cantreachpeer">
+      <a href="../RNS/I2PExceptions/CantReachPeer.html">CantReachPeer</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/DuplicatedDest" data-name="rns::i2pexceptions::duplicateddest">
+      <a href="../RNS/I2PExceptions/DuplicatedDest.html">DuplicatedDest</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/DuplicatedId" data-name="rns::i2pexceptions::duplicatedid">
+      <a href="../RNS/I2PExceptions/DuplicatedId.html">DuplicatedId</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/I2PError" data-name="rns::i2pexceptions::i2perror">
+      <a href="../RNS/I2PExceptions/I2PError.html">I2PError</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/InvalidId" data-name="rns::i2pexceptions::invalidid">
+      <a href="../RNS/I2PExceptions/InvalidId.html">InvalidId</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/InvalidKey" data-name="rns::i2pexceptions::invalidkey">
+      <a href="../RNS/I2PExceptions/InvalidKey.html">InvalidKey</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/KeyNotFound" data-name="rns::i2pexceptions::keynotfound">
+      <a href="../RNS/I2PExceptions/KeyNotFound.html">KeyNotFound</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/PeerNotFound" data-name="rns::i2pexceptions::peernotfound">
+      <a href="../RNS/I2PExceptions/PeerNotFound.html">PeerNotFound</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/Timeout" data-name="rns::i2pexceptions::timeout">
+      <a href="../RNS/I2PExceptions/Timeout.html">Timeout</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PInterface" data-name="rns::i2pinterface">
+      <a href="../RNS/I2PInterface.html">I2PInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PInterfacePeer" data-name="rns::i2pinterfacepeer">
+      <a href="../RNS/I2PInterfacePeer.html">I2PInterfacePeer</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Identity" data-name="rns::identity">
+      <a href="../RNS/Identity.html">Identity</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Interface" data-name="rns::interface">
+      <a href="../RNS/Interface.html">Interface</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Interface/AnnounceQueueEntry" data-name="rns::interface::announcequeueentry">
+      <a href="../RNS/Interface/AnnounceQueueEntry.html">AnnounceQueueEntry</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Interface/HeldAnnounce" data-name="rns::interface::heldannounce">
+      <a href="../RNS/Interface/HeldAnnounce.html">HeldAnnounce</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/InterfaceAnnouncer" data-name="rns::interfaceannouncer">
+      <a href="../RNS/InterfaceAnnouncer.html">InterfaceAnnouncer</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/KISS" data-name="rns::kiss">
+      <a href="../RNS/KISS.html">KISS</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/KISSInterface" data-name="rns::kissinterface">
+      <a href="../RNS/KISSInterface.html">KISSInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Link" data-name="rns::link">
+      <a href="../RNS/Link.html">Link</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/LinkCallbacks" data-name="rns::linkcallbacks">
+      <a href="../RNS/LinkCallbacks.html">LinkCallbacks</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/LinkChannelOutlet" data-name="rns::linkchanneloutlet">
+      <a href="../RNS/LinkChannelOutlet.html">LinkChannelOutlet</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/LinkLike" data-name="rns::linklike">
+      <a href="../RNS/LinkLike.html">LinkLike</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/LinkStub" data-name="rns::linkstub">
+      <a href="../RNS/LinkStub.html">LinkStub</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/LocalClientInterface" data-name="rns::localclientinterface">
+      <a href="../RNS/LocalClientInterface.html">LocalClientInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/LocalServerInterface" data-name="rns::localserverinterface">
+      <a href="../RNS/LocalServerInterface.html">LocalServerInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/MessageBase" data-name="rns::messagebase">
+      <a href="../RNS/MessageBase.html">MessageBase</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/MessageState" data-name="rns::messagestate">
+      <a href="../RNS/MessageState.html">MessageState</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/NetInfo" data-name="rns::netinfo">
+      <a href="../RNS/NetInfo.html">NetInfo</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/NetInfo/AddressInfo" data-name="rns::netinfo::addressinfo">
+      <a href="../RNS/NetInfo/AddressInfo.html">AddressInfo</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Packet" data-name="rns::packet">
+      <a href="../RNS/Packet.html">Packet</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/PacketReceipt" data-name="rns::packetreceipt">
+      <a href="../RNS/PacketReceipt.html">PacketReceipt</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/PacketReceiptCallbacks" data-name="rns::packetreceiptcallbacks">
+      <a href="../RNS/PacketReceiptCallbacks.html">PacketReceiptCallbacks</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/PipeInterface" data-name="rns::pipeinterface">
+      <a href="../RNS/PipeInterface.html">PipeInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/PlatformUtils" data-name="rns::platformutils">
+      <a href="../RNS/PlatformUtils.html">PlatformUtils</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ProofDestination" data-name="rns::proofdestination">
+      <a href="../RNS/ProofDestination.html">ProofDestination</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RawChannelReader" data-name="rns::rawchannelreader(tpacket)">
+      <a href="../RNS/RawChannelReader.html">RawChannelReader</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RawChannelWriter" data-name="rns::rawchannelwriter(tpacket)">
+      <a href="../RNS/RawChannelWriter.html">RawChannelWriter</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RequestReceipt" data-name="rns::requestreceipt">
+      <a href="../RNS/RequestReceipt.html">RequestReceipt</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RequestReceiptCallbacks" data-name="rns::requestreceiptcallbacks">
+      <a href="../RNS/RequestReceiptCallbacks.html">RequestReceiptCallbacks</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Resolver" data-name="rns::resolver">
+      <a href="../RNS/Resolver.html">Resolver</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Resource" data-name="rns::resource">
+      <a href="../RNS/Resource.html">Resource</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ResourceAdvertisement" data-name="rns::resourceadvertisement">
+      <a href="../RNS/ResourceAdvertisement.html">ResourceAdvertisement</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Reticulum" data-name="rns::reticulum">
+      <a href="../RNS/Reticulum.html">Reticulum</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ReticulumInstance" data-name="rns::reticuluminstance">
+      <a href="../RNS/ReticulumInstance.html">ReticulumInstance</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Rncp" data-name="rns::rncp">
+      <a href="../RNS/Rncp.html">Rncp</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Rncp/Args" data-name="rns::rncp::args">
+      <a href="../RNS/Rncp/Args.html">Args</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Rnid" data-name="rns::rnid">
+      <a href="../RNS/Rnid.html">Rnid</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Rnid/Args" data-name="rns::rnid::args">
+      <a href="../RNS/Rnid/Args.html">Args</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RNodeInterface" data-name="rns::rnodeinterface">
+      <a href="../RNS/RNodeInterface.html">RNodeInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RNodeKISS" data-name="rns::rnodekiss">
+      <a href="../RNS/RNodeKISS.html">RNodeKISS</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RNodeMultiInterface" data-name="rns::rnodemultiinterface">
+      <a href="../RNS/RNodeMultiInterface.html">RNodeMultiInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RNodeMultiKISS" data-name="rns::rnodemultikiss">
+      <a href="../RNS/RNodeMultiKISS.html">RNodeMultiKISS</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RNodeSubInterface" data-name="rns::rnodesubinterface">
+      <a href="../RNS/RNodeSubInterface.html">RNodeSubInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RNodeTCPConnection" data-name="rns::rnodetcpconnection">
+      <a href="../RNS/RNodeTCPConnection.html">RNodeTCPConnection</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Rnpath" data-name="rns::rnpath">
+      <a href="../RNS/Rnpath.html">Rnpath</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Rnpath/Args" data-name="rns::rnpath::args">
+      <a href="../RNS/Rnpath/Args.html">Args</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Rnpath/PathTableEntry" data-name="rns::rnpath::pathtableentry">
+      <a href="../RNS/Rnpath/PathTableEntry.html">PathTableEntry</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Rnpath/RateTableEntry" data-name="rns::rnpath::ratetableentry">
+      <a href="../RNS/Rnpath/RateTableEntry.html">RateTableEntry</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Rnprobe" data-name="rns::rnprobe">
+      <a href="../RNS/Rnprobe.html">Rnprobe</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Rnprobe/Args" data-name="rns::rnprobe::args">
+      <a href="../RNS/Rnprobe/Args.html">Args</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent open current" data-id="rns/RNS/Rnsd" data-name="rns::rnsd">
+      <a href="../RNS/Rnsd.html">Rnsd</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Rnsd/Args" data-name="rns::rnsd::args">
+      <a href="../RNS/Rnsd/Args.html">Args</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Rnstatus" data-name="rns::rnstatus">
+      <a href="../RNS/Rnstatus.html">Rnstatus</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Rnstatus/Args" data-name="rns::rnstatus::args">
+      <a href="../RNS/Rnstatus/Args.html">Args</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Rnstatus/InterfaceStat" data-name="rns::rnstatus::interfacestat">
+      <a href="../RNS/Rnstatus/InterfaceStat.html">InterfaceStat</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Rnstatus/TransportStats" data-name="rns::rnstatus::transportstats">
+      <a href="../RNS/Rnstatus/TransportStats.html">TransportStats</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Rnx" data-name="rns::rnx">
+      <a href="../RNS/Rnx.html">Rnx</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Rnx/Args" data-name="rns::rnx::args">
+      <a href="../RNS/Rnx/Args.html">Args</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/SAMClient" data-name="rns::samclient">
+      <a href="../RNS/SAMClient.html">SAMClient</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/SerialConstants" data-name="rns::serialconstants">
+      <a href="../RNS/SerialConstants.html">SerialConstants</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/SerialInterface" data-name="rns::serialinterface">
+      <a href="../RNS/SerialInterface.html">SerialInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/StreamDataMessage" data-name="rns::streamdatamessage">
+      <a href="../RNS/StreamDataMessage.html">StreamDataMessage</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/SubIntConfig" data-name="rns::subintconfig">
+      <a href="../RNS/SubIntConfig.html">SubIntConfig</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/SystemMessageTypes" data-name="rns::systemmessagetypes">
+      <a href="../RNS/SystemMessageTypes.html">SystemMessageTypes</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/TCPClientInterface" data-name="rns::tcpclientinterface">
+      <a href="../RNS/TCPClientInterface.html">TCPClientInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/TCPInterfaceConstants" data-name="rns::tcpinterfaceconstants">
+      <a href="../RNS/TCPInterfaceConstants.html">TCPInterfaceConstants</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/TCPServerInterface" data-name="rns::tcpserverinterface">
+      <a href="../RNS/TCPServerInterface.html">TCPServerInterface</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Transport" data-name="rns::transport">
+      <a href="../RNS/Transport.html">Transport</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Transport/AnnounceEntry" data-name="rns::transport::announceentry">
+      <a href="../RNS/Transport/AnnounceEntry.html">AnnounceEntry</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Transport/AnnounceHandler" data-name="rns::transport::announcehandler">
+      <a href="../RNS/Transport/AnnounceHandler.html">AnnounceHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Transport/AnnounceRateEntry" data-name="rns::transport::announcerateentry">
+      <a href="../RNS/Transport/AnnounceRateEntry.html">AnnounceRateEntry</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Transport/LinkEntry" data-name="rns::transport::linkentry">
+      <a href="../RNS/Transport/LinkEntry.html">LinkEntry</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Transport/OwnerRef" data-name="rns::transport::ownerref">
+      <a href="../RNS/Transport/OwnerRef.html">OwnerRef</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Transport/PathEntry" data-name="rns::transport::pathentry">
+      <a href="../RNS/Transport/PathEntry.html">PathEntry</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Transport/ReverseEntry" data-name="rns::transport::reverseentry">
+      <a href="../RNS/Transport/ReverseEntry.html">ReverseEntry</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Transport/TunnelEntry" data-name="rns::transport::tunnelentry">
+      <a href="../RNS/Transport/TunnelEntry.html">TunnelEntry</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/TypeError" data-name="rns::typeerror">
+      <a href="../RNS/TypeError.html">TypeError</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/UDPInterface" data-name="rns::udpinterface">
+      <a href="../RNS/UDPInterface.html">UDPInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveCmd" data-name="rns::weavecmd">
+      <a href="../RNS/WeaveCmd.html">WeaveCmd</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveDevice" data-name="rns::weavedevice">
+      <a href="../RNS/WeaveDevice.html">WeaveDevice</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveEndpoint" data-name="rns::weaveendpoint">
+      <a href="../RNS/WeaveEndpoint.html">WeaveEndpoint</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveEvt" data-name="rns::weaveevt">
+      <a href="../RNS/WeaveEvt.html">WeaveEvt</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveInterface" data-name="rns::weaveinterface">
+      <a href="../RNS/WeaveInterface.html">WeaveInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveInterfacePeer" data-name="rns::weaveinterfacepeer">
+      <a href="../RNS/WeaveInterfacePeer.html">WeaveInterfacePeer</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveLogFrame" data-name="rns::weavelogframe">
+      <a href="../RNS/WeaveLogFrame.html">WeaveLogFrame</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveWDCL" data-name="rns::weavewdcl">
+      <a href="../RNS/WeaveWDCL.html">WeaveWDCL</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveWDCLConnection" data-name="rns::weavewdclconnection">
+      <a href="../RNS/WeaveWDCLConnection.html">WeaveWDCLConnection</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">
+    module
+  </span> RNS::<wbr>Rnsd
+
+</h1>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      rns/rnsd.cr
+    
+    <br/>
+  
+
+
+
+  
+    <h2>
+      <a id="constant-summary" class="anchor" href="#constant-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+      Constant Summary
+    </h2>
+  
+  <dl>
+    
+      <dt class="entry-const" id="EXAMPLE_RNS_CONFIG">
+        <strong>EXAMPLE_RNS_CONFIG</strong> = <code><span class="s">&quot;# This is an example Reticulum config file.\n# You should probably edit it to include any additional,\n# interfaces and settings you might need.\n\n[reticulum]\n\n# If you enable Transport, your system will route traffic\n# for other peers, pass announces and serve path requests.\n# This should be done for systems that are suited to act\n# as transport nodes, ie. if they are stationary and\n# always-on. This directive is optional and can be removed\n# for brevity.\n\nenable_transport = No\n\n\n# By default, the first program to launch the Reticulum\n# Network Stack will create a shared instance, that other\n# programs can communicate with. Only the shared instance\n# opens all the configured interfaces directly, and other\n# local programs communicate with the shared instance over\n# a local socket. This is completely transparent to the\n# user, and should generally be turned on. This directive\n# is optional and can be removed for brevity.\n\nshare_instance = Yes\n\n\n# If you want to run multiple *different* shared instances\n# on the same system, you will need to specify different\n# instance names for each. On platforms supporting domain\n# sockets, this can be done with the instance_name option:\n\ninstance_name = default\n\n# Some platforms don&#39;t support domain sockets, and if that\n# is the case, you can isolate different instances by\n# specifying a unique set of ports for each:\n\n# shared_instance_port = 37428\n# instance_control_port = 37429\n\n\n# If you want to explicitly use TCP for shared instance\n# communication, instead of domain sockets, this is also\n# possible, by using the following option:\n\n# shared_instance_type = tcp\n\n\n# On systems where running instances may not have access\n# to the same shared Reticulum configuration directory,\n# it is still possible to allow full interactivity for\n# running instances, by manually specifying a shared RPC\n# key. In almost all cases, this option is not needed, but\n# it can be useful on operating systems such as Android.\n# The key must be specified as bytes in hexadecimal.\n\n# rpc_key = e5c032d3ec4e64a6aca9927ba8ab73336780f6d71790\n\n\n# It is possible to allow remote management of Reticulum\n# systems using the various built-in utilities, such as\n# rnstatus and rnpath. You will need to specify one or\n# more Reticulum Identity hashes for authenticating the\n# queries from client programs. For this purpose, you can\n# use existing identity files, or generate new ones with\n# the rnid utility.\n\n# enable_remote_management = yes\n# remote_management_allowed = 9fb6d773498fb3feda407ed8ef2c3229, 2d882c5586e548d79b5af27bca1776dc\n\n\n# For easier management, discovery and configuration of\n# networks with many individual transport instances,\n# you can specify a network identity to be used across\n# a set of instances. If sending interface discovery\n# announces, these will all be signed by the specified\n# network identity, and other nodes discovering your\n# interfaces will be able to identify that they belong\n# to the same network, even though they exist on different\n# transport nodes.\n\n# network_identity = ~/.reticulum/storage/identity/network\n\n\n# You can configure whether Reticulum should discover\n# available interfaces from other Transport Instances over\n# the network. If this option is enabled, Reticulum will\n# collect interface information discovered from the network.\n\n# discover_interfaces = No\n\n\n# If you only want to discover interfaces from specific\n# networks, you can provide a list of network identities\n# from which to discover interfaces. If this option is not\n# provided, interfaces will be discovered from all transport\n# instances on all connected networks.\n\n# interface_discovery_sources = 78616ff7c4b8d3886d67d494b440f333, cb127015e13aa6ea1e0a606cdc9123d0\n\n\n# It is possible to automatically bring up and connect new\n# interfaces discovered over the network. This option is\n# disabled by default, but allows you to specify a maximum\n# number of discovered interfaces to automatically connect.\n# Additionally, if this option is enabled, Reticulum will\n# also try to autoconnect available auto-discovered inter-\n# faces on startup, up to the maximum number specified.\n\n# autoconnect_discovered_interfaces = 0\n\n\n# To prevent interface discovery spamming, a valid crypto-\n# graphic stamp is required per announced interface. You\n# can configure the minimum required value to accept as\n# valid for discovered interfaces.\n\n# required_discovery_value = 14\n\n\n# You can configure Reticulum to panic and forcibly close\n# if an unrecoverable interface error occurs, such as the\n# hardware device for an interface disappearing. This is\n# an optional directive, and can be left out for brevity.\n# This behaviour is disabled by default.\n\n# panic_on_interface_error = No\n\n\n# When Transport is enabled, it is possible to allow the\n# Transport Instance to respond to probe requests from\n# the rnprobe utility. This can be a useful tool to test\n# connectivity. When this option is enabled, the probe\n# destination will be generated from the Identity of the\n# Transport Instance, and printed to the log at startup.\n# Optional, and disabled by default.\n\n# respond_to_probes = No\n\n\n# You can publish your local list of blackholed identities\n# for other transport instances to use for automatic,\n# network-wide blackhole management.\n\n# publish_blackhole = No\n\n# List of remote transport identities from which to auto-\n# matically source lists of blackholed identities.\n#\n# If you&#39;re connecting to a large external network, you\n# can use one or more external blackhole list to block\n# spammy and excessive announces onto your network. This\n# funtionality is especially useful if you&#39;re hosting public\n# entrypoints or gateways. The list source below provides a\n# functional example, but better, more timely maintained\n# lists probably exist in the community.\n\n# blackhole_sources = 521c87a83afb8f29e4455e77930b973b\n\n\n[logging]\n# Valid log levels are 0 through 7:\n#   0: Log only critical information\n#   1: Log errors and lower log levels\n#   2: Log warnings and lower log levels\n#   3: Log notices and lower log levels\n#   4: Log info and lower (this is the default)\n#   5: Verbose logging\n#   6: Debug logging\n#   7: Extreme logging\n\nloglevel = 4\n\n\n# The interfaces section defines the physical and virtual\n# interfaces Reticulum will use to communicate on. This\n# section will contain examples for a variety of interface\n# types. You can modify these or use them as a basis for\n# your own config, or simply remove the unused ones.\n\n[interfaces]\n\n  # This interface enables communication with other\n  # link-local Reticulum nodes over UDP. It does not\n  # need any functional IP infrastructure like routers\n  # or DHCP servers, but will require that at least link-\n  # local IPv6 is enabled in your operating system, which\n  # should be enabled by default in almost any OS. See\n  # the Reticulum Manual for more configuration options.\n\n  [[Default Interface]]\n    type = AutoInterface\n    enabled = yes\n\n\n  # The following example enables communication with other\n  # local Reticulum peers using UDP broadcasts.\n\n  [[UDP Interface]]\n    type = UDPInterface\n    enabled = no\n    listen_ip = 0.0.0.0\n    listen_port = 4242\n    forward_ip = 255.255.255.255\n    forward_port = 4242\n\n    # The above configuration will allow communication\n    # within the local broadcast domains of all local\n    # IP interfaces.\n\n    # Instead of specifying listen_ip, listen_port,\n    # forward_ip and forward_port, you can also bind\n    # to a specific network device like below.\n\n    # device = eth0\n    # port = 4242\n\n    # Assuming the eth0 device has the address\n    # 10.55.0.72/24, the above configuration would\n    # be equivalent to the following manual setup.\n    # Note that we are both listening and forwarding to\n    # the broadcast address of the network segments.\n\n    # listen_ip = 10.55.0.255\n    # listen_port = 4242\n    # forward_ip = 10.55.0.255\n    # forward_port = 4242\n\n    # You can of course also communicate only with\n    # a single IP address\n\n    # listen_ip = 10.55.0.15\n    # listen_port = 4242\n    # forward_ip = 10.55.0.16\n    # forward_port = 4242\n\n\n  # This example demonstrates a TCP server interface.\n  # It will listen for incoming connections on the\n  # specified IP address and port number.\n\n  [[TCP Server Interface]]\n    type = TCPServerInterface\n    enabled = no\n\n    # This configuration will listen on all IP\n    # interfaces on port 4242\n\n    listen_ip = 0.0.0.0\n    listen_port = 4242\n\n    # Alternatively you can bind to a specific IP\n\n    # listen_ip = 10.0.0.88\n    # listen_port = 4242\n\n    # Or a specific network device\n\n    # device = eth0\n    # port = 4242\n\n\n  # To connect to a TCP server interface, you would\n  # naturally use the TCP client interface. Here&#39;s\n  # an example. The target_host can either be an IP\n  # address or a hostname\n\n  [[TCP Client Interface]]\n    type = TCPClientInterface\n    enabled = no\n    target_host = 127.0.0.1\n    target_port = 4242\n\n\n  # This example shows how to make your Reticulum\n  # instance available over I2P, and connect to\n  # another I2P peer. Please be aware that you\n  # must have an I2P router running on your system\n  # with the SAMv3 API enabled for this to work.\n\n  [[I2P]]\n    type = I2PInterface\n    enabled = no\n    connectable = yes\n    peers = ykzlw5ujbaqc2xkec4cpvgyxj257wcrmmgkuxqmqcur7cq3w3lha.b32.i2p\n\n\n  # Here&#39;s an example of how to add a LoRa interface\n  # using the RNode LoRa transceiver.\n\n  [[RNode LoRa Interface]]\n    type = RNodeInterface\n\n    # Enable interface if you want use it!\n    enabled = no\n\n    # Serial port for the device\n    port = /dev/ttyUSB0\n\n    # It is also possible to use BLE devices\n    # instead of wired serial ports. The\n    # target RNode must be paired with the\n    # host device before connecting. BLE\n    # devices can be connected by name,\n    # BLE MAC address or by any available.\n\n    # Connect to specific device by name\n    # port = ble://RNode 3B87\n\n    # Or by BLE MAC address\n    # port = ble://F4:12:73:29:4E:89\n\n    # Or connect to the first available,\n    # paired device\n    # port = ble://\n\n    # Set frequency to 867.2 MHz\n    frequency = 867200000\n\n    # Set LoRa bandwidth to 125 KHz\n    bandwidth = 125000\n\n    # Set TX power to 7 dBm (5 mW)\n    txpower = 7\n\n    # Select spreading factor 8. Valid\n    # range is 7 through 12, with 7\n    # being the fastest and 12 having\n    # the longest range.\n    spreadingfactor = 8\n\n    # Select coding rate 5. Valid range\n    # is 5 throough 8, with 5 being the\n    # fastest, and 8 the longest range.\n    codingrate = 5\n\n    # You can configure the RNode to send\n    # out identification on the channel with\n    # a set interval by configuring the\n    # following two parameters. The trans-\n    # ceiver will only ID if the set\n    # interval has elapsed since it&#39;s last\n    # actual transmission. The interval is\n    # configured in seconds.\n    # This option is commented out and not\n    # used by default.\n    # id_callsign = MYCALL-0\n    # id_interval = 600\n\n    # For certain homebrew RNode interfaces\n    # with low amounts of RAM, using packet\n    # flow control can be useful. By default\n    # it is disabled.\n    flow_control = False\n\n\n  # An example KISS modem interface. Useful for running\n  # Reticulum over packet radio hardware.\n\n  [[Packet Radio KISS Interface]]\n    type = KISSInterface\n\n    # Enable interface if you want use it!\n    enabled = no\n\n    # Serial port for the device\n    port = /dev/ttyUSB1\n\n    # Set the serial baud-rate and other\n    # configuration parameters.\n    speed = 115200\n    databits = 8\n    parity = none\n    stopbits = 1\n\n    # Set the modem preamble. A 150ms\n    # preamble should be a reasonable\n    # default, but may need to be\n    # increased for radios with slow-\n    # opening squelch and long TX/RX\n    # turnaround\n    preamble = 150\n\n    # Set the modem TX tail. In most\n    # cases this should be kept as low\n    # as possible to not waste airtime.\n    txtail = 10\n\n    # Configure CDMA parameters. These\n    # settings are reasonable defaults.\n    persistence = 200\n    slottime = 20\n\n    # You can configure the interface to send\n    # out identification on the channel with\n    # a set interval by configuring the\n    # following two parameters. The KISS\n    # interface will only ID if the set\n    # interval has elapsed since it&#39;s last\n    # actual transmission. The interval is\n    # configured in seconds.\n    # This option is commented out and not\n    # used by default.\n    # id_callsign = MYCALL-0\n    # id_interval = 600\n\n    # Whether to use KISS flow-control.\n    # This is useful for modems that have\n    # a small internal packet buffer, but\n    # support packet flow control instead.\n    flow_control = false\n\n\n  # If you&#39;re using Reticulum on amateur radio spectrum,\n  # you might want to use the AX.25 KISS interface. This\n  # way, Reticulum will automatically encapsulate it&#39;s\n  # traffic in AX.25 and also identify your stations\n  # transmissions with your callsign and SSID.\n  #\n  # Only do this if you really need to! Reticulum doesn&#39;t\n  # need the AX.25 layer for anything, and it incurs extra\n  # overhead on every packet to encapsulate in AX.25.\n  #\n  # A more efficient way is to use the plain KISS interface\n  # with the beaconing functionality described above.\n\n  [[Packet Radio AX.25 KISS Interface]]\n    type = AX25KISSInterface\n\n    # Set the station callsign and SSID\n    callsign = NO1CLL\n    ssid = 0\n\n    # Enable interface if you want use it!\n    enabled = no\n\n    # Serial port for the device\n    port = /dev/ttyUSB2\n\n    # Set the serial baud-rate and other\n    # configuration parameters.\n    speed = 115200\n    databits = 8\n    parity = none\n    stopbits = 1\n\n    # Whether to use KISS flow-control.\n    # This is useful for modems with a\n    # small internal packet buffer.\n    flow_control = false\n\n    # Set the modem preamble. A 150ms\n    # preamble should be a reasonable\n    # default, but may need to be\n    # increased for radios with slow-\n    # opening squelch and long TX/RX\n    # turnaround\n    preamble = 150\n\n    # Set the modem TX tail. In most\n    # cases this should be kept as low\n    # as possible to not waste airtime.\n    txtail = 10\n\n    # Configure CDMA parameters. These\n    # settings are reasonable defaults.\n    persistence = 200\n    slottime = 20\n&quot;</span></code>
+      </dt>
+      
+    
+  </dl>
+
+
+
+  
+
+  
+  <h2>
+    <a id="class-method-summary" class="anchor" href="#class-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Class Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#compute_logdest%28args%3AArgs%29%3AInt32-class-method" class="signature"><strong>.compute_logdest</strong>(args : Args) : Int32</a>
+        
+          <div class="summary"><p>Compute target log destination from parsed args.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#compute_verbosity%28args%3AArgs%29%3AInt32%7CNil-class-method" class="signature"><strong>.compute_verbosity</strong>(args : Args) : Int32 | Nil</a>
+        
+          <div class="summary"><p>Compute target verbosity from parsed args.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#example_config%3AString-class-method" class="signature"><strong>.example_config</strong> : String</a>
+        
+          <div class="summary"><p>Verbose example configuration matching the Python <strong>example_rns_config</strong></p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#main%28argv%3AArray%28String%29%3DARGV.to_a%29-class-method" class="signature"><strong>.main</strong>(argv : Array(String) = <span class="t">ARGV</span>.to_a)</a>
+        
+          <div class="summary"><p>Main entry point for the rnsd binary.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#parse_args%28argv%3AArray%28String%29%29%3AArgs-class-method" class="signature"><strong>.parse_args</strong>(argv : Array(String)) : Args</a>
+        
+          <div class="summary"><p>Parse command-line arguments matching Python argparse behavior.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#program_setup%28configdir%3AString%7CNil%3Dnil%2Cverbosity%3AInt32%7CNil%3Dnil%2Clogdest%3AInt32%3DRNS%3A%3ALOG_STDOUT%29-class-method" class="signature"><strong>.program_setup</strong>(configdir : String | Nil = <span class="n">nil</span>, verbosity : Int32 | Nil = <span class="n">nil</span>, logdest : Int32 = <span class="t">RNS</span><span class="t">::</span><span class="t">LOG_STDOUT</span>)</a>
+        
+          <div class="summary"><p>Initialize and run the Reticulum daemon.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#version_string%3AString-class-method" class="signature"><strong>.version_string</strong> : String</a>
+        
+          <div class="summary"><p>Version string matching Python's &quot;rnsd {version}&quot; format.</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+  
+
+  
+
+
+  <div class="methods-inherited">
+    
+  </div>
+
+  
+
+  
+  <h2>
+    <a id="class-method-detail" class="anchor" href="#class-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Class Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="compute_logdest(args:Args):Int32-class-method">
+      <div class="signature">
+        
+        def self.<strong>compute_logdest</strong>(args : <a href="../RNS/Rnsd/Args.html">Args</a>) : Int32
+
+        <a class="method-permalink" href="#compute_logdest%28args%3AArgs%29%3AInt32-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Compute target log destination from parsed args.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="compute_verbosity(args:Args):Int32|Nil-class-method">
+      <div class="signature">
+        
+        def self.<strong>compute_verbosity</strong>(args : <a href="../RNS/Rnsd/Args.html">Args</a>) : Int32 | Nil
+
+        <a class="method-permalink" href="#compute_verbosity%28args%3AArgs%29%3AInt32%7CNil-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Compute target verbosity from parsed args.
+Returns nil in service mode (Python sets targetverbosity = None).</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="example_config:String-class-method">
+      <div class="signature">
+        
+        def self.<strong>example_config</strong> : String
+
+        <a class="method-permalink" href="#example_config%3AString-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Verbose example configuration matching the Python <strong>example_rns_config</strong></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="main(argv:Array(String)=ARGV.to_a)-class-method">
+      <div class="signature">
+        
+        def self.<strong>main</strong>(argv : Array(String) = <span class="t">ARGV</span>.to_a)
+
+        <a class="method-permalink" href="#main%28argv%3AArray%28String%29%3DARGV.to_a%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Main entry point for the rnsd binary.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="parse_args(argv:Array(String)):Args-class-method">
+      <div class="signature">
+        
+        def self.<strong>parse_args</strong>(argv : Array(String)) : <a href="../RNS/Rnsd/Args.html">Args</a>
+
+        <a class="method-permalink" href="#parse_args%28argv%3AArray%28String%29%29%3AArgs-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Parse command-line arguments matching Python argparse behavior.
+Supports: --config PATH, -v (repeatable), -q (repeatable),
+-s/--service, -i/--interactive, --exampleconfig, --version</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="program_setup(configdir:String|Nil=nil,verbosity:Int32|Nil=nil,logdest:Int32=RNS::LOG_STDOUT)-class-method">
+      <div class="signature">
+        
+        def self.<strong>program_setup</strong>(configdir : String | Nil = <span class="n">nil</span>, verbosity : Int32 | Nil = <span class="n">nil</span>, logdest : Int32 = <span class="t">RNS</span><span class="t">::</span><span class="t">LOG_STDOUT</span>)
+
+        <a class="method-permalink" href="#program_setup%28configdir%3AString%7CNil%3Dnil%2Cverbosity%3AInt32%7CNil%3Dnil%2Clogdest%3AInt32%3DRNS%3A%3ALOG_STDOUT%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Initialize and run the Reticulum daemon.
+This method blocks forever (or drops to interactive mode).</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="version_string:String-class-method">
+      <div class="signature">
+        
+        def self.<strong>version_string</strong> : String
+
+        <a class="method-permalink" href="#version_string%3AString-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Version string matching Python's &quot;rnsd {version}&quot; format.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+
+
+  
+
+  
+
+
+</div>
+
+</body>
+</html>

@@ -1,5 +1,7 @@
 name: rns
 version: 0.1.0
+description: Crystal port of the Reticulum Network Stack — cryptography-based networking for reliable, encrypted, and authenticated communications over any medium.
+repository: https://github.com/jtippett/rns-cr
 
 authors:
   - Reticulum Contributors

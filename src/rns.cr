@@ -82,10 +82,12 @@ module RNS
   # ─── Exit management (matches Python RNS.exit) ────────────────────
   @@exit_called : Bool = false
 
+  # Returns the RNS shard version string.
   def self.version : String
     VERSION
   end
 
+  # Logs an unhandled exception with full backtrace at ERROR level.
   def self.trace_exception(e : Exception)
     log("An unhandled #{e.class} exception occurred: #{e.message}", LOG_ERROR)
     if bt = e.backtrace?
@@ -93,10 +95,12 @@ module RNS
     end
   end
 
+  # Returns a high-precision timestamp string (HH:MM:SS.mmm).
   def self.precise_timestamp_str(time_s : Float64) : String
     Time.utc.to_s("%H:%M:%S.%3N")
   end
 
+  # Prints the physical layer parameters (MTU, MDU, key sizes) to stdout.
   def self.phyparams
     puts "Required Physical Layer MTU : #{Reticulum::MTU} bytes"
     puts "Plaintext Packet MDU        : #{Packet::PLAIN_MDU} bytes"
@@ -107,6 +111,7 @@ module RNS
     puts "Link Private Key Size       : #{Link::KEYSIZE * 8} bits"
   end
 
+  # Performs graceful shutdown: saves state, tears down interfaces, then exits.
   def self.exit(code : Int32 = 0)
     unless @@exit_called
       @@exit_called = true
@@ -115,6 +120,7 @@ module RNS
     end
   end
 
+  # Returns true if `exit` has already been called.
   def self.exit_called? : Bool
     @@exit_called
   end

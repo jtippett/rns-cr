@@ -989,10 +989,11 @@ describe RNS::LocalServerInterface do
 
       client1.write(RNS::HDLC.frame(msg1))
       client1.flush
+      sleep 50.milliseconds
       client2.write(RNS::HDLC.frame(msg2))
       client2.flush
 
-      wait_for { mutex.synchronize { received_data.size >= 2 } }
+      wait_for(timeout: 5.seconds) { mutex.synchronize { received_data.size >= 2 } }
       mutex.synchronize do
         received_data.size.should eq(2)
         received_data.should contain(msg1)

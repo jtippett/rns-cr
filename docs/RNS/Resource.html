@@ -1,0 +1,4807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Crystal Docs 1.18.2">
+<meta name="crystal_docs.project_version" content="master-dev">
+<meta name="crystal_docs.project_name" content="rns">
+
+
+
+<link href="../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../js/doc.js"></script>
+
+  <meta name="repository-name" content="rns">
+  <title>RNS::Resource - rns master-dev</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<input type="checkbox" id="sidebar-btn">
+<label for="sidebar-btn" id="sidebar-btn-label">
+  <svg class="open" xmlns="http://www.w3.org/2000/svg" height="2em" width="2em" viewBox="0 0 512 512"><title>Open Sidebar</title><path fill="currentColor" d="M80 96v64h352V96H80zm0 112v64h352v-64H80zm0 112v64h352v-64H80z"></path></svg>
+  <svg class="close" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 512 512"><title>Close Sidebar</title><path fill="currentColor" d="m118.6 73.4-45.2 45.2L210.7 256 73.4 393.4l45.2 45.2L256 301.3l137.4 137.3 45.2-45.2L301.3 256l137.3-137.4-45.2-45.2L256 210.7Z"></path></svg>
+</label>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="../index.html">
+          rns
+        </a>
+      </h1>
+
+      <span class="project-version">
+        master-dev
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class="parent open current" data-id="rns/RNS" data-name="rns">
+      <a href="../RNS.html">RNS</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="rns/RNS/AutoInterface" data-name="rns::autointerface">
+      <a href="../RNS/AutoInterface.html">AutoInterface</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/AutoInterface/PeerEntry" data-name="rns::autointerface::peerentry">
+      <a href="../RNS/AutoInterface/PeerEntry.html">PeerEntry</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/AutoInterfacePeer" data-name="rns::autointerfacepeer">
+      <a href="../RNS/AutoInterfacePeer.html">AutoInterfacePeer</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/AX25" data-name="rns::ax25">
+      <a href="../RNS/AX25.html">AX25</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/AX25KISSInterface" data-name="rns::ax25kissinterface">
+      <a href="../RNS/AX25KISSInterface.html">AX25KISSInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/BackboneClientInterface" data-name="rns::backboneclientinterface">
+      <a href="../RNS/BackboneClientInterface.html">BackboneClientInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/BackboneInterface" data-name="rns::backboneinterface">
+      <a href="../RNS/BackboneInterface.html">BackboneInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/BackboneInterfaceConstants" data-name="rns::backboneinterfaceconstants">
+      <a href="../RNS/BackboneInterfaceConstants.html">BackboneInterfaceConstants</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Base32" data-name="rns::base32">
+      <a href="../RNS/Base32.html">Base32</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Buffer" data-name="rns::buffer">
+      <a href="../RNS/Buffer.html">Buffer</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/BZip2" data-name="rns::bzip2">
+      <a href="../RNS/BZip2.html">BZip2</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/BZip2/Error" data-name="rns::bzip2::error">
+      <a href="../RNS/BZip2/Error.html">Error</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/CEType" data-name="rns::cetype">
+      <a href="../RNS/CEType.html">CEType</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Channel" data-name="rns::channel(tpacket)">
+      <a href="../RNS/Channel.html">Channel</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ChannelException" data-name="rns::channelexception">
+      <a href="../RNS/ChannelException.html">ChannelException</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ChannelOutletBase" data-name="rns::channeloutletbase(tpacket)">
+      <a href="../RNS/ChannelOutletBase.html">ChannelOutletBase</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/ConfigObj" data-name="rns::configobj">
+      <a href="../RNS/ConfigObj.html">ConfigObj</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/ConfigObj/NestingError" data-name="rns::configobj::nestingerror">
+      <a href="../RNS/ConfigObj/NestingError.html">NestingError</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ConfigObj/ParseError" data-name="rns::configobj::parseerror">
+      <a href="../RNS/ConfigObj/ParseError.html">ParseError</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ConfigObj/Section" data-name="rns::configobj::section">
+      <a href="../RNS/ConfigObj/Section.html">Section</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ConfigObj/Value" data-name="rns::configobj::value">
+      <a href="../RNS/ConfigObj/Value.html">Value</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ConfigObj/ValueError" data-name="rns::configobj::valueerror">
+      <a href="../RNS/ConfigObj/ValueError.html">ValueError</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Cryptography" data-name="rns::cryptography">
+      <a href="../RNS/Cryptography.html">Cryptography</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/AES128CBC" data-name="rns::cryptography::aes128cbc">
+      <a href="../RNS/Cryptography/AES128CBC.html">AES128CBC</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/AES256CBC" data-name="rns::cryptography::aes256cbc">
+      <a href="../RNS/Cryptography/AES256CBC.html">AES256CBC</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/Ed25519PrivateKey" data-name="rns::cryptography::ed25519privatekey">
+      <a href="../RNS/Cryptography/Ed25519PrivateKey.html">Ed25519PrivateKey</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/Ed25519PublicKey" data-name="rns::cryptography::ed25519publickey">
+      <a href="../RNS/Cryptography/Ed25519PublicKey.html">Ed25519PublicKey</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/HMAC" data-name="rns::cryptography::hmac">
+      <a href="../RNS/Cryptography/HMAC.html">HMAC</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/PKCS7" data-name="rns::cryptography::pkcs7">
+      <a href="../RNS/Cryptography/PKCS7.html">PKCS7</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Cryptography/Token" data-name="rns::cryptography::token">
+      <a href="../RNS/Cryptography/Token.html">Token</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/Token/Mode" data-name="rns::cryptography::token::mode">
+      <a href="../RNS/Cryptography/Token/Mode.html">Mode</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/X25519PrivateKey" data-name="rns::cryptography::x25519privatekey">
+      <a href="../RNS/Cryptography/X25519PrivateKey.html">X25519PrivateKey</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/X25519PublicKey" data-name="rns::cryptography::x25519publickey">
+      <a href="../RNS/Cryptography/X25519PublicKey.html">X25519PublicKey</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Destination" data-name="rns::destination">
+      <a href="../RNS/Destination.html">Destination</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Destination/DestinationCallbacks" data-name="rns::destination::destinationcallbacks">
+      <a href="../RNS/Destination/DestinationCallbacks.html">DestinationCallbacks</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Destination/DestinationInterface" data-name="rns::destination::destinationinterface">
+      <a href="../RNS/Destination/DestinationInterface.html">DestinationInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Destination/RequestHandler" data-name="rns::destination::requesthandler">
+      <a href="../RNS/Destination/RequestHandler.html">RequestHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Destination/Stub" data-name="rns::destination::stub">
+      <a href="../RNS/Destination/Stub.html">Stub</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Discovery" data-name="rns::discovery">
+      <a href="../RNS/Discovery.html">Discovery</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Discovery/BlackholeUpdater" data-name="rns::discovery::blackholeupdater">
+      <a href="../RNS/Discovery/BlackholeUpdater.html">BlackholeUpdater</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Discovery/InterfaceAnnounceHandler" data-name="rns::discovery::interfaceannouncehandler">
+      <a href="../RNS/Discovery/InterfaceAnnounceHandler.html">InterfaceAnnounceHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Discovery/InterfaceAnnouncer" data-name="rns::discovery::interfaceannouncer">
+      <a href="../RNS/Discovery/InterfaceAnnouncer.html">InterfaceAnnouncer</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Discovery/InterfaceDiscovery" data-name="rns::discovery::interfacediscovery">
+      <a href="../RNS/Discovery/InterfaceDiscovery.html">InterfaceDiscovery</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Discovery/InterfaceDiscovery/InfoHash" data-name="rns::discovery::interfacediscovery::infohash">
+      <a href="../RNS/Discovery/InterfaceDiscovery/InfoHash.html">InfoHash</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Envelope" data-name="rns::envelope(tpacket)">
+      <a href="../RNS/Envelope.html">Envelope</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/HDLC" data-name="rns::hdlc">
+      <a href="../RNS/HDLC.html">HDLC</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PController" data-name="rns::i2pcontroller">
+      <a href="../RNS/I2PController.html">I2PController</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/I2PExceptions" data-name="rns::i2pexceptions">
+      <a href="../RNS/I2PExceptions.html">I2PExceptions</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/CantReachPeer" data-name="rns::i2pexceptions::cantreachpeer">
+      <a href="../RNS/I2PExceptions/CantReachPeer.html">CantReachPeer</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/DuplicatedDest" data-name="rns::i2pexceptions::duplicateddest">
+      <a href="../RNS/I2PExceptions/DuplicatedDest.html">DuplicatedDest</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/DuplicatedId" data-name="rns::i2pexceptions::duplicatedid">
+      <a href="../RNS/I2PExceptions/DuplicatedId.html">DuplicatedId</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/I2PError" data-name="rns::i2pexceptions::i2perror">
+      <a href="../RNS/I2PExceptions/I2PError.html">I2PError</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/InvalidId" data-name="rns::i2pexceptions::invalidid">
+      <a href="../RNS/I2PExceptions/InvalidId.html">InvalidId</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/InvalidKey" data-name="rns::i2pexceptions::invalidkey">
+      <a href="../RNS/I2PExceptions/InvalidKey.html">InvalidKey</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/KeyNotFound" data-name="rns::i2pexceptions::keynotfound">
+      <a href="../RNS/I2PExceptions/KeyNotFound.html">KeyNotFound</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/PeerNotFound" data-name="rns::i2pexceptions::peernotfound">
+      <a href="../RNS/I2PExceptions/PeerNotFound.html">PeerNotFound</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/Timeout" data-name="rns::i2pexceptions::timeout">
+      <a href="../RNS/I2PExceptions/Timeout.html">Timeout</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PInterface" data-name="rns::i2pinterface">
+      <a href="../RNS/I2PInterface.html">I2PInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PInterfacePeer" data-name="rns::i2pinterfacepeer">
+      <a href="../RNS/I2PInterfacePeer.html">I2PInterfacePeer</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Identity" data-name="rns::identity">
+      <a href="../RNS/Identity.html">Identity</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Interface" data-name="rns::interface">
+      <a href="../RNS/Interface.html">Interface</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Interface/AnnounceQueueEntry" data-name="rns::interface::announcequeueentry">
+      <a href="../RNS/Interface/AnnounceQueueEntry.html">AnnounceQueueEntry</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Interface/HeldAnnounce" data-name="rns::interface::heldannounce">
+      <a href="../RNS/Interface/HeldAnnounce.html">HeldAnnounce</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/InterfaceAnnouncer" data-name="rns::interfaceannouncer">
+      <a href="../RNS/InterfaceAnnouncer.html">InterfaceAnnouncer</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/KISS" data-name="rns::kiss">
+      <a href="../RNS/KISS.html">KISS</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/KISSInterface" data-name="rns::kissinterface">
+      <a href="../RNS/KISSInterface.html">KISSInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Link" data-name="rns::link">
+      <a href="../RNS/Link.html">Link</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/LinkCallbacks" data-name="rns::linkcallbacks">
+      <a href="../RNS/LinkCallbacks.html">LinkCallbacks</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/LinkChannelOutlet" data-name="rns::linkchanneloutlet">
+      <a href="../RNS/LinkChannelOutlet.html">LinkChannelOutlet</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/LinkLike" data-name="rns::linklike">
+      <a href="../RNS/LinkLike.html">LinkLike</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/LinkStub" data-name="rns::linkstub">
+      <a href="../RNS/LinkStub.html">LinkStub</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/LocalClientInterface" data-name="rns::localclientinterface">
+      <a href="../RNS/LocalClientInterface.html">LocalClientInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/LocalServerInterface" data-name="rns::localserverinterface">
+      <a href="../RNS/LocalServerInterface.html">LocalServerInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/MessageBase" data-name="rns::messagebase">
+      <a href="../RNS/MessageBase.html">MessageBase</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/MessageState" data-name="rns::messagestate">
+      <a href="../RNS/MessageState.html">MessageState</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/NetInfo" data-name="rns::netinfo">
+      <a href="../RNS/NetInfo.html">NetInfo</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/NetInfo/AddressInfo" data-name="rns::netinfo::addressinfo">
+      <a href="../RNS/NetInfo/AddressInfo.html">AddressInfo</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Packet" data-name="rns::packet">
+      <a href="../RNS/Packet.html">Packet</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/PacketReceipt" data-name="rns::packetreceipt">
+      <a href="../RNS/PacketReceipt.html">PacketReceipt</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/PacketReceiptCallbacks" data-name="rns::packetreceiptcallbacks">
+      <a href="../RNS/PacketReceiptCallbacks.html">PacketReceiptCallbacks</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/PipeInterface" data-name="rns::pipeinterface">
+      <a href="../RNS/PipeInterface.html">PipeInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/PlatformUtils" data-name="rns::platformutils">
+      <a href="../RNS/PlatformUtils.html">PlatformUtils</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ProofDestination" data-name="rns::proofdestination">
+      <a href="../RNS/ProofDestination.html">ProofDestination</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RawChannelReader" data-name="rns::rawchannelreader(tpacket)">
+      <a href="../RNS/RawChannelReader.html">RawChannelReader</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RawChannelWriter" data-name="rns::rawchannelwriter(tpacket)">
+      <a href="../RNS/RawChannelWriter.html">RawChannelWriter</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RequestReceipt" data-name="rns::requestreceipt">
+      <a href="../RNS/RequestReceipt.html">RequestReceipt</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RequestReceiptCallbacks" data-name="rns::requestreceiptcallbacks">
+      <a href="../RNS/RequestReceiptCallbacks.html">RequestReceiptCallbacks</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Resolver" data-name="rns::resolver">
+      <a href="../RNS/Resolver.html">Resolver</a>
+      
+    </li>
+  
+  <li class=" current" data-id="rns/RNS/Resource" data-name="rns::resource">
+      <a href="../RNS/Resource.html">Resource</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ResourceAdvertisement" data-name="rns::resourceadvertisement">
+      <a href="../RNS/ResourceAdvertisement.html">ResourceAdvertisement</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Reticulum" data-name="rns::reticulum">
+      <a href="../RNS/Reticulum.html">Reticulum</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ReticulumInstance" data-name="rns::reticuluminstance">
+      <a href="../RNS/ReticulumInstance.html">ReticulumInstance</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Rncp" data-name="rns::rncp">
+      <a href="../RNS/Rncp.html">Rncp</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Rncp/Args" data-name="rns::rncp::args">
+      <a href="../RNS/Rncp/Args.html">Args</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Rnid" data-name="rns::rnid">
+      <a href="../RNS/Rnid.html">Rnid</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Rnid/Args" data-name="rns::rnid::args">
+      <a href="../RNS/Rnid/Args.html">Args</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RNodeInterface" data-name="rns::rnodeinterface">
+      <a href="../RNS/RNodeInterface.html">RNodeInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RNodeKISS" data-name="rns::rnodekiss">
+      <a href="../RNS/RNodeKISS.html">RNodeKISS</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RNodeMultiInterface" data-name="rns::rnodemultiinterface">
+      <a href="../RNS/RNodeMultiInterface.html">RNodeMultiInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RNodeMultiKISS" data-name="rns::rnodemultikiss">
+      <a href="../RNS/RNodeMultiKISS.html">RNodeMultiKISS</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RNodeSubInterface" data-name="rns::rnodesubinterface">
+      <a href="../RNS/RNodeSubInterface.html">RNodeSubInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RNodeTCPConnection" data-name="rns::rnodetcpconnection">
+      <a href="../RNS/RNodeTCPConnection.html">RNodeTCPConnection</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Rnpath" data-name="rns::rnpath">
+      <a href="../RNS/Rnpath.html">Rnpath</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Rnpath/Args" data-name="rns::rnpath::args">
+      <a href="../RNS/Rnpath/Args.html">Args</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Rnpath/PathTableEntry" data-name="rns::rnpath::pathtableentry">
+      <a href="../RNS/Rnpath/PathTableEntry.html">PathTableEntry</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Rnpath/RateTableEntry" data-name="rns::rnpath::ratetableentry">
+      <a href="../RNS/Rnpath/RateTableEntry.html">RateTableEntry</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Rnprobe" data-name="rns::rnprobe">
+      <a href="../RNS/Rnprobe.html">Rnprobe</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Rnprobe/Args" data-name="rns::rnprobe::args">
+      <a href="../RNS/Rnprobe/Args.html">Args</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Rnsd" data-name="rns::rnsd">
+      <a href="../RNS/Rnsd.html">Rnsd</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Rnsd/Args" data-name="rns::rnsd::args">
+      <a href="../RNS/Rnsd/Args.html">Args</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Rnstatus" data-name="rns::rnstatus">
+      <a href="../RNS/Rnstatus.html">Rnstatus</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Rnstatus/Args" data-name="rns::rnstatus::args">
+      <a href="../RNS/Rnstatus/Args.html">Args</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Rnstatus/InterfaceStat" data-name="rns::rnstatus::interfacestat">
+      <a href="../RNS/Rnstatus/InterfaceStat.html">InterfaceStat</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Rnstatus/TransportStats" data-name="rns::rnstatus::transportstats">
+      <a href="../RNS/Rnstatus/TransportStats.html">TransportStats</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Rnx" data-name="rns::rnx">
+      <a href="../RNS/Rnx.html">Rnx</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Rnx/Args" data-name="rns::rnx::args">
+      <a href="../RNS/Rnx/Args.html">Args</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/SAMClient" data-name="rns::samclient">
+      <a href="../RNS/SAMClient.html">SAMClient</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/SerialConstants" data-name="rns::serialconstants">
+      <a href="../RNS/SerialConstants.html">SerialConstants</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/SerialInterface" data-name="rns::serialinterface">
+      <a href="../RNS/SerialInterface.html">SerialInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/StreamDataMessage" data-name="rns::streamdatamessage">
+      <a href="../RNS/StreamDataMessage.html">StreamDataMessage</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/SubIntConfig" data-name="rns::subintconfig">
+      <a href="../RNS/SubIntConfig.html">SubIntConfig</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/SystemMessageTypes" data-name="rns::systemmessagetypes">
+      <a href="../RNS/SystemMessageTypes.html">SystemMessageTypes</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/TCPClientInterface" data-name="rns::tcpclientinterface">
+      <a href="../RNS/TCPClientInterface.html">TCPClientInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/TCPInterfaceConstants" data-name="rns::tcpinterfaceconstants">
+      <a href="../RNS/TCPInterfaceConstants.html">TCPInterfaceConstants</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/TCPServerInterface" data-name="rns::tcpserverinterface">
+      <a href="../RNS/TCPServerInterface.html">TCPServerInterface</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Transport" data-name="rns::transport">
+      <a href="../RNS/Transport.html">Transport</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Transport/AnnounceEntry" data-name="rns::transport::announceentry">
+      <a href="../RNS/Transport/AnnounceEntry.html">AnnounceEntry</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Transport/AnnounceHandler" data-name="rns::transport::announcehandler">
+      <a href="../RNS/Transport/AnnounceHandler.html">AnnounceHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Transport/AnnounceRateEntry" data-name="rns::transport::announcerateentry">
+      <a href="../RNS/Transport/AnnounceRateEntry.html">AnnounceRateEntry</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Transport/LinkEntry" data-name="rns::transport::linkentry">
+      <a href="../RNS/Transport/LinkEntry.html">LinkEntry</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Transport/OwnerRef" data-name="rns::transport::ownerref">
+      <a href="../RNS/Transport/OwnerRef.html">OwnerRef</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Transport/PathEntry" data-name="rns::transport::pathentry">
+      <a href="../RNS/Transport/PathEntry.html">PathEntry</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Transport/ReverseEntry" data-name="rns::transport::reverseentry">
+      <a href="../RNS/Transport/ReverseEntry.html">ReverseEntry</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Transport/TunnelEntry" data-name="rns::transport::tunnelentry">
+      <a href="../RNS/Transport/TunnelEntry.html">TunnelEntry</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/TypeError" data-name="rns::typeerror">
+      <a href="../RNS/TypeError.html">TypeError</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/UDPInterface" data-name="rns::udpinterface">
+      <a href="../RNS/UDPInterface.html">UDPInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveCmd" data-name="rns::weavecmd">
+      <a href="../RNS/WeaveCmd.html">WeaveCmd</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveDevice" data-name="rns::weavedevice">
+      <a href="../RNS/WeaveDevice.html">WeaveDevice</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveEndpoint" data-name="rns::weaveendpoint">
+      <a href="../RNS/WeaveEndpoint.html">WeaveEndpoint</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveEvt" data-name="rns::weaveevt">
+      <a href="../RNS/WeaveEvt.html">WeaveEvt</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveInterface" data-name="rns::weaveinterface">
+      <a href="../RNS/WeaveInterface.html">WeaveInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveInterfacePeer" data-name="rns::weaveinterfacepeer">
+      <a href="../RNS/WeaveInterfacePeer.html">WeaveInterfacePeer</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveLogFrame" data-name="rns::weavelogframe">
+      <a href="../RNS/WeaveLogFrame.html">WeaveLogFrame</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveWDCL" data-name="rns::weavewdcl">
+      <a href="../RNS/WeaveWDCL.html">WeaveWDCL</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveWDCLConnection" data-name="rns::weavewdclconnection">
+      <a href="../RNS/WeaveWDCLConnection.html">WeaveWDCLConnection</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">
+    class
+  </span> RNS::<wbr>Resource
+
+</h1>
+
+
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../RNS/Resource.html">RNS::Resource</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+
+
+
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>Handles large data transfers over <code><a href="../RNS/Link.html">Link</a></code> instances using segmentation,
+sliding-window flow control, and adaptive rate adjustment. Data is split
+into parts, each verified by a map hash, and transmitted with automatic
+retry and congestion back-off. Supports compression, encryption, metadata,
+and multi-segment transfers for payloads that exceed a single advertisement.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      rns/resource.cr
+    
+    <br/>
+  
+
+
+
+  
+    <h2>
+      <a id="constant-summary" class="anchor" href="#constant-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+      Constant Summary
+    </h2>
+  
+  <dl>
+    
+      <dt class="entry-const" id="ADVERTISED">
+        <strong>ADVERTISED</strong> = <code><span class="n">2_u8</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="ASSEMBLING">
+        <strong>ASSEMBLING</strong> = <code><span class="n">5_u8</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="AUTO_COMPRESS_MAX_SIZE">
+        <strong>AUTO_COMPRESS_MAX_SIZE</strong> = <code>(<span class="n">64</span> <span class="o">*</span> <span class="n">1024</span>) <span class="o">*</span> <span class="n">1024</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="AWAITING_PROOF">
+        <strong>AWAITING_PROOF</strong> = <code><span class="n">4_u8</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="COMPLETE">
+        <strong>COMPLETE</strong> = <code><span class="n">6_u8</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="CORRUPT">
+        <strong>CORRUPT</strong> = <code><span class="n">8_u8</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="FAILED">
+        <strong>FAILED</strong> = <code><span class="n">7_u8</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="FAST_RATE_THRESHOLD">
+        <strong>FAST_RATE_THRESHOLD</strong> = <code>(<span class="t">WINDOW_MAX_SLOW</span> <span class="o">-</span> <span class="t">WINDOW</span>) <span class="o">-</span> <span class="n">2</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="HASHMAP_IS_EXHAUSTED">
+        <strong>HASHMAP_IS_EXHAUSTED</strong> = <code><span class="n">255_u8</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="HASHMAP_IS_NOT_EXHAUSTED">
+        <strong>HASHMAP_IS_NOT_EXHAUSTED</strong> = <code><span class="n">0_u8</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Flags indicating whether all hashmap segments have been delivered.
+─── Hashmap flags ─────────────────────────────────────────────</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="MAPHASH_LEN">
+        <strong>MAPHASH_LEN</strong> = <code><span class="n">4</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Size limits governing part hashing, maximum transfer sizes, and the
+automatic compression threshold.
+─── Size constants ────────────────────────────────────────────</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="MAX_ADV_RETRIES">
+        <strong>MAX_ADV_RETRIES</strong> = <code><span class="n">4</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="MAX_EFFICIENT_SIZE">
+        <strong>MAX_EFFICIENT_SIZE</strong> = <code>((<span class="n">1</span> <span class="o">*</span> <span class="n">1024</span>) <span class="o">*</span> <span class="n">1024</span>) <span class="o">-</span> <span class="n">1</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="MAX_RETRIES">
+        <strong>MAX_RETRIES</strong> = <code><span class="n">16</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="METADATA_MAX_SIZE">
+        <strong>METADATA_MAX_SIZE</strong> = <code>((<span class="n">16</span> <span class="o">*</span> <span class="n">1024</span>) <span class="o">*</span> <span class="n">1024</span>) <span class="o">-</span> <span class="n">1</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="PART_TIMEOUT_FACTOR">
+        <strong>PART_TIMEOUT_FACTOR</strong> = <code><span class="n">4</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Timeout multipliers, retry budgets, and grace periods that govern
+how long to wait for parts/proofs before retransmitting or failing.
+─── Timeout and retry constants ───────────────────────────────</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="PART_TIMEOUT_FACTOR_AFTER_RTT">
+        <strong>PART_TIMEOUT_FACTOR_AFTER_RTT</strong> = <code><span class="n">2</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="PER_RETRY_DELAY">
+        <strong>PER_RETRY_DELAY</strong> = <code><span class="n">0.5</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="PROCESSING_GRACE">
+        <strong>PROCESSING_GRACE</strong> = <code><span class="n">1.0</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="PROOF_TIMEOUT_FACTOR">
+        <strong>PROOF_TIMEOUT_FACTOR</strong> = <code><span class="n">3</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="QUEUED">
+        <strong>QUEUED</strong> = <code><span class="n">1_u8</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="RANDOM_HASH_SIZE">
+        <strong>RANDOM_HASH_SIZE</strong> = <code><span class="n">4</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="RATE_FAST">
+        <strong>RATE_FAST</strong> = <code>(<span class="n">50</span> <span class="o">*</span> <span class="n">1000</span>) <span class="o">/</span> <span class="n">8</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Throughput thresholds (bytes/sec) used to classify the link speed
+and select the appropriate window ceiling.
+─── Rate constants ────────────────────────────────────────────</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="RATE_VERY_SLOW">
+        <strong>RATE_VERY_SLOW</strong> = <code>(<span class="n">2</span> <span class="o">*</span> <span class="n">1000</span>) <span class="o">/</span> <span class="n">8</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="REJECTED">
+        <strong>REJECTED</strong> = <code><span class="n">0_u8</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="RESPONSE_MAX_GRACE_TIME">
+        <strong>RESPONSE_MAX_GRACE_TIME</strong> = <code><span class="n">10</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="RETRY_GRACE_TIME">
+        <strong>RETRY_GRACE_TIME</strong> = <code><span class="n">0.25</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="SDU">
+        <strong>SDU</strong> = <code><span class="t">Packet</span><span class="t">::</span><span class="t">MDU</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="SENDER_GRACE_TIME">
+        <strong>SENDER_GRACE_TIME</strong> = <code><span class="n">10.0</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="STATUS_NONE">
+        <strong>STATUS_NONE</strong> = <code><span class="n">0_u8</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Transfer lifecycle states. Values are ordered so that <code>status &lt; <a href="../RNS/Resource.html#COMPLETE">COMPLETE</a></code>
+means the transfer is still in progress.
+─── Status constants ──────────────────────────────────────────</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="TRANSFERRING">
+        <strong>TRANSFERRING</strong> = <code><span class="n">3_u8</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="VERY_SLOW_RATE_THRESHOLD">
+        <strong>VERY_SLOW_RATE_THRESHOLD</strong> = <code><span class="n">2</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="WATCHDOG_MAX_SLEEP">
+        <strong>WATCHDOG_MAX_SLEEP</strong> = <code><span class="n">1.0</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="WINDOW">
+        <strong>WINDOW</strong> = <code><span class="n">4</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Window parameters controlling how many unacknowledged parts may be
+in flight. The window grows or shrinks based on measured throughput
+(see <code><a href="../RNS/Resource.html#FAST_RATE_THRESHOLD">FAST_RATE_THRESHOLD</a></code> / <code><a href="../RNS/Resource.html#VERY_SLOW_RATE_THRESHOLD">VERY_SLOW_RATE_THRESHOLD</a></code>).
+─── Window constants ──────────────────────────────────────────</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="WINDOW_FLEXIBILITY">
+        <strong>WINDOW_FLEXIBILITY</strong> = <code><span class="n">4</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="WINDOW_MAX">
+        <strong>WINDOW_MAX</strong> = <code><span class="t">WINDOW_MAX_FAST</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="WINDOW_MAX_FAST">
+        <strong>WINDOW_MAX_FAST</strong> = <code><span class="n">75</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="WINDOW_MAX_SLOW">
+        <strong>WINDOW_MAX_SLOW</strong> = <code><span class="n">10</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="WINDOW_MAX_VERY_SLOW">
+        <strong>WINDOW_MAX_VERY_SLOW</strong> = <code><span class="n">4</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="WINDOW_MIN">
+        <strong>WINDOW_MIN</strong> = <code><span class="n">2</span></code>
+      </dt>
+      
+    
+  </dl>
+
+
+
+  
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new%28data%3ABytes%7CIO%7CNil%2Clink%3ALink%2Cmetadata%3AMessagePack%3A%3AAny%7CNil%3Dnil%2Cadvertise%3ABool%3Dtrue%2Cauto_compress%3ABool%7CInt64%3Dtrue%2Ccallback%3AProc%28Resource%2CNil%29%7CNil%3Dnil%2Cprogress_callback%3AProc%28Resource%2CNil%29%7CNil%3Dnil%2Ctimeout%3AFloat64%7CNil%3Dnil%2Csegment_index%3AInt32%3D1%2Coriginal_hash%3ABytes%7CNil%3Dnil%2Crequest_id%3ABytes%7CNil%3Dnil%2Cis_response%3ABool%3Dfalse%2Csent_metadata_size%3AInt32%3D0%29-class-method" class="signature"><strong>.new</strong>(data : Bytes | IO | Nil, link : Link, metadata : MessagePack::Any | Nil = <span class="n">nil</span>, advertise : Bool = <span class="n">true</span>, auto_compress : Bool | Int64 = <span class="n">true</span>, callback : Proc(Resource, Nil) | Nil = <span class="n">nil</span>, progress_callback : Proc(Resource, Nil) | Nil = <span class="n">nil</span>, timeout : Float64 | Nil = <span class="n">nil</span>, segment_index : Int32 = <span class="n">1</span>, original_hash : Bytes | Nil = <span class="n">nil</span>, request_id : Bytes | Nil = <span class="n">nil</span>, is_response : Bool = <span class="n">false</span>, sent_metadata_size : Int32 = <span class="n">0</span>)</a>
+        
+          <div class="summary"><p>─── Sender constructor ──────────────────────────────────────── Creates a sender-side resource.</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+  
+  <h2>
+    <a id="class-method-summary" class="anchor" href="#class-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Class Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#accept%28advertisement_packet%3APacket%2Ccallback%3AProc%28Resource%2CNil%29%7CNil%3Dnil%2Cprogress_callback%3AProc%28Resource%2CNil%29%7CNil%3Dnil%2Crequest_id%3ABytes%7CNil%3Dnil%29%3AResource%7CNil-class-method" class="signature"><strong>.accept</strong>(advertisement_packet : Packet, callback : Proc(Resource, Nil) | Nil = <span class="n">nil</span>, progress_callback : Proc(Resource, Nil) | Nil = <span class="n">nil</span>, request_id : Bytes | Nil = <span class="n">nil</span>) : Resource | Nil</a>
+        
+          <div class="summary"><p>Accepts an incoming resource advertisement and constructs a receiver-side <code><a href="../RNS/Resource.html">Resource</a></code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#reject%28advertisement_packet%3APacket%29-class-method" class="signature"><strong>.reject</strong>(advertisement_packet : Packet)</a>
+        
+          <div class="summary"><p>Declines an incoming resource advertisement by sending a <code>RESOURCE_RCL</code> packet back to the advertising peer.</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+  
+
+  
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#_rejected-instance-method" class="signature"><strong>#_rejected</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#adv_sent%3AFloat64-instance-method" class="signature"><strong>#adv_sent</strong> : Float64</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#adv_sent%3D%28adv_sent%3AFloat64%29-instance-method" class="signature"><strong>#adv_sent=</strong>(adv_sent : Float64)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#advertise-instance-method" class="signature"><strong>#advertise</strong></a>
+        
+          <div class="summary"><p>Spawns a fiber that sends the <code><a href="../RNS/ResourceAdvertisement.html">ResourceAdvertisement</a></code> for this resource over its link.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#assemble-instance-method" class="signature"><strong>#assemble</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#auto_compress%3ABool-instance-method" class="signature"><strong>#auto_compress</strong> : Bool</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#auto_compress%3D%28auto_compress%3ABool%29-instance-method" class="signature"><strong>#auto_compress=</strong>(auto_compress : Bool)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#auto_compress_limit%3AInt64-instance-method" class="signature"><strong>#auto_compress_limit</strong> : Int64</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#auto_compress_limit%3D%28auto_compress_limit%3AInt64%29-instance-method" class="signature"><strong>#auto_compress_limit=</strong>(auto_compress_limit : Int64)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#auto_compress_option%3ABool%7CInt64-instance-method" class="signature"><strong>#auto_compress_option</strong> : Bool | Int64</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#auto_compress_option%3D%28auto_compress_option%3ABool%7CInt64%29-instance-method" class="signature"><strong>#auto_compress_option=</strong>(auto_compress_option : Bool | Int64)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#callback%3AProc%28Resource%2CNil%29%7CNil-instance-method" class="signature"><strong>#callback</strong> : Proc(Resource, Nil) | Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#callback%3D%28callback%3AProc%28Resource%2CNil%29%7CNil%29-instance-method" class="signature"><strong>#callback=</strong>(callback : Proc(Resource, Nil) | Nil)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#cancel-instance-method" class="signature"><strong>#cancel</strong></a>
+        
+          <div class="summary"><p>Aborts the transfer if it has not already completed.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#compressed%3ABool-instance-method" class="signature"><strong>#compressed</strong> : Bool</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#compressed%3D%28compressed%3ABool%29-instance-method" class="signature"><strong>#compressed=</strong>(compressed : Bool)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#consecutive_completed_height%3AInt32-instance-method" class="signature"><strong>#consecutive_completed_height</strong> : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#consecutive_completed_height%3D%28consecutive_completed_height%3AInt32%29-instance-method" class="signature"><strong>#consecutive_completed_height=</strong>(consecutive_completed_height : Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#data%3ABytes%7CNil-instance-method" class="signature"><strong>#data</strong> : Bytes | Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#data%3D%28data%3ABytes%7CNil%29-instance-method" class="signature"><strong>#data=</strong>(data : Bytes | Nil)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#eifr%3AFloat64%7CNil-instance-method" class="signature"><strong>#eifr</strong> : Float64 | Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#eifr%3D%28eifr%3AFloat64%7CNil%29-instance-method" class="signature"><strong>#eifr=</strong>(eifr : Float64 | Nil)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#encrypted%3ABool-instance-method" class="signature"><strong>#encrypted</strong> : Bool</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#encrypted%3D%28encrypted%3ABool%29-instance-method" class="signature"><strong>#encrypted=</strong>(encrypted : Bool)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#expected_proof%3ABytes-instance-method" class="signature"><strong>#expected_proof</strong> : Bytes</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#expected_proof%3D%28expected_proof%3ABytes%29-instance-method" class="signature"><strong>#expected_proof=</strong>(expected_proof : Bytes)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#fast_rate_rounds%3AInt32-instance-method" class="signature"><strong>#fast_rate_rounds</strong> : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#fast_rate_rounds%3D%28fast_rate_rounds%3AInt32%29-instance-method" class="signature"><strong>#fast_rate_rounds=</strong>(fast_rate_rounds : Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#flags%3AUInt8-instance-method" class="signature"><strong>#flags</strong> : UInt8</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#flags%3D%28flags%3AUInt8%29-instance-method" class="signature"><strong>#flags=</strong>(flags : UInt8)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#get_data_size%3AInt64-instance-method" class="signature"><strong>#get_data_size</strong> : Int64</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#get_hash%3ABytes-instance-method" class="signature"><strong>#get_hash</strong> : Bytes</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#get_map_hash%28data%3ABytes%29%3ABytes-instance-method" class="signature"><strong>#get_map_hash</strong>(data : Bytes) : Bytes</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#get_parts%3AInt32-instance-method" class="signature"><strong>#get_parts</strong> : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#get_progress%3AFloat64-instance-method" class="signature"><strong>#get_progress</strong> : Float64</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#get_segment_progress%3AFloat64-instance-method" class="signature"><strong>#get_segment_progress</strong> : Float64</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#get_segments%3AInt32-instance-method" class="signature"><strong>#get_segments</strong> : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#get_transfer_size%3AInt64-instance-method" class="signature"><strong>#get_transfer_size</strong> : Int64</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#has_metadata%3ABool-instance-method" class="signature"><strong>#has_metadata</strong> : Bool</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#has_metadata%3D%28has_metadata%3ABool%29-instance-method" class="signature"><strong>#has_metadata=</strong>(has_metadata : Bool)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#hash%3ABytes-instance-method" class="signature"><strong>#hash</strong> : Bytes</a>
+        
+          <div class="summary"><p>Generates an <code>UInt64</code> hash value for this object.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#hash%3D%28hash%3ABytes%29-instance-method" class="signature"><strong>#hash=</strong>(hash : Bytes)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#hashmap%3AArray%28Bytes%7CNil%29-instance-method" class="signature"><strong>#hashmap</strong> : Array(Bytes | Nil)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#hashmap%3D%28hashmap%3AArray%28Bytes%7CNil%29%29-instance-method" class="signature"><strong>#hashmap=</strong>(hashmap : Array(Bytes | Nil))</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#hashmap_height%3AInt32-instance-method" class="signature"><strong>#hashmap_height</strong> : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#hashmap_height%3D%28hashmap_height%3AInt32%29-instance-method" class="signature"><strong>#hashmap_height=</strong>(hashmap_height : Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#hashmap_raw_bytes%3ABytes-instance-method" class="signature"><strong>#hashmap_raw_bytes</strong> : Bytes</a>
+        
+          <div class="summary"><p>Hashmap (sender: concatenated bytes, receiver: array of Bytes?)</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#hashmap_raw_bytes%3D%28hashmap_raw_bytes%3ABytes%29-instance-method" class="signature"><strong>#hashmap_raw_bytes=</strong>(hashmap_raw_bytes : Bytes)</a>
+        
+          <div class="summary"><p>Hashmap (sender: concatenated bytes, receiver: array of Bytes?)</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#hashmap_update%28segment%3AInt32%2Chashmap_bytes%3ABytes%29-instance-method" class="signature"><strong>#hashmap_update</strong>(segment : Int32, hashmap_bytes : Bytes)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#hashmap_update_packet%28plaintext%3ABytes%29-instance-method" class="signature"><strong>#hashmap_update_packet</strong>(plaintext : Bytes)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#hmu_retry_ok%3ABool-instance-method" class="signature"><strong>#hmu_retry_ok</strong> : Bool</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#hmu_retry_ok%3D%28hmu_retry_ok%3ABool%29-instance-method" class="signature"><strong>#hmu_retry_ok=</strong>(hmu_retry_ok : Bool)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#initiator%3ABool-instance-method" class="signature"><strong>#initiator</strong> : Bool</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#initiator%3D%28initiator%3ABool%29-instance-method" class="signature"><strong>#initiator=</strong>(initiator : Bool)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#is_compressed%3F%3ABool-instance-method" class="signature"><strong>#is_compressed?</strong> : Bool</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#is_response%3ABool-instance-method" class="signature"><strong>#is_response</strong> : Bool</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#is_response%3D%28is_response%3ABool%29-instance-method" class="signature"><strong>#is_response=</strong>(is_response : Bool)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#last_activity%3AFloat64-instance-method" class="signature"><strong>#last_activity</strong> : Float64</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#last_activity%3D%28last_activity%3AFloat64%29-instance-method" class="signature"><strong>#last_activity=</strong>(last_activity : Float64)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#last_part_sent%3AFloat64-instance-method" class="signature"><strong>#last_part_sent</strong> : Float64</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#last_part_sent%3D%28last_part_sent%3AFloat64%29-instance-method" class="signature"><strong>#last_part_sent=</strong>(last_part_sent : Float64)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#link%3ALink%7CNil-instance-method" class="signature"><strong>#link</strong> : Link | Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#link%3D%28link%3ALink%7CNil%29-instance-method" class="signature"><strong>#link=</strong>(link : Link | Nil)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#max_adv_retries%3AInt32-instance-method" class="signature"><strong>#max_adv_retries</strong> : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#max_adv_retries%3D%28max_adv_retries%3AInt32%29-instance-method" class="signature"><strong>#max_adv_retries=</strong>(max_adv_retries : Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#max_retries%3AInt32-instance-method" class="signature"><strong>#max_retries</strong> : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#max_retries%3D%28max_retries%3AInt32%29-instance-method" class="signature"><strong>#max_retries=</strong>(max_retries : Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#meta_storagepath%3AString-instance-method" class="signature"><strong>#meta_storagepath</strong> : String</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#meta_storagepath%3D%28meta_storagepath%3AString%29-instance-method" class="signature"><strong>#meta_storagepath=</strong>(meta_storagepath : String)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#metadata%3ABytes%7CNil-instance-method" class="signature"><strong>#metadata</strong> : Bytes | Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#metadata%3D%28metadata%3ABytes%7CNil%29-instance-method" class="signature"><strong>#metadata=</strong>(metadata : Bytes | Nil)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#metadata_size%3AInt32-instance-method" class="signature"><strong>#metadata_size</strong> : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#metadata_size%3D%28metadata_size%3AInt32%29-instance-method" class="signature"><strong>#metadata_size=</strong>(metadata_size : Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#original_hash%3ABytes-instance-method" class="signature"><strong>#original_hash</strong> : Bytes</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#original_hash%3D%28original_hash%3ABytes%29-instance-method" class="signature"><strong>#original_hash=</strong>(original_hash : Bytes)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#outstanding_parts%3AInt32-instance-method" class="signature"><strong>#outstanding_parts</strong> : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#outstanding_parts%3D%28outstanding_parts%3AInt32%29-instance-method" class="signature"><strong>#outstanding_parts=</strong>(outstanding_parts : Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#part_timeout_factor%3AFloat64-instance-method" class="signature"><strong>#part_timeout_factor</strong> : Float64</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#part_timeout_factor%3D%28part_timeout_factor%3AFloat64%29-instance-method" class="signature"><strong>#part_timeout_factor=</strong>(part_timeout_factor : Float64)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#previous_eifr%3AFloat64%7CNil-instance-method" class="signature"><strong>#previous_eifr</strong> : Float64 | Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#previous_eifr%3D%28previous_eifr%3AFloat64%7CNil%29-instance-method" class="signature"><strong>#previous_eifr=</strong>(previous_eifr : Float64 | Nil)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#progress_callback_proc%3AProc%28Resource%2CNil%29%7CNil-instance-method" class="signature"><strong>#progress_callback_proc</strong> : Proc(Resource, Nil) | Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#progress_callback_proc%3D%28progress_callback_proc%3AProc%28Resource%2CNil%29%7CNil%29-instance-method" class="signature"><strong>#progress_callback_proc=</strong>(progress_callback_proc : Proc(Resource, Nil) | Nil)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#prove-instance-method" class="signature"><strong>#prove</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#random_hash%3ABytes-instance-method" class="signature"><strong>#random_hash</strong> : Bytes</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#random_hash%3D%28random_hash%3ABytes%29-instance-method" class="signature"><strong>#random_hash=</strong>(random_hash : Bytes)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#receive_part%28packet%3APacket%29-instance-method" class="signature"><strong>#receive_part</strong>(packet : Packet)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#received_count%3AInt32-instance-method" class="signature"><strong>#received_count</strong> : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#received_count%3D%28received_count%3AInt32%29-instance-method" class="signature"><strong>#received_count=</strong>(received_count : Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#receiver_min_consecutive_height%3AInt32-instance-method" class="signature"><strong>#receiver_min_consecutive_height</strong> : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#receiver_min_consecutive_height%3D%28receiver_min_consecutive_height%3AInt32%29-instance-method" class="signature"><strong>#receiver_min_consecutive_height=</strong>(receiver_min_consecutive_height : Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#receiver_parts%3AArray%28Bytes%7CNil%29-instance-method" class="signature"><strong>#receiver_parts</strong> : Array(Bytes | Nil)</a>
+        
+          <div class="summary"><p>Receiver-side parts (nil or data bytes)</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#receiver_parts%3D%28receiver_parts%3AArray%28Bytes%7CNil%29%29-instance-method" class="signature"><strong>#receiver_parts=</strong>(receiver_parts : Array(Bytes | Nil))</a>
+        
+          <div class="summary"><p>Receiver-side parts (nil or data bytes)</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#receiving_part%3ABool-instance-method" class="signature"><strong>#receiving_part</strong> : Bool</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#receiving_part%3D%28receiving_part%3ABool%29-instance-method" class="signature"><strong>#receiving_part=</strong>(receiving_part : Bool)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#req_data_rtt_rate%3AFloat64-instance-method" class="signature"><strong>#req_data_rtt_rate</strong> : Float64</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#req_data_rtt_rate%3D%28req_data_rtt_rate%3AFloat64%29-instance-method" class="signature"><strong>#req_data_rtt_rate=</strong>(req_data_rtt_rate : Float64)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#req_hashlist%3AArray%28Bytes%29-instance-method" class="signature"><strong>#req_hashlist</strong> : Array(Bytes)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#req_hashlist%3D%28req_hashlist%3AArray%28Bytes%29%29-instance-method" class="signature"><strong>#req_hashlist=</strong>(req_hashlist : Array(Bytes))</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#req_resp%3AFloat64%7CNil-instance-method" class="signature"><strong>#req_resp</strong> : Float64 | Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#req_resp%3D%28req_resp%3AFloat64%7CNil%29-instance-method" class="signature"><strong>#req_resp=</strong>(req_resp : Float64 | Nil)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#req_resp_rtt_rate%3AFloat64-instance-method" class="signature"><strong>#req_resp_rtt_rate</strong> : Float64</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#req_resp_rtt_rate%3D%28req_resp_rtt_rate%3AFloat64%29-instance-method" class="signature"><strong>#req_resp_rtt_rate=</strong>(req_resp_rtt_rate : Float64)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#req_sent%3AFloat64-instance-method" class="signature"><strong>#req_sent</strong> : Float64</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#req_sent%3D%28req_sent%3AFloat64%29-instance-method" class="signature"><strong>#req_sent=</strong>(req_sent : Float64)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#req_sent_bytes%3AInt32-instance-method" class="signature"><strong>#req_sent_bytes</strong> : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#req_sent_bytes%3D%28req_sent_bytes%3AInt32%29-instance-method" class="signature"><strong>#req_sent_bytes=</strong>(req_sent_bytes : Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#request%28request_data%3ABytes%29-instance-method" class="signature"><strong>#request</strong>(request_data : Bytes)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#request_id%3ABytes%7CNil-instance-method" class="signature"><strong>#request_id</strong> : Bytes | Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#request_id%3D%28request_id%3ABytes%7CNil%29-instance-method" class="signature"><strong>#request_id=</strong>(request_id : Bytes | Nil)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#request_next-instance-method" class="signature"><strong>#request_next</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#retries_left%3AInt32-instance-method" class="signature"><strong>#retries_left</strong> : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#retries_left%3D%28retries_left%3AInt32%29-instance-method" class="signature"><strong>#retries_left=</strong>(retries_left : Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#rtt%3AFloat64%7CNil-instance-method" class="signature"><strong>#rtt</strong> : Float64 | Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#rtt%3D%28rtt%3AFloat64%7CNil%29-instance-method" class="signature"><strong>#rtt=</strong>(rtt : Float64 | Nil)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#rtt_rxd_bytes%3AInt64-instance-method" class="signature"><strong>#rtt_rxd_bytes</strong> : Int64</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#rtt_rxd_bytes%3D%28rtt_rxd_bytes%3AInt64%29-instance-method" class="signature"><strong>#rtt_rxd_bytes=</strong>(rtt_rxd_bytes : Int64)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#rtt_rxd_bytes_at_part_req%3AInt64-instance-method" class="signature"><strong>#rtt_rxd_bytes_at_part_req</strong> : Int64</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#rtt_rxd_bytes_at_part_req%3D%28rtt_rxd_bytes_at_part_req%3AInt64%29-instance-method" class="signature"><strong>#rtt_rxd_bytes_at_part_req=</strong>(rtt_rxd_bytes_at_part_req : Int64)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#sdu%3AInt32-instance-method" class="signature"><strong>#sdu</strong> : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#sdu%3D%28sdu%3AInt32%29-instance-method" class="signature"><strong>#sdu=</strong>(sdu : Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#segment_index%3AInt32-instance-method" class="signature"><strong>#segment_index</strong> : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#segment_index%3D%28segment_index%3AInt32%29-instance-method" class="signature"><strong>#segment_index=</strong>(segment_index : Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#sender_grace_time%3AFloat64-instance-method" class="signature"><strong>#sender_grace_time</strong> : Float64</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#sender_grace_time%3D%28sender_grace_time%3AFloat64%29-instance-method" class="signature"><strong>#sender_grace_time=</strong>(sender_grace_time : Float64)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#sender_parts%3AArray%28Packet%29-instance-method" class="signature"><strong>#sender_parts</strong> : Array(Packet)</a>
+        
+          <div class="summary"><p>Sender-side parts (Packet objects with map_hash)</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#sender_parts%3D%28sender_parts%3AArray%28Packet%29%29-instance-method" class="signature"><strong>#sender_parts=</strong>(sender_parts : Array(Packet))</a>
+        
+          <div class="summary"><p>Sender-side parts (Packet objects with map_hash)</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#sent_parts%3AInt32-instance-method" class="signature"><strong>#sent_parts</strong> : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#sent_parts%3D%28sent_parts%3AInt32%29-instance-method" class="signature"><strong>#sent_parts=</strong>(sent_parts : Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#set_callback%28callback%3AProc%28Resource%2CNil%29%7CNil%29-instance-method" class="signature"><strong>#set_callback</strong>(callback : Proc(Resource, Nil) | Nil)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#set_progress_callback%28callback%3AProc%28Resource%2CNil%29%7CNil%29-instance-method" class="signature"><strong>#set_progress_callback</strong>(callback : Proc(Resource, Nil) | Nil)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#size%3AInt64-instance-method" class="signature"><strong>#size</strong> : Int64</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#size%3D%28size%3AInt64%29-instance-method" class="signature"><strong>#size=</strong>(size : Int64)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#split%3ABool-instance-method" class="signature"><strong>#split</strong> : Bool</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#split%3D%28split%3ABool%29-instance-method" class="signature"><strong>#split=</strong>(split : Bool)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#started_transferring%3AFloat64%7CNil-instance-method" class="signature"><strong>#started_transferring</strong> : Float64 | Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#started_transferring%3D%28started_transferring%3AFloat64%7CNil%29-instance-method" class="signature"><strong>#started_transferring=</strong>(started_transferring : Float64 | Nil)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#status%3AUInt8-instance-method" class="signature"><strong>#status</strong> : UInt8</a>
+        
+          <div class="summary"><p>─── Instance properties ───────────────────────────────────────</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#status%3D%28status%3AUInt8%29-instance-method" class="signature"><strong>#status=</strong>(status : UInt8)</a>
+        
+          <div class="summary"><p>─── Instance properties ───────────────────────────────────────</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#storagepath%3AString-instance-method" class="signature"><strong>#storagepath</strong> : String</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#storagepath%3D%28storagepath%3AString%29-instance-method" class="signature"><strong>#storagepath=</strong>(storagepath : String)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#timeout%3AFloat64-instance-method" class="signature"><strong>#timeout</strong> : Float64</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#timeout%3D%28timeout%3AFloat64%29-instance-method" class="signature"><strong>#timeout=</strong>(timeout : Float64)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#timeout_factor%3AFloat64-instance-method" class="signature"><strong>#timeout_factor</strong> : Float64</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#timeout_factor%3D%28timeout_factor%3AFloat64%29-instance-method" class="signature"><strong>#timeout_factor=</strong>(timeout_factor : Float64)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#to_s%28io%3AIO%29-instance-method" class="signature"><strong>#to_s</strong>(io : IO)</a>
+        
+          <div class="summary"><p>Appends a short String representation of this object which includes its class name and its object address.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#total_parts%3AInt32-instance-method" class="signature"><strong>#total_parts</strong> : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#total_parts%3D%28total_parts%3AInt32%29-instance-method" class="signature"><strong>#total_parts=</strong>(total_parts : Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#total_segments%3AInt32-instance-method" class="signature"><strong>#total_segments</strong> : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#total_segments%3D%28total_segments%3AInt32%29-instance-method" class="signature"><strong>#total_segments=</strong>(total_segments : Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#total_size%3AInt64-instance-method" class="signature"><strong>#total_size</strong> : Int64</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#total_size%3D%28total_size%3AInt64%29-instance-method" class="signature"><strong>#total_size=</strong>(total_size : Int64)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#truncated_hash%3ABytes-instance-method" class="signature"><strong>#truncated_hash</strong> : Bytes</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#truncated_hash%3D%28truncated_hash%3ABytes%29-instance-method" class="signature"><strong>#truncated_hash=</strong>(truncated_hash : Bytes)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#uncompressed_size%3AInt64-instance-method" class="signature"><strong>#uncompressed_size</strong> : Int64</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#uncompressed_size%3D%28uncompressed_size%3AInt64%29-instance-method" class="signature"><strong>#uncompressed_size=</strong>(uncompressed_size : Int64)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#update_eifr-instance-method" class="signature"><strong>#update_eifr</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#validate_proof%28proof_data%3ABytes%29-instance-method" class="signature"><strong>#validate_proof</strong>(proof_data : Bytes)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#very_slow_rate_rounds%3AInt32-instance-method" class="signature"><strong>#very_slow_rate_rounds</strong> : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#very_slow_rate_rounds%3D%28very_slow_rate_rounds%3AInt32%29-instance-method" class="signature"><strong>#very_slow_rate_rounds=</strong>(very_slow_rate_rounds : Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#waiting_for_hmu%3ABool-instance-method" class="signature"><strong>#waiting_for_hmu</strong> : Bool</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#waiting_for_hmu%3D%28waiting_for_hmu%3ABool%29-instance-method" class="signature"><strong>#waiting_for_hmu=</strong>(waiting_for_hmu : Bool)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#watchdog_job-instance-method" class="signature"><strong>#watchdog_job</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#watchdog_lock%3ABool-instance-method" class="signature"><strong>#watchdog_lock</strong> : Bool</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#watchdog_lock%3D%28watchdog_lock%3ABool%29-instance-method" class="signature"><strong>#watchdog_lock=</strong>(watchdog_lock : Bool)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#window%3AInt32-instance-method" class="signature"><strong>#window</strong> : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#window%3D%28window%3AInt32%29-instance-method" class="signature"><strong>#window=</strong>(window : Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#window_flexibility%3AInt32-instance-method" class="signature"><strong>#window_flexibility</strong> : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#window_flexibility%3D%28window_flexibility%3AInt32%29-instance-method" class="signature"><strong>#window_flexibility=</strong>(window_flexibility : Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#window_max%3AInt32-instance-method" class="signature"><strong>#window_max</strong> : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#window_max%3D%28window_max%3AInt32%29-instance-method" class="signature"><strong>#window_max=</strong>(window_max : Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#window_min%3AInt32-instance-method" class="signature"><strong>#window_min</strong> : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#window_min%3D%28window_min%3AInt32%29-instance-method" class="signature"><strong>#window_min=</strong>(window_min : Int32)</a>
+        
+      </li>
+    
+  </ul>
+
+
+
+  <div class="methods-inherited">
+    
+      
+
+
+      
+
+
+      
+
+
+      
+
+
+    
+      
+
+
+      
+
+
+      
+
+
+      
+
+
+    
+  </div>
+
+  
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(data:Bytes|IO|Nil,link:Link,metadata:MessagePack::Any|Nil=nil,advertise:Bool=true,auto_compress:Bool|Int64=true,callback:Proc(Resource,Nil)|Nil=nil,progress_callback:Proc(Resource,Nil)|Nil=nil,timeout:Float64|Nil=nil,segment_index:Int32=1,original_hash:Bytes|Nil=nil,request_id:Bytes|Nil=nil,is_response:Bool=false,sent_metadata_size:Int32=0)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(data : Bytes | IO | Nil, link : <a href="../RNS/Link.html">Link</a>, metadata : MessagePack::Any | Nil = <span class="n">nil</span>, advertise : Bool = <span class="n">true</span>, auto_compress : Bool | Int64 = <span class="n">true</span>, callback : Proc(<a href="../RNS/Resource.html">Resource</a>, Nil) | Nil = <span class="n">nil</span>, progress_callback : Proc(<a href="../RNS/Resource.html">Resource</a>, Nil) | Nil = <span class="n">nil</span>, timeout : Float64 | Nil = <span class="n">nil</span>, segment_index : Int32 = <span class="n">1</span>, original_hash : Bytes | Nil = <span class="n">nil</span>, request_id : Bytes | Nil = <span class="n">nil</span>, is_response : Bool = <span class="n">false</span>, sent_metadata_size : Int32 = <span class="n">0</span>)
+
+        <a class="method-permalink" href="#new%28data%3ABytes%7CIO%7CNil%2Clink%3ALink%2Cmetadata%3AMessagePack%3A%3AAny%7CNil%3Dnil%2Cadvertise%3ABool%3Dtrue%2Cauto_compress%3ABool%7CInt64%3Dtrue%2Ccallback%3AProc%28Resource%2CNil%29%7CNil%3Dnil%2Cprogress_callback%3AProc%28Resource%2CNil%29%7CNil%3Dnil%2Ctimeout%3AFloat64%7CNil%3Dnil%2Csegment_index%3AInt32%3D1%2Coriginal_hash%3ABytes%7CNil%3Dnil%2Crequest_id%3ABytes%7CNil%3Dnil%2Cis_response%3ABool%3Dfalse%2Csent_metadata_size%3AInt32%3D0%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>─── Sender constructor ────────────────────────────────────────
+Creates a sender-side resource. The <em>data</em> is optionally compressed,
+split into SDU-sized parts with map hashes, and (when <em>advertise</em> is
+true) immediately advertised to the remote peer.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+
+
+  
+  <h2>
+    <a id="class-method-detail" class="anchor" href="#class-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Class Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="accept(advertisement_packet:Packet,callback:Proc(Resource,Nil)|Nil=nil,progress_callback:Proc(Resource,Nil)|Nil=nil,request_id:Bytes|Nil=nil):Resource|Nil-class-method">
+      <div class="signature">
+        
+        def self.<strong>accept</strong>(advertisement_packet : <a href="../RNS/Packet.html">Packet</a>, callback : Proc(<a href="../RNS/Resource.html">Resource</a>, Nil) | Nil = <span class="n">nil</span>, progress_callback : Proc(<a href="../RNS/Resource.html">Resource</a>, Nil) | Nil = <span class="n">nil</span>, request_id : Bytes | Nil = <span class="n">nil</span>) : <a href="../RNS/Resource.html">Resource</a> | Nil
+
+        <a class="method-permalink" href="#accept%28advertisement_packet%3APacket%2Ccallback%3AProc%28Resource%2CNil%29%7CNil%3Dnil%2Cprogress_callback%3AProc%28Resource%2CNil%29%7CNil%3Dnil%2Crequest_id%3ABytes%7CNil%3Dnil%29%3AResource%7CNil-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Accepts an incoming resource advertisement and constructs a receiver-side
+<code><a href="../RNS/Resource.html">Resource</a></code>. Initialises the hashmap, starts the watchdog fiber, and
+returns the new resource (or <code>nil</code> if the link is unavailable or a
+transfer for the same hash is already in progress).</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="reject(advertisement_packet:Packet)-class-method">
+      <div class="signature">
+        
+        def self.<strong>reject</strong>(advertisement_packet : <a href="../RNS/Packet.html">Packet</a>)
+
+        <a class="method-permalink" href="#reject%28advertisement_packet%3APacket%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Declines an incoming resource advertisement by sending a <code>RESOURCE_RCL</code>
+packet back to the advertising peer. The resource is never allocated.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+
+
+  
+
+  
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="_rejected-instance-method">
+      <div class="signature">
+        
+        def <strong>_rejected</strong>
+
+        <a class="method-permalink" href="#_rejected-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="adv_sent:Float64-instance-method">
+      <div class="signature">
+        
+        def <strong>adv_sent</strong> : Float64
+
+        <a class="method-permalink" href="#adv_sent%3AFloat64-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="adv_sent=(adv_sent:Float64)-instance-method">
+      <div class="signature">
+        
+        def <strong>adv_sent=</strong>(adv_sent : Float64)
+
+        <a class="method-permalink" href="#adv_sent%3D%28adv_sent%3AFloat64%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="advertise-instance-method">
+      <div class="signature">
+        
+        def <strong>advertise</strong>
+
+        <a class="method-permalink" href="#advertise-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Spawns a fiber that sends the <code><a href="../RNS/ResourceAdvertisement.html">ResourceAdvertisement</a></code> for this resource
+over its link. If the resource has multiple segments, a second fiber
+begins preparing the next segment in parallel.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="assemble-instance-method">
+      <div class="signature">
+        
+        def <strong>assemble</strong>
+
+        <a class="method-permalink" href="#assemble-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="auto_compress:Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>auto_compress</strong> : Bool
+
+        <a class="method-permalink" href="#auto_compress%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="auto_compress=(auto_compress:Bool)-instance-method">
+      <div class="signature">
+        
+        def <strong>auto_compress=</strong>(auto_compress : Bool)
+
+        <a class="method-permalink" href="#auto_compress%3D%28auto_compress%3ABool%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="auto_compress_limit:Int64-instance-method">
+      <div class="signature">
+        
+        def <strong>auto_compress_limit</strong> : Int64
+
+        <a class="method-permalink" href="#auto_compress_limit%3AInt64-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="auto_compress_limit=(auto_compress_limit:Int64)-instance-method">
+      <div class="signature">
+        
+        def <strong>auto_compress_limit=</strong>(auto_compress_limit : Int64)
+
+        <a class="method-permalink" href="#auto_compress_limit%3D%28auto_compress_limit%3AInt64%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="auto_compress_option:Bool|Int64-instance-method">
+      <div class="signature">
+        
+        def <strong>auto_compress_option</strong> : Bool | Int64
+
+        <a class="method-permalink" href="#auto_compress_option%3ABool%7CInt64-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="auto_compress_option=(auto_compress_option:Bool|Int64)-instance-method">
+      <div class="signature">
+        
+        def <strong>auto_compress_option=</strong>(auto_compress_option : Bool | Int64)
+
+        <a class="method-permalink" href="#auto_compress_option%3D%28auto_compress_option%3ABool%7CInt64%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="callback:Proc(Resource,Nil)|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>callback</strong> : Proc(<a href="../RNS/Resource.html">Resource</a>, Nil) | Nil
+
+        <a class="method-permalink" href="#callback%3AProc%28Resource%2CNil%29%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="callback=(callback:Proc(Resource,Nil)|Nil)-instance-method">
+      <div class="signature">
+        
+        def <strong>callback=</strong>(callback : Proc(<a href="../RNS/Resource.html">Resource</a>, Nil) | Nil)
+
+        <a class="method-permalink" href="#callback%3D%28callback%3AProc%28Resource%2CNil%29%7CNil%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="cancel-instance-method">
+      <div class="signature">
+        
+        def <strong>cancel</strong>
+
+        <a class="method-permalink" href="#cancel-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Aborts the transfer if it has not already completed. Sends a
+<code>RESOURCE_ICL</code> cancel packet when this side is the initiator,
+deregisters the resource from the link, and invokes the callback.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="compressed:Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>compressed</strong> : Bool
+
+        <a class="method-permalink" href="#compressed%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="compressed=(compressed:Bool)-instance-method">
+      <div class="signature">
+        
+        def <strong>compressed=</strong>(compressed : Bool)
+
+        <a class="method-permalink" href="#compressed%3D%28compressed%3ABool%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="consecutive_completed_height:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>consecutive_completed_height</strong> : Int32
+
+        <a class="method-permalink" href="#consecutive_completed_height%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="consecutive_completed_height=(consecutive_completed_height:Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>consecutive_completed_height=</strong>(consecutive_completed_height : Int32)
+
+        <a class="method-permalink" href="#consecutive_completed_height%3D%28consecutive_completed_height%3AInt32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="data:Bytes|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>data</strong> : Bytes | Nil
+
+        <a class="method-permalink" href="#data%3ABytes%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="data=(data:Bytes|Nil)-instance-method">
+      <div class="signature">
+        
+        def <strong>data=</strong>(data : Bytes | Nil)
+
+        <a class="method-permalink" href="#data%3D%28data%3ABytes%7CNil%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="eifr:Float64|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>eifr</strong> : Float64 | Nil
+
+        <a class="method-permalink" href="#eifr%3AFloat64%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="eifr=(eifr:Float64|Nil)-instance-method">
+      <div class="signature">
+        
+        def <strong>eifr=</strong>(eifr : Float64 | Nil)
+
+        <a class="method-permalink" href="#eifr%3D%28eifr%3AFloat64%7CNil%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="encrypted:Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>encrypted</strong> : Bool
+
+        <a class="method-permalink" href="#encrypted%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="encrypted=(encrypted:Bool)-instance-method">
+      <div class="signature">
+        
+        def <strong>encrypted=</strong>(encrypted : Bool)
+
+        <a class="method-permalink" href="#encrypted%3D%28encrypted%3ABool%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="expected_proof:Bytes-instance-method">
+      <div class="signature">
+        
+        def <strong>expected_proof</strong> : Bytes
+
+        <a class="method-permalink" href="#expected_proof%3ABytes-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="expected_proof=(expected_proof:Bytes)-instance-method">
+      <div class="signature">
+        
+        def <strong>expected_proof=</strong>(expected_proof : Bytes)
+
+        <a class="method-permalink" href="#expected_proof%3D%28expected_proof%3ABytes%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="fast_rate_rounds:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>fast_rate_rounds</strong> : Int32
+
+        <a class="method-permalink" href="#fast_rate_rounds%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="fast_rate_rounds=(fast_rate_rounds:Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>fast_rate_rounds=</strong>(fast_rate_rounds : Int32)
+
+        <a class="method-permalink" href="#fast_rate_rounds%3D%28fast_rate_rounds%3AInt32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="flags:UInt8-instance-method">
+      <div class="signature">
+        
+        def <strong>flags</strong> : UInt8
+
+        <a class="method-permalink" href="#flags%3AUInt8-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="flags=(flags:UInt8)-instance-method">
+      <div class="signature">
+        
+        def <strong>flags=</strong>(flags : UInt8)
+
+        <a class="method-permalink" href="#flags%3D%28flags%3AUInt8%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="get_data_size:Int64-instance-method">
+      <div class="signature">
+        
+        def <strong>get_data_size</strong> : Int64
+
+        <a class="method-permalink" href="#get_data_size%3AInt64-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="get_hash:Bytes-instance-method">
+      <div class="signature">
+        
+        def <strong>get_hash</strong> : Bytes
+
+        <a class="method-permalink" href="#get_hash%3ABytes-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="get_map_hash(data:Bytes):Bytes-instance-method">
+      <div class="signature">
+        
+        def <strong>get_map_hash</strong>(data : Bytes) : Bytes
+
+        <a class="method-permalink" href="#get_map_hash%28data%3ABytes%29%3ABytes-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="get_parts:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>get_parts</strong> : Int32
+
+        <a class="method-permalink" href="#get_parts%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="get_progress:Float64-instance-method">
+      <div class="signature">
+        
+        def <strong>get_progress</strong> : Float64
+
+        <a class="method-permalink" href="#get_progress%3AFloat64-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="get_segment_progress:Float64-instance-method">
+      <div class="signature">
+        
+        def <strong>get_segment_progress</strong> : Float64
+
+        <a class="method-permalink" href="#get_segment_progress%3AFloat64-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="get_segments:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>get_segments</strong> : Int32
+
+        <a class="method-permalink" href="#get_segments%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="get_transfer_size:Int64-instance-method">
+      <div class="signature">
+        
+        def <strong>get_transfer_size</strong> : Int64
+
+        <a class="method-permalink" href="#get_transfer_size%3AInt64-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="has_metadata:Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>has_metadata</strong> : Bool
+
+        <a class="method-permalink" href="#has_metadata%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="has_metadata=(has_metadata:Bool)-instance-method">
+      <div class="signature">
+        
+        def <strong>has_metadata=</strong>(has_metadata : Bool)
+
+        <a class="method-permalink" href="#has_metadata%3D%28has_metadata%3ABool%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="hash:Bytes-instance-method">
+      <div class="signature">
+        
+        def <strong>hash</strong> : Bytes
+
+        <a class="method-permalink" href="#hash%3ABytes-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+            <div class="doc-inherited">
+              Description copied from class Object
+            </div>
+          
+          <p>Generates an <code>UInt64</code> hash value for this object.</p>
+<p>This method must have the property that <code>a == b</code> implies <code>a.hash == b.hash</code>.</p>
+<p>The hash value is used along with <code>==</code> by the <code>Hash</code> class to determine if two objects
+reference the same hash key.</p>
+<p>Subclasses must not override this method. Instead, they must define <code>hash(hasher)</code>,
+though usually the macro <code>def_hash</code> can be used to generate this method.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="hash=(hash:Bytes)-instance-method">
+      <div class="signature">
+        
+        def <strong>hash=</strong>(hash : Bytes)
+
+        <a class="method-permalink" href="#hash%3D%28hash%3ABytes%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="hashmap:Array(Bytes|Nil)-instance-method">
+      <div class="signature">
+        
+        def <strong>hashmap</strong> : Array(Bytes | Nil)
+
+        <a class="method-permalink" href="#hashmap%3AArray%28Bytes%7CNil%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="hashmap=(hashmap:Array(Bytes|Nil))-instance-method">
+      <div class="signature">
+        
+        def <strong>hashmap=</strong>(hashmap : Array(Bytes | Nil))
+
+        <a class="method-permalink" href="#hashmap%3D%28hashmap%3AArray%28Bytes%7CNil%29%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="hashmap_height:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>hashmap_height</strong> : Int32
+
+        <a class="method-permalink" href="#hashmap_height%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="hashmap_height=(hashmap_height:Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>hashmap_height=</strong>(hashmap_height : Int32)
+
+        <a class="method-permalink" href="#hashmap_height%3D%28hashmap_height%3AInt32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="hashmap_raw_bytes:Bytes-instance-method">
+      <div class="signature">
+        
+        def <strong>hashmap_raw_bytes</strong> : Bytes
+
+        <a class="method-permalink" href="#hashmap_raw_bytes%3ABytes-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Hashmap (sender: concatenated bytes, receiver: array of Bytes?)</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="hashmap_raw_bytes=(hashmap_raw_bytes:Bytes)-instance-method">
+      <div class="signature">
+        
+        def <strong>hashmap_raw_bytes=</strong>(hashmap_raw_bytes : Bytes)
+
+        <a class="method-permalink" href="#hashmap_raw_bytes%3D%28hashmap_raw_bytes%3ABytes%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Hashmap (sender: concatenated bytes, receiver: array of Bytes?)</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="hashmap_update(segment:Int32,hashmap_bytes:Bytes)-instance-method">
+      <div class="signature">
+        
+        def <strong>hashmap_update</strong>(segment : Int32, hashmap_bytes : Bytes)
+
+        <a class="method-permalink" href="#hashmap_update%28segment%3AInt32%2Chashmap_bytes%3ABytes%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="hashmap_update_packet(plaintext:Bytes)-instance-method">
+      <div class="signature">
+        
+        def <strong>hashmap_update_packet</strong>(plaintext : Bytes)
+
+        <a class="method-permalink" href="#hashmap_update_packet%28plaintext%3ABytes%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="hmu_retry_ok:Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>hmu_retry_ok</strong> : Bool
+
+        <a class="method-permalink" href="#hmu_retry_ok%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="hmu_retry_ok=(hmu_retry_ok:Bool)-instance-method">
+      <div class="signature">
+        
+        def <strong>hmu_retry_ok=</strong>(hmu_retry_ok : Bool)
+
+        <a class="method-permalink" href="#hmu_retry_ok%3D%28hmu_retry_ok%3ABool%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="initiator:Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>initiator</strong> : Bool
+
+        <a class="method-permalink" href="#initiator%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="initiator=(initiator:Bool)-instance-method">
+      <div class="signature">
+        
+        def <strong>initiator=</strong>(initiator : Bool)
+
+        <a class="method-permalink" href="#initiator%3D%28initiator%3ABool%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="is_compressed?:Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>is_compressed?</strong> : Bool
+
+        <a class="method-permalink" href="#is_compressed%3F%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="is_response:Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>is_response</strong> : Bool
+
+        <a class="method-permalink" href="#is_response%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="is_response=(is_response:Bool)-instance-method">
+      <div class="signature">
+        
+        def <strong>is_response=</strong>(is_response : Bool)
+
+        <a class="method-permalink" href="#is_response%3D%28is_response%3ABool%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="last_activity:Float64-instance-method">
+      <div class="signature">
+        
+        def <strong>last_activity</strong> : Float64
+
+        <a class="method-permalink" href="#last_activity%3AFloat64-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="last_activity=(last_activity:Float64)-instance-method">
+      <div class="signature">
+        
+        def <strong>last_activity=</strong>(last_activity : Float64)
+
+        <a class="method-permalink" href="#last_activity%3D%28last_activity%3AFloat64%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="last_part_sent:Float64-instance-method">
+      <div class="signature">
+        
+        def <strong>last_part_sent</strong> : Float64
+
+        <a class="method-permalink" href="#last_part_sent%3AFloat64-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="last_part_sent=(last_part_sent:Float64)-instance-method">
+      <div class="signature">
+        
+        def <strong>last_part_sent=</strong>(last_part_sent : Float64)
+
+        <a class="method-permalink" href="#last_part_sent%3D%28last_part_sent%3AFloat64%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="link:Link|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>link</strong> : <a href="../RNS/Link.html">Link</a> | Nil
+
+        <a class="method-permalink" href="#link%3ALink%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="link=(link:Link|Nil)-instance-method">
+      <div class="signature">
+        
+        def <strong>link=</strong>(link : <a href="../RNS/Link.html">Link</a> | Nil)
+
+        <a class="method-permalink" href="#link%3D%28link%3ALink%7CNil%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="max_adv_retries:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>max_adv_retries</strong> : Int32
+
+        <a class="method-permalink" href="#max_adv_retries%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="max_adv_retries=(max_adv_retries:Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>max_adv_retries=</strong>(max_adv_retries : Int32)
+
+        <a class="method-permalink" href="#max_adv_retries%3D%28max_adv_retries%3AInt32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="max_retries:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>max_retries</strong> : Int32
+
+        <a class="method-permalink" href="#max_retries%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="max_retries=(max_retries:Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>max_retries=</strong>(max_retries : Int32)
+
+        <a class="method-permalink" href="#max_retries%3D%28max_retries%3AInt32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="meta_storagepath:String-instance-method">
+      <div class="signature">
+        
+        def <strong>meta_storagepath</strong> : String
+
+        <a class="method-permalink" href="#meta_storagepath%3AString-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="meta_storagepath=(meta_storagepath:String)-instance-method">
+      <div class="signature">
+        
+        def <strong>meta_storagepath=</strong>(meta_storagepath : String)
+
+        <a class="method-permalink" href="#meta_storagepath%3D%28meta_storagepath%3AString%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="metadata:Bytes|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>metadata</strong> : Bytes | Nil
+
+        <a class="method-permalink" href="#metadata%3ABytes%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="metadata=(metadata:Bytes|Nil)-instance-method">
+      <div class="signature">
+        
+        def <strong>metadata=</strong>(metadata : Bytes | Nil)
+
+        <a class="method-permalink" href="#metadata%3D%28metadata%3ABytes%7CNil%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="metadata_size:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>metadata_size</strong> : Int32
+
+        <a class="method-permalink" href="#metadata_size%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="metadata_size=(metadata_size:Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>metadata_size=</strong>(metadata_size : Int32)
+
+        <a class="method-permalink" href="#metadata_size%3D%28metadata_size%3AInt32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="original_hash:Bytes-instance-method">
+      <div class="signature">
+        
+        def <strong>original_hash</strong> : Bytes
+
+        <a class="method-permalink" href="#original_hash%3ABytes-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="original_hash=(original_hash:Bytes)-instance-method">
+      <div class="signature">
+        
+        def <strong>original_hash=</strong>(original_hash : Bytes)
+
+        <a class="method-permalink" href="#original_hash%3D%28original_hash%3ABytes%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="outstanding_parts:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>outstanding_parts</strong> : Int32
+
+        <a class="method-permalink" href="#outstanding_parts%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="outstanding_parts=(outstanding_parts:Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>outstanding_parts=</strong>(outstanding_parts : Int32)
+
+        <a class="method-permalink" href="#outstanding_parts%3D%28outstanding_parts%3AInt32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="part_timeout_factor:Float64-instance-method">
+      <div class="signature">
+        
+        def <strong>part_timeout_factor</strong> : Float64
+
+        <a class="method-permalink" href="#part_timeout_factor%3AFloat64-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="part_timeout_factor=(part_timeout_factor:Float64)-instance-method">
+      <div class="signature">
+        
+        def <strong>part_timeout_factor=</strong>(part_timeout_factor : Float64)
+
+        <a class="method-permalink" href="#part_timeout_factor%3D%28part_timeout_factor%3AFloat64%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="previous_eifr:Float64|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>previous_eifr</strong> : Float64 | Nil
+
+        <a class="method-permalink" href="#previous_eifr%3AFloat64%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="previous_eifr=(previous_eifr:Float64|Nil)-instance-method">
+      <div class="signature">
+        
+        def <strong>previous_eifr=</strong>(previous_eifr : Float64 | Nil)
+
+        <a class="method-permalink" href="#previous_eifr%3D%28previous_eifr%3AFloat64%7CNil%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="progress_callback_proc:Proc(Resource,Nil)|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>progress_callback_proc</strong> : Proc(<a href="../RNS/Resource.html">Resource</a>, Nil) | Nil
+
+        <a class="method-permalink" href="#progress_callback_proc%3AProc%28Resource%2CNil%29%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="progress_callback_proc=(progress_callback_proc:Proc(Resource,Nil)|Nil)-instance-method">
+      <div class="signature">
+        
+        def <strong>progress_callback_proc=</strong>(progress_callback_proc : Proc(<a href="../RNS/Resource.html">Resource</a>, Nil) | Nil)
+
+        <a class="method-permalink" href="#progress_callback_proc%3D%28progress_callback_proc%3AProc%28Resource%2CNil%29%7CNil%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="prove-instance-method">
+      <div class="signature">
+        
+        def <strong>prove</strong>
+
+        <a class="method-permalink" href="#prove-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="random_hash:Bytes-instance-method">
+      <div class="signature">
+        
+        def <strong>random_hash</strong> : Bytes
+
+        <a class="method-permalink" href="#random_hash%3ABytes-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="random_hash=(random_hash:Bytes)-instance-method">
+      <div class="signature">
+        
+        def <strong>random_hash=</strong>(random_hash : Bytes)
+
+        <a class="method-permalink" href="#random_hash%3D%28random_hash%3ABytes%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="receive_part(packet:Packet)-instance-method">
+      <div class="signature">
+        
+        def <strong>receive_part</strong>(packet : <a href="../RNS/Packet.html">Packet</a>)
+
+        <a class="method-permalink" href="#receive_part%28packet%3APacket%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="received_count:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>received_count</strong> : Int32
+
+        <a class="method-permalink" href="#received_count%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="received_count=(received_count:Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>received_count=</strong>(received_count : Int32)
+
+        <a class="method-permalink" href="#received_count%3D%28received_count%3AInt32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="receiver_min_consecutive_height:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>receiver_min_consecutive_height</strong> : Int32
+
+        <a class="method-permalink" href="#receiver_min_consecutive_height%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="receiver_min_consecutive_height=(receiver_min_consecutive_height:Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>receiver_min_consecutive_height=</strong>(receiver_min_consecutive_height : Int32)
+
+        <a class="method-permalink" href="#receiver_min_consecutive_height%3D%28receiver_min_consecutive_height%3AInt32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="receiver_parts:Array(Bytes|Nil)-instance-method">
+      <div class="signature">
+        
+        def <strong>receiver_parts</strong> : Array(Bytes | Nil)
+
+        <a class="method-permalink" href="#receiver_parts%3AArray%28Bytes%7CNil%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Receiver-side parts (nil or data bytes)</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="receiver_parts=(receiver_parts:Array(Bytes|Nil))-instance-method">
+      <div class="signature">
+        
+        def <strong>receiver_parts=</strong>(receiver_parts : Array(Bytes | Nil))
+
+        <a class="method-permalink" href="#receiver_parts%3D%28receiver_parts%3AArray%28Bytes%7CNil%29%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Receiver-side parts (nil or data bytes)</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="receiving_part:Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>receiving_part</strong> : Bool
+
+        <a class="method-permalink" href="#receiving_part%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="receiving_part=(receiving_part:Bool)-instance-method">
+      <div class="signature">
+        
+        def <strong>receiving_part=</strong>(receiving_part : Bool)
+
+        <a class="method-permalink" href="#receiving_part%3D%28receiving_part%3ABool%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="req_data_rtt_rate:Float64-instance-method">
+      <div class="signature">
+        
+        def <strong>req_data_rtt_rate</strong> : Float64
+
+        <a class="method-permalink" href="#req_data_rtt_rate%3AFloat64-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="req_data_rtt_rate=(req_data_rtt_rate:Float64)-instance-method">
+      <div class="signature">
+        
+        def <strong>req_data_rtt_rate=</strong>(req_data_rtt_rate : Float64)
+
+        <a class="method-permalink" href="#req_data_rtt_rate%3D%28req_data_rtt_rate%3AFloat64%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="req_hashlist:Array(Bytes)-instance-method">
+      <div class="signature">
+        
+        def <strong>req_hashlist</strong> : Array(Bytes)
+
+        <a class="method-permalink" href="#req_hashlist%3AArray%28Bytes%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="req_hashlist=(req_hashlist:Array(Bytes))-instance-method">
+      <div class="signature">
+        
+        def <strong>req_hashlist=</strong>(req_hashlist : Array(Bytes))
+
+        <a class="method-permalink" href="#req_hashlist%3D%28req_hashlist%3AArray%28Bytes%29%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="req_resp:Float64|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>req_resp</strong> : Float64 | Nil
+
+        <a class="method-permalink" href="#req_resp%3AFloat64%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="req_resp=(req_resp:Float64|Nil)-instance-method">
+      <div class="signature">
+        
+        def <strong>req_resp=</strong>(req_resp : Float64 | Nil)
+
+        <a class="method-permalink" href="#req_resp%3D%28req_resp%3AFloat64%7CNil%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="req_resp_rtt_rate:Float64-instance-method">
+      <div class="signature">
+        
+        def <strong>req_resp_rtt_rate</strong> : Float64
+
+        <a class="method-permalink" href="#req_resp_rtt_rate%3AFloat64-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="req_resp_rtt_rate=(req_resp_rtt_rate:Float64)-instance-method">
+      <div class="signature">
+        
+        def <strong>req_resp_rtt_rate=</strong>(req_resp_rtt_rate : Float64)
+
+        <a class="method-permalink" href="#req_resp_rtt_rate%3D%28req_resp_rtt_rate%3AFloat64%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="req_sent:Float64-instance-method">
+      <div class="signature">
+        
+        def <strong>req_sent</strong> : Float64
+
+        <a class="method-permalink" href="#req_sent%3AFloat64-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="req_sent=(req_sent:Float64)-instance-method">
+      <div class="signature">
+        
+        def <strong>req_sent=</strong>(req_sent : Float64)
+
+        <a class="method-permalink" href="#req_sent%3D%28req_sent%3AFloat64%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="req_sent_bytes:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>req_sent_bytes</strong> : Int32
+
+        <a class="method-permalink" href="#req_sent_bytes%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="req_sent_bytes=(req_sent_bytes:Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>req_sent_bytes=</strong>(req_sent_bytes : Int32)
+
+        <a class="method-permalink" href="#req_sent_bytes%3D%28req_sent_bytes%3AInt32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="request(request_data:Bytes)-instance-method">
+      <div class="signature">
+        
+        def <strong>request</strong>(request_data : Bytes)
+
+        <a class="method-permalink" href="#request%28request_data%3ABytes%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="request_id:Bytes|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>request_id</strong> : Bytes | Nil
+
+        <a class="method-permalink" href="#request_id%3ABytes%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="request_id=(request_id:Bytes|Nil)-instance-method">
+      <div class="signature">
+        
+        def <strong>request_id=</strong>(request_id : Bytes | Nil)
+
+        <a class="method-permalink" href="#request_id%3D%28request_id%3ABytes%7CNil%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="request_next-instance-method">
+      <div class="signature">
+        
+        def <strong>request_next</strong>
+
+        <a class="method-permalink" href="#request_next-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="retries_left:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>retries_left</strong> : Int32
+
+        <a class="method-permalink" href="#retries_left%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="retries_left=(retries_left:Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>retries_left=</strong>(retries_left : Int32)
+
+        <a class="method-permalink" href="#retries_left%3D%28retries_left%3AInt32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="rtt:Float64|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>rtt</strong> : Float64 | Nil
+
+        <a class="method-permalink" href="#rtt%3AFloat64%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="rtt=(rtt:Float64|Nil)-instance-method">
+      <div class="signature">
+        
+        def <strong>rtt=</strong>(rtt : Float64 | Nil)
+
+        <a class="method-permalink" href="#rtt%3D%28rtt%3AFloat64%7CNil%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="rtt_rxd_bytes:Int64-instance-method">
+      <div class="signature">
+        
+        def <strong>rtt_rxd_bytes</strong> : Int64
+
+        <a class="method-permalink" href="#rtt_rxd_bytes%3AInt64-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="rtt_rxd_bytes=(rtt_rxd_bytes:Int64)-instance-method">
+      <div class="signature">
+        
+        def <strong>rtt_rxd_bytes=</strong>(rtt_rxd_bytes : Int64)
+
+        <a class="method-permalink" href="#rtt_rxd_bytes%3D%28rtt_rxd_bytes%3AInt64%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="rtt_rxd_bytes_at_part_req:Int64-instance-method">
+      <div class="signature">
+        
+        def <strong>rtt_rxd_bytes_at_part_req</strong> : Int64
+
+        <a class="method-permalink" href="#rtt_rxd_bytes_at_part_req%3AInt64-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="rtt_rxd_bytes_at_part_req=(rtt_rxd_bytes_at_part_req:Int64)-instance-method">
+      <div class="signature">
+        
+        def <strong>rtt_rxd_bytes_at_part_req=</strong>(rtt_rxd_bytes_at_part_req : Int64)
+
+        <a class="method-permalink" href="#rtt_rxd_bytes_at_part_req%3D%28rtt_rxd_bytes_at_part_req%3AInt64%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="sdu:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>sdu</strong> : Int32
+
+        <a class="method-permalink" href="#sdu%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="sdu=(sdu:Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>sdu=</strong>(sdu : Int32)
+
+        <a class="method-permalink" href="#sdu%3D%28sdu%3AInt32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="segment_index:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>segment_index</strong> : Int32
+
+        <a class="method-permalink" href="#segment_index%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="segment_index=(segment_index:Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>segment_index=</strong>(segment_index : Int32)
+
+        <a class="method-permalink" href="#segment_index%3D%28segment_index%3AInt32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="sender_grace_time:Float64-instance-method">
+      <div class="signature">
+        
+        def <strong>sender_grace_time</strong> : Float64
+
+        <a class="method-permalink" href="#sender_grace_time%3AFloat64-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="sender_grace_time=(sender_grace_time:Float64)-instance-method">
+      <div class="signature">
+        
+        def <strong>sender_grace_time=</strong>(sender_grace_time : Float64)
+
+        <a class="method-permalink" href="#sender_grace_time%3D%28sender_grace_time%3AFloat64%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="sender_parts:Array(Packet)-instance-method">
+      <div class="signature">
+        
+        def <strong>sender_parts</strong> : Array(<a href="../RNS/Packet.html">Packet</a>)
+
+        <a class="method-permalink" href="#sender_parts%3AArray%28Packet%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sender-side parts (Packet objects with map_hash)</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="sender_parts=(sender_parts:Array(Packet))-instance-method">
+      <div class="signature">
+        
+        def <strong>sender_parts=</strong>(sender_parts : Array(<a href="../RNS/Packet.html">Packet</a>))
+
+        <a class="method-permalink" href="#sender_parts%3D%28sender_parts%3AArray%28Packet%29%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sender-side parts (Packet objects with map_hash)</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="sent_parts:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>sent_parts</strong> : Int32
+
+        <a class="method-permalink" href="#sent_parts%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="sent_parts=(sent_parts:Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>sent_parts=</strong>(sent_parts : Int32)
+
+        <a class="method-permalink" href="#sent_parts%3D%28sent_parts%3AInt32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="set_callback(callback:Proc(Resource,Nil)|Nil)-instance-method">
+      <div class="signature">
+        
+        def <strong>set_callback</strong>(callback : Proc(<a href="../RNS/Resource.html">Resource</a>, Nil) | Nil)
+
+        <a class="method-permalink" href="#set_callback%28callback%3AProc%28Resource%2CNil%29%7CNil%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="set_progress_callback(callback:Proc(Resource,Nil)|Nil)-instance-method">
+      <div class="signature">
+        
+        def <strong>set_progress_callback</strong>(callback : Proc(<a href="../RNS/Resource.html">Resource</a>, Nil) | Nil)
+
+        <a class="method-permalink" href="#set_progress_callback%28callback%3AProc%28Resource%2CNil%29%7CNil%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="size:Int64-instance-method">
+      <div class="signature">
+        
+        def <strong>size</strong> : Int64
+
+        <a class="method-permalink" href="#size%3AInt64-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="size=(size:Int64)-instance-method">
+      <div class="signature">
+        
+        def <strong>size=</strong>(size : Int64)
+
+        <a class="method-permalink" href="#size%3D%28size%3AInt64%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="split:Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>split</strong> : Bool
+
+        <a class="method-permalink" href="#split%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="split=(split:Bool)-instance-method">
+      <div class="signature">
+        
+        def <strong>split=</strong>(split : Bool)
+
+        <a class="method-permalink" href="#split%3D%28split%3ABool%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="started_transferring:Float64|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>started_transferring</strong> : Float64 | Nil
+
+        <a class="method-permalink" href="#started_transferring%3AFloat64%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="started_transferring=(started_transferring:Float64|Nil)-instance-method">
+      <div class="signature">
+        
+        def <strong>started_transferring=</strong>(started_transferring : Float64 | Nil)
+
+        <a class="method-permalink" href="#started_transferring%3D%28started_transferring%3AFloat64%7CNil%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="status:UInt8-instance-method">
+      <div class="signature">
+        
+        def <strong>status</strong> : UInt8
+
+        <a class="method-permalink" href="#status%3AUInt8-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>─── Instance properties ───────────────────────────────────────</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="status=(status:UInt8)-instance-method">
+      <div class="signature">
+        
+        def <strong>status=</strong>(status : UInt8)
+
+        <a class="method-permalink" href="#status%3D%28status%3AUInt8%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>─── Instance properties ───────────────────────────────────────</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="storagepath:String-instance-method">
+      <div class="signature">
+        
+        def <strong>storagepath</strong> : String
+
+        <a class="method-permalink" href="#storagepath%3AString-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="storagepath=(storagepath:String)-instance-method">
+      <div class="signature">
+        
+        def <strong>storagepath=</strong>(storagepath : String)
+
+        <a class="method-permalink" href="#storagepath%3D%28storagepath%3AString%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="timeout:Float64-instance-method">
+      <div class="signature">
+        
+        def <strong>timeout</strong> : Float64
+
+        <a class="method-permalink" href="#timeout%3AFloat64-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="timeout=(timeout:Float64)-instance-method">
+      <div class="signature">
+        
+        def <strong>timeout=</strong>(timeout : Float64)
+
+        <a class="method-permalink" href="#timeout%3D%28timeout%3AFloat64%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="timeout_factor:Float64-instance-method">
+      <div class="signature">
+        
+        def <strong>timeout_factor</strong> : Float64
+
+        <a class="method-permalink" href="#timeout_factor%3AFloat64-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="timeout_factor=(timeout_factor:Float64)-instance-method">
+      <div class="signature">
+        
+        def <strong>timeout_factor=</strong>(timeout_factor : Float64)
+
+        <a class="method-permalink" href="#timeout_factor%3D%28timeout_factor%3AFloat64%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="to_s(io:IO)-instance-method">
+      <div class="signature">
+        
+        def <strong>to_s</strong>(io : IO)
+
+        <a class="method-permalink" href="#to_s%28io%3AIO%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+            <div class="doc-inherited">
+              Description copied from class Reference
+            </div>
+          
+          <p>Appends a short String representation of this object
+which includes its class name and its object address.</p>
+<pre><code class="language-crystal"><span class="k">class</span> <span class="t">Person</span>
+  <span class="k">def</span> <span class="m">initialize</span>(@name : <span class="t">String</span>, @age : <span class="t">Int32</span>)
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="t">Person</span>.new(<span class="s">&quot;John&quot;</span>, <span class="n">32</span>).to_s <span class="c"># =&gt; #&lt;Person:0x10a199f20&gt;</span></code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="total_parts:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>total_parts</strong> : Int32
+
+        <a class="method-permalink" href="#total_parts%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="total_parts=(total_parts:Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>total_parts=</strong>(total_parts : Int32)
+
+        <a class="method-permalink" href="#total_parts%3D%28total_parts%3AInt32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="total_segments:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>total_segments</strong> : Int32
+
+        <a class="method-permalink" href="#total_segments%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="total_segments=(total_segments:Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>total_segments=</strong>(total_segments : Int32)
+
+        <a class="method-permalink" href="#total_segments%3D%28total_segments%3AInt32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="total_size:Int64-instance-method">
+      <div class="signature">
+        
+        def <strong>total_size</strong> : Int64
+
+        <a class="method-permalink" href="#total_size%3AInt64-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="total_size=(total_size:Int64)-instance-method">
+      <div class="signature">
+        
+        def <strong>total_size=</strong>(total_size : Int64)
+
+        <a class="method-permalink" href="#total_size%3D%28total_size%3AInt64%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="truncated_hash:Bytes-instance-method">
+      <div class="signature">
+        
+        def <strong>truncated_hash</strong> : Bytes
+
+        <a class="method-permalink" href="#truncated_hash%3ABytes-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="truncated_hash=(truncated_hash:Bytes)-instance-method">
+      <div class="signature">
+        
+        def <strong>truncated_hash=</strong>(truncated_hash : Bytes)
+
+        <a class="method-permalink" href="#truncated_hash%3D%28truncated_hash%3ABytes%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="uncompressed_size:Int64-instance-method">
+      <div class="signature">
+        
+        def <strong>uncompressed_size</strong> : Int64
+
+        <a class="method-permalink" href="#uncompressed_size%3AInt64-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="uncompressed_size=(uncompressed_size:Int64)-instance-method">
+      <div class="signature">
+        
+        def <strong>uncompressed_size=</strong>(uncompressed_size : Int64)
+
+        <a class="method-permalink" href="#uncompressed_size%3D%28uncompressed_size%3AInt64%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="update_eifr-instance-method">
+      <div class="signature">
+        
+        def <strong>update_eifr</strong>
+
+        <a class="method-permalink" href="#update_eifr-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="validate_proof(proof_data:Bytes)-instance-method">
+      <div class="signature">
+        
+        def <strong>validate_proof</strong>(proof_data : Bytes)
+
+        <a class="method-permalink" href="#validate_proof%28proof_data%3ABytes%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="very_slow_rate_rounds:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>very_slow_rate_rounds</strong> : Int32
+
+        <a class="method-permalink" href="#very_slow_rate_rounds%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="very_slow_rate_rounds=(very_slow_rate_rounds:Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>very_slow_rate_rounds=</strong>(very_slow_rate_rounds : Int32)
+
+        <a class="method-permalink" href="#very_slow_rate_rounds%3D%28very_slow_rate_rounds%3AInt32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="waiting_for_hmu:Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>waiting_for_hmu</strong> : Bool
+
+        <a class="method-permalink" href="#waiting_for_hmu%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="waiting_for_hmu=(waiting_for_hmu:Bool)-instance-method">
+      <div class="signature">
+        
+        def <strong>waiting_for_hmu=</strong>(waiting_for_hmu : Bool)
+
+        <a class="method-permalink" href="#waiting_for_hmu%3D%28waiting_for_hmu%3ABool%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="watchdog_job-instance-method">
+      <div class="signature">
+        
+        def <strong>watchdog_job</strong>
+
+        <a class="method-permalink" href="#watchdog_job-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="watchdog_lock:Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>watchdog_lock</strong> : Bool
+
+        <a class="method-permalink" href="#watchdog_lock%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="watchdog_lock=(watchdog_lock:Bool)-instance-method">
+      <div class="signature">
+        
+        def <strong>watchdog_lock=</strong>(watchdog_lock : Bool)
+
+        <a class="method-permalink" href="#watchdog_lock%3D%28watchdog_lock%3ABool%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="window:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>window</strong> : Int32
+
+        <a class="method-permalink" href="#window%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="window=(window:Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>window=</strong>(window : Int32)
+
+        <a class="method-permalink" href="#window%3D%28window%3AInt32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="window_flexibility:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>window_flexibility</strong> : Int32
+
+        <a class="method-permalink" href="#window_flexibility%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="window_flexibility=(window_flexibility:Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>window_flexibility=</strong>(window_flexibility : Int32)
+
+        <a class="method-permalink" href="#window_flexibility%3D%28window_flexibility%3AInt32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="window_max:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>window_max</strong> : Int32
+
+        <a class="method-permalink" href="#window_max%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="window_max=(window_max:Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>window_max=</strong>(window_max : Int32)
+
+        <a class="method-permalink" href="#window_max%3D%28window_max%3AInt32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="window_min:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>window_min</strong> : Int32
+
+        <a class="method-permalink" href="#window_min%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="window_min=(window_min:Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>window_min=</strong>(window_min : Int32)
+
+        <a class="method-permalink" href="#window_min%3D%28window_min%3AInt32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+
+
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,2762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Crystal Docs 1.18.2">
+<meta name="crystal_docs.project_version" content="master-dev">
+<meta name="crystal_docs.project_name" content="rns">
+
+
+
+<link href="../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../js/doc.js"></script>
+
+  <meta name="repository-name" content="rns">
+  <title>RNS::Destination - rns master-dev</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<input type="checkbox" id="sidebar-btn">
+<label for="sidebar-btn" id="sidebar-btn-label">
+  <svg class="open" xmlns="http://www.w3.org/2000/svg" height="2em" width="2em" viewBox="0 0 512 512"><title>Open Sidebar</title><path fill="currentColor" d="M80 96v64h352V96H80zm0 112v64h352v-64H80zm0 112v64h352v-64H80z"></path></svg>
+  <svg class="close" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 512 512"><title>Close Sidebar</title><path fill="currentColor" d="m118.6 73.4-45.2 45.2L210.7 256 73.4 393.4l45.2 45.2L256 301.3l137.4 137.3 45.2-45.2L301.3 256l137.3-137.4-45.2-45.2L256 210.7Z"></path></svg>
+</label>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="../index.html">
+          rns
+        </a>
+      </h1>
+
+      <span class="project-version">
+        master-dev
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class="parent open current" data-id="rns/RNS" data-name="rns">
+      <a href="../RNS.html">RNS</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="rns/RNS/AutoInterface" data-name="rns::autointerface">
+      <a href="../RNS/AutoInterface.html">AutoInterface</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/AutoInterface/PeerEntry" data-name="rns::autointerface::peerentry">
+      <a href="../RNS/AutoInterface/PeerEntry.html">PeerEntry</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/AutoInterfacePeer" data-name="rns::autointerfacepeer">
+      <a href="../RNS/AutoInterfacePeer.html">AutoInterfacePeer</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/AX25" data-name="rns::ax25">
+      <a href="../RNS/AX25.html">AX25</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/AX25KISSInterface" data-name="rns::ax25kissinterface">
+      <a href="../RNS/AX25KISSInterface.html">AX25KISSInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/BackboneClientInterface" data-name="rns::backboneclientinterface">
+      <a href="../RNS/BackboneClientInterface.html">BackboneClientInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/BackboneInterface" data-name="rns::backboneinterface">
+      <a href="../RNS/BackboneInterface.html">BackboneInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/BackboneInterfaceConstants" data-name="rns::backboneinterfaceconstants">
+      <a href="../RNS/BackboneInterfaceConstants.html">BackboneInterfaceConstants</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Base32" data-name="rns::base32">
+      <a href="../RNS/Base32.html">Base32</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Buffer" data-name="rns::buffer">
+      <a href="../RNS/Buffer.html">Buffer</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/BZip2" data-name="rns::bzip2">
+      <a href="../RNS/BZip2.html">BZip2</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/BZip2/Error" data-name="rns::bzip2::error">
+      <a href="../RNS/BZip2/Error.html">Error</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/CEType" data-name="rns::cetype">
+      <a href="../RNS/CEType.html">CEType</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Channel" data-name="rns::channel(tpacket)">
+      <a href="../RNS/Channel.html">Channel</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ChannelException" data-name="rns::channelexception">
+      <a href="../RNS/ChannelException.html">ChannelException</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ChannelOutletBase" data-name="rns::channeloutletbase(tpacket)">
+      <a href="../RNS/ChannelOutletBase.html">ChannelOutletBase</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/ConfigObj" data-name="rns::configobj">
+      <a href="../RNS/ConfigObj.html">ConfigObj</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/ConfigObj/NestingError" data-name="rns::configobj::nestingerror">
+      <a href="../RNS/ConfigObj/NestingError.html">NestingError</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ConfigObj/ParseError" data-name="rns::configobj::parseerror">
+      <a href="../RNS/ConfigObj/ParseError.html">ParseError</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ConfigObj/Section" data-name="rns::configobj::section">
+      <a href="../RNS/ConfigObj/Section.html">Section</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ConfigObj/Value" data-name="rns::configobj::value">
+      <a href="../RNS/ConfigObj/Value.html">Value</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ConfigObj/ValueError" data-name="rns::configobj::valueerror">
+      <a href="../RNS/ConfigObj/ValueError.html">ValueError</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Cryptography" data-name="rns::cryptography">
+      <a href="../RNS/Cryptography.html">Cryptography</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/AES128CBC" data-name="rns::cryptography::aes128cbc">
+      <a href="../RNS/Cryptography/AES128CBC.html">AES128CBC</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/AES256CBC" data-name="rns::cryptography::aes256cbc">
+      <a href="../RNS/Cryptography/AES256CBC.html">AES256CBC</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/Ed25519PrivateKey" data-name="rns::cryptography::ed25519privatekey">
+      <a href="../RNS/Cryptography/Ed25519PrivateKey.html">Ed25519PrivateKey</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/Ed25519PublicKey" data-name="rns::cryptography::ed25519publickey">
+      <a href="../RNS/Cryptography/Ed25519PublicKey.html">Ed25519PublicKey</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/HMAC" data-name="rns::cryptography::hmac">
+      <a href="../RNS/Cryptography/HMAC.html">HMAC</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/PKCS7" data-name="rns::cryptography::pkcs7">
+      <a href="../RNS/Cryptography/PKCS7.html">PKCS7</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Cryptography/Token" data-name="rns::cryptography::token">
+      <a href="../RNS/Cryptography/Token.html">Token</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/Token/Mode" data-name="rns::cryptography::token::mode">
+      <a href="../RNS/Cryptography/Token/Mode.html">Mode</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/X25519PrivateKey" data-name="rns::cryptography::x25519privatekey">
+      <a href="../RNS/Cryptography/X25519PrivateKey.html">X25519PrivateKey</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Cryptography/X25519PublicKey" data-name="rns::cryptography::x25519publickey">
+      <a href="../RNS/Cryptography/X25519PublicKey.html">X25519PublicKey</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent open current" data-id="rns/RNS/Destination" data-name="rns::destination">
+      <a href="../RNS/Destination.html">Destination</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Destination/DestinationCallbacks" data-name="rns::destination::destinationcallbacks">
+      <a href="../RNS/Destination/DestinationCallbacks.html">DestinationCallbacks</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Destination/DestinationInterface" data-name="rns::destination::destinationinterface">
+      <a href="../RNS/Destination/DestinationInterface.html">DestinationInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Destination/RequestHandler" data-name="rns::destination::requesthandler">
+      <a href="../RNS/Destination/RequestHandler.html">RequestHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Destination/Stub" data-name="rns::destination::stub">
+      <a href="../RNS/Destination/Stub.html">Stub</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Discovery" data-name="rns::discovery">
+      <a href="../RNS/Discovery.html">Discovery</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Discovery/BlackholeUpdater" data-name="rns::discovery::blackholeupdater">
+      <a href="../RNS/Discovery/BlackholeUpdater.html">BlackholeUpdater</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Discovery/InterfaceAnnounceHandler" data-name="rns::discovery::interfaceannouncehandler">
+      <a href="../RNS/Discovery/InterfaceAnnounceHandler.html">InterfaceAnnounceHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Discovery/InterfaceAnnouncer" data-name="rns::discovery::interfaceannouncer">
+      <a href="../RNS/Discovery/InterfaceAnnouncer.html">InterfaceAnnouncer</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Discovery/InterfaceDiscovery" data-name="rns::discovery::interfacediscovery">
+      <a href="../RNS/Discovery/InterfaceDiscovery.html">InterfaceDiscovery</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Discovery/InterfaceDiscovery/InfoHash" data-name="rns::discovery::interfacediscovery::infohash">
+      <a href="../RNS/Discovery/InterfaceDiscovery/InfoHash.html">InfoHash</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Envelope" data-name="rns::envelope(tpacket)">
+      <a href="../RNS/Envelope.html">Envelope</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/HDLC" data-name="rns::hdlc">
+      <a href="../RNS/HDLC.html">HDLC</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PController" data-name="rns::i2pcontroller">
+      <a href="../RNS/I2PController.html">I2PController</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/I2PExceptions" data-name="rns::i2pexceptions">
+      <a href="../RNS/I2PExceptions.html">I2PExceptions</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/CantReachPeer" data-name="rns::i2pexceptions::cantreachpeer">
+      <a href="../RNS/I2PExceptions/CantReachPeer.html">CantReachPeer</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/DuplicatedDest" data-name="rns::i2pexceptions::duplicateddest">
+      <a href="../RNS/I2PExceptions/DuplicatedDest.html">DuplicatedDest</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/DuplicatedId" data-name="rns::i2pexceptions::duplicatedid">
+      <a href="../RNS/I2PExceptions/DuplicatedId.html">DuplicatedId</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/I2PError" data-name="rns::i2pexceptions::i2perror">
+      <a href="../RNS/I2PExceptions/I2PError.html">I2PError</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/InvalidId" data-name="rns::i2pexceptions::invalidid">
+      <a href="../RNS/I2PExceptions/InvalidId.html">InvalidId</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/InvalidKey" data-name="rns::i2pexceptions::invalidkey">
+      <a href="../RNS/I2PExceptions/InvalidKey.html">InvalidKey</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/KeyNotFound" data-name="rns::i2pexceptions::keynotfound">
+      <a href="../RNS/I2PExceptions/KeyNotFound.html">KeyNotFound</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/PeerNotFound" data-name="rns::i2pexceptions::peernotfound">
+      <a href="../RNS/I2PExceptions/PeerNotFound.html">PeerNotFound</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PExceptions/Timeout" data-name="rns::i2pexceptions::timeout">
+      <a href="../RNS/I2PExceptions/Timeout.html">Timeout</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PInterface" data-name="rns::i2pinterface">
+      <a href="../RNS/I2PInterface.html">I2PInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/I2PInterfacePeer" data-name="rns::i2pinterfacepeer">
+      <a href="../RNS/I2PInterfacePeer.html">I2PInterfacePeer</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Identity" data-name="rns::identity">
+      <a href="../RNS/Identity.html">Identity</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Interface" data-name="rns::interface">
+      <a href="../RNS/Interface.html">Interface</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Interface/AnnounceQueueEntry" data-name="rns::interface::announcequeueentry">
+      <a href="../RNS/Interface/AnnounceQueueEntry.html">AnnounceQueueEntry</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Interface/HeldAnnounce" data-name="rns::interface::heldannounce">
+      <a href="../RNS/Interface/HeldAnnounce.html">HeldAnnounce</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/InterfaceAnnouncer" data-name="rns::interfaceannouncer">
+      <a href="../RNS/InterfaceAnnouncer.html">InterfaceAnnouncer</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/KISS" data-name="rns::kiss">
+      <a href="../RNS/KISS.html">KISS</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/KISSInterface" data-name="rns::kissinterface">
+      <a href="../RNS/KISSInterface.html">KISSInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Link" data-name="rns::link">
+      <a href="../RNS/Link.html">Link</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/LinkCallbacks" data-name="rns::linkcallbacks">
+      <a href="../RNS/LinkCallbacks.html">LinkCallbacks</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/LinkChannelOutlet" data-name="rns::linkchanneloutlet">
+      <a href="../RNS/LinkChannelOutlet.html">LinkChannelOutlet</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/LinkLike" data-name="rns::linklike">
+      <a href="../RNS/LinkLike.html">LinkLike</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/LinkStub" data-name="rns::linkstub">
+      <a href="../RNS/LinkStub.html">LinkStub</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/LocalClientInterface" data-name="rns::localclientinterface">
+      <a href="../RNS/LocalClientInterface.html">LocalClientInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/LocalServerInterface" data-name="rns::localserverinterface">
+      <a href="../RNS/LocalServerInterface.html">LocalServerInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/MessageBase" data-name="rns::messagebase">
+      <a href="../RNS/MessageBase.html">MessageBase</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/MessageState" data-name="rns::messagestate">
+      <a href="../RNS/MessageState.html">MessageState</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/NetInfo" data-name="rns::netinfo">
+      <a href="../RNS/NetInfo.html">NetInfo</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/NetInfo/AddressInfo" data-name="rns::netinfo::addressinfo">
+      <a href="../RNS/NetInfo/AddressInfo.html">AddressInfo</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Packet" data-name="rns::packet">
+      <a href="../RNS/Packet.html">Packet</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/PacketReceipt" data-name="rns::packetreceipt">
+      <a href="../RNS/PacketReceipt.html">PacketReceipt</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/PacketReceiptCallbacks" data-name="rns::packetreceiptcallbacks">
+      <a href="../RNS/PacketReceiptCallbacks.html">PacketReceiptCallbacks</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/PipeInterface" data-name="rns::pipeinterface">
+      <a href="../RNS/PipeInterface.html">PipeInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/PlatformUtils" data-name="rns::platformutils">
+      <a href="../RNS/PlatformUtils.html">PlatformUtils</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ProofDestination" data-name="rns::proofdestination">
+      <a href="../RNS/ProofDestination.html">ProofDestination</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RawChannelReader" data-name="rns::rawchannelreader(tpacket)">
+      <a href="../RNS/RawChannelReader.html">RawChannelReader</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RawChannelWriter" data-name="rns::rawchannelwriter(tpacket)">
+      <a href="../RNS/RawChannelWriter.html">RawChannelWriter</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RequestReceipt" data-name="rns::requestreceipt">
+      <a href="../RNS/RequestReceipt.html">RequestReceipt</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RequestReceiptCallbacks" data-name="rns::requestreceiptcallbacks">
+      <a href="../RNS/RequestReceiptCallbacks.html">RequestReceiptCallbacks</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Resolver" data-name="rns::resolver">
+      <a href="../RNS/Resolver.html">Resolver</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Resource" data-name="rns::resource">
+      <a href="../RNS/Resource.html">Resource</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ResourceAdvertisement" data-name="rns::resourceadvertisement">
+      <a href="../RNS/ResourceAdvertisement.html">ResourceAdvertisement</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Reticulum" data-name="rns::reticulum">
+      <a href="../RNS/Reticulum.html">Reticulum</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/ReticulumInstance" data-name="rns::reticuluminstance">
+      <a href="../RNS/ReticulumInstance.html">ReticulumInstance</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Rncp" data-name="rns::rncp">
+      <a href="../RNS/Rncp.html">Rncp</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Rncp/Args" data-name="rns::rncp::args">
+      <a href="../RNS/Rncp/Args.html">Args</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Rnid" data-name="rns::rnid">
+      <a href="../RNS/Rnid.html">Rnid</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Rnid/Args" data-name="rns::rnid::args">
+      <a href="../RNS/Rnid/Args.html">Args</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RNodeInterface" data-name="rns::rnodeinterface">
+      <a href="../RNS/RNodeInterface.html">RNodeInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RNodeKISS" data-name="rns::rnodekiss">
+      <a href="../RNS/RNodeKISS.html">RNodeKISS</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RNodeMultiInterface" data-name="rns::rnodemultiinterface">
+      <a href="../RNS/RNodeMultiInterface.html">RNodeMultiInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RNodeMultiKISS" data-name="rns::rnodemultikiss">
+      <a href="../RNS/RNodeMultiKISS.html">RNodeMultiKISS</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RNodeSubInterface" data-name="rns::rnodesubinterface">
+      <a href="../RNS/RNodeSubInterface.html">RNodeSubInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/RNodeTCPConnection" data-name="rns::rnodetcpconnection">
+      <a href="../RNS/RNodeTCPConnection.html">RNodeTCPConnection</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Rnpath" data-name="rns::rnpath">
+      <a href="../RNS/Rnpath.html">Rnpath</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Rnpath/Args" data-name="rns::rnpath::args">
+      <a href="../RNS/Rnpath/Args.html">Args</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Rnpath/PathTableEntry" data-name="rns::rnpath::pathtableentry">
+      <a href="../RNS/Rnpath/PathTableEntry.html">PathTableEntry</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Rnpath/RateTableEntry" data-name="rns::rnpath::ratetableentry">
+      <a href="../RNS/Rnpath/RateTableEntry.html">RateTableEntry</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Rnprobe" data-name="rns::rnprobe">
+      <a href="../RNS/Rnprobe.html">Rnprobe</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Rnprobe/Args" data-name="rns::rnprobe::args">
+      <a href="../RNS/Rnprobe/Args.html">Args</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Rnsd" data-name="rns::rnsd">
+      <a href="../RNS/Rnsd.html">Rnsd</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Rnsd/Args" data-name="rns::rnsd::args">
+      <a href="../RNS/Rnsd/Args.html">Args</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Rnstatus" data-name="rns::rnstatus">
+      <a href="../RNS/Rnstatus.html">Rnstatus</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Rnstatus/Args" data-name="rns::rnstatus::args">
+      <a href="../RNS/Rnstatus/Args.html">Args</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Rnstatus/InterfaceStat" data-name="rns::rnstatus::interfacestat">
+      <a href="../RNS/Rnstatus/InterfaceStat.html">InterfaceStat</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Rnstatus/TransportStats" data-name="rns::rnstatus::transportstats">
+      <a href="../RNS/Rnstatus/TransportStats.html">TransportStats</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Rnx" data-name="rns::rnx">
+      <a href="../RNS/Rnx.html">Rnx</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Rnx/Args" data-name="rns::rnx::args">
+      <a href="../RNS/Rnx/Args.html">Args</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/SAMClient" data-name="rns::samclient">
+      <a href="../RNS/SAMClient.html">SAMClient</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/SerialConstants" data-name="rns::serialconstants">
+      <a href="../RNS/SerialConstants.html">SerialConstants</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/SerialInterface" data-name="rns::serialinterface">
+      <a href="../RNS/SerialInterface.html">SerialInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/StreamDataMessage" data-name="rns::streamdatamessage">
+      <a href="../RNS/StreamDataMessage.html">StreamDataMessage</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/SubIntConfig" data-name="rns::subintconfig">
+      <a href="../RNS/SubIntConfig.html">SubIntConfig</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/SystemMessageTypes" data-name="rns::systemmessagetypes">
+      <a href="../RNS/SystemMessageTypes.html">SystemMessageTypes</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/TCPClientInterface" data-name="rns::tcpclientinterface">
+      <a href="../RNS/TCPClientInterface.html">TCPClientInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/TCPInterfaceConstants" data-name="rns::tcpinterfaceconstants">
+      <a href="../RNS/TCPInterfaceConstants.html">TCPInterfaceConstants</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/TCPServerInterface" data-name="rns::tcpserverinterface">
+      <a href="../RNS/TCPServerInterface.html">TCPServerInterface</a>
+      
+    </li>
+  
+  <li class="parent " data-id="rns/RNS/Transport" data-name="rns::transport">
+      <a href="../RNS/Transport.html">Transport</a>
+      
+        <ul>
+  
+  <li class=" " data-id="rns/RNS/Transport/AnnounceEntry" data-name="rns::transport::announceentry">
+      <a href="../RNS/Transport/AnnounceEntry.html">AnnounceEntry</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Transport/AnnounceHandler" data-name="rns::transport::announcehandler">
+      <a href="../RNS/Transport/AnnounceHandler.html">AnnounceHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Transport/AnnounceRateEntry" data-name="rns::transport::announcerateentry">
+      <a href="../RNS/Transport/AnnounceRateEntry.html">AnnounceRateEntry</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Transport/LinkEntry" data-name="rns::transport::linkentry">
+      <a href="../RNS/Transport/LinkEntry.html">LinkEntry</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Transport/OwnerRef" data-name="rns::transport::ownerref">
+      <a href="../RNS/Transport/OwnerRef.html">OwnerRef</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Transport/PathEntry" data-name="rns::transport::pathentry">
+      <a href="../RNS/Transport/PathEntry.html">PathEntry</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Transport/ReverseEntry" data-name="rns::transport::reverseentry">
+      <a href="../RNS/Transport/ReverseEntry.html">ReverseEntry</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/Transport/TunnelEntry" data-name="rns::transport::tunnelentry">
+      <a href="../RNS/Transport/TunnelEntry.html">TunnelEntry</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/TypeError" data-name="rns::typeerror">
+      <a href="../RNS/TypeError.html">TypeError</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/UDPInterface" data-name="rns::udpinterface">
+      <a href="../RNS/UDPInterface.html">UDPInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveCmd" data-name="rns::weavecmd">
+      <a href="../RNS/WeaveCmd.html">WeaveCmd</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveDevice" data-name="rns::weavedevice">
+      <a href="../RNS/WeaveDevice.html">WeaveDevice</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveEndpoint" data-name="rns::weaveendpoint">
+      <a href="../RNS/WeaveEndpoint.html">WeaveEndpoint</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveEvt" data-name="rns::weaveevt">
+      <a href="../RNS/WeaveEvt.html">WeaveEvt</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveInterface" data-name="rns::weaveinterface">
+      <a href="../RNS/WeaveInterface.html">WeaveInterface</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveInterfacePeer" data-name="rns::weaveinterfacepeer">
+      <a href="../RNS/WeaveInterfacePeer.html">WeaveInterfacePeer</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveLogFrame" data-name="rns::weavelogframe">
+      <a href="../RNS/WeaveLogFrame.html">WeaveLogFrame</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveWDCL" data-name="rns::weavewdcl">
+      <a href="../RNS/WeaveWDCL.html">WeaveWDCL</a>
+      
+    </li>
+  
+  <li class=" " data-id="rns/RNS/WeaveWDCLConnection" data-name="rns::weavewdclconnection">
+      <a href="../RNS/WeaveWDCLConnection.html">WeaveWDCLConnection</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">
+    class
+  </span> RNS::<wbr>Destination
+
+</h1>
+
+
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../RNS/Destination.html">RNS::Destination</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+
+
+
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>A named endpoint for sending or receiving packets, identified by a
+hash derived from the application name, aspects, and an optional identity.</p>
+
+
+
+
+
+
+
+  <h2>
+    <a id="included-modules" class="anchor" href="#included-modules">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Included Modules
+  </h2>
+  <ul class="other-types-list">
+    
+      <li class="other-type"><a href="../RNS/Destination/DestinationInterface.html">RNS::Destination::DestinationInterface</a></li>
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      rns/destination.cr
+    
+    <br/>
+  
+
+
+
+  
+    <h2>
+      <a id="constant-summary" class="anchor" href="#constant-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+      Constant Summary
+    </h2>
+  
+  <dl>
+    
+      <dt class="entry-const" id="ALLOW_ALL">
+        <strong>ALLOW_ALL</strong> = <code><span class="n">1_u8</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="ALLOW_LIST">
+        <strong>ALLOW_LIST</strong> = <code><span class="n">2_u8</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="ALLOW_NONE">
+        <strong>ALLOW_NONE</strong> = <code><span class="n">0_u8</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>─── Request policy constants ─────────────────────────────────────</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="DIRECTIONS">
+        <strong>DIRECTIONS</strong> = <code>[<span class="t">IN</span>, <span class="t">OUT</span>]</code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="GROUP">
+        <strong>GROUP</strong> = <code><span class="n">1_u8</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="IN">
+        <strong>IN</strong> = <code><span class="n">17_u8</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>─── Direction constants ──────────────────────────────────────────</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="LINK">
+        <strong>LINK</strong> = <code><span class="n">3_u8</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="OUT">
+        <strong>OUT</strong> = <code><span class="n">18_u8</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="PLAIN">
+        <strong>PLAIN</strong> = <code><span class="n">2_u8</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="PR_TAG_WINDOW">
+        <strong>PR_TAG_WINDOW</strong> = <code><span class="n">30</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>─── Ratchet constants ────────────────────────────────────────────</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="PROOF_STRATEGIES">
+        <strong>PROOF_STRATEGIES</strong> = <code>[<span class="t">PROVE_NONE</span>, <span class="t">PROVE_APP</span>, <span class="t">PROVE_ALL</span>]</code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="PROVE_ALL">
+        <strong>PROVE_ALL</strong> = <code><span class="n">35_u8</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="PROVE_APP">
+        <strong>PROVE_APP</strong> = <code><span class="n">34_u8</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="PROVE_NONE">
+        <strong>PROVE_NONE</strong> = <code><span class="n">33_u8</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>─── Proof strategy constants ─────────────────────────────────────</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="RATCHET_COUNT">
+        <strong>RATCHET_COUNT</strong> = <code><span class="n">512</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="RATCHET_INTERVAL">
+        <strong>RATCHET_INTERVAL</strong> = <code><span class="n">30</span> <span class="o">*</span> <span class="n">60</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="REQUEST_POLICIES">
+        <strong>REQUEST_POLICIES</strong> = <code>[<span class="t">ALLOW_NONE</span>, <span class="t">ALLOW_ALL</span>, <span class="t">ALLOW_LIST</span>]</code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="SINGLE">
+        <strong>SINGLE</strong> = <code><span class="n">0_u8</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>─── Type constants ───────────────────────────────────────────────</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="TYPES">
+        <strong>TYPES</strong> = <code>[<span class="t">SINGLE</span>, <span class="t">GROUP</span>, <span class="t">PLAIN</span>, <span class="t">LINK</span>]</code>
+      </dt>
+      
+    
+  </dl>
+
+
+
+  
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new%28identity%3AIdentity%7CNil%2Cdirection%3AUInt8%2Ctype%3AUInt8%2Capp_name%3AString%2Caspects%3AArray%28String%29%3D%5B%5DofString%2Cregister%3ABool%3Dtrue%29-class-method" class="signature"><strong>.new</strong>(identity : Identity | Nil, direction : UInt8, type : UInt8, app_name : String, aspects : Array(String) = <span class="o">[]</span> <span class="k">of</span> <span class="t">String</span>, register : Bool = <span class="n">true</span>)</a>
+        
+          <div class="summary"><p>Creates a new destination.</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+  
+  <h2>
+    <a id="class-method-summary" class="anchor" href="#class-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Class Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#app_and_aspects_from_name%28full_name%3AString%29%3ATuple%28String%2CArray%28String%29%29-class-method" class="signature"><strong>.app_and_aspects_from_name</strong>(full_name : String) : Tuple(String, Array(String))</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#expand_name%28identity%3AIdentity%7CNil%2Capp_name%3AString%2Caspects%3AArray%28String%29%29%3AString-class-method" class="signature"><strong>.expand_name</strong>(identity : Identity | Nil, app_name : String, aspects : Array(String)) : String</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#expand_name%28identity%3AIdentity%7CNil%2Capp_name%3AString%2C%2Aaspects%3AString%29%3AString-class-method" class="signature"><strong>.expand_name</strong>(identity : Identity | Nil, app_name : String, *aspects : String) : String</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#hash%28identity_hash%3ABytes%2Capp_name%3AString%2Caspects%3AArray%28String%29%29%3ABytes-class-method" class="signature"><strong>.hash</strong>(identity_hash : Bytes, app_name : String, aspects : Array(String)) : Bytes</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#hash%28identity%3AIdentity%7CNil%2Capp_name%3AString%2Caspects%3AArray%28String%29%29%3ABytes-class-method" class="signature"><strong>.hash</strong>(identity : Identity | Nil, app_name : String, aspects : Array(String)) : Bytes</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#hash%28identity%3AIdentity%7CNil%2Capp_name%3AString%2C%2Aaspects%3AString%29%3ABytes-class-method" class="signature"><strong>.hash</strong>(identity : Identity | Nil, app_name : String, *aspects : String) : Bytes</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#hash_from_name_and_identity%28full_name%3AString%2Cidentity%3AIdentity%7CNil%29%3ABytes-class-method" class="signature"><strong>.hash_from_name_and_identity</strong>(full_name : String, identity : Identity | Nil) : Bytes</a>
+        
+          <div class="summary"><p>Derives a destination hash from a dot-separated <em>full_name</em> and an optional <em>identity</em>.</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+  
+
+  
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#accept_link_requests%3ABool-instance-method" class="signature"><strong>#accept_link_requests</strong> : Bool</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#accept_link_requests%3D%28accept_link_requests%3ABool%29-instance-method" class="signature"><strong>#accept_link_requests=</strong>(accept_link_requests : Bool)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#accepts_links%3ABool-instance-method" class="signature"><strong>#accepts_links</strong> : Bool</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#accepts_links%3D%28accepts%3ABool%29-instance-method" class="signature"><strong>#accepts_links=</strong>(accepts : Bool)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#announce%28app_data%3ABytes%7CNil%3Dnil%2Cpath_response%3ABool%3Dfalse%2Cattached_interface%3Dnil%2Ctag%3ABytes%7CNil%3Dnil%2Csend%3ABool%3Dtrue%29%3APacket%7CNil-instance-method" class="signature"><strong>#announce</strong>(app_data : Bytes | Nil = <span class="n">nil</span>, path_response : Bool = <span class="n">false</span>, attached_interface = <span class="n">nil</span>, tag : Bytes | Nil = <span class="n">nil</span>, send : Bool = <span class="n">true</span>) : Packet | Nil</a>
+        
+          <div class="summary"><p>Sends an announce packet for this destination, advertising its public key and optional <em>app_data</em> to the network.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#callbacks%3ADestinationCallbacks-instance-method" class="signature"><strong>#callbacks</strong> : DestinationCallbacks</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#callbacks%3D%28callbacks%3ADestinationCallbacks%29-instance-method" class="signature"><strong>#callbacks=</strong>(callbacks : DestinationCallbacks)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#clear_default_app_data-instance-method" class="signature"><strong>#clear_default_app_data</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#create_keys-instance-method" class="signature"><strong>#create_keys</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#decrypt%28ciphertext%3ABytes%29%3ABytes%7CNil-instance-method" class="signature"><strong>#decrypt</strong>(ciphertext : Bytes) : Bytes | Nil</a>
+        
+          <div class="summary"><p>Decrypts <em>ciphertext</em> using this destination's identity or group key.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#default_app_data%3ABytes%7CProc%28Bytes%7CNil%29%7CNil-instance-method" class="signature"><strong>#default_app_data</strong> : Bytes | Proc(Bytes | Nil) | Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#default_app_data%3D%28default_app_data%3ABytes%7CProc%28Bytes%7CNil%29%7CNil%29-instance-method" class="signature"><strong>#default_app_data=</strong>(default_app_data : Bytes | Proc(Bytes | Nil) | Nil)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#deregister_request_handler%28path%3AString%29%3ABool-instance-method" class="signature"><strong>#deregister_request_handler</strong>(path : String) : Bool</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#direction%3AUInt8-instance-method" class="signature"><strong>#direction</strong> : UInt8</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#enable_ratchets%28ratchets_path%3AString%29%3ABool-instance-method" class="signature"><strong>#enable_ratchets</strong>(ratchets_path : String) : Bool</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#encrypt%28plaintext%3ABytes%29%3ABytes-instance-method" class="signature"><strong>#encrypt</strong>(plaintext : Bytes) : Bytes</a>
+        
+          <div class="summary"><p>Encrypts <em>plaintext</em> using this destination's identity or group key.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#enforce_ratchets%3ABool-instance-method" class="signature"><strong>#enforce_ratchets</strong> : Bool</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#get_private_key%3ABytes-instance-method" class="signature"><strong>#get_private_key</strong> : Bytes</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#hash%3ABytes-instance-method" class="signature"><strong>#hash</strong> : Bytes</a>
+        
+          <div class="summary"><p>─── Instance properties ──────────────────────────────────────────</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#hash%3D%28hash%3ABytes%29-instance-method" class="signature"><strong>#hash=</strong>(hash : Bytes)</a>
+        
+          <div class="summary"><p>─── Instance properties ──────────────────────────────────────────</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#hexhash%3AString-instance-method" class="signature"><strong>#hexhash</strong> : String</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#hexhash%3D%28hexhash%3AString%29-instance-method" class="signature"><strong>#hexhash=</strong>(hexhash : String)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#identity%3AIdentity%7CNil-instance-method" class="signature"><strong>#identity</strong> : Identity | Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#latest_ratchet_id%3ABytes%7CNil-instance-method" class="signature"><strong>#latest_ratchet_id</strong> : Bytes | Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#latest_ratchet_id%3D%28latest_ratchet_id%3ABytes%7CNil%29-instance-method" class="signature"><strong>#latest_ratchet_id=</strong>(latest_ratchet_id : Bytes | Nil)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#latest_ratchet_time%3AFloat64%7CNil-instance-method" class="signature"><strong>#latest_ratchet_time</strong> : Float64 | Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#latest_ratchet_time%3D%28latest_ratchet_time%3AFloat64%7CNil%29-instance-method" class="signature"><strong>#latest_ratchet_time=</strong>(latest_ratchet_time : Float64 | Nil)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#links%3AArray%28Link%29-instance-method" class="signature"><strong>#links</strong> : Array(Link)</a>
+        
+          <div class="summary"><p>Link tracking</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#links%3D%28links%3AArray%28Link%29%29-instance-method" class="signature"><strong>#links=</strong>(links : Array(Link))</a>
+        
+          <div class="summary"><p>Link tracking</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#load_private_key%28key%3ABytes%29-instance-method" class="signature"><strong>#load_private_key</strong>(key : Bytes)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#load_public_key%28key%3ABytes%29-instance-method" class="signature"><strong>#load_public_key</strong>(key : Bytes)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#mtu%3AInt32-instance-method" class="signature"><strong>#mtu</strong> : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#mtu%3D%28mtu%3AInt32%29-instance-method" class="signature"><strong>#mtu=</strong>(mtu : Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#name%3AString-instance-method" class="signature"><strong>#name</strong> : String</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#name_hash%3ABytes-instance-method" class="signature"><strong>#name_hash</strong> : Bytes</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#proof_strategy%3AUInt8-instance-method" class="signature"><strong>#proof_strategy</strong> : UInt8</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#proof_strategy%3D%28proof_strategy%3AUInt8%29-instance-method" class="signature"><strong>#proof_strategy=</strong>(proof_strategy : UInt8)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#prv%3ACryptography%3A%3AToken%7CNil-instance-method" class="signature"><strong>#prv</strong> : Cryptography::Token | Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#prv%3D%28prv%3ACryptography%3A%3AToken%7CNil%29-instance-method" class="signature"><strong>#prv=</strong>(prv : Cryptography::Token | Nil)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#prv_bytes%3ABytes%7CNil-instance-method" class="signature"><strong>#prv_bytes</strong> : Bytes | Nil</a>
+        
+          <div class="summary"><p>GROUP key properties</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#prv_bytes%3D%28prv_bytes%3ABytes%7CNil%29-instance-method" class="signature"><strong>#prv_bytes=</strong>(prv_bytes : Bytes | Nil)</a>
+        
+          <div class="summary"><p>GROUP key properties</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#ratchet_interval%3AInt32-instance-method" class="signature"><strong>#ratchet_interval</strong> : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#ratchet_interval%3D%28ratchet_interval%3AInt32%29-instance-method" class="signature"><strong>#ratchet_interval=</strong>(ratchet_interval : Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#ratchets%3AArray%28Bytes%29%7CNil-instance-method" class="signature"><strong>#ratchets</strong> : Array(Bytes) | Nil</a>
+        
+          <div class="summary"><p>Ratchet properties</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#ratchets%3D%28ratchets%3AArray%28Bytes%29%7CNil%29-instance-method" class="signature"><strong>#ratchets=</strong>(ratchets : Array(Bytes) | Nil)</a>
+        
+          <div class="summary"><p>Ratchet properties</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#ratchets_path%3AString%7CNil-instance-method" class="signature"><strong>#ratchets_path</strong> : String | Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#ratchets_path%3D%28ratchets_path%3AString%7CNil%29-instance-method" class="signature"><strong>#ratchets_path=</strong>(ratchets_path : String | Nil)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#receive%28packet%3APacket%29%3ABool-instance-method" class="signature"><strong>#receive</strong>(packet : Packet) : Bool</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#register_request_handler%28path%3AString%2Cresponse_generator%3AProc%28String%2CBytes%7CNil%2CBytes%2CBytes%2CIdentity%7CNil%2CFloat64%2CBytes%7CNil%29%2Callow%3AUInt8%3DALLOW_NONE%2Callowed_list%3AArray%28Bytes%29%7CNil%3Dnil%2Cauto_compress%3ABool%3Dtrue%29-instance-method" class="signature"><strong>#register_request_handler</strong>(path : String, response_generator : Proc(String, Bytes | Nil, Bytes, Bytes, Identity | Nil, Float64, Bytes | Nil), allow : UInt8 = <span class="t">ALLOW_NONE</span>, allowed_list : Array(Bytes) | Nil = <span class="n">nil</span>, auto_compress : Bool = <span class="n">true</span>)</a>
+        
+          <div class="summary"><p>Registers a request handler for the given <em>path</em>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#request_handlers%3AHash%28String%2CRNS%3A%3ADestination%3A%3ARequestHandler%29-instance-method" class="signature"><strong>#request_handlers</strong> : Hash(String, RNS::Destination::RequestHandler)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#retained_ratchets%3AInt32-instance-method" class="signature"><strong>#retained_ratchets</strong> : Int32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#retained_ratchets%3D%28retained_ratchets%3AInt32%29-instance-method" class="signature"><strong>#retained_ratchets=</strong>(retained_ratchets : Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#rotate_ratchets%3ABool-instance-method" class="signature"><strong>#rotate_ratchets</strong> : Bool</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#set_default_app_data%28app_data%3ABytes%7CProc%28Bytes%7CNil%29%7CNil%3Dnil%29-instance-method" class="signature"><strong>#set_default_app_data</strong>(app_data : Bytes | Proc(Bytes | Nil) | Nil = <span class="n">nil</span>)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#set_link_established_callback%28callback%3AProc%28Link%2CNil%29%29-instance-method" class="signature"><strong>#set_link_established_callback</strong>(callback : Proc(Link, Nil))</a>
+        
+          <div class="summary"><p>Sets the callback invoked when a new <code><a href="../RNS/Link.html">Link</a></code> is established to this destination.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#set_packet_callback%28callback%3AProc%28Bytes%2CPacket%2CNil%29%29-instance-method" class="signature"><strong>#set_packet_callback</strong>(callback : Proc(Bytes, Packet, Nil))</a>
+        
+          <div class="summary"><p>Sets the callback invoked when a data packet is received at this destination.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#set_proof_requested_callback%28callback%3AProc%28Packet%2CBool%29%29-instance-method" class="signature"><strong>#set_proof_requested_callback</strong>(callback : Proc(Packet, Bool))</a>
+        
+          <div class="summary"><p>Sets the callback invoked to decide whether a proof should be sent for a packet.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#set_proof_strategy%28proof_strategy%3AUInt8%29-instance-method" class="signature"><strong>#set_proof_strategy</strong>(proof_strategy : UInt8)</a>
+        
+          <div class="summary"><p>Configures the proof strategy: <code><a href="../RNS/Destination.html#PROVE_NONE">PROVE_NONE</a></code>, <code><a href="../RNS/Destination.html#PROVE_ALL">PROVE_ALL</a></code>, or <code><a href="../RNS/Destination.html#PROVE_APP">PROVE_APP</a></code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#set_ratchet_interval%28interval%3AInt32%29%3ABool-instance-method" class="signature"><strong>#set_ratchet_interval</strong>(interval : Int32) : Bool</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#set_retained_ratchets%28retained_ratchets%3AInt32%29%3ABool-instance-method" class="signature"><strong>#set_retained_ratchets</strong>(retained_ratchets : Int32) : Bool</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#sign%28message%3ABytes%29%3ABytes%7CNil-instance-method" class="signature"><strong>#sign</strong>(message : Bytes) : Bytes | Nil</a>
+        
+          <div class="summary"><p>Signs <em>message</em> using the identity's private key.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#to_s%28io%3AIO%29%3ANil-instance-method" class="signature"><strong>#to_s</strong>(io : IO) : Nil</a>
+        
+          <div class="summary"><p>Appends a short String representation of this object which includes its class name and its object address.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#type%3AUInt8-instance-method" class="signature"><strong>#type</strong> : UInt8</a>
+        
+      </li>
+    
+  </ul>
+
+
+
+  <div class="methods-inherited">
+    
+      
+
+  <h3>Instance methods inherited from module <code><a href="../RNS/Destination/DestinationInterface.html">RNS::Destination::DestinationInterface</a></code></h3>
+  
+  
+    <a href="../RNS/Destination/DestinationInterface.html#encrypt%28plaintext%3ABytes%29%3ABytes-instance-method" class="tooltip">
+      <span>encrypt(plaintext : Bytes) : Bytes</span>
+    encrypt</a>, 
+    
+  
+    <a href="../RNS/Destination/DestinationInterface.html#hash%3ABytes-instance-method" class="tooltip">
+      <span>hash : Bytes</span>
+    hash</a>, 
+    
+  
+    <a href="../RNS/Destination/DestinationInterface.html#type%3AUInt8-instance-method" class="tooltip">
+      <span>type : UInt8</span>
+    type</a>
+    
+  
+
+
+      
+
+
+      
+
+
+      
+
+
+    
+      
+
+
+      
+
+
+      
+
+
+      
+
+
+    
+      
+
+
+      
+
+
+      
+
+
+      
+
+
+    
+  </div>
+
+  
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(identity:Identity|Nil,direction:UInt8,type:UInt8,app_name:String,aspects:Array(String)=[]ofString,register:Bool=true)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(identity : <a href="../RNS/Identity.html">Identity</a> | Nil, direction : UInt8, type : UInt8, app_name : String, aspects : Array(String) = <span class="o">[]</span> <span class="k">of</span> <span class="t">String</span>, register : Bool = <span class="n">true</span>)
+
+        <a class="method-permalink" href="#new%28identity%3AIdentity%7CNil%2Cdirection%3AUInt8%2Ctype%3AUInt8%2Capp_name%3AString%2Caspects%3AArray%28String%29%3D%5B%5DofString%2Cregister%3ABool%3Dtrue%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Creates a new destination.</p>
+<ul>
+<li><em>identity</em>: the <code><a href="../RNS/Identity.html">Identity</a></code> that owns this destination (nil for PLAIN type)</li>
+<li><em>direction</em>: <code><a href="../RNS/Destination.html#IN">IN</a></code> (receive) or <code><a href="../RNS/Destination.html#OUT">OUT</a></code> (send)</li>
+<li><em>type</em>: <code><a href="../RNS/Destination.html#SINGLE">SINGLE</a></code>, <code><a href="../RNS/Destination.html#GROUP">GROUP</a></code>, <code><a href="../RNS/Destination.html#PLAIN">PLAIN</a></code>, or <code><a href="../RNS/Destination.html#LINK">LINK</a></code></li>
+<li><em>app_name</em>: application name (no dots allowed)</li>
+<li><em>aspects</em>: additional name components appended after <em>app_name</em></li>
+<li><em>register</em>: whether to register with <code><a href="../RNS/Transport.html">Transport</a></code> immediately</li>
+</ul>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+
+
+  
+  <h2>
+    <a id="class-method-detail" class="anchor" href="#class-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Class Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="app_and_aspects_from_name(full_name:String):Tuple(String,Array(String))-class-method">
+      <div class="signature">
+        
+        def self.<strong>app_and_aspects_from_name</strong>(full_name : String) : Tuple(String, Array(String))
+
+        <a class="method-permalink" href="#app_and_aspects_from_name%28full_name%3AString%29%3ATuple%28String%2CArray%28String%29%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="expand_name(identity:Identity|Nil,app_name:String,aspects:Array(String)):String-class-method">
+      <div class="signature">
+        
+        def self.<strong>expand_name</strong>(identity : <a href="../RNS/Identity.html">Identity</a> | Nil, app_name : String, aspects : Array(String)) : String
+
+        <a class="method-permalink" href="#expand_name%28identity%3AIdentity%7CNil%2Capp_name%3AString%2Caspects%3AArray%28String%29%29%3AString-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="expand_name(identity:Identity|Nil,app_name:String,*aspects:String):String-class-method">
+      <div class="signature">
+        
+        def self.<strong>expand_name</strong>(identity : <a href="../RNS/Identity.html">Identity</a> | Nil, app_name : String, *aspects : String) : String
+
+        <a class="method-permalink" href="#expand_name%28identity%3AIdentity%7CNil%2Capp_name%3AString%2C%2Aaspects%3AString%29%3AString-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="hash(identity_hash:Bytes,app_name:String,aspects:Array(String)):Bytes-class-method">
+      <div class="signature">
+        
+        def self.<strong>hash</strong>(identity_hash : Bytes, app_name : String, aspects : Array(String)) : Bytes
+
+        <a class="method-permalink" href="#hash%28identity_hash%3ABytes%2Capp_name%3AString%2Caspects%3AArray%28String%29%29%3ABytes-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="hash(identity:Identity|Nil,app_name:String,aspects:Array(String)):Bytes-class-method">
+      <div class="signature">
+        
+        def self.<strong>hash</strong>(identity : <a href="../RNS/Identity.html">Identity</a> | Nil, app_name : String, aspects : Array(String)) : Bytes
+
+        <a class="method-permalink" href="#hash%28identity%3AIdentity%7CNil%2Capp_name%3AString%2Caspects%3AArray%28String%29%29%3ABytes-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="hash(identity:Identity|Nil,app_name:String,*aspects:String):Bytes-class-method">
+      <div class="signature">
+        
+        def self.<strong>hash</strong>(identity : <a href="../RNS/Identity.html">Identity</a> | Nil, app_name : String, *aspects : String) : Bytes
+
+        <a class="method-permalink" href="#hash%28identity%3AIdentity%7CNil%2Capp_name%3AString%2C%2Aaspects%3AString%29%3ABytes-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="hash_from_name_and_identity(full_name:String,identity:Identity|Nil):Bytes-class-method">
+      <div class="signature">
+        
+        def self.<strong>hash_from_name_and_identity</strong>(full_name : String, identity : <a href="../RNS/Identity.html">Identity</a> | Nil) : Bytes
+
+        <a class="method-permalink" href="#hash_from_name_and_identity%28full_name%3AString%2Cidentity%3AIdentity%7CNil%29%3ABytes-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Derives a destination hash from a dot-separated <em>full_name</em> and an optional <em>identity</em>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+
+
+  
+
+  
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="accept_link_requests:Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>accept_link_requests</strong> : Bool
+
+        <a class="method-permalink" href="#accept_link_requests%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="accept_link_requests=(accept_link_requests:Bool)-instance-method">
+      <div class="signature">
+        
+        def <strong>accept_link_requests=</strong>(accept_link_requests : Bool)
+
+        <a class="method-permalink" href="#accept_link_requests%3D%28accept_link_requests%3ABool%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="accepts_links:Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>accepts_links</strong> : Bool
+
+        <a class="method-permalink" href="#accepts_links%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="accepts_links=(accepts:Bool)-instance-method">
+      <div class="signature">
+        
+        def <strong>accepts_links=</strong>(accepts : Bool)
+
+        <a class="method-permalink" href="#accepts_links%3D%28accepts%3ABool%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="announce(app_data:Bytes|Nil=nil,path_response:Bool=false,attached_interface=nil,tag:Bytes|Nil=nil,send:Bool=true):Packet|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>announce</strong>(app_data : Bytes | Nil = <span class="n">nil</span>, path_response : Bool = <span class="n">false</span>, attached_interface = <span class="n">nil</span>, tag : Bytes | Nil = <span class="n">nil</span>, send : Bool = <span class="n">true</span>) : <a href="../RNS/Packet.html">Packet</a> | Nil
+
+        <a class="method-permalink" href="#announce%28app_data%3ABytes%7CNil%3Dnil%2Cpath_response%3ABool%3Dfalse%2Cattached_interface%3Dnil%2Ctag%3ABytes%7CNil%3Dnil%2Csend%3ABool%3Dtrue%29%3APacket%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sends an announce packet for this destination, advertising its public
+key and optional <em>app_data</em> to the network. Only valid for SINGLE/IN destinations.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="callbacks:DestinationCallbacks-instance-method">
+      <div class="signature">
+        
+        def <strong>callbacks</strong> : <a href="../RNS/Destination/DestinationCallbacks.html">DestinationCallbacks</a>
+
+        <a class="method-permalink" href="#callbacks%3ADestinationCallbacks-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="callbacks=(callbacks:DestinationCallbacks)-instance-method">
+      <div class="signature">
+        
+        def <strong>callbacks=</strong>(callbacks : <a href="../RNS/Destination/DestinationCallbacks.html">DestinationCallbacks</a>)
+
+        <a class="method-permalink" href="#callbacks%3D%28callbacks%3ADestinationCallbacks%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="clear_default_app_data-instance-method">
+      <div class="signature">
+        
+        def <strong>clear_default_app_data</strong>
+
+        <a class="method-permalink" href="#clear_default_app_data-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="create_keys-instance-method">
+      <div class="signature">
+        
+        def <strong>create_keys</strong>
+
+        <a class="method-permalink" href="#create_keys-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="decrypt(ciphertext:Bytes):Bytes|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>decrypt</strong>(ciphertext : Bytes) : Bytes | Nil
+
+        <a class="method-permalink" href="#decrypt%28ciphertext%3ABytes%29%3ABytes%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Decrypts <em>ciphertext</em> using this destination's identity or group key.
+Returns nil if decryption fails. PLAIN destinations return data unmodified.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="default_app_data:Bytes|Proc(Bytes|Nil)|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>default_app_data</strong> : Bytes | Proc(Bytes | Nil) | Nil
+
+        <a class="method-permalink" href="#default_app_data%3ABytes%7CProc%28Bytes%7CNil%29%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="default_app_data=(default_app_data:Bytes|Proc(Bytes|Nil)|Nil)-instance-method">
+      <div class="signature">
+        
+        def <strong>default_app_data=</strong>(default_app_data : Bytes | Proc(Bytes | Nil) | Nil)
+
+        <a class="method-permalink" href="#default_app_data%3D%28default_app_data%3ABytes%7CProc%28Bytes%7CNil%29%7CNil%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="deregister_request_handler(path:String):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>deregister_request_handler</strong>(path : String) : Bool
+
+        <a class="method-permalink" href="#deregister_request_handler%28path%3AString%29%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="direction:UInt8-instance-method">
+      <div class="signature">
+        
+        def <strong>direction</strong> : UInt8
+
+        <a class="method-permalink" href="#direction%3AUInt8-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="enable_ratchets(ratchets_path:String):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>enable_ratchets</strong>(ratchets_path : String) : Bool
+
+        <a class="method-permalink" href="#enable_ratchets%28ratchets_path%3AString%29%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="encrypt(plaintext:Bytes):Bytes-instance-method">
+      <div class="signature">
+        
+        def <strong>encrypt</strong>(plaintext : Bytes) : Bytes
+
+        <a class="method-permalink" href="#encrypt%28plaintext%3ABytes%29%3ABytes-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Encrypts <em>plaintext</em> using this destination's identity or group key.
+PLAIN destinations return data unmodified.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="enforce_ratchets:Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>enforce_ratchets</strong> : Bool
+
+        <a class="method-permalink" href="#enforce_ratchets%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="get_private_key:Bytes-instance-method">
+      <div class="signature">
+        
+        def <strong>get_private_key</strong> : Bytes
+
+        <a class="method-permalink" href="#get_private_key%3ABytes-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="hash:Bytes-instance-method">
+      <div class="signature">
+        
+        def <strong>hash</strong> : Bytes
+
+        <a class="method-permalink" href="#hash%3ABytes-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>─── Instance properties ──────────────────────────────────────────</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="hash=(hash:Bytes)-instance-method">
+      <div class="signature">
+        
+        def <strong>hash=</strong>(hash : Bytes)
+
+        <a class="method-permalink" href="#hash%3D%28hash%3ABytes%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>─── Instance properties ──────────────────────────────────────────</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="hexhash:String-instance-method">
+      <div class="signature">
+        
+        def <strong>hexhash</strong> : String
+
+        <a class="method-permalink" href="#hexhash%3AString-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="hexhash=(hexhash:String)-instance-method">
+      <div class="signature">
+        
+        def <strong>hexhash=</strong>(hexhash : String)
+
+        <a class="method-permalink" href="#hexhash%3D%28hexhash%3AString%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="identity:Identity|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>identity</strong> : <a href="../RNS/Identity.html">Identity</a> | Nil
+
+        <a class="method-permalink" href="#identity%3AIdentity%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="latest_ratchet_id:Bytes|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>latest_ratchet_id</strong> : Bytes | Nil
+
+        <a class="method-permalink" href="#latest_ratchet_id%3ABytes%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="latest_ratchet_id=(latest_ratchet_id:Bytes|Nil)-instance-method">
+      <div class="signature">
+        
+        def <strong>latest_ratchet_id=</strong>(latest_ratchet_id : Bytes | Nil)
+
+        <a class="method-permalink" href="#latest_ratchet_id%3D%28latest_ratchet_id%3ABytes%7CNil%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="latest_ratchet_time:Float64|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>latest_ratchet_time</strong> : Float64 | Nil
+
+        <a class="method-permalink" href="#latest_ratchet_time%3AFloat64%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="latest_ratchet_time=(latest_ratchet_time:Float64|Nil)-instance-method">
+      <div class="signature">
+        
+        def <strong>latest_ratchet_time=</strong>(latest_ratchet_time : Float64 | Nil)
+
+        <a class="method-permalink" href="#latest_ratchet_time%3D%28latest_ratchet_time%3AFloat64%7CNil%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="links:Array(Link)-instance-method">
+      <div class="signature">
+        
+        def <strong>links</strong> : Array(<a href="../RNS/Link.html">Link</a>)
+
+        <a class="method-permalink" href="#links%3AArray%28Link%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Link tracking</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="links=(links:Array(Link))-instance-method">
+      <div class="signature">
+        
+        def <strong>links=</strong>(links : Array(<a href="../RNS/Link.html">Link</a>))
+
+        <a class="method-permalink" href="#links%3D%28links%3AArray%28Link%29%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Link tracking</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="load_private_key(key:Bytes)-instance-method">
+      <div class="signature">
+        
+        def <strong>load_private_key</strong>(key : Bytes)
+
+        <a class="method-permalink" href="#load_private_key%28key%3ABytes%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="load_public_key(key:Bytes)-instance-method">
+      <div class="signature">
+        
+        def <strong>load_public_key</strong>(key : Bytes)
+
+        <a class="method-permalink" href="#load_public_key%28key%3ABytes%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="mtu:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>mtu</strong> : Int32
+
+        <a class="method-permalink" href="#mtu%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="mtu=(mtu:Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>mtu=</strong>(mtu : Int32)
+
+        <a class="method-permalink" href="#mtu%3D%28mtu%3AInt32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="name:String-instance-method">
+      <div class="signature">
+        
+        def <strong>name</strong> : String
+
+        <a class="method-permalink" href="#name%3AString-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="name_hash:Bytes-instance-method">
+      <div class="signature">
+        
+        def <strong>name_hash</strong> : Bytes
+
+        <a class="method-permalink" href="#name_hash%3ABytes-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="proof_strategy:UInt8-instance-method">
+      <div class="signature">
+        
+        def <strong>proof_strategy</strong> : UInt8
+
+        <a class="method-permalink" href="#proof_strategy%3AUInt8-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="proof_strategy=(proof_strategy:UInt8)-instance-method">
+      <div class="signature">
+        
+        def <strong>proof_strategy=</strong>(proof_strategy : UInt8)
+
+        <a class="method-permalink" href="#proof_strategy%3D%28proof_strategy%3AUInt8%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="prv:Cryptography::Token|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>prv</strong> : <a href="../RNS/Cryptography/Token.html">Cryptography::Token</a> | Nil
+
+        <a class="method-permalink" href="#prv%3ACryptography%3A%3AToken%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="prv=(prv:Cryptography::Token|Nil)-instance-method">
+      <div class="signature">
+        
+        def <strong>prv=</strong>(prv : <a href="../RNS/Cryptography/Token.html">Cryptography::Token</a> | Nil)
+
+        <a class="method-permalink" href="#prv%3D%28prv%3ACryptography%3A%3AToken%7CNil%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="prv_bytes:Bytes|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>prv_bytes</strong> : Bytes | Nil
+
+        <a class="method-permalink" href="#prv_bytes%3ABytes%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>GROUP key properties</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="prv_bytes=(prv_bytes:Bytes|Nil)-instance-method">
+      <div class="signature">
+        
+        def <strong>prv_bytes=</strong>(prv_bytes : Bytes | Nil)
+
+        <a class="method-permalink" href="#prv_bytes%3D%28prv_bytes%3ABytes%7CNil%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>GROUP key properties</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="ratchet_interval:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>ratchet_interval</strong> : Int32
+
+        <a class="method-permalink" href="#ratchet_interval%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="ratchet_interval=(ratchet_interval:Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>ratchet_interval=</strong>(ratchet_interval : Int32)
+
+        <a class="method-permalink" href="#ratchet_interval%3D%28ratchet_interval%3AInt32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="ratchets:Array(Bytes)|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>ratchets</strong> : Array(Bytes) | Nil
+
+        <a class="method-permalink" href="#ratchets%3AArray%28Bytes%29%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Ratchet properties</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="ratchets=(ratchets:Array(Bytes)|Nil)-instance-method">
+      <div class="signature">
+        
+        def <strong>ratchets=</strong>(ratchets : Array(Bytes) | Nil)
+
+        <a class="method-permalink" href="#ratchets%3D%28ratchets%3AArray%28Bytes%29%7CNil%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Ratchet properties</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="ratchets_path:String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>ratchets_path</strong> : String | Nil
+
+        <a class="method-permalink" href="#ratchets_path%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="ratchets_path=(ratchets_path:String|Nil)-instance-method">
+      <div class="signature">
+        
+        def <strong>ratchets_path=</strong>(ratchets_path : String | Nil)
+
+        <a class="method-permalink" href="#ratchets_path%3D%28ratchets_path%3AString%7CNil%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="receive(packet:Packet):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>receive</strong>(packet : <a href="../RNS/Packet.html">Packet</a>) : Bool
+
+        <a class="method-permalink" href="#receive%28packet%3APacket%29%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="register_request_handler(path:String,response_generator:Proc(String,Bytes|Nil,Bytes,Bytes,Identity|Nil,Float64,Bytes|Nil),allow:UInt8=ALLOW_NONE,allowed_list:Array(Bytes)|Nil=nil,auto_compress:Bool=true)-instance-method">
+      <div class="signature">
+        
+        def <strong>register_request_handler</strong>(path : String, response_generator : Proc(String, Bytes | Nil, Bytes, Bytes, <a href="../RNS/Identity.html">Identity</a> | Nil, Float64, Bytes | Nil), allow : UInt8 = <span class="t">ALLOW_NONE</span>, allowed_list : Array(Bytes) | Nil = <span class="n">nil</span>, auto_compress : Bool = <span class="n">true</span>)
+
+        <a class="method-permalink" href="#register_request_handler%28path%3AString%2Cresponse_generator%3AProc%28String%2CBytes%7CNil%2CBytes%2CBytes%2CIdentity%7CNil%2CFloat64%2CBytes%7CNil%29%2Callow%3AUInt8%3DALLOW_NONE%2Callowed_list%3AArray%28Bytes%29%7CNil%3Dnil%2Cauto_compress%3ABool%3Dtrue%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Registers a request handler for the given <em>path</em>. The <em>response_generator</em>
+proc is called when a matching request arrives; <em>allow</em> controls the access policy.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="request_handlers:Hash(String,RNS::Destination::RequestHandler)-instance-method">
+      <div class="signature">
+        
+        def <strong>request_handlers</strong> : Hash(String, <a href="../RNS/Destination/RequestHandler.html">RNS::Destination::RequestHandler</a>)
+
+        <a class="method-permalink" href="#request_handlers%3AHash%28String%2CRNS%3A%3ADestination%3A%3ARequestHandler%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="retained_ratchets:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>retained_ratchets</strong> : Int32
+
+        <a class="method-permalink" href="#retained_ratchets%3AInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="retained_ratchets=(retained_ratchets:Int32)-instance-method">
+      <div class="signature">
+        
+        def <strong>retained_ratchets=</strong>(retained_ratchets : Int32)
+
+        <a class="method-permalink" href="#retained_ratchets%3D%28retained_ratchets%3AInt32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="rotate_ratchets:Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>rotate_ratchets</strong> : Bool
+
+        <a class="method-permalink" href="#rotate_ratchets%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="set_default_app_data(app_data:Bytes|Proc(Bytes|Nil)|Nil=nil)-instance-method">
+      <div class="signature">
+        
+        def <strong>set_default_app_data</strong>(app_data : Bytes | Proc(Bytes | Nil) | Nil = <span class="n">nil</span>)
+
+        <a class="method-permalink" href="#set_default_app_data%28app_data%3ABytes%7CProc%28Bytes%7CNil%29%7CNil%3Dnil%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="set_link_established_callback(callback:Proc(Link,Nil))-instance-method">
+      <div class="signature">
+        
+        def <strong>set_link_established_callback</strong>(callback : Proc(<a href="../RNS/Link.html">Link</a>, Nil))
+
+        <a class="method-permalink" href="#set_link_established_callback%28callback%3AProc%28Link%2CNil%29%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sets the callback invoked when a new <code><a href="../RNS/Link.html">Link</a></code> is established to this destination.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="set_packet_callback(callback:Proc(Bytes,Packet,Nil))-instance-method">
+      <div class="signature">
+        
+        def <strong>set_packet_callback</strong>(callback : Proc(Bytes, <a href="../RNS/Packet.html">Packet</a>, Nil))
+
+        <a class="method-permalink" href="#set_packet_callback%28callback%3AProc%28Bytes%2CPacket%2CNil%29%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sets the callback invoked when a data packet is received at this destination.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="set_proof_requested_callback(callback:Proc(Packet,Bool))-instance-method">
+      <div class="signature">
+        
+        def <strong>set_proof_requested_callback</strong>(callback : Proc(<a href="../RNS/Packet.html">Packet</a>, Bool))
+
+        <a class="method-permalink" href="#set_proof_requested_callback%28callback%3AProc%28Packet%2CBool%29%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sets the callback invoked to decide whether a proof should be sent for a packet.
+Used when <code><a href="../RNS/Destination.html#proof_strategy%3AUInt8-instance-method">#proof_strategy</a></code> is <code><a href="../RNS/Destination.html#PROVE_APP">PROVE_APP</a></code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="set_proof_strategy(proof_strategy:UInt8)-instance-method">
+      <div class="signature">
+        
+        def <strong>set_proof_strategy</strong>(proof_strategy : UInt8)
+
+        <a class="method-permalink" href="#set_proof_strategy%28proof_strategy%3AUInt8%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Configures the proof strategy: <code><a href="../RNS/Destination.html#PROVE_NONE">PROVE_NONE</a></code>, <code><a href="../RNS/Destination.html#PROVE_ALL">PROVE_ALL</a></code>, or <code><a href="../RNS/Destination.html#PROVE_APP">PROVE_APP</a></code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="set_ratchet_interval(interval:Int32):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>set_ratchet_interval</strong>(interval : Int32) : Bool
+
+        <a class="method-permalink" href="#set_ratchet_interval%28interval%3AInt32%29%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="set_retained_ratchets(retained_ratchets:Int32):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>set_retained_ratchets</strong>(retained_ratchets : Int32) : Bool
+
+        <a class="method-permalink" href="#set_retained_ratchets%28retained_ratchets%3AInt32%29%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="sign(message:Bytes):Bytes|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>sign</strong>(message : Bytes) : Bytes | Nil
+
+        <a class="method-permalink" href="#sign%28message%3ABytes%29%3ABytes%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Signs <em>message</em> using the identity's private key. Only works for SINGLE destinations.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="to_s(io:IO):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>to_s</strong>(io : IO) : Nil
+
+        <a class="method-permalink" href="#to_s%28io%3AIO%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+            <div class="doc-inherited">
+              Description copied from class Reference
+            </div>
+          
+          <p>Appends a short String representation of this object
+which includes its class name and its object address.</p>
+<pre><code class="language-crystal"><span class="k">class</span> <span class="t">Person</span>
+  <span class="k">def</span> <span class="m">initialize</span>(@name : <span class="t">String</span>, @age : <span class="t">Int32</span>)
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="t">Person</span>.new(<span class="s">&quot;John&quot;</span>, <span class="n">32</span>).to_s <span class="c"># =&gt; #&lt;Person:0x10a199f20&gt;</span></code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="type:UInt8-instance-method">
+      <div class="signature">
+        
+        def <strong>type</strong> : UInt8
+
+        <a class="method-permalink" href="#type%3AUInt8-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+
+
+
+</div>
+
+</body>
+</html>

@@ -1,15 +1,19 @@
 module RNS
   class TypeError < Exception; end
 
+  # A named endpoint for sending or receiving packets, identified by a
+  # hash derived from the application name, aspects, and an optional identity.
   class Destination
-    # ─── Destination-like interface for use by Packet ─────────────────
+    # Interface that `Packet` uses to interact with any destination-like object.
+    # Requires `#hash`, `#type`, and `#encrypt`.
     module DestinationInterface
       abstract def hash : Bytes
       abstract def type : UInt8
       abstract def encrypt(plaintext : Bytes) : Bytes
     end
 
-    # Lightweight stub used for testing Packet independently
+    # Lightweight test stub implementing `DestinationInterface` so `Packet`
+    # can be exercised without a fully constructed `Destination`.
     class Stub
       include DestinationInterface
 
@@ -125,6 +129,14 @@ module RNS
     @request_handlers : Hash(String, RequestHandler)
 
     # ─── Constructor ──────────────────────────────────────────────────
+
+    # Creates a new destination.
+    # - *identity*: the `Identity` that owns this destination (nil for PLAIN type)
+    # - *direction*: `IN` (receive) or `OUT` (send)
+    # - *type*: `SINGLE`, `GROUP`, `PLAIN`, or `LINK`
+    # - *app_name*: application name (no dots allowed)
+    # - *aspects*: additional name components appended after *app_name*
+    # - *register*: whether to register with `Transport` immediately
     def initialize(identity : Identity?, @direction : UInt8, @type : UInt8,
                    app_name : String, aspects : Array(String) = [] of String,
                    register : Bool = true)
@@ -246,6 +258,7 @@ module RNS
       {components[0], components[1..]}
     end
 
+    # Derives a destination hash from a dot-separated *full_name* and an optional *identity*.
     def self.hash_from_name_and_identity(full_name : String, identity : Identity?) : Bytes
       app_name, aspects = app_and_aspects_from_name(full_name)
       hash(identity, app_name, aspects)
@@ -425,6 +438,8 @@ module RNS
 
     # ─── Announce ─────────────────────────────────────────────────────
 
+    # Sends an announce packet for this destination, advertising its public
+    # key and optional *app_data* to the network. Only valid for SINGLE/IN destinations.
     def announce(app_data : Bytes? = nil, path_response : Bool = false,
                  attached_interface = nil, tag : Bytes? = nil, send : Bool = true) : Packet?
       unless @type == SINGLE
@@ -545,18 +560,23 @@ module RNS
       @accept_link_requests = accepts
     end
 
+    # Sets the callback invoked when a new `Link` is established to this destination.
     def set_link_established_callback(callback : Proc(Link, Nil))
       @callbacks.link_established = callback
     end
 
+    # Sets the callback invoked when a data packet is received at this destination.
     def set_packet_callback(callback : Proc(Bytes, Packet, Nil))
       @callbacks.packet = callback
     end
 
+    # Sets the callback invoked to decide whether a proof should be sent for a packet.
+    # Used when `proof_strategy` is `PROVE_APP`.
     def set_proof_requested_callback(callback : Proc(Packet, Bool))
       @callbacks.proof_requested = callback
     end
 
+    # Configures the proof strategy: `PROVE_NONE`, `PROVE_ALL`, or `PROVE_APP`.
     def set_proof_strategy(proof_strategy : UInt8)
       unless PROOF_STRATEGIES.includes?(proof_strategy)
         raise TypeError.new("Unsupported proof strategy")
@@ -566,6 +586,8 @@ module RNS
 
     # ─── Request handlers ─────────────────────────────────────────────
 
+    # Registers a request handler for the given *path*. The *response_generator*
+    # proc is called when a matching request arrives; *allow* controls the access policy.
     def register_request_handler(path : String,
                                  response_generator : Proc(String, Bytes?, Bytes, Bytes, Identity?, Float64, Bytes?),
                                  allow : UInt8 = ALLOW_NONE,
@@ -682,6 +704,8 @@ module RNS
 
     # ─── Encryption / Decryption ──────────────────────────────────────
 
+    # Encrypts *plaintext* using this destination's identity or group key.
+    # PLAIN destinations return data unmodified.
     def encrypt(plaintext : Bytes) : Bytes
       if @type == PLAIN
         return plaintext
@@ -716,6 +740,8 @@ module RNS
       plaintext
     end
 
+    # Decrypts *ciphertext* using this destination's identity or group key.
+    # Returns nil if decryption fails. PLAIN destinations return data unmodified.
     def decrypt(ciphertext : Bytes) : Bytes?
       if @type == PLAIN
         return ciphertext
@@ -779,6 +805,7 @@ module RNS
 
     # ─── Signing ──────────────────────────────────────────────────────
 
+    # Signs *message* using the identity's private key. Only works for SINGLE destinations.
     def sign(message : Bytes) : Bytes?
       if @type == SINGLE
         id = @identity

@@ -1,7 +1,15 @@
 require "msgpack"
 
 module RNS
+  # Handles large data transfers over `Link` instances using segmentation,
+  # sliding-window flow control, and adaptive rate adjustment. Data is split
+  # into parts, each verified by a map hash, and transmitted with automatic
+  # retry and congestion back-off. Supports compression, encryption, metadata,
+  # and multi-segment transfers for payloads that exceed a single advertisement.
   class Resource
+    # Window parameters controlling how many unacknowledged parts may be
+    # in flight. The window grows or shrinks based on measured throughput
+    # (see `FAST_RATE_THRESHOLD` / `VERY_SLOW_RATE_THRESHOLD`).
     # ─── Window constants ──────────────────────────────────────────
     WINDOW                   =  4
     WINDOW_MIN               =  2
@@ -13,10 +21,14 @@ module RNS
     VERY_SLOW_RATE_THRESHOLD = 2
     WINDOW_FLEXIBILITY       = 4
 
+    # Throughput thresholds (bytes/sec) used to classify the link speed
+    # and select the appropriate window ceiling.
     # ─── Rate constants ────────────────────────────────────────────
     RATE_FAST      = (50 * 1000) / 8 # 50 Kbps in bytes/sec = 6250
     RATE_VERY_SLOW = (2 * 1000) / 8  # 2 Kbps in bytes/sec = 250
 
+    # Size limits governing part hashing, maximum transfer sizes, and the
+    # automatic compression threshold.
     # ─── Size constants ────────────────────────────────────────────
     MAPHASH_LEN      = 4
     SDU              = Packet::MDU
@@ -27,6 +39,8 @@ module RNS
     METADATA_MAX_SIZE       = 16 * 1024 * 1024 - 1 # 16777215 (0xFFFFFF)
     AUTO_COMPRESS_MAX_SIZE  = 64 * 1024 * 1024
 
+    # Timeout multipliers, retry budgets, and grace periods that govern
+    # how long to wait for parts/proofs before retransmitting or failing.
     # ─── Timeout and retry constants ───────────────────────────────
     PART_TIMEOUT_FACTOR           =    4
     PART_TIMEOUT_FACTOR_AFTER_RTT =    2
@@ -39,10 +53,13 @@ module RNS
     PER_RETRY_DELAY               =  0.5
     WATCHDOG_MAX_SLEEP            =  1.0
 
+    # Flags indicating whether all hashmap segments have been delivered.
     # ─── Hashmap flags ─────────────────────────────────────────────
     HASHMAP_IS_NOT_EXHAUSTED = 0x00_u8
     HASHMAP_IS_EXHAUSTED     = 0xFF_u8
 
+    # Transfer lifecycle states. Values are ordered so that `status < COMPLETE`
+    # means the transfer is still in progress.
     # ─── Status constants ──────────────────────────────────────────
     STATUS_NONE    = 0x00_u8
     QUEUED         = 0x01_u8
@@ -145,6 +162,8 @@ module RNS
 
     # ─── Static methods ────────────────────────────────────────────
 
+    # Declines an incoming resource advertisement by sending a `RESOURCE_RCL`
+    # packet back to the advertising peer. The resource is never allocated.
     def self.reject(advertisement_packet : Packet)
       adv = ResourceAdvertisement.unpack(advertisement_packet.plaintext || advertisement_packet.data)
       link = advertisement_packet.destination.as?(Link)
@@ -156,6 +175,10 @@ module RNS
       RNS.log("An error occurred while rejecting advertised resource: #{ex}", RNS::LOG_ERROR)
     end
 
+    # Accepts an incoming resource advertisement and constructs a receiver-side
+    # `Resource`. Initialises the hashmap, starts the watchdog fiber, and
+    # returns the new resource (or `nil` if the link is unavailable or a
+    # transfer for the same hash is already in progress).
     def self.accept(advertisement_packet : Packet, callback : Proc(Resource, Nil)? = nil,
                     progress_callback : Proc(Resource, Nil)? = nil, request_id : Bytes? = nil) : Resource?
       begin
@@ -333,6 +356,9 @@ module RNS
     end
 
     # ─── Sender constructor ────────────────────────────────────────
+    # Creates a sender-side resource. The *data* is optionally compressed,
+    # split into SDU-sized parts with map hashes, and (when *advertise* is
+    # true) immediately advertised to the remote peer.
     def initialize(data : Bytes | IO | Nil, link : Link,
                    metadata : MessagePack::Any? = nil,
                    advertise : Bool = true,
@@ -669,6 +695,9 @@ module RNS
 
     # ─── Advertise ─────────────────────────────────────────────────
 
+    # Spawns a fiber that sends the `ResourceAdvertisement` for this resource
+    # over its link. If the resource has multiple segments, a second fiber
+    # begins preparing the next segment in parallel.
     def advertise
       spawn { advertise_job }
 
@@ -1371,6 +1400,9 @@ module RNS
 
     # ─── Cancel ────────────────────────────────────────────────────
 
+    # Aborts the transfer if it has not already completed. Sends a
+    # `RESOURCE_ICL` cancel packet when this side is the initiator,
+    # deregisters the resource from the link, and invokes the callback.
     def cancel
       if @status < COMPLETE
         @status = FAILED
@@ -1535,6 +1567,11 @@ module RNS
   # ResourceAdvertisement — pack/unpack resource metadata
   # ═══════════════════════════════════════════════════════════════
 
+  # Encapsulates the metadata exchanged during resource transfer negotiation.
+  # Holds transfer size, part count, hashes, flags (encryption, compression,
+  # split, request/response), segment info, and the initial hashmap slice.
+  # Serialised to/from MessagePack for transmission inside `RESOURCE_ADV`
+  # packets.
   class ResourceAdvertisement
     OVERHEAD             = 134
     HASHMAP_MAX_LEN      = ((Link::MDU - OVERHEAD) // Resource::MAPHASH_LEN).to_i32

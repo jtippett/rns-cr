@@ -3,6 +3,8 @@ module RNS
   # System message type identifiers (reserved range >= 0xf000)
   # ═══════════════════════════════════════════════════════════════
 
+  # Reserved message type IDs used internally by the Channel system.
+  # User-defined message types must use values below `0xf000`.
   module SystemMessageTypes
     SMT_STREAM_DATA = 0xff00_u16
   end
@@ -11,6 +13,8 @@ module RNS
   # ChannelException type codes
   # ═══════════════════════════════════════════════════════════════
 
+  # Numeric type codes for `ChannelException`, identifying the specific
+  # error condition that occurred during channel operations.
   module CEType
     ME_NO_MSG_TYPE      = 0
     ME_INVALID_MSG_TYPE = 1
@@ -24,6 +28,9 @@ module RNS
   # Custom exception with type code
   # ═══════════════════════════════════════════════════════════════
 
+  # An exception raised by channel operations, carrying a `CEType` code
+  # that indicates the kind of failure (e.g. missing message type,
+  # link not ready, message too large).
   class ChannelException < Exception
     getter type : Int32
 
@@ -36,6 +43,9 @@ module RNS
   # Message state constants
   # ═══════════════════════════════════════════════════════════════
 
+  # Delivery state constants for messages tracked by a `Channel`.
+  # Used to determine whether a message is new, in-flight, delivered,
+  # or has permanently failed.
   module MessageState
     MSGSTATE_NEW       = 0
     MSGSTATE_SENT      = 1
@@ -47,6 +57,12 @@ module RNS
   # Abstract base class for channel messages
   # ═══════════════════════════════════════════════════════════════
 
+  # Abstract base for all messages sent over a `Channel`.
+  #
+  # Subclasses must define a `class_getter msgtype : UInt16` with a
+  # unique value below `0xf000` (values at or above that are reserved
+  # for system messages) and implement `#pack` / `#unpack` for
+  # serialization.
   abstract class MessageBase
     # Subclasses must define: class_getter msgtype : UInt16
     # MSGTYPE must be unique and < 0xf000 (values >= 0xf000 reserved)
@@ -60,6 +76,12 @@ module RNS
   # Matches Python's ChannelOutletBase(ABC, Generic[TPacket])
   # ═══════════════════════════════════════════════════════════════
 
+  # Abstract transport-layer interface that a `Channel` uses to send
+  # and receive packets. Generic over `TPacket`, the concrete packet
+  # type provided by the underlying transport (e.g. `Link`).
+  #
+  # Implementations must handle raw byte transmission, retransmission,
+  # RTT measurement, packet state tracking, and delivery/timeout callbacks.
   abstract class ChannelOutletBase(TPacket)
     abstract def send(raw : Bytes) : TPacket
     abstract def resend(packet : TPacket) : TPacket
@@ -77,6 +99,12 @@ module RNS
   # Envelope — internal wrapper for transporting messages
   # ═══════════════════════════════════════════════════════════════
 
+  # Internal wrapper that pairs a `MessageBase` with its wire-format
+  # representation, sequence number, and retry tracking state.
+  #
+  # `Envelope` handles packing messages into a 6-byte header
+  # (msgtype + sequence + length) followed by the payload, and
+  # unpacking received bytes back into typed message objects.
   class Envelope(TPacket)
     property ts : Float64
     property message : MessageBase?
@@ -146,6 +174,14 @@ module RNS
   # Generic over TPacket matching the outlet's packet type
   # ═══════════════════════════════════════════════════════════════
 
+  # Provides ordered, reliable, bidirectional message delivery over a
+  # `ChannelOutletBase` transport (typically a Link).
+  #
+  # Messages are assigned monotonically increasing 16-bit sequence numbers,
+  # transmitted with automatic retry on timeout, and delivered to registered
+  # callbacks in sequence order. A sliding window controls how many
+  # unacknowledged messages may be in flight; the window size adapts
+  # dynamically based on measured RTT.
   class Channel(TPacket)
     # ─── Window constants ───────────────────────────────────────
     WINDOW                  =  2
@@ -203,7 +239,9 @@ module RNS
       end
     end
 
-    # Register a message class for reception over this Channel.
+    # Registers a `MessageBase` subclass so the channel can instantiate
+    # it when a matching `msgtype` is received. The class must have a
+    # `msgtype` value below `0xf000`; system-reserved types are rejected.
     def register_message_type(message_class : MessageBase.class)
       _register_message_type(message_class, is_system_type: false)
     end
@@ -222,9 +260,9 @@ module RNS
       end
     end
 
-    # Add a handler for incoming messages.
-    # Signature: (message : MessageBase) -> Bool
-    # Return true to stop processing further handlers.
+    # Adds a callback invoked for each incoming message, in registration
+    # order. Return `true` from the callback to consume the message and
+    # stop further handler dispatch; return `false` to pass it along.
     def add_message_handler(callback : MessageBase -> Bool)
       @lock.synchronize do
         unless @message_callbacks.includes?(callback)
@@ -233,22 +271,26 @@ module RNS
       end
     end
 
-    # Remove a previously added handler.
+    # Removes a previously registered message handler. No-op if the
+    # callback is not currently registered.
     def remove_message_handler(callback : MessageBase -> Bool)
       @lock.synchronize do
         @message_callbacks.delete(callback)
       end
     end
 
-    # Maximum Data Unit available for messages.
-    # Accounts for 6-byte envelope header (msgtype + sequence + length).
+    # Returns the Maximum Data Unit available for message payloads,
+    # which is the outlet's MDU minus the 6-byte envelope header
+    # (2 bytes each for msgtype, sequence, and length). Capped at `0xFFFF`.
     def mdu : Int32
       m = @outlet.mdu - 6
       m = 0xFFFF if m > 0xFFFF
       m
     end
 
-    # Check if Channel is ready to send.
+    # Returns `true` when the channel can accept another outbound message.
+    # This requires the underlying outlet to be usable and the number of
+    # outstanding (undelivered) messages to be below the current window size.
     def is_ready_to_send? : Bool
       return false unless @outlet.is_usable
 
@@ -268,7 +310,14 @@ module RNS
       true
     end
 
-    # Send a message. Raises ChannelException if not ready.
+    # Packs and transmits a message over the channel. The message is
+    # assigned the next sequence number, serialized via `Envelope#pack`,
+    # and handed to the outlet. Delivery and timeout callbacks are
+    # installed for automatic retry.
+    #
+    # Raises `ChannelException` (`ME_LINK_NOT_READY`) if the channel
+    # is not ready, or (`ME_TOO_BIG`) if the packed message exceeds
+    # the outlet's MDU.
     def send(message : MessageBase) : Envelope(TPacket)
       envelope : Envelope(TPacket)? = nil
 

@@ -1,6 +1,14 @@
 module RNS
+  # Main system module for the Reticulum Network Stack.
+  #
+  # Holds protocol constants, path configuration, and class-level state
+  # for transport, identity, and interface management. Provides the
+  # singleton accessor for `ReticulumInstance`, signal handlers for
+  # graceful shutdown, and the default configuration template.
   module Reticulum
     # ─── Protocol constants ──────────────────────────────────────────
+    # Core protocol limits: MTU, announce queue depth, header sizes,
+    # and the derived Maximum Data Unit (MDU) available to payloads.
     MTU                = 500
     LINK_MTU_DISCOVERY = true
 
@@ -24,6 +32,8 @@ module RNS
     IFAC_SALT = "adf54d882c9a9b80771eb4995d702d4a3e733391b2a0f53f416d9f907e55cff8".hexbytes
 
     # ─── Time interval constants ─────────────────────────────────────
+    # Intervals (in seconds) for background cache cleaning, data
+    # persistence, and resource expiration.
     RESOURCE_CACHE            = 24 * 60 * 60 # 86400
     JOB_INTERVAL              = 5 * 60       # 300
     CLEAN_INTERVAL            = 15 * 60      # 900
@@ -285,6 +295,10 @@ module RNS
     end
 
     # ─── Exit handler ────────────────────────────────────────────────
+
+    # Performs graceful shutdown: detaches interfaces, flushes transport
+    # state, persists identity data, and silences logging. Safe to call
+    # multiple times; only the first invocation has effect.
     def self.exit_handler
       unless @@exit_handler_ran
         @@exit_handler_ran = true
@@ -308,6 +322,9 @@ module RNS
     end
 
     # ─── Default config template (matches Python exactly) ────────────
+
+    # INI-style default configuration written when no config file exists.
+    # Matches the Python reference implementation byte-for-byte.
     DEFAULT_RNS_CONFIG = <<-'CONFIG'
     # This is the default Reticulum config file.
     # You should probably edit it to include any additional,

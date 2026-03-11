@@ -1466,6 +1466,14 @@ module RNS
       interface.final_init
     end
 
+    # Removes a previously added interface. Deregisters from Transport,
+    # detaches, and tears down the interface.
+    def remove_interface(interface : Interface)
+      Transport.deregister_interface(interface.get_hash)
+      interface.detach
+      interface.teardown
+    end
+
     # Check if data should be persisted (used by other modules)
     def should_persist_data? : Bool
       Time.utc.to_unix_f > @last_data_persist + Reticulum::GRACIOUS_PERSIST_INTERVAL

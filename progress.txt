@@ -1838,3 +1838,42 @@
     - compute_logdest: LOG_STDOUT default, LOG_FILE in service mode
     - version_string: contains "rnsd" and version number
   - Ran crystal spec — 2523 examples, 0 failures (1 pre-existing flaky UDP test), 0 errors, 5 pending
+
+2026-03-11 — Task 10.2: rnstatus and rnpath utilities
+  - Created src/rns/rnstatus.cr (617 lines) — full rnstatus utility module:
+    - Rnstatus::Args class with 17 CLI options matching Python argparse behavior
+    - parse_args() with combined short-flag support (-aAltrj, -vvv, etc.)
+    - speed_str() and size_str() formatting matching Python exactly
+    - mode_str() for interface mode display
+    - InterfaceStat and TransportStats records for structured data
+    - get_interface_stats() collecting from Transport instance
+    - sort_interfaces() supporting 10 sort criteria (rate, rx, tx, traffic, announces, etc.)
+    - hidden_interface?() to filter client-only interfaces by default
+    - format_interface() producing Python-matching multi-line output per interface
+    - format_json() for JSON output mode
+    - format_status() assembling full output with filtering, sorting, totals, transport info
+    - main() entry point with monitor mode (continuous refresh) and version display
+  - Created src/rns/rnpath.cr (464 lines) — full rnpath utility module:
+    - Rnpath::Args class with 20 CLI options matching Python argparse behavior
+    - parse_args() with combined short-flag support and two positional args
+    - PathTableEntry and RateTableEntry records
+    - get_path_table() and get_rate_table() collecting from Transport
+    - drop_path(), drop_all_via(), drop_announce_queues() operations
+    - pretty_date() matching Python's relative time formatting
+    - parse_hash() with validation matching Python's dest_len check
+    - format_path_table() with sorting by interface/hops, destination filtering
+    - format_rate_table() with rate violation and blocked_until display
+    - format_path_found() for path request results
+    - main() entry point with path request mode (spinner animation), table/rates/drop modes
+  - Created src/rnstatus.cr and src/rnpath.cr entry points
+  - Added rnstatus and rnpath targets to shard.yml
+  - Updated src/rns.cr to require both modules
+  - Created spec/rns/rnstatus_spec.cr (760 lines, 76 examples):
+    - version_string, parse_args (18 cases), speed_str, size_str, mode_str,
+      hidden_interface?, format_interface (9 cases), sort_interfaces (9 cases),
+      format_status (6 cases including filtering, hidden, link table)
+  - Created spec/rns/rnpath_spec.cr (630 lines, 55 examples):
+    - version_string, parse_args (22 cases), parse_hash (3 cases), pretty_date (8 cases),
+      format_path_table (5 cases), format_rate_table (5 cases), format_path_found (2 cases),
+      path table integration (5 cases), stress tests (3 cases with 50+ entries)
+  - Ran crystal spec — 131 examples, 0 failures, 0 errors

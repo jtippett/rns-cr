@@ -302,7 +302,7 @@ This is the largest module (3312 LOC). Split into manageable sub-modules.
 - [x] **10.1 — rnsd daemon**
   Port `RNS/Utilities/rnsd.py` (564 LOC) → Crystal CLI binary target. Add a `targets` section to `shard.yml` for `rnsd`. Implement: argument parsing (config dir, log level, daemon mode), Reticulum initialization, signal handling (SIGINT, SIGTERM for graceful shutdown), background execution. This is the core daemon that runs the RNS transport layer. Write integration spec that starts/stops the daemon.
 
-- [ ] **10.2 — rnstatus and rnpath utilities**
+- [x] **10.2 — rnstatus and rnpath utilities**
   Port `RNS/Utilities/rnstatus.py` (687 LOC) → `rnstatus` binary target. Display interface status, transport stats, announce table, path table. Port `RNS/Utilities/rnpath.py` (548 LOC) → `rnpath` binary target. Path lookup, path request, path table display. Both connect to a running rnsd instance. Write basic specs for output formatting.
 
 - [ ] **10.3 — rnprobe and rnid utilities**

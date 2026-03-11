@@ -1393,6 +1393,45 @@ module RNS
       RNS.log("Removed #{stale.size} blackholed identities", RNS::LOG_VERBOSE) if stale.size > 0
     end
 
+    # Blackhole an identity so that its announces and packets are
+    # dropped.  Returns true on success, nil if already blackholed,
+    # false on error.  Matches Python Transport.blackhole_identity().
+    def self.blackhole_identity(identity_hash : Bytes, until_time : Float64? = nil, reason : String? = nil) : Bool?
+      hex = identity_hash.hexstring
+      if !@@blackholed_identities.has_key?(hex)
+        source_hash = @@identity.try(&.hash) || Bytes.empty
+        entry = Hash(String, String | Float64 | Nil).new
+        entry["source"] = source_hash.hexstring
+        entry["until"] = until_time
+        entry["reason"] = reason
+        @@blackholed_identities[hex] = entry
+        RNS.log("Blackholed identity #{RNS.prettyhexrep(identity_hash)}", RNS::LOG_INFO)
+        true
+      else
+        nil
+      end
+    rescue ex
+      RNS.log("Error while blackholing identity: #{ex.message}", RNS::LOG_ERROR)
+      false
+    end
+
+    # Remove an identity from the blackhole list.
+    # Returns true on success, nil if not blackholed, false on error.
+    # Matches Python Transport.unblackhole_identity().
+    def self.unblackhole_identity(identity_hash : Bytes) : Bool?
+      hex = identity_hash.hexstring
+      if @@blackholed_identities.has_key?(hex)
+        @@blackholed_identities.delete(hex)
+        RNS.log("Unblackholed identity #{RNS.prettyhexrep(identity_hash)}", RNS::LOG_INFO)
+        true
+      else
+        nil
+      end
+    rescue ex
+      RNS.log("Error while unblackholing identity: #{ex.message}", RNS::LOG_ERROR)
+      false
+    end
+
     # ════════════════════════════════════════════════════════════════
     #  Packet Caching
     # ════════════════════════════════════════════════════════════════

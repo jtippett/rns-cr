@@ -65,6 +65,8 @@ require "./rns/discovery"
 
 # ── 7. Utilities / CLI modules ────────────────────────────────────────
 require "./rns/rnsd"
+require "./rns/rnstatus"
+require "./rns/rnpath"
 
 # ═══════════════════════════════════════════════════════════════════════
 # Module-level public API

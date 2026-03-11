@@ -24,6 +24,10 @@ dependencies:
 targets:
   rnsd:
     main: src/rnsd.cr
+  rnstatus:
+    main: src/rnstatus.cr
+  rnpath:
+    main: src/rnpath.cr
 
 development_dependencies:
   ameba:

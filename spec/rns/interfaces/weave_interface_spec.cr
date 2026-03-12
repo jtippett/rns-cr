@@ -251,7 +251,7 @@ describe RNS::WeaveDevice do
       addr = Bytes[0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08]
       device.endpoint_alive(addr)
       first_alive = device.endpoints[addr].alive
-      sleep(0.01)
+      sleep(10.milliseconds)
       device.endpoint_alive(addr)
       device.endpoints[addr].alive.should be >= first_alive
     end

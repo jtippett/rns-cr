@@ -10,8 +10,8 @@ end
 
 # Helper to wait for a condition with timeout
 private def wait_for(timeout = 2.seconds, interval = 10.milliseconds, &)
-  deadline = Time.monotonic + timeout
-  while Time.monotonic < deadline
+  deadline = Time.instant + timeout
+  while Time.instant < deadline
     return if yield
     sleep interval
   end

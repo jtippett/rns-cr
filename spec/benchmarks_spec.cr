@@ -395,7 +395,7 @@ describe "Benchmarks" do
   describe "Benchmark.ips compatibility" do
     it "Benchmark.ips can be called" do
       # Verify the Benchmark module works for our usage
-      Benchmark.ips(warmup: 0.01, calculation: 0.01) do |x|
+      Benchmark.ips(warmup: 10.milliseconds, calculation: 10.milliseconds) do |x|
         x.report("noop") { 1 + 1 }
       end
     end

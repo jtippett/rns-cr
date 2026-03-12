@@ -393,7 +393,8 @@ describe RNS::KISSInterface do
 
       # Create pipe for simulating serial I/O
       r, w = IO.pipe
-      rd_fd = IO::FileDescriptor.new(r.fd, blocking: false)
+      rd_fd = IO::FileDescriptor.new(r.fd)
+      rd_fd.blocking = false
 
       iface.serial_io = rd_fd
       iface.running = true
@@ -783,7 +784,7 @@ describe RNS::KISSInterface do
       r, w = IO.pipe
 
       iface = RNS::KISSInterface.new(name: "kiss0", port: "/dev/x", open_port: false)
-      wr_fd = IO::FileDescriptor.new(w.fd, blocking: false)
+      wr_fd = IO::FileDescriptor.new(w.fd).tap { |fd| fd.blocking = false }
       iface.serial_io = wr_fd
       iface.online = true
       iface.interface_ready = true
@@ -814,7 +815,7 @@ describe RNS::KISSInterface do
       r, w = IO.pipe
 
       iface = RNS::KISSInterface.new(name: "kiss0", port: "/dev/x", open_port: false)
-      wr_fd = IO::FileDescriptor.new(w.fd, blocking: false)
+      wr_fd = IO::FileDescriptor.new(w.fd).tap { |fd| fd.blocking = false }
       iface.serial_io = wr_fd
       iface.online = true
       iface.interface_ready = true
@@ -1273,7 +1274,7 @@ describe RNS::AX25KISSInterface do
         ssid: 5,
         open_port: false
       )
-      wr_fd = IO::FileDescriptor.new(w.fd, blocking: false)
+      wr_fd = IO::FileDescriptor.new(w.fd).tap { |fd| fd.blocking = false }
       iface.serial_io = wr_fd
       iface.online = true
       iface.interface_ready = true

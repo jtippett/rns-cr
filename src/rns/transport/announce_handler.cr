@@ -303,6 +303,8 @@ module RNS
 
             RNS.log("Destination #{RNS.prettyhexrep(destination_hash)} is now #{announce_hops} hops away via #{RNS.prettyhexrep(received_from)}", RNS::LOG_DEBUG)
 
+            retransmit_announce_to_local_clients(packet)
+
             # Call externally registered announce handler callbacks
             invoke_announce_handlers(packet, destination_hash)
           end
@@ -313,6 +315,46 @@ module RNS
     rescue ex
       RNS.log("Error processing inbound announce: #{ex}", RNS::LOG_ERROR)
       false
+    end
+
+    private def self.retransmit_announce_to_local_clients(packet : Packet)
+      return if @@local_client_interfaces.empty?
+
+      announce_identity = Identity.recall(packet.destination_hash.not_nil!)
+      transport_identity = @@identity
+      receiving_interface = packet.receiving_interface
+      return unless announce_identity && transport_identity
+
+      announce_destination = Destination.new(
+        announce_identity,
+        Destination::OUT,
+        Destination::SINGLE,
+        "unknown",
+        ["unknown"],
+        register: false,
+      )
+      announce_destination.hash = packet.destination_hash.not_nil!
+      announce_destination.hexhash = announce_destination.hash.hexstring
+
+      @@local_client_interfaces.each do |local_interface|
+        next if receiving_interface && local_interface.same?(receiving_interface)
+
+        new_announce = Packet.new(
+          announce_destination,
+          packet.data,
+          packet_type: Packet::ANNOUNCE,
+          context: Packet::NONE,
+          header_type: Packet::HEADER_2,
+          transport_type: Transport::TRANSPORT,
+          transport_id: transport_identity.hash,
+          attached_interface: local_interface,
+          create_receipt: false,
+          context_flag: packet.context_flag,
+        )
+        new_announce.hops = packet.hops
+        new_announce.pack
+        transmit(local_interface.get_hash, new_announce.raw.not_nil!)
+      end
     end
 
     # Checks announce rate limiting for a destination.

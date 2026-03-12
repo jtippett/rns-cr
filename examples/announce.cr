@@ -174,10 +174,4 @@ begin
   end
 
   program_setup(configarg)
-rescue ex : Exception
-  if ex.message == "Interrupted"
-    puts ""
-    exit 0
-  end
-  raise ex
 end

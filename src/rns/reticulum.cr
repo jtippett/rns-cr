@@ -647,8 +647,14 @@ module RNS
       Reticulum.class_set_instance(self)
 
       # Register signal handlers
-      Signal::INT.trap { Reticulum.sigint_handler }
-      Signal::TERM.trap { Reticulum.sigterm_handler }
+      Signal::INT.trap do
+        Reticulum.sigint_handler
+        RNS.exit(0)
+      end
+      Signal::TERM.trap do
+        Reticulum.sigterm_handler
+        RNS.exit(0)
+      end
 
       # Start background jobs
       start_jobs if @is_shared_instance || @is_standalone_instance
@@ -883,7 +889,7 @@ module RNS
             @is_shared_instance = true
             RNS.log("Existing shared instance required, but this instance started as shared instance. Aborting startup.", RNS::LOG_VERBOSE)
           else
-            interface.inbound_callback = ->(data : Bytes, iface : Interface) { Transport.inbound(data, iface) }
+            wire_transport_inbound_callback(interface)
             Transport.register_interface(interface)
             @shared_instance_interface = interface
             @is_shared_instance = true
@@ -907,7 +913,7 @@ module RNS
               client.optimise_mtu
             end
 
-            client.inbound_callback = ->(data : Bytes, iface : Interface) { Transport.inbound(data, iface) }
+            wire_transport_inbound_callback(client)
             Transport.register_interface(client)
             @is_shared_instance = false
             @is_standalone_instance = false
@@ -1361,7 +1367,7 @@ module RNS
       end
 
       # Wire inbound callback so received data reaches Transport.inbound
-      interface.inbound_callback = ->(data : Bytes, iface : Interface) { Transport.inbound(data, iface) }
+      wire_transport_inbound_callback(interface)
 
       Transport.register_interface(interface)
       interface.final_init
@@ -1468,10 +1474,19 @@ module RNS
       end
 
       # Wire inbound callback so received data reaches Transport.inbound
-      interface.inbound_callback = ->(data : Bytes, iface : Interface) { Transport.inbound(data, iface) }
+      wire_transport_inbound_callback(interface)
 
       Transport.register_interface(interface)
       interface.final_init
+    end
+
+    private def wire_transport_inbound_callback(interface : Interface)
+      case interface
+      when AutoInterface
+        interface.owner_inbound = Transport::INBOUND_DISPATCH
+      else
+        interface.inbound_callback = Transport::INBOUND_DISPATCH
+      end
     end
 
     # Removes a previously added interface. Deregisters from Transport,

@@ -266,6 +266,7 @@ module RNS
         RNS.log("The interface #{self} experienced an unrecoverable error and is being torn down.", RNS::LOG_ERROR)
       end
 
+      Transport.deregister_interface(self)
       close_socket
     end
 
@@ -283,6 +284,8 @@ module RNS
         end
         @socket = nil
       end
+
+      Transport.deregister_interface(self)
     end
 
     private def close_socket
@@ -465,6 +468,8 @@ module RNS
       end
       @clients += 1
 
+      Transport.register_interface(spawned)
+
       RNS.log("Spawned new LocalClient Interface: #{spawned}", RNS::LOG_VERBOSE)
     end
 
@@ -488,6 +493,8 @@ module RNS
         si << spawned
       end
       @clients += 1
+
+      Transport.register_interface(spawned)
 
       RNS.log("Spawned new LocalClient Interface: #{spawned}", RNS::LOG_VERBOSE)
     end

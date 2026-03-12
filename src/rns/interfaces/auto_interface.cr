@@ -102,6 +102,7 @@ module RNS
                    inbound_callback : Proc(Bytes, Interface, Nil)? = nil)
       super()
       @inbound_callback = inbound_callback
+      @owner_inbound = inbound_callback
 
       name = configuration["name"]? || "AutoInterface"
       group_id_str = configuration["group_id"]?
@@ -254,6 +255,11 @@ module RNS
           @bitrate = BITRATE_GUESS
         end
       end
+    end
+
+    def inbound_callback=(cb : Proc(Bytes, Interface, Nil)?)
+      @inbound_callback = cb
+      @owner_inbound = cb
     end
 
     # Start discovery and data listeners, peer jobs, and go online

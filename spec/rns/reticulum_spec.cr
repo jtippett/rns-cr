@@ -735,6 +735,67 @@ describe RNS::Reticulum do
       end
     end
 
+    it "boots with AutoInterface when live interface setup is disabled" do
+      repo_root = File.expand_path("../..", __DIR__)
+      tmp_root = ENV["TMPDIR"]? || "/tmp"
+      cache_dir = File.join(tmp_root, "crystal-cache")
+      code = <<-'CRYSTAL'
+        require "file_utils"
+        require "./src/rns"
+
+        dir = File.tempname("rns_auto_interface_boot")
+        Dir.mkdir_p(dir)
+
+        begin
+          File.write(File.join(dir, "config"), <<-'CONFIG')
+          [reticulum]
+          share_instance = No
+
+          [interfaces]
+
+            [[Default Interface]]
+              type = AutoInterface
+              enabled = Yes
+              disable_live_interface_setup = Yes
+          CONFIG
+
+          RNS::Reticulum.reset_instance!
+          RNS::Transport.reset
+
+          inst = RNS::ReticulumInstance.new(configdir: dir, loglevel: RNS::LOG_NONE)
+          auto = RNS::Transport.interface_objects.find(&.is_a?(RNS::AutoInterface))
+          raise "missing AutoInterface" unless auto
+
+          owner_inbound = auto.as(RNS::AutoInterface).owner_inbound
+          raise "AutoInterface owner_inbound was not wired" if owner_inbound.nil?
+
+          puts "ok"
+        ensure
+          RNS::Reticulum.reset_instance!
+          RNS::Transport.reset
+          FileUtils.rm_rf(dir) if Dir.exists?(dir)
+        end
+      CRYSTAL
+
+      result = Process.run(
+        "crystal",
+        ["eval", code],
+        chdir: repo_root,
+        env: {
+          "CRYSTAL_CACHE_DIR"                  => cache_dir,
+          "RNS_TEST_DISABLE_AUTO_INTERFACE_NETWORK" => "1",
+        },
+        output: output = IO::Memory.new,
+        error: error = IO::Memory.new
+      )
+
+      unless result.success?
+        fail "AutoInterface boot regression check failed:\n#{error.to_s}\n#{output.to_s}"
+      end
+
+      output.to_s.should contain("ok")
+    end
+
     it "reads custom loglevel from config" do
       tmpdir = File.tempname("rns_loglevel_test")
       begin

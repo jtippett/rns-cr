@@ -329,10 +329,4 @@ begin
       puts ""
     end
   end
-rescue ex : Exception
-  if ex.message == "Interrupted"
-    puts ""
-    exit 0
-  end
-  raise ex
 end

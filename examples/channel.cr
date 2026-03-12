@@ -58,10 +58,10 @@ class StringMessage < RNS::MessageBase
     result = unpacked.read
     if result.is_a?(Hash)
       if d = result["data"]?
-        @data = d.as_s? || d.to_s
+        @data = d.is_a?(String) ? d : d.to_s
       end
       if ts = result["timestamp"]?
-        @timestamp = Time.unix_ms((ts.as_f * 1000).to_i64)
+        @timestamp = Time.unix_ms((ts.is_a?(Float64) ? ts : ts.to_s.to_f64).*(1000).to_i64)
       end
     end
   end
@@ -221,7 +221,7 @@ def client(destination_hexhash : String, configpath : String?)
     RNS.log("Destination is not yet known. Requesting path and waiting for announce to arrive...")
     RNS::Transport.request_path(destination_hash)
     while !RNS::Transport.has_path(destination_hash)
-      sleep 0.1
+      sleep(100.milliseconds)
     end
   end
 
@@ -261,7 +261,7 @@ end
 def client_loop
   # Wait for the link to become active
   while ChannelExample.server_link.nil?
-    sleep 0.1
+    sleep(100.milliseconds)
   end
 
   should_quit = false
@@ -344,7 +344,7 @@ def link_closed(link : RNS::Link)
     RNS.log("Link closed, exiting now")
   end
 
-  sleep 1.5
+  sleep(1.5.seconds)
   exit 0
 end
 
@@ -411,10 +411,4 @@ begin
       puts ""
     end
   end
-rescue ex : Exception
-  if ex.message == "Interrupted"
-    puts ""
-    exit 0
-  end
-  raise ex
 end

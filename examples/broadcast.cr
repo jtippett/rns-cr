@@ -110,10 +110,4 @@ begin
   end
 
   program_setup(configarg, channelarg)
-rescue ex : Exception
-  if ex.message == "Interrupted"
-    puts ""
-    exit 0
-  end
-  raise ex
 end

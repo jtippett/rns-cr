@@ -252,7 +252,7 @@ def client(destination_hexhash : String, configpath : String?)
     RNS.log("Destination is not yet known. Requesting path and waiting for announce to arrive...")
     RNS::Transport.request_path(destination_hash)
     while !RNS::Transport.has_path(destination_hash)
-      sleep 0.1
+      sleep(100.milliseconds)
     end
   end
 
@@ -300,13 +300,13 @@ def client(destination_hexhash : String, configpath : String?)
   # downloading advertised resources
   link.set_resource_strategy(RNS::Link::ACCEPT_ALL)
   link.set_resource_started_callback(
-    ->(resource_hash : Bytes) {
-      RNS.log("Download started for resource " + RNS.prettyhexrep(resource_hash))
+    ->(resource : RNS::Resource) {
+      RNS.log("Download started for resource " + RNS.prettyhexrep(resource.hash))
     }
   )
   link.set_resource_concluded_callback(
-    ->(resource_hash : Bytes) {
-      RNS.log("Download concluded for resource " + RNS.prettyhexrep(resource_hash))
+    ->(resource : RNS::Resource) {
+      RNS.log("Download concluded for resource " + RNS.prettyhexrep(resource.hash))
     }
   )
 
@@ -338,10 +338,10 @@ end
 def menu
   # Wait until we have a filelist
   while FiletransferExample.server_files.empty?
-    sleep 0.1
+    sleep(100.milliseconds)
   end
   RNS.log("Ready!")
-  sleep 0.5
+  sleep(500.milliseconds)
 
   FiletransferExample.menu_mode = "main"
   should_quit = false
@@ -349,7 +349,7 @@ def menu
     print_menu
 
     while FiletransferExample.menu_mode != "main"
-      sleep 0.25
+      sleep(250.milliseconds)
     end
 
     user_input = gets
@@ -386,10 +386,10 @@ def print_menu
   elsif mode == "download_started"
     download_began_at = Time.utc.to_unix_f
     while FiletransferExample.menu_mode == "download_started"
-      sleep 0.1
+      sleep(100.milliseconds)
       if Time.utc.to_unix_f > download_began_at + APP_TIMEOUT
         puts "The download timed out"
-        sleep 1
+        sleep(1.second)
         FiletransferExample.server_link.try &.teardown
       end
     end
@@ -404,7 +404,7 @@ def print_menu
         print "\rProgress: #{percent} %   "
         STDOUT.flush
       end
-      sleep 0.1
+      sleep(100.milliseconds)
     end
   end
 
@@ -502,7 +502,7 @@ def link_established(link : RNS::Link)
   # a potential timeout in receiving the
   # file list
   spawn do
-    sleep APP_TIMEOUT
+    sleep(APP_TIMEOUT.seconds)
     if FiletransferExample.server_files.empty?
       RNS.log("Timed out waiting for filelist, exiting")
       exit 0
@@ -521,7 +521,7 @@ def link_closed(link : RNS::Link)
     RNS.log("Link closed, exiting now")
   end
 
-  sleep 1.5
+  sleep(1.5.seconds)
   exit 0
 end
 
@@ -657,10 +657,4 @@ begin
       puts ""
     end
   end
-rescue ex : Exception
-  if ex.message == "Interrupted"
-    puts ""
-    exit 0
-  end
-  raise ex
 end

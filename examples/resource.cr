@@ -86,7 +86,7 @@ def client_connected(link : RNS::Link)
   # and set a callback for completed resources
   link.set_resource_strategy(RNS::Link::ACCEPT_ALL)
   link.set_resource_concluded_callback(
-    ->(resource_hash : Bytes) {
+    ->(resource : RNS::Resource) {
       RNS.log("Resource transfer concluded")
     }
   )
@@ -144,7 +144,7 @@ def client(destination_hexhash : String, configpath : String?)
     RNS.log("Destination is not yet known. Requesting path and waiting for announce to arrive...")
     RNS::Transport.request_path(destination_hash)
     while !RNS::Transport.has_path(destination_hash)
-      sleep 0.1
+      sleep(100.milliseconds)
     end
   end
 
@@ -184,7 +184,7 @@ end
 def client_loop
   # Wait for the link to become active
   while ResourceExample.server_link.nil?
-    sleep 0.1
+    sleep(100.milliseconds)
   end
 
   should_quit = false
@@ -210,15 +210,10 @@ def client_loop
         RNS.log("First 32 bytes of data: #{RNS.hexrep(data[0, 32])}")
 
         # Generate some metadata
-        metadata_hash = {
-          "text"    => MessagePack::Any.new(random_text_generator),
-          "numbers" => MessagePack::Any.new([
-            MessagePack::Any.new(1_i64),
-            MessagePack::Any.new(2_i64),
-            MessagePack::Any.new(3_i64),
-            MessagePack::Any.new(4_i64),
-          ]),
-          "blob" => MessagePack::Any.new(Random::Secure.random_bytes(16)),
+        metadata_hash = Hash(MessagePack::Type, MessagePack::Type){
+          "text"    => random_text_generator,
+          "numbers" => [1_i64, 2_i64, 3_i64, 4_i64] of MessagePack::Type,
+          "blob"    => (Random::Secure.random_bytes(16).as(MessagePack::Type)),
         }
         metadata = MessagePack::Any.new(metadata_hash)
 
@@ -274,7 +269,7 @@ def link_closed(link : RNS::Link)
     RNS.log("Link closed, exiting now")
   end
 
-  sleep 1.5
+  sleep(1.5.seconds)
   exit 0
 end
 
@@ -328,10 +323,4 @@ begin
       puts ""
     end
   end
-rescue ex : Exception
-  if ex.message == "Interrupted"
-    puts ""
-    exit 0
-  end
-  raise ex
 end

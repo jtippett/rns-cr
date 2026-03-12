@@ -6,6 +6,8 @@ module RNS
   # maintenance of routing state. All state is held at the module level
   # and accessed through class methods.
   module Transport
+    INBOUND_DISPATCH = ->(data : Bytes, iface : Interface) { Transport.inbound(data, iface) }
+
     # Transport type constants: identify how a packet traverses the network.
     # BROADCAST is a direct, one-hop delivery; TRANSPORT uses multi-hop
     # routing; RELAY and TUNNEL provide indirect forwarding paths.
@@ -213,7 +215,7 @@ module RNS
     @@control_hashes = [] of Bytes
 
     # ─── Local client state ────────────────────────────────────────
-    @@local_client_interfaces = [] of Bytes
+    @@local_client_interfaces = [] of LocalClientInterface
     @@pending_local_path_requests = Hash(String, Bytes?).new
     @@transport_enabled = false
     @@is_connected_to_shared_instance = false
@@ -610,10 +612,16 @@ module RNS
       find_link_for_destination(destination_hash)
     end
 
-    # Checks if a destination hash corresponds to a local client interface.
+    # Checks if an interface object corresponds to a local client interface.
+    def self.is_local_client_interface?(interface : Interface?) : Bool
+      return false unless interface
+      @@local_client_interfaces.any? { |lci| lci.same?(interface) }
+    end
+
+    # Checks if an interface hash corresponds to a local client interface.
     def self.is_local_client_interface?(interface_hash : Bytes?) : Bool
       return false unless interface_hash
-      @@local_client_interfaces.any? { |lci| lci == interface_hash }
+      @@local_client_interfaces.any? { |lci| lci.get_hash == interface_hash }
     end
 
     # Checks if a packet is from a local client.
@@ -986,7 +994,7 @@ module RNS
             else
               # From network: retransmit to local clients
               @@local_client_interfaces.each do |lci|
-                transmit(lci, raw)
+                transmit(lci.get_hash, raw)
               end
             end
           end

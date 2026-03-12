@@ -59,11 +59,12 @@ def announce_loop(destination : RNS::Destination)
   # If the user hits enter, we will announce our server
   # destination on the network, which will let clients
   # know how to create messages directed towards it.
-  loop do
-    gets
-    destination.announce
+  while gets
+    destination.announce(app_data: "Hello from Crystal!".to_slice)
     RNS.log("Sent announce from " + RNS.prettyhexrep(destination.hash))
   end
+
+  RNS.log("Standard input closed, exiting minimal example")
 end
 
 ##########################################################
@@ -99,10 +100,4 @@ begin
   end
 
   program_setup(configarg)
-rescue ex : Exception
-  if ex.message == "Interrupted"
-    puts ""
-    exit 0
-  end
-  raise ex
 end

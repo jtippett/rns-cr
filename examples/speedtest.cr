@@ -166,7 +166,7 @@ def server_packet_received(message : Bytes, packet : RNS::Packet)
 
     STDOUT.flush
     SpeedtestExample.latest_client_link.try &.teardown
-    sleep 0.2
+    sleep(200.milliseconds)
     SpeedtestExample.rc = 0
     SpeedtestExample.received_data = 0_i64
   end
@@ -203,7 +203,7 @@ def client(destination_hexhash : String, configpath : String?)
     RNS.log("Destination is not yet known. Requesting path and waiting for announce to arrive...")
     RNS::Transport.request_path(destination_hash)
     while !RNS::Transport.has_path(destination_hash)
-      sleep 0.1
+      sleep(100.milliseconds)
     end
   end
 
@@ -243,12 +243,12 @@ end
 def client_loop
   # Wait for the link to become active
   while SpeedtestExample.server_link.nil?
-    sleep 0.1
+    sleep(100.milliseconds)
   end
 
   SpeedtestExample.should_quit = false
   while !SpeedtestExample.should_quit
-    sleep 0.2
+    sleep(200.milliseconds)
   end
 end
 
@@ -289,7 +289,7 @@ def link_established(link : RNS::Link)
       puts ""
 
       STDOUT.flush
-      sleep 0.1
+      sleep(100.milliseconds)
     end
   end
 end
@@ -306,7 +306,7 @@ def link_closed(link : RNS::Link)
   end
 
   SpeedtestExample.should_quit = true
-  sleep 1.5
+  sleep(1.5.seconds)
   exit 0
 end
 
@@ -360,10 +360,4 @@ begin
       puts ""
     end
   end
-rescue ex : Exception
-  if ex.message == "Interrupted"
-    puts ""
-    exit 0
-  end
-  raise ex
 end

@@ -1,5 +1,5 @@
 require "spec"
-ENV["RNS_TEST_DISABLE_AUTO_INTERFACE_NETWORK"] = "1"
+ENV["RNS_TEST_DISABLE_AUTO_INTERFACE_NETWORK"] ||= "1"
 require "../src/rns"
 
 # Expose Spec::CLI#tags so we can check whether the user requested specific tags.

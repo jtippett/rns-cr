@@ -1,0 +1,24 @@
+name: Specs
+
+on:
+  push:
+    branches: ["*"]
+
+jobs:
+  specs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: crystal-lang/install-crystal@v1
+        with:
+          crystal: latest
+
+      - name: Install dependencies
+        run: shards install
+
+      - name: Run full spec suite (all tags enabled)
+        run: crystal spec --tag network
+        env:
+          RNS_TEST_DISABLE_AUTO_INTERFACE_NETWORK: "0"

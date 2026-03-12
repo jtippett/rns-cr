@@ -76,8 +76,8 @@ module RNS
     property packet_hash : Bytes?
     property ratchet_id : Bytes?
 
-    property attached_interface : Nil  # NOTE: Should be Interface? — requires refactoring Link/Packet interface types
-    property receiving_interface : Nil # NOTE: Should be Interface? — requires refactoring Link/Packet interface types
+    property attached_interface : Interface?
+    property receiving_interface : Interface?
     property rssi : Float64?
     property snr : Float64?
     property q : Float64?
@@ -321,19 +321,50 @@ module RNS
       result
     end
 
-    # Sends the packet via Transport, packing it first if needed. Records
-    # the send timestamp and marks the packet as sent.
+    # Sends the packet via Transport, packing it first if needed.
+    # Returns the PacketReceipt on success, or nil if no interface
+    # could process the packet.
     def send
-      return @receipt if @sent
+      if @sent
+        raise IO::Error.new("Packet was already sent")
+      end
+
+      if @destination.try(&.type) == Destination::LINK
+        link = @destination
+        if link.is_a?(Link) && link.status == Link::CLOSED
+          RNS.log("Attempt to transmit over a closed link, dropping packet", RNS::LOG_DEBUG)
+          @sent = false
+          @receipt = nil
+          return nil
+        end
+      end
 
       pack unless @packed
 
-      # NOTE: Transport.outbound(self) exists but is not wired here to avoid
-      # side effects in unit tests. Full integration requires a running Reticulum instance.
-      @sent = true
-      @sent_at = Time.utc.to_unix_f
-      @receipt = PacketReceipt.new(self)
-      @receipt
+      if Transport.outbound(self)
+        @receipt
+      else
+        RNS.log("No interfaces could process the outbound packet", RNS::LOG_ERROR)
+        @sent = false
+        @receipt = nil
+        nil
+      end
+    end
+
+    # Re-sends a previously sent packet. Re-packs to obtain new ciphertext
+    # for encrypted destinations.
+    def resend
+      if @sent
+        pack
+        if Transport.outbound(self)
+          @receipt
+        else
+          RNS.log("No interfaces could process the outbound packet", RNS::LOG_ERROR)
+          @sent = false
+          @receipt = nil
+          nil
+        end
+      end
     end
 
     def generate_proof_destination : ProofDestination

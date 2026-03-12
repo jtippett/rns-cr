@@ -441,8 +441,8 @@ module RNS
           end
         })
         link.set_resource_strategy(Link::ACCEPT_APP)
-        link.set_resource_callback(->(resource : Resource) {
-          sender_identity = resource.link.try(&.get_remote_identity)
+        link.set_resource_callback(->(resource_adv : ResourceAdvertisement) {
+          sender_identity = resource_adv.link.try(&.get_remote_identity)
           if si = sender_identity
             return true if allowed_identity_hashes.any? { |hash| hash == si.hash }
           end

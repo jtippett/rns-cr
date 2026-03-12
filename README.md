@@ -141,6 +141,22 @@ This implementation is wire-compatible with the Python Reticulum Network Stack. 
 
 ## Development
 
+### Spec Safety Warning
+
+Some specs (stress tests, multi-instance tests) bind to all local network interfaces and can cause network instability or OS crashes on macOS. Avoid running these directly:
+
+```sh
+# Safe: run unit specs only
+crystal spec spec/rns/
+
+# Unsafe: stress tests and multi-instance specs that bind all local interfaces
+# These can destabilize networking or crash macOS — run only in a VM or container
+```
+
+Always restrict `AutoInterface` to loopback when running tests locally. If you experience network issues after a spec run, a reboot may be required.
+
+### Running specs
+
 Run the test suite:
 
 ```sh

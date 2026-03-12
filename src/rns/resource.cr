@@ -235,13 +235,13 @@ module RNS
           RNS.log("Ignoring resource advertisement for #{RNS.prettyhexrep(resource.hash)}, resource already transferring", RNS::LOG_DEBUG)
           nil
         else
-          link.register_incoming_resource(resource.hash)
+          link.register_incoming_resource(resource)
 
-          RNS.log("Accepting resource advertisement for #{RNS.prettyhexrep(resource.hash)}. Transfer size is #{RNS.prettysize(resource.size)} in #{resource.total_parts} parts.", RNS::LOG_DEBUG)
+          RNS.log("Accepting resource advertisement for #{RNS.prettyhexrep(resource.hash)}. Transfer size is #{RNS.prettysize(resource.size.to_f64)} in #{resource.total_parts} parts.", RNS::LOG_DEBUG)
 
           if cb = link.callbacks.resource_started
             begin
-              cb.call(resource.hash)
+              cb.call(resource)
             rescue ex
               RNS.log("Error while executing resource started callback from #{resource}: #{ex}", RNS::LOG_ERROR)
             end
@@ -662,10 +662,9 @@ module RNS
 
       hash_len = Identity::HASHLENGTH // 8
       update_data = plaintext[hash_len..]
-      arr = MessagePack::Any.from_msgpack(update_data)
-      raw = arr.as_a
-      segment = raw[0].as_i.to_i32
-      hashmap_bytes = raw[1].raw.as(Bytes)
+      arr = Array(MessagePack::Any).from_msgpack(IO::Memory.new(update_data))
+      segment = arr[0].as_i.to_i32
+      hashmap_bytes = arr[1].raw.as(Bytes)
       hashmap_update(segment, hashmap_bytes)
     end
 
@@ -725,7 +724,7 @@ module RNS
         @rtt = nil
         @status = ADVERTISED
         @retries_left = @max_adv_retries
-        link.register_outgoing_resource(@hash)
+        link.register_outgoing_resource(self)
         RNS.log("Sent resource advertisement for #{RNS.prettyhexrep(@hash)}", RNS::LOG_EXTREME)
       rescue ex
         RNS.log("Could not advertise resource, the contained exception was: #{ex}", RNS::LOG_ERROR)
@@ -951,7 +950,7 @@ module RNS
 
       link = @link
       if link
-        link.resource_concluded(@hash, @size, @started_transferring || Time.utc.to_unix_f,
+        link.resource_concluded(self, @size, @started_transferring || Time.utc.to_unix_f,
           window: @window, eifr: @eifr, incoming: true)
       end
 
@@ -1039,7 +1038,7 @@ module RNS
           @status = COMPLETE
           link = @link
           if link
-            link.resource_concluded(@hash, @size, @started_transferring || Time.utc.to_unix_f,
+            link.resource_concluded(self, @size, @started_transferring || Time.utc.to_unix_f,
               window: nil, eifr: nil, incoming: false)
           end
 
@@ -1423,7 +1422,7 @@ module RNS
 
         if cb = @callback
           begin
-            link.try(&.resource_concluded(@hash, @size, @started_transferring || Time.utc.to_unix_f,
+            link.try(&.resource_concluded(self, @size, @started_transferring || Time.utc.to_unix_f,
               window: @window, eifr: @eifr, incoming: !@initiator))
             cb.call(self)
           rescue ex
@@ -1440,7 +1439,7 @@ module RNS
           @link.try(&.cancel_outgoing_resource(@hash))
           if cb = @callback
             begin
-              @link.try(&.resource_concluded(@hash, @size, @started_transferring || Time.utc.to_unix_f,
+              @link.try(&.resource_concluded(self, @size, @started_transferring || Time.utc.to_unix_f,
                 window: nil, eifr: nil, incoming: false))
               spawn { cb.call(self) }
             rescue ex

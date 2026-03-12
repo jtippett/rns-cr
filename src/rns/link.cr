@@ -4,7 +4,7 @@ module RNS
     property link_established : Proc(Link, Nil)?
     property link_closed : Proc(Link, Nil)?
     property packet : Proc(Bytes, Packet, Nil)?
-    property resource : Proc(Resource, Bool)?          # Resource -> accept?
+    property resource : Proc(ResourceAdvertisement, Bool)?  # ResourceAdvertisement -> accept?
     property resource_started : Proc(Resource, Nil)?   # Resource -> void
     property resource_concluded : Proc(Resource, Nil)? # Resource -> void
     property remote_identified : Proc(Link, Identity, Nil)?
@@ -135,11 +135,11 @@ module RNS
     property expected_rate : Float64?
     property teardown_reason : UInt8?
     property pending_requests : Array(RequestReceipt)
-    property outgoing_resources : Array(Bytes) # NOTE: Resource hashes; should be Array(Resource) for proof routing
-    property incoming_resources : Array(Bytes) # NOTE: Resource hashes; should be Array(Resource) for part receiving
+    property outgoing_resources : Array(Resource)
+    property incoming_resources : Array(Resource)
     property last_resource_window : Int32?
     property last_resource_eifr : Float64?
-    property attached_interface : Bytes? # NOTE: Should be Interface? but Packet.receiving_interface is still Nil stub
+    property attached_interface : Interface?
 
     @status : UInt8
     @owner : Destination?
@@ -158,9 +158,7 @@ module RNS
     @token : Cryptography::Token?
     @remote_identity : Identity?
     @track_phy_stats : Bool
-    # NOTE: @channel : Channel(Packet)? — deferred due to Crystal codegen bug
-    # with non-generic class storing generic instantiation as instance variable.
-    # Channel class exists but cannot be stored here without triggering the bug.
+    @channel : Channel(Packet)?
     @channel_enabled : Bool = false
     @watchdog_lock : Bool
     @link_id : Bytes
@@ -327,8 +325,8 @@ module RNS
       @expected_rate = nil
       @callbacks = LinkCallbacks.new
       @resource_strategy = ACCEPT_NONE
-      @outgoing_resources = [] of Bytes
-      @incoming_resources = [] of Bytes
+      @outgoing_resources = [] of Resource
+      @incoming_resources = [] of Resource
       @last_resource_window = nil
       @last_resource_eifr = nil
       @pending_requests = [] of RequestReceipt
@@ -577,7 +575,7 @@ module RNS
             raise IO::Error.new("Invalid link state for proof validation: #{@status}") if @status != HANDSHAKE
 
             @rtt = Time.utc.to_unix_f - @request_time.not_nil!
-            @attached_interface = nil # NOTE: Should be packet.receiving_interface when Packet uses Interface type
+            @attached_interface = packet.receiving_interface
             @remote_identity = dest_identity
             @mtu = confirmed_mtu || Reticulum::MTU
             update_mdu
@@ -860,12 +858,15 @@ module RNS
 
     # ─── Send convenience ────────────────────────────────────────────
 
-    # Sends data over the link as an encrypted packet. Returns nil if the link is closed.
+    # Sends data over the link as an encrypted packet. Returns nil if the link
+    # is closed or if no interface could process the packet.
     def send(data : Bytes, packet_type : UInt8 = Packet::DATA, context : UInt8 = Packet::NONE) : Packet?
       return nil if @status == CLOSED
       packet = Packet.new(self, data, packet_type: packet_type, context: context)
-      packet.send
-      had_outbound
+      result = packet.send
+      return nil if result.nil? && !packet.sent
+
+      had_outbound(is_keepalive: context == Packet::KEEPALIVE)
       @tx += 1
       @txbytes += data.size
       packet
@@ -873,29 +874,31 @@ module RNS
 
     # ─── Resource management ──────────────────────────────────────────
 
-    def register_outgoing_resource(resource_hash : Bytes)
-      @outgoing_resources << resource_hash
+    def register_outgoing_resource(resource : Resource)
+      @outgoing_resources << resource
     end
 
-    def register_incoming_resource(resource_hash : Bytes)
-      @incoming_resources << resource_hash
+    def register_incoming_resource(resource : Resource)
+      @incoming_resources << resource
     end
 
     def has_incoming_resource?(resource_hash : Bytes) : Bool
-      @incoming_resources.any? { |hash| hash == resource_hash }
+      @incoming_resources.any? { |r| r.hash == resource_hash }
     end
 
     def cancel_outgoing_resource(resource_hash : Bytes)
-      if @outgoing_resources.includes?(resource_hash)
-        @outgoing_resources.delete(resource_hash)
+      found = @outgoing_resources.find { |r| r.hash == resource_hash }
+      if found
+        @outgoing_resources.delete(found)
       else
         RNS.log("Attempt to cancel a non-existing outgoing resource", RNS::LOG_ERROR)
       end
     end
 
     def cancel_incoming_resource(resource_hash : Bytes)
-      if @incoming_resources.includes?(resource_hash)
-        @incoming_resources.delete(resource_hash)
+      found = @incoming_resources.find { |r| r.hash == resource_hash }
+      if found
+        @incoming_resources.delete(found)
       else
         RNS.log("Attempt to cancel a non-existing incoming resource", RNS::LOG_ERROR)
       end
@@ -913,20 +916,47 @@ module RNS
       @last_resource_eifr
     end
 
-    def resource_concluded(resource_hash : Bytes, resource_size : Int64, started_transferring : Float64,
+    def resource_concluded(resource : Resource, resource_size : Int64, started_transferring : Float64,
                            window : Int32? = nil, eifr : Float64? = nil, incoming : Bool = true)
       concluded_at = Time.utc.to_unix_f
-      if incoming && @incoming_resources.includes?(resource_hash)
+      incoming_match = @incoming_resources.find { |r| r.hash == resource.hash }
+      if incoming && incoming_match
         @last_resource_window = window
         @last_resource_eifr = eifr
-        @incoming_resources.delete(resource_hash)
+        @incoming_resources.delete(incoming_match)
         elapsed = Math.max(concluded_at - started_transferring, 0.0001)
         @expected_rate = (resource_size * 8).to_f64 / elapsed
       end
-      if @outgoing_resources.includes?(resource_hash)
-        @outgoing_resources.delete(resource_hash)
+      outgoing_match = @outgoing_resources.find { |r| r.hash == resource.hash }
+      if outgoing_match
+        @outgoing_resources.delete(outgoing_match)
         elapsed = Math.max(concluded_at - started_transferring, 0.0001)
         @expected_rate = (resource_size * 8).to_f64 / elapsed
+      end
+    end
+
+    # Called when an incoming request resource transfer concludes.
+    # Unpacks the request data and dispatches it to handle_request.
+    def request_resource_concluded(resource : Resource)
+      if resource.status == Resource::COMPLETE
+        data = resource.data
+        if data
+          packed_request = data.to_slice
+          unpacked = Array(MessagePack::Any).from_msgpack(IO::Memory.new(packed_request))
+          request_id = Identity.truncated_hash(packed_request)
+          spawn { handle_request(request_id, unpacked) }
+        end
+      else
+        RNS.log("Incoming request resource failed with status: #{resource.status}", RNS::LOG_DEBUG)
+      end
+    end
+
+    # Called when an outgoing response resource transfer concludes.
+    def response_resource_concluded(resource : Resource)
+      if resource.status == Resource::COMPLETE
+        RNS.log("Response resource completed", RNS::LOG_DEBUG)
+      else
+        RNS.log("Response resource failed with status: #{resource.status}", RNS::LOG_DEBUG)
       end
     end
 
@@ -1142,9 +1172,10 @@ module RNS
             begin
               plaintext = decrypt_data(packet.data)
               if plaintext
-                request_id = packet.get_truncated_hash
-                unpacked = Array(MessagePack::Any).from_msgpack(IO::Memory.new(plaintext))
-                spawn { handle_request(request_id, unpacked) }
+                if rid = packet.get_truncated_hash
+                  unpacked = Array(MessagePack::Any).from_msgpack(IO::Memory.new(plaintext))
+                  spawn { handle_request(rid, unpacked) }
+                end
               end
             rescue ex
               RNS.log("Error occurred while handling request: #{ex}", RNS::LOG_ERROR)
@@ -1155,9 +1186,9 @@ module RNS
               if plaintext
                 unpacked = Array(MessagePack::Any).from_msgpack(IO::Memory.new(plaintext))
                 if unpacked.size >= 2
-                  request_id = unpacked[0].raw.as(Bytes)
-                  response_data = unpacked[1]
-                  spawn { handle_response(request_id, response_data) }
+                  rid = unpacked[0].raw.as(Bytes)
+                  rdata = unpacked[1]
+                  spawn { handle_response(rid, rdata) }
                 end
               end
             rescue ex
@@ -1173,24 +1204,113 @@ module RNS
               keepalive_response.send
               had_outbound(is_keepalive: true)
             end
+          when Packet::RESOURCE_ADV
+            plaintext = decrypt_data(packet.data)
+            if plaintext
+              packet.plaintext = plaintext
+              if ResourceAdvertisement.is_request?(packet)
+                Resource.accept(packet, callback: ->request_resource_concluded(Resource))
+              elsif ResourceAdvertisement.is_response?(packet)
+                request_id = ResourceAdvertisement.read_request_id(packet)
+                @pending_requests.each do |pending_request|
+                  if pending_request.request_id == request_id
+                    Resource.accept(packet, callback: ->response_resource_concluded(Resource), request_id: request_id)
+                    break
+                  end
+                end
+              elsif @resource_strategy == ACCEPT_NONE
+                # Drop
+              elsif @resource_strategy == ACCEPT_APP
+                if resource_cb = @callbacks.resource
+                  begin
+                    resource_advertisement = ResourceAdvertisement.unpack(plaintext)
+                    resource_advertisement.link = self
+                    if resource_cb.call(resource_advertisement)
+                      Resource.accept(packet, callback: @callbacks.resource_concluded)
+                    else
+                      Resource.reject(packet)
+                    end
+                  rescue ex
+                    RNS.log("Error while executing resource accept callback from #{self}: #{ex}", RNS::LOG_ERROR)
+                  end
+                end
+              elsif @resource_strategy == ACCEPT_ALL
+                Resource.accept(packet, callback: @callbacks.resource_concluded)
+              end
+            end
+          when Packet::RESOURCE_REQ
+            plaintext = decrypt_data(packet.data)
+            if plaintext
+              hash_len = Identity::HASHLENGTH // 8
+              if plaintext[0] == Resource::HASHMAP_IS_EXHAUSTED
+                resource_hash = plaintext[(1 + Resource::MAPHASH_LEN), hash_len]
+              else
+                resource_hash = plaintext[1, hash_len]
+              end
+
+              @outgoing_resources.each do |resource|
+                if resource.hash == resource_hash
+                  if !resource.req_hashlist.includes?(packet.packet_hash)
+                    ph = packet.packet_hash
+                    resource.req_hashlist << ph if ph
+                    resource.request(plaintext)
+                  end
+                  break
+                end
+              end
+            end
+          when Packet::RESOURCE_HMU
+            plaintext = decrypt_data(packet.data)
+            if plaintext
+              resource_hash = plaintext[0, Identity::HASHLENGTH // 8]
+              @incoming_resources.each do |resource|
+                if resource.hash == resource_hash
+                  resource.hashmap_update_packet(plaintext)
+                  break
+                end
+              end
+            end
+          when Packet::RESOURCE_ICL
+            plaintext = decrypt_data(packet.data)
+            if plaintext
+              resource_hash = plaintext[0, Identity::HASHLENGTH // 8]
+              @incoming_resources.each do |resource|
+                if resource.hash == resource_hash
+                  resource.cancel
+                  break
+                end
+              end
+            end
+          when Packet::RESOURCE_RCL
+            plaintext = decrypt_data(packet.data)
+            if plaintext
+              resource_hash = plaintext[0, Identity::HASHLENGTH // 8]
+              @outgoing_resources.each do |resource|
+                if resource.hash == resource_hash
+                  resource._rejected
+                  break
+                end
+              end
+            end
           when Packet::CHANNEL
-            # NOTE: Channel delivery blocked by Crystal codegen bug preventing @channel storage.
-            # When resolved, uncomment:
-            # ch = @channel
-            # if ch
-            #   prove_packet(packet)
-            #   plaintext = decrypt_data(packet.data)
-            #   if plaintext
-            #     ch._receive(plaintext)
-            #   end
-            # end
-            prove_packet(packet)
+            ch = @channel
+            if ch
+              prove_packet(packet)
+              plaintext = decrypt_data(packet.data)
+              if plaintext
+                ch._receive(plaintext)
+              end
+            end
           end
         elsif packet.packet_type == Packet::PROOF
           if packet.context == Packet::RESOURCE_PRF
-            # NOTE: Resource proof routing requires outgoing_resources to hold Resource objects
-            # instead of Bytes (hashes). When refactored, iterate resources and call
-            # resource.validate_proof(packet.data) for the matching resource hash.
+            resource_hash = packet.data[0, Identity::HASHLENGTH // 8]
+            @outgoing_resources.each do |resource|
+              if resource.hash == resource_hash
+                spawn { resource.validate_proof(packet.data) }
+                break
+              end
+            end
           end
         end
       end
@@ -1334,16 +1454,14 @@ module RNS
 
     # ─── Channel ─────────────────────────────────────────────────────
 
-    # NOTE: get_channel deferred — Crystal codegen bug prevents storing Channel(Packet)
-    # as instance variable on Link. Channel class exists in channel.cr.
-    # def get_channel : Channel(Packet)
-    #   ch = @channel
-    #   if ch.nil?
-    #     @channel = Channel(Packet).new(LinkChannelOutlet.new(self))
-    #     ch = @channel.not_nil!
-    #   end
-    #   ch
-    # end
+    def get_channel : Channel(Packet)
+      ch = @channel
+      if ch.nil?
+        @channel = Channel(Packet).new(LinkChannelOutlet.new(self))
+        ch = @channel.not_nil!
+      end
+      ch
+    end
 
     # ─── Resource strategy ───────────────────────────────────────────
 
@@ -1370,7 +1488,7 @@ module RNS
       @callbacks.remote_identified = callback
     end
 
-    def set_resource_callback(callback : Proc(Resource, Bool))
+    def set_resource_callback(callback : Proc(ResourceAdvertisement, Bool))
       @callbacks.resource = callback
     end
 

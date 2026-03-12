@@ -627,14 +627,56 @@ module RNS
     # ════════════════════════════════════════════════════════════════
 
     # Transmits raw data on an interface (identified by hash).
-    # In the full implementation, this resolves the interface object
-    # and handles IFAC masking. For now, records the transmission
-    # in the transmit log for testing and verification.
+    # Resolves the interface object from @@interface_objects, applies
+    # IFAC masking if the interface has IFAC enabled, and calls
+    # process_outgoing.
     def self.transmit(interface_hash : Bytes, raw : Bytes)
       @@transmit_log << {interface_hash, raw.dup}
       @@traffic_txb += raw.size.to_i64
+
+      interface = @@interface_objects.find { |iface| iface.get_hash == interface_hash }
+      if interface
+        if ifac_identity = interface.ifac_identity
+          ifac_size = interface.ifac_size
+          ifac_key = interface.ifac_key
+
+          # Calculate packet access code
+          ifac = ifac_identity.sign(raw)[-(ifac_size)..]
+
+          # Generate mask via HKDF
+          mask = Cryptography.hkdf(raw.size + ifac_size, ifac, ifac_key)
+
+          # Set IFAC flag and assemble new payload
+          new_raw = Bytes.new(raw.size + ifac_size)
+          new_raw[0] = raw[0] | 0x80_u8
+          new_raw[1] = raw[1]
+          ifac.copy_to(new_raw + 2)
+          raw[2..].copy_to(new_raw + 2 + ifac_size)
+
+          # Mask payload
+          masked = Bytes.new(new_raw.size)
+          new_raw.size.times do |i|
+            if i == 0
+              # Mask first header byte, keep IFAC flag set
+              masked[i] = (new_raw[i] ^ mask[i]) | 0x80_u8
+            elsif i == 1 || i > ifac_size + 1
+              # Mask second header byte and payload
+              masked[i] = new_raw[i] ^ mask[i]
+            else
+              # Don't mask the IFAC itself
+              masked[i] = new_raw[i]
+            end
+          end
+
+          interface.process_outgoing(masked)
+        else
+          interface.process_outgoing(raw)
+        end
+      else
+        RNS.log("Transmit: could not resolve interface for hash #{interface_hash.hexstring}", RNS::LOG_ERROR)
+      end
     rescue ex
-      RNS.log("Error while transmitting: #{ex}", RNS::LOG_ERROR)
+      RNS.log("Error while transmitting on interface: #{ex}", RNS::LOG_ERROR)
     end
 
     # ════════════════════════════════════════════════════════════════
@@ -800,15 +842,65 @@ module RNS
     # and dispatches to the appropriate handler: announce processing,
     # link request/proof handling, data delivery to local destinations,
     # or multi-hop forwarding via the path and link tables.
-    def self.inbound(raw : Bytes, interface_hash : Bytes? = nil)
+    # Backward-compatible overload accepting an interface hash (for tests
+    # and call sites that don't have the interface object).
+    def self.inbound(raw : Bytes, interface_hash : Bytes)
+      interface = @@interface_objects.find { |iface| iface.get_hash == interface_hash }
+      inbound(raw, interface, interface_hash)
+    end
+
+    def self.inbound(raw : Bytes, interface : Interface? = nil, _interface_hash_override : Bytes? = nil)
       # Minimum size check
       return if raw.size <= 2
 
-      # IFAC validation stub — full implementation when Interface class exists
-      # For now, drop packets with IFAC flag set (we don't support IFAC yet)
-      if raw[0] & 0x80_u8 == 0x80_u8
-        return # IFAC flagged but no IFAC support yet
+      # IFAC validation
+      if interface && interface.ifac_identity
+        # Interface has IFAC enabled — packet must carry IFAC flag
+        if raw[0] & 0x80_u8 == 0x80_u8
+          ifac_size = interface.ifac_size
+          return if raw.size <= 2 + ifac_size
+
+          # Extract IFAC
+          ifac = raw[2, ifac_size]
+
+          # Generate mask via HKDF
+          ifac_key = interface.ifac_key
+          mask = Cryptography.hkdf(ifac_size + raw.size, ifac, ifac_key)
+
+          # Unmask header bytes and payload (NOT the IFAC itself)
+          unmasked = Bytes.new(raw.size)
+          raw.size.times do |i|
+            if i <= 1 || i > ifac_size + 1
+              unmasked[i] = raw[i] ^ mask[i]
+            else
+              unmasked[i] = raw[i]
+            end
+          end
+          raw = unmasked
+
+          # Unset IFAC flag, rebuild packet without IFAC bytes
+          new_header = Bytes[raw[0] & 0x7f_u8, raw[1]]
+          new_raw = Bytes.new(new_header.size + raw.size - 2 - ifac_size)
+          new_header.copy_to(new_raw)
+          raw[(2 + ifac_size)..].copy_to(new_raw + 2)
+
+          # Verify IFAC
+          expected_ifac = interface.ifac_identity.not_nil!.sign(new_raw)[-(ifac_size)..]
+          return unless ifac == expected_ifac
+
+          raw = new_raw
+        else
+          # IFAC required but not present — drop
+          return
+        end
+      else
+        # Non-IFAC interface — drop packets with IFAC flag set
+        if raw[0] & 0x80_u8 == 0x80_u8
+          return
+        end
       end
+
+      interface_hash = _interface_hash_override || interface.try(&.get_hash)
 
       # Wait for jobs to finish
       while @@jobs_running
@@ -826,6 +918,7 @@ module RNS
           return
         end
 
+        packet.receiving_interface = interface
         packet.hops += 1
 
         # Apply packet filter
@@ -942,13 +1035,12 @@ module RNS
                             io.to_slice.dup
                           end
 
-                # For LINKREQUEST: create link table entry
+                # For LINKREQUEST: create link table entry keyed by link ID
                 if packet.packet_type == Packet::LINKREQUEST
                   now = Time.utc.to_unix_f
                   proof_timeout = now + LinkLike::ESTABLISHMENT_TIMEOUT_PER_HOP * Math.max(1, remaining_hops)
 
-                  # Extract link_id from packet (first 32 bytes of data after dest hash)
-                  link_id = packet.destination_hash || Bytes.empty
+                  link_id = Link.link_id_from_lr_packet(packet)
 
                   @@link_table[link_id.hexstring] = LinkEntry.new(
                     timestamp: now,
@@ -1062,8 +1154,8 @@ module RNS
             # Deliver to active link
             @@active_links.each do |link|
               if link.link_id == dest_hash
-                if link.attached_interface == interface_hash || link.attached_interface.nil?
-                  # In full implementation: link.receive(packet)
+                if link.attached_interface == interface || link.attached_interface.nil?
+                  link.receive(packet)
                   break
                 end
               end
@@ -1091,7 +1183,7 @@ module RNS
                   sig_length = Identity::SIGLENGTH // 8
                   ecpub_half = LinkLike::ECPUBSIZE // 2
 
-                  if packet.data.size == sig_length + ecpub_half || packet.data.size == sig_length + ecpub_half + 2
+                  if packet.data.size == sig_length + ecpub_half || packet.data.size == sig_length + ecpub_half + Link::LINK_MTU_SIZE
                     peer_pub_bytes = packet.data[sig_length, ecpub_half]
                     peer_identity = Identity.recall(link_entry.destination_hash)
 
@@ -1150,7 +1242,7 @@ module RNS
                   if packet.hops.to_i32 == link.expected_hops || link.expected_hops == PATHFINDER_M
                     ph = packet.packet_hash
                     add_packet_hash(ph) if ph
-                    # link.validate_proof(packet) — when Link is implemented
+                    link.validate_proof(packet)
                   end
                 end
               end
@@ -1159,7 +1251,7 @@ module RNS
             # Resource proof: deliver to active link
             @@active_links.each do |link|
               if link.link_id == dest_hash
-                # link.receive(packet) — when Link is implemented
+                link.receive(packet)
               end
             end
           else

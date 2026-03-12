@@ -7,6 +7,13 @@ private def create_in_destination(app_name = "test", aspects = ["link"]) : RNS::
     app_name, aspects, register: false)
 end
 
+# Helper to create a Resource with a specific hash for testing resource management
+private def create_test_resource(link : RNS::Link, hash : Bytes? = nil) : RNS::Resource
+  resource = RNS::Resource.new(nil, link, advertise: false)
+  resource.hash = hash || Random::Secure.random_bytes(32)
+  resource
+end
+
 # Helper to create a responder link with fake link_id and completed handshake
 private def create_handshaken_link
   owner = create_in_destination
@@ -23,6 +30,9 @@ end
 describe RNS::Link do
   before_each do
     RNS::Transport.reset
+    # Register a dummy interface hash so Transport.outbound can
+    # broadcast packets in unit tests (no real I/O occurs).
+    RNS::Transport.interfaces << Random::Secure.random_bytes(32)
   end
 
   # ────────────────────────────────────────────────────────────────────
@@ -781,11 +791,39 @@ describe RNS::Link do
   # LinkChannelOutlet tests temporarily disabled due to Crystal codegen bug
   # with non-generic class inheriting from generic class instantiation.
   # See: https://github.com/crystal-lang/issues
-  pending "LinkChannelOutlet wraps a link" { }
-  pending "LinkChannelOutlet reports mdu" { }
-  pending "LinkChannelOutlet reports rtt" { }
-  pending "LinkChannelOutlet is_usable when ACTIVE" { }
-  pending "LinkChannelOutlet get_packet_id returns hash" { }
+  describe "LinkChannelOutlet" do
+    it "wraps a link" do
+      link = create_handshaken_link
+      outlet = RNS::LinkChannelOutlet.new(link)
+      outlet.link.should eq link
+    end
+
+    it "reports mdu" do
+      link = create_handshaken_link
+      outlet = RNS::LinkChannelOutlet.new(link)
+      outlet.mdu.should eq link.mdu
+    end
+
+    it "reports rtt" do
+      link = create_handshaken_link
+      outlet = RNS::LinkChannelOutlet.new(link)
+      outlet.rtt.should eq(link.rtt || 0.0)
+    end
+
+    it "is_usable when ACTIVE" do
+      link = create_handshaken_link
+      link.status = RNS::Link::ACTIVE
+      outlet = RNS::LinkChannelOutlet.new(link)
+      outlet.is_usable.should be_true
+    end
+
+    it "not usable when CLOSED" do
+      link = create_handshaken_link
+      link.status = RNS::Link::CLOSED
+      outlet = RNS::LinkChannelOutlet.new(link)
+      outlet.is_usable.should be_false
+    end
+  end
 
   # ────────────────────────────────────────────────────────────────────
   #  RequestReceipt
@@ -928,8 +966,8 @@ describe RNS::Link do
   describe "resource management" do
     it "registers and tracks outgoing resources" do
       link = create_handshaken_link
-      hash = Random::Secure.random_bytes(32)
-      link.register_outgoing_resource(hash)
+      resource = create_test_resource(link)
+      link.register_outgoing_resource(resource)
       link.outgoing_resources.size.should eq 1
       link.ready_for_new_resource?.should be_false
     end
@@ -937,7 +975,8 @@ describe RNS::Link do
     it "registers and tracks incoming resources" do
       link = create_handshaken_link
       hash = Random::Secure.random_bytes(32)
-      link.register_incoming_resource(hash)
+      resource = create_test_resource(link, hash)
+      link.register_incoming_resource(resource)
       link.incoming_resources.size.should eq 1
       link.has_incoming_resource?(hash).should be_true
     end
@@ -949,18 +988,18 @@ describe RNS::Link do
 
     it "cancels outgoing resource" do
       link = create_handshaken_link
-      hash = Random::Secure.random_bytes(32)
-      link.register_outgoing_resource(hash)
-      link.cancel_outgoing_resource(hash)
+      resource = create_test_resource(link)
+      link.register_outgoing_resource(resource)
+      link.cancel_outgoing_resource(resource.hash)
       link.outgoing_resources.empty?.should be_true
       link.ready_for_new_resource?.should be_true
     end
 
     it "cancels incoming resource" do
       link = create_handshaken_link
-      hash = Random::Secure.random_bytes(32)
-      link.register_incoming_resource(hash)
-      link.cancel_incoming_resource(hash)
+      resource = create_test_resource(link)
+      link.register_incoming_resource(resource)
+      link.cancel_incoming_resource(resource.hash)
       link.incoming_resources.empty?.should be_true
     end
 
@@ -971,10 +1010,10 @@ describe RNS::Link do
 
     it "resource_concluded updates expected_rate for incoming" do
       link = create_handshaken_link
-      hash = Random::Secure.random_bytes(32)
-      link.register_incoming_resource(hash)
+      resource = create_test_resource(link)
+      link.register_incoming_resource(resource)
       started = Time.utc.to_unix_f - 1.0
-      link.resource_concluded(hash, 8000_i64, started, window: 10, eifr: 1000.0, incoming: true)
+      link.resource_concluded(resource, 8000_i64, started, window: 10, eifr: 1000.0, incoming: true)
       link.incoming_resources.empty?.should be_true
       link.expected_rate.should_not be_nil
       link.expected_rate.not_nil!.should be > 0
@@ -984,18 +1023,18 @@ describe RNS::Link do
 
     it "resource_concluded updates expected_rate for outgoing" do
       link = create_handshaken_link
-      hash = Random::Secure.random_bytes(32)
-      link.register_outgoing_resource(hash)
+      resource = create_test_resource(link)
+      link.register_outgoing_resource(resource)
       started = Time.utc.to_unix_f - 0.5
-      link.resource_concluded(hash, 4000_i64, started, incoming: false)
+      link.resource_concluded(resource, 4000_i64, started, incoming: false)
       link.outgoing_resources.empty?.should be_true
       link.expected_rate.not_nil!.should be > 0
     end
 
     it "clears resources on link_closed" do
       link = create_handshaken_link
-      link.register_incoming_resource(Random::Secure.random_bytes(32))
-      link.register_outgoing_resource(Random::Secure.random_bytes(32))
+      link.register_incoming_resource(create_test_resource(link))
+      link.register_outgoing_resource(create_test_resource(link))
       link.link_closed
       link.incoming_resources.empty?.should be_true
       link.outgoing_resources.empty?.should be_true
@@ -1015,19 +1054,19 @@ describe RNS::Link do
   describe "resource callbacks" do
     it "sets resource callback" do
       link = create_handshaken_link
-      link.set_resource_callback(->(_data : Bytes) { true })
+      link.set_resource_callback(->(_adv : RNS::ResourceAdvertisement) { true })
       link.callbacks.resource.should_not be_nil
     end
 
     it "sets resource_started callback" do
       link = create_handshaken_link
-      link.set_resource_started_callback(->(_h : Bytes) { nil })
+      link.set_resource_started_callback(->(_resource : RNS::Resource) { nil })
       link.callbacks.resource_started.should_not be_nil
     end
 
     it "sets resource_concluded callback" do
       link = create_handshaken_link
-      link.set_resource_concluded_callback(->(_h : Bytes) { nil })
+      link.set_resource_concluded_callback(->(_resource : RNS::Resource) { nil })
       link.callbacks.resource_concluded.should_not be_nil
     end
   end
@@ -1184,8 +1223,8 @@ describe RNS::Link do
 
     it "clears incoming and outgoing resources" do
       link = create_handshaken_link
-      link.register_incoming_resource(Random::Secure.random_bytes(32))
-      link.register_outgoing_resource(Random::Secure.random_bytes(32))
+      link.register_incoming_resource(create_test_resource(link))
+      link.register_outgoing_resource(create_test_resource(link))
       link.teardown
       link.incoming_resources.empty?.should be_true
       link.outgoing_resources.empty?.should be_true
@@ -1622,9 +1661,9 @@ describe RNS::Link do
     it "50 resource register/conclude cycles" do
       link = create_handshaken_link
       50.times do
-        hash = Random::Secure.random_bytes(32)
-        link.register_incoming_resource(hash)
-        link.resource_concluded(hash, Random::Secure.rand(100_i64..10000_i64), Time.utc.to_unix_f - 0.5, incoming: true)
+        resource = create_test_resource(link)
+        link.register_incoming_resource(resource)
+        link.resource_concluded(resource, Random::Secure.rand(100_i64..10000_i64), Time.utc.to_unix_f - 0.5, incoming: true)
       end
       link.incoming_resources.empty?.should be_true
       link.expected_rate.not_nil!.should be > 0

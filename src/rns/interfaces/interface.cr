@@ -361,8 +361,7 @@ module RNS
             @ic_held_release = Time.utc.to_unix_f + @ic_held_release_interval
             @held_announces.delete(sk)
             spawn do
-              iface_hash = selected.receiving_interface.try(&.get_hash)
-              Transport.inbound(selected.raw, iface_hash)
+              Transport.inbound(selected.raw, selected.receiving_interface)
             end
           end
         end

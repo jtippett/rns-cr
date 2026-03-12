@@ -25,7 +25,9 @@ module RNS
     abstract def status=(value : UInt8)
     abstract def destination_hash : Bytes
     abstract def expected_hops : Int32
-    abstract def attached_interface : Bytes?
+    abstract def attached_interface : Interface?
+    abstract def receive(packet : Packet)
+    abstract def validate_proof(packet : Packet)
   end
 
   # Stub implementation of LinkLike for testing before Link module is built.
@@ -36,7 +38,7 @@ module RNS
     getter? initiator : Bool
     @status : UInt8
     getter expected_hops : Int32
-    getter attached_interface : Bytes?
+    getter attached_interface : Interface?
     getter destination_hash : Bytes
 
     def status : UInt8
@@ -52,7 +54,13 @@ module RNS
                    @status : UInt8 = PENDING,
                    @destination_hash : Bytes = Bytes.new(16),
                    @expected_hops : Int32 = 0,
-                   @attached_interface : Bytes? = nil)
+                   @attached_interface : Interface? = nil)
+    end
+
+    def receive(packet : Packet)
+    end
+
+    def validate_proof(packet : Packet)
     end
   end
 end

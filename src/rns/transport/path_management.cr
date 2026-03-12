@@ -556,12 +556,25 @@ module RNS
       nil
     end
 
-    # Register an interface (by hash). Full interface support will come with Interface implementation.
+    # Register an interface. Stores both the hash (for broadcast iteration)
+    # and the object (for transmit resolution and inbound dispatch).
+    def self.register_interface(interface : Interface)
+      @@interfaces << interface.get_hash
+      @@interface_objects << interface unless @@interface_objects.includes?(interface)
+    end
+
+    # Hash-only overload for backward compatibility (used by some specs).
     def self.register_interface(interface_hash : Bytes)
       @@interfaces << interface_hash
     end
 
-    # Deregister an interface (by hash).
+    # Deregister an interface.
+    def self.deregister_interface(interface : Interface)
+      @@interfaces.delete(interface.get_hash)
+      @@interface_objects.delete(interface)
+    end
+
+    # Hash-only overload for backward compatibility.
     def self.deregister_interface(interface_hash : Bytes)
       @@interfaces.delete(interface_hash)
     end

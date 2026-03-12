@@ -1214,7 +1214,25 @@ module RNS
                 request_id = ResourceAdvertisement.read_request_id(packet)
                 @pending_requests.each do |pending_request|
                   if pending_request.request_id == request_id
-                    Resource.accept(packet, callback: ->response_resource_concluded(Resource), request_id: request_id)
+                    response_resource = Resource.accept(
+                      packet,
+                      callback: ->response_resource_concluded(Resource),
+                      progress_callback: ->pending_request.response_resource_progress(Resource),
+                      request_id: request_id
+                    )
+                    if response_resource
+                      if pending_request.response_size.nil?
+                        pending_request.response_size = ResourceAdvertisement.read_size(packet).to_i32
+                      end
+                      if pending_request.response_transfer_size.nil?
+                        pending_request.response_transfer_size = 0_i32
+                      end
+                      pending_request.response_transfer_size = (pending_request.response_transfer_size || 0) + ResourceAdvertisement.read_transfer_size(packet).to_i32
+                      if pending_request.started_at.nil?
+                        pending_request.started_at = Time.utc.to_unix_f
+                      end
+                      pending_request.response_resource_progress(response_resource)
+                    end
                     break
                   end
                 end
@@ -1702,7 +1720,8 @@ module RNS
     end
 
     # Called when progress is made receiving a response resource
-    def response_resource_progress(resource_progress : Float64)
+    def response_resource_progress(resource : Resource)
+      return if resource.nil?
       return if @status == FAILED
 
       @status = RECEIVING
@@ -1716,7 +1735,7 @@ module RNS
         delivery_cb.call(pr) if delivery_cb
       end
 
-      @progress = resource_progress
+      @progress = resource.get_progress
 
       progress_cb = @callbacks.progress
       if progress_cb

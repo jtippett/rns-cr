@@ -53,13 +53,13 @@ module RNS
     # Paths
     @@userdir : String = Path.home.to_s
     @@configdir : String = File.join(Path.home.to_s, ".reticulum")
-    @@configpath : String = ""
-    @@storagepath : String = ""
-    @@cachepath : String = ""
-    @@resourcepath : String = ""
-    @@identitypath : String = ""
-    @@blackholepath : String = ""
-    @@interfacepath : String = ""
+    @@configpath : String = File.join(@@configdir, "config")
+    @@storagepath : String = File.join(@@configdir, "storage")
+    @@cachepath : String = File.join(@@configdir, "storage", "cache")
+    @@resourcepath : String = File.join(@@configdir, "storage", "resources")
+    @@identitypath : String = File.join(@@configdir, "storage", "identities")
+    @@blackholepath : String = File.join(@@configdir, "storage", "blackhole")
+    @@interfacepath : String = File.join(@@configdir, "interfaces")
 
     # Private class state set by config
     @@network_identity : Identity? = nil
@@ -883,7 +883,8 @@ module RNS
             @is_shared_instance = true
             RNS.log("Existing shared instance required, but this instance started as shared instance. Aborting startup.", RNS::LOG_VERBOSE)
           else
-            Transport.register_interface(interface.get_hash)
+            interface.inbound_callback = ->(data : Bytes, iface : Interface) { Transport.inbound(data, iface) }
+            Transport.register_interface(interface)
             @shared_instance_interface = interface
             @is_shared_instance = true
             RNS.log("Started shared instance interface: #{interface}", RNS::LOG_DEBUG)
@@ -906,7 +907,8 @@ module RNS
               client.optimise_mtu
             end
 
-            Transport.register_interface(client.get_hash)
+            client.inbound_callback = ->(data : Bytes, iface : Interface) { Transport.inbound(data, iface) }
+            Transport.register_interface(client)
             @is_shared_instance = false
             @is_standalone_instance = false
             @is_connected_to_shared_instance = true
@@ -1358,7 +1360,10 @@ module RNS
         end
       end
 
-      Transport.register_interface(interface.get_hash)
+      # Wire inbound callback so received data reaches Transport.inbound
+      interface.inbound_callback = ->(data : Bytes, iface : Interface) { Transport.inbound(data, iface) }
+
+      Transport.register_interface(interface)
       interface.final_init
     end
 
@@ -1462,14 +1467,17 @@ module RNS
         end
       end
 
-      Transport.register_interface(interface.get_hash)
+      # Wire inbound callback so received data reaches Transport.inbound
+      interface.inbound_callback = ->(data : Bytes, iface : Interface) { Transport.inbound(data, iface) }
+
+      Transport.register_interface(interface)
       interface.final_init
     end
 
     # Removes a previously added interface. Deregisters from Transport,
     # detaches, and tears down the interface.
     def remove_interface(interface : Interface)
-      Transport.deregister_interface(interface.get_hash)
+      Transport.deregister_interface(interface)
       interface.detach
       interface.teardown
     end

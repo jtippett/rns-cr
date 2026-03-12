@@ -865,7 +865,7 @@ module RNS
 
           # Generate mask via HKDF
           ifac_key = interface.ifac_key
-          mask = Cryptography.hkdf(ifac_size + raw.size, ifac, ifac_key)
+          mask = Cryptography.hkdf(raw.size, ifac, ifac_key)
 
           # Unmask header bytes and payload (NOT the IFAC itself)
           unmasked = Bytes.new(raw.size)

@@ -242,6 +242,9 @@ module RNS
     property announce_rate_grace : Int32? = nil
     property announce_rate_penalty : Int32? = nil
 
+    # Inbound callback — invoked by process_incoming to deliver data to Transport.
+    property inbound_callback : Proc(Bytes, Interface, Nil)? = nil
+
     # IFAC (Interface Authentication Code) properties
     property ifac_size : Int32 = 0
     property ifac_netname : String? = nil

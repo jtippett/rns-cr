@@ -1550,7 +1550,10 @@ describe RNS::Link do
       progress_val = 0.0
       rr = RNS::RequestReceipt.new(link: link, packet_receipt: pr, timeout: 10.0,
         progress_callback: ->(r : RNS::RequestReceipt) { progress_val = r.progress; nil })
-      rr.response_resource_progress(0.5)
+      resource = create_test_resource(link)
+      resource.total_parts = 10
+      resource.received_count = 5
+      rr.response_resource_progress(resource)
       rr.status.should eq RNS::RequestReceipt::RECEIVING
       rr.progress.should eq 0.5
       progress_val.should eq 0.5
@@ -1563,7 +1566,10 @@ describe RNS::Link do
       pr = RNS::PacketReceipt.new(pkt)
       rr = RNS::RequestReceipt.new(link: link, packet_receipt: pr, timeout: 10.0)
       rr.status = RNS::RequestReceipt::FAILED
-      rr.response_resource_progress(0.5)
+      resource = create_test_resource(link)
+      resource.total_parts = 10
+      resource.received_count = 5
+      rr.response_resource_progress(resource)
       rr.progress.should eq 0.0 # unchanged
     end
 
@@ -1573,7 +1579,8 @@ describe RNS::Link do
       pkt.pack
       pr = RNS::PacketReceipt.new(pkt)
       rr = RNS::RequestReceipt.new(link: link, packet_receipt: pr, timeout: 10.0)
-      rr.response_resource_progress(0.3)
+      resource = create_test_resource(link)
+      rr.response_resource_progress(resource)
       pr.status.should eq RNS::PacketReceipt::DELIVERED
       pr.proved.should be_true
     end

@@ -498,7 +498,7 @@ module RNS
           spawned.mode = @mode
           spawned.hw_mtu = HW_MTU
           spawned.online = true
-          Transport.register_interface(spawned.get_hash)
+          Transport.register_interface(spawned)
 
           if old_spawned = @peer_spawned_interfaces[addr]?
             old_spawned.detach
@@ -829,7 +829,7 @@ module RNS
       @dir_in = false
 
       @owner.spawned_peer_interfaces.delete(@addr)
-      Transport.deregister_interface(get_hash)
+      Transport.deregister_interface(self)
     end
 
     def to_s(io : IO)

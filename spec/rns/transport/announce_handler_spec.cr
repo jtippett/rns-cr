@@ -1181,7 +1181,7 @@ class TestCallbackAnnounceHandler
   def initialize(@aspect_filter : String?, &@callback : Proc(Bytes, RNS::Identity?, Bytes?, Bytes?, Nil))
   end
 
-  def received_announce(destination_hash : Bytes, announced_identity : RNS::Identity?, app_data : Bytes?, announce_packet_hash : Bytes?)
+  def received_announce(destination_hash : Bytes, announced_identity : RNS::Identity?, app_data : Bytes?, announce_packet_hash : Bytes?, is_path_response : Bool = false)
     @callback.call(destination_hash, announced_identity, app_data, announce_packet_hash)
   end
 end

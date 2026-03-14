@@ -269,7 +269,14 @@ module RNS
     # ─── Announce handler interface ────────────────────────────────
     module AnnounceHandler
       abstract def aspect_filter : String?
-      abstract def received_announce(destination_hash : Bytes, announced_identity : Identity?, app_data : Bytes?, announce_packet_hash : Bytes?)
+
+      # Override to return true if the handler should receive path responses.
+      # Default: false (path responses are suppressed).
+      def receive_path_responses : Bool
+        false
+      end
+
+      abstract def received_announce(destination_hash : Bytes, announced_identity : Identity?, app_data : Bytes?, announce_packet_hash : Bytes?, is_path_response : Bool)
     end
 
     # ════════════════════════════════════════════════════════════════

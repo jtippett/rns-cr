@@ -126,7 +126,7 @@ class ExampleAnnounceHandler
   # system when an announce arrives that matches the
   # configured aspect filter. Filters must be specific,
   # and cannot use wildcards.
-  def received_announce(destination_hash : Bytes, announced_identity : RNS::Identity?, app_data : Bytes?, announce_packet_hash : Bytes?)
+  def received_announce(destination_hash : Bytes, announced_identity : RNS::Identity?, app_data : Bytes?, announce_packet_hash : Bytes?, is_path_response : Bool = false)
     RNS.log(
       "Received an announce from " +
       RNS.prettyhexrep(destination_hash)

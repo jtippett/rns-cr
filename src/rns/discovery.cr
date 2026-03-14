@@ -286,7 +286,7 @@ module RNS
         new(required_value: required_value, callback: block)
       end
 
-      def received_announce(destination_hash : Bytes, announced_identity : Identity?, app_data : Bytes?, announce_packet_hash : Bytes? = nil)
+      def received_announce(destination_hash : Bytes, announced_identity : Identity?, app_data : Bytes?, announce_packet_hash : Bytes? = nil, is_path_response : Bool = false)
         discovery_sources = Reticulum.interface_discovery_sources
         if discovery_sources.size > 0 && announced_identity
           id_hash = announced_identity.hash

@@ -1055,7 +1055,7 @@ class TestAnnounceHandler
     @received_announces = [] of Bytes
   end
 
-  def received_announce(destination_hash : Bytes, announced_identity : RNS::Identity?, app_data : Bytes?, announce_packet_hash : Bytes?)
+  def received_announce(destination_hash : Bytes, announced_identity : RNS::Identity?, app_data : Bytes?, announce_packet_hash : Bytes?, is_path_response : Bool = false)
     @received_announces << destination_hash
   end
 end

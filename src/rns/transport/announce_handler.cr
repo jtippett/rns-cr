@@ -439,7 +439,8 @@ module RNS
           end
 
           # Path responses are only forwarded to handlers that opted in
-          if packet.context == Packet::PATH_RESPONSE
+          is_path_response = (packet.context == Packet::PATH_RESPONSE)
+          if is_path_response && !handler.receive_path_responses
             execute_callback = false
           end
 
@@ -450,6 +451,7 @@ module RNS
                 announce_identity,
                 Identity.recall_app_data(destination_hash),
                 packet.packet_hash,
+                is_path_response,
               )
             end
           end

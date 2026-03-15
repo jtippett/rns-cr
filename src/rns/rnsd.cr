@@ -93,7 +93,20 @@ module RNS
 
     # Initialize and run the Reticulum daemon.
     # This method blocks forever (or drops to interactive mode).
-    def self.program_setup(configdir : String? = nil, verbosity : Int32? = nil, logdest : Int32 = RNS::LOG_STDOUT)
+    def self.program_setup(configdir : String? = nil, verbosity : Int32? = nil,
+                           logdest : Int32 = RNS::LOG_STDOUT, join_token : String? = nil)
+      parsed_token : Management::ProvisioningToken? = nil
+
+      if jt = join_token
+        parsed_token = Management::Bootstrap.parse_token_input(jt)
+        if parsed_token.expired?
+          RNS.log("Provisioning token has expired", RNS::LOG_ERROR)
+          exit(1)
+        end
+        RNS.log("Joining Reticule via #{parsed_token.target_host}:#{parsed_token.target_port}...", RNS::LOG_NOTICE)
+        # Start with minimal config, the manager will handle the rest after join
+      end
+
       reticulum = ReticulumInstance.new(
         configdir: configdir,
         verbosity: verbosity,
@@ -107,6 +120,13 @@ module RNS
         )
       else
         RNS.log("Started #{version_string}", RNS::LOG_NOTICE)
+      end
+
+      # If joining, use the manager to send join request after link establishes
+      if (token = parsed_token) && (manager = reticulum.management)
+        manager.pending_join_token = token
+        manager.connect(token.reticule_dest_hash)
+        RNS.log("Management link initiated for join request", RNS::LOG_NOTICE)
       end
 
       # Block forever — the daemon runs via background fibers
@@ -135,7 +155,8 @@ module RNS
       program_setup(
         configdir: args.config,
         verbosity: target_verbosity,
-        logdest: target_logdest
+        logdest: target_logdest,
+        join_token: args.join_token
       )
     rescue ex : ArgumentError
       STDERR.puts "rnsd: #{ex.message}"

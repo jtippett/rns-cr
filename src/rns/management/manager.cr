@@ -32,6 +32,10 @@ module RNS
       @periodic_tasks_started : Bool = false
       @bootstrap_interface_name : String?
 
+      # Set before connecting to have the manager automatically send a
+      # JoinRequest once the management link is established.
+      property pending_join_token : ProvisioningToken? = nil
+
       def initialize(*, @identity : Identity,
                      @reticulum_instance : ReticulumInstance,
                      @config_path : String?,
@@ -178,6 +182,13 @@ module RNS
         @reconnect_delay = RECONNECT_INITIAL
         register_channel_handlers(link)
         RNS.log("Management link established", RNS::LOG_NOTICE)
+
+        # If there is a pending join token, send the JoinRequest now
+        if token = @pending_join_token
+          RNS.log("Sending join request with provisioning token", RNS::LOG_NOTICE)
+          send_join_request(token)
+          @pending_join_token = nil
+        end
 
         link.callbacks.link_closed = ->(l : Link) {
           set_link_status(LinkStatus::Disconnected)

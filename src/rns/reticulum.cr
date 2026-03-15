@@ -911,11 +911,23 @@ module RNS
 
       # Create Management::Manager if [management] enabled = yes
       if @management_enabled
-        identity = Identity.new(create_keys: true)
+        mgmt_id_path = Reticulum.identitypath + "/management"
+        if File.exists?(mgmt_id_path)
+          identity = Identity.from_file(mgmt_id_path)
+          if identity.nil?
+            RNS.log("Could not load management identity from #{mgmt_id_path}, creating new", RNS::LOG_WARNING)
+            identity = Identity.new(create_keys: true)
+            identity.to_file(mgmt_id_path)
+          end
+        else
+          RNS.log("No saved management identity found, creating new", RNS::LOG_INFO)
+          identity = Identity.new(create_keys: true)
+          identity.to_file(mgmt_id_path)
+        end
         @management = Management::Manager.new(
           identity: identity,
           reticulum_instance: self,
-          config_path: nil,
+          config_path: Reticulum.configpath,
           reticule_dest_hash: @reticule_dest_hash,
           node_id: @management_node_id,
           report_interval: @management_report_interval,

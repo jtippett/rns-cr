@@ -489,6 +489,14 @@ module RNS
     property require_shared : Bool
     property bootstrap_configs : Array(Hash(String, String)) = [] of Hash(String, String)
 
+    # ─── Management (Reticule) ──────────────────────────────────────
+    getter management_enabled : Bool = false
+    getter reticule_dest_hash : Bytes? = nil
+    getter management_node_id : Bytes? = nil
+    getter management_report_interval : Float64 = 30.0
+    getter management_heartbeat_interval : Float64 = 10.0
+    getter management : Management::Manager? = nil
+
     def initialize(
       configdir : String? = nil,
       loglevel : Int32? = nil,
@@ -843,6 +851,38 @@ module RNS
             when "autoconnect_discovered_interfaces"
               v = ret_section.as_int(option)
               Reticulum.autoconnect_discovered_interfaces = v if v > 0
+            end
+          end
+        end
+      end
+
+      # [management] section
+      if cfg.has_key?("management")
+        mgmt_section = cfg["management"]
+        if mgmt_section.is_a?(ConfigObj::Section)
+          if mgmt_section.has_key?("enabled") && mgmt_section.as_bool("enabled")
+            @management_enabled = true
+            if mgmt_section.has_key?("reticule_dest_hash")
+              begin
+                @reticule_dest_hash = mgmt_section["reticule_dest_hash"].as(String).hexbytes
+              rescue
+                RNS.log("Invalid reticule_dest_hash in [management] config", RNS::LOG_ERROR)
+                @reticule_dest_hash = nil
+              end
+            end
+            if mgmt_section.has_key?("node_id")
+              begin
+                @management_node_id = mgmt_section["node_id"].as(String).hexbytes
+              rescue
+                RNS.log("Invalid node_id in [management] config", RNS::LOG_ERROR)
+                @management_node_id = nil
+              end
+            end
+            if mgmt_section.has_key?("report_interval")
+              @management_report_interval = mgmt_section.as_int("report_interval").to_f64
+            end
+            if mgmt_section.has_key?("heartbeat_interval")
+              @management_heartbeat_interval = mgmt_section.as_int("heartbeat_interval").to_f64
             end
           end
         end

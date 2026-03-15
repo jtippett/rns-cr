@@ -655,7 +655,6 @@ module RNS
         Reticulum.sigterm_handler
         RNS.exit(0)
       end
-      Signal::TRAP.trap { Process.exit(1) }
 
       # Start background jobs
       start_jobs if @is_shared_instance || @is_standalone_instance
@@ -1487,44 +1486,7 @@ module RNS
         interface.owner_inbound = Transport::INBOUND_DISPATCH
       when AutoInterfacePeer
         interface.inbound_callback = Transport::INBOUND_DISPATCH
-      when RNodeInterface
-        interface.inbound_callback = Transport::INBOUND_DISPATCH
-      when PipeInterface
-        interface.inbound_callback = Transport::INBOUND_DISPATCH
-      when LocalClientInterface
-        interface.inbound_callback = Transport::INBOUND_DISPATCH
-      when LocalServerInterface
-        interface.inbound_callback = Transport::INBOUND_DISPATCH
-      when BackboneInterface
-        interface.inbound_callback = Transport::INBOUND_DISPATCH
-      when BackboneClientInterface
-        interface.inbound_callback = Transport::INBOUND_DISPATCH
-      when UDPInterface
-        interface.inbound_callback = Transport::INBOUND_DISPATCH
-      when SerialInterface
-        interface.inbound_callback = Transport::INBOUND_DISPATCH
-      when KISSInterface
-        interface.inbound_callback = Transport::INBOUND_DISPATCH
-      when I2PInterfacePeer
-        interface.inbound_callback = Transport::INBOUND_DISPATCH
-      when I2PInterface
-        interface.inbound_callback = Transport::INBOUND_DISPATCH
-      when RNodeMultiInterface
-        interface.inbound_callback = Transport::INBOUND_DISPATCH
-      when RNodeSubInterface
-        interface.inbound_callback = Transport::INBOUND_DISPATCH
-      when TCPClientInterface
-        interface.inbound_callback = Transport::INBOUND_DISPATCH
-      when TCPServerInterface
-        interface.inbound_callback = Transport::INBOUND_DISPATCH
-      when AX25KISSInterface
-        interface.inbound_callback = Transport::INBOUND_DISPATCH
-      when WeaveInterface
-        interface.inbound_callback = Transport::INBOUND_DISPATCH
-      when WeaveInterfacePeer
-        interface.inbound_callback = Transport::INBOUND_DISPATCH
       else
-        # Generic fallback: any Interface subclass has inbound_callback
         interface.inbound_callback = Transport::INBOUND_DISPATCH
       end
       nil
@@ -1543,14 +1505,19 @@ module RNS
       interface = Transport.interface_objects.find { |i| i.name == name }
       return false unless interface
       return false if interface.management_protected
-      interface.detach
       Transport.deregister_interface(interface)
+      interface.detach
+      interface.teardown
       true
     end
 
     # Replace an interface (teardown + re-add from config section).
     def replace_interface(name : String, new_config : ConfigObj::Section) : Interface?
-      remove_interface(name)
+      existing = Transport.interface_objects.find { |i| i.name == name }
+      if existing
+        return nil if existing.management_protected
+        remove_interface(name)
+      end
       synthesize_interface(new_config, name)
       Transport.interface_objects.find { |i| i.name == name }
     end

@@ -29,6 +29,7 @@ module RNS
       @heartbeat_interval : Float64
       @heartbeat_sequence : UInt32 = 0_u32
       @reconnect_delay : Float64 = RECONNECT_INITIAL
+      @periodic_tasks_started : Bool = false
       @bootstrap_interface_name : String?
 
       def initialize(*, @identity : Identity,
@@ -111,12 +112,15 @@ module RNS
 
       # Start periodic reporting and heartbeat fibers.
       def start_periodic_tasks
+        return if @periodic_tasks_started
+        @periodic_tasks_started = true
+
         spawn do
           loop do
             sleep @report_interval.seconds
             send_state_report
-          rescue
-            # Don't crash on report errors
+          rescue ex
+            RNS.log("Periodic state report error: #{ex.message}", RNS::LOG_DEBUG)
           end
         end
 
@@ -124,8 +128,8 @@ module RNS
           loop do
             sleep @heartbeat_interval.seconds
             send_heartbeat
-          rescue
-            # Don't crash on heartbeat errors
+          rescue ex
+            RNS.log("Periodic heartbeat error: #{ex.message}", RNS::LOG_DEBUG)
           end
         end
       end
@@ -149,7 +153,7 @@ module RNS
         req.token_secret = token.token_secret
         req.identity_pubkey = @identity.get_public_key
         req.hostname = System.hostname
-        req.platform = "crystal-#{Crystal::VERSION}"
+        req.platform = "crystal-#{Crystal::VERSION}/#{{{flag?(:darwin) ? "darwin" : flag?(:linux) ? "linux" : "unknown"}}}-#{{{flag?(:x86_64) ? "x86_64" : flag?(:aarch64) ? "aarch64" : "unknown"}}}"
         req.daemon_version = RNS::VERSION
 
         channel = link.get_channel
@@ -209,13 +213,6 @@ module RNS
 
           link.callbacks.link_established = ->(l : Link) {
             on_link_established(l)
-            nil
-          }
-
-          link.callbacks.link_closed = ->(l : Link) {
-            set_link_status(LinkStatus::Disconnected)
-            RNS.log("Management link closed, will reconnect in #{@reconnect_delay}s", RNS::LOG_WARNING)
-            schedule_reconnect(target_hash)
             nil
           }
         rescue ex

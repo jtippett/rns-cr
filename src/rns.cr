@@ -66,6 +66,7 @@ require "./rns/discovery"
 # ── 6b. Management protocol ─────────────────────────────────────────
 require "./rns/management/messages"
 require "./rns/management/bootstrap"
+require "./rns/management/config_engine"
 
 # ── 7. Utilities / CLI modules ────────────────────────────────────────
 require "./rns/rnsd"

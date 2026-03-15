@@ -68,6 +68,7 @@ require "./rns/management/messages"
 require "./rns/management/bootstrap"
 require "./rns/management/config_engine"
 require "./rns/management/state_collector"
+require "./rns/management/manager"
 
 # ── 7. Utilities / CLI modules ────────────────────────────────────────
 require "./rns/rnsd"

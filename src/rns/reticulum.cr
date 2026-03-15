@@ -627,6 +627,11 @@ module RNS
         start_system_interfaces
       end
 
+      # Start management link if management is enabled and we have a dest hash
+      if @management_enabled && @reticule_dest_hash
+        @management.try(&.connect)
+      end
+
       # Start transport (loads known destinations, starts job loop)
       RNS.log("Loading known destinations...", RNS::LOG_VERBOSE)
       Identity.load_known_destinations(Reticulum.storagepath)
@@ -902,6 +907,20 @@ module RNS
 
       if @local_socket_path.nil? && @use_af_unix
         @local_socket_path = "default"
+      end
+
+      # Create Management::Manager if [management] enabled = yes
+      if @management_enabled
+        identity = Identity.new(create_keys: true)
+        @management = Management::Manager.new(
+          identity: identity,
+          reticulum_instance: self,
+          config_path: nil,
+          reticule_dest_hash: @reticule_dest_hash,
+          node_id: @management_node_id,
+          report_interval: @management_report_interval,
+          heartbeat_interval: @management_heartbeat_interval,
+        )
       end
     end
 

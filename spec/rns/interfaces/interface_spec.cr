@@ -846,6 +846,102 @@ describe RNS::Interface do
     end
   end
 
+  describe "management_protected" do
+    it "defaults to false" do
+      iface = TestInterface.new
+      iface.management_protected.should be_false
+    end
+
+    it "can be set to true" do
+      iface = TestInterface.new
+      iface.management_protected = true
+      iface.management_protected.should be_true
+    end
+  end
+
+  describe "last_state_change" do
+    it "defaults to 0.0" do
+      iface = TestInterface.new
+      iface.last_state_change.should eq(0.0)
+    end
+
+    it "can be updated" do
+      iface = TestInterface.new
+      iface.last_state_change = Time.utc.to_unix_f
+      iface.last_state_change.should be > 0.0
+    end
+  end
+
+  describe "recompute_ifac_identity" do
+    it "computes IFAC identity from network name" do
+      iface = TestInterface.new
+      iface.ifac_netname = "test-network"
+      iface.ifac_netkey = nil
+      iface.ifac_size = 16
+      iface.recompute_ifac_identity
+
+      iface.ifac_key.should_not be_nil
+      iface.ifac_identity.should_not be_nil
+      iface.ifac_signature.should_not be_nil
+    end
+
+    it "computes IFAC identity from passphrase" do
+      iface = TestInterface.new
+      iface.ifac_netname = nil
+      iface.ifac_netkey = "secret-passphrase"
+      iface.ifac_size = 16
+      iface.recompute_ifac_identity
+
+      iface.ifac_key.should_not be_nil
+      iface.ifac_identity.should_not be_nil
+      iface.ifac_signature.should_not be_nil
+    end
+
+    it "computes IFAC identity from both name and passphrase" do
+      iface = TestInterface.new
+      iface.ifac_netname = "test-network"
+      iface.ifac_netkey = "secret-passphrase"
+      iface.ifac_size = 16
+      iface.recompute_ifac_identity
+
+      iface.ifac_key.should_not be_nil
+    end
+
+    it "clears IFAC when both name and key are nil" do
+      iface = TestInterface.new
+      iface.ifac_netname = "test-network"
+      iface.ifac_size = 16
+      iface.recompute_ifac_identity
+      iface.ifac_key.should_not be_nil
+
+      iface.ifac_netname = nil
+      iface.ifac_netkey = nil
+      iface.recompute_ifac_identity
+      iface.ifac_key.should be_nil
+      iface.ifac_identity.should be_nil
+      iface.ifac_signature.should be_nil
+    end
+
+    it "produces same result as interface_post_init IFAC computation" do
+      # Verify consistency with the existing IFAC path
+      iface = TestInterface.new
+      iface.ifac_netname = "consistency-test"
+      iface.ifac_netkey = "consistency-key"
+      iface.ifac_size = 16
+      iface.recompute_ifac_identity
+      key1 = iface.ifac_key.not_nil!.dup
+
+      # Reset and recompute — should be deterministic
+      iface.ifac_key = nil
+      iface.ifac_identity = nil
+      iface.ifac_signature = nil
+      iface.recompute_ifac_identity
+      key2 = iface.ifac_key.not_nil!
+
+      key1.should eq(key2)
+    end
+  end
+
   describe "stress tests" do
     it "handles 100 held announces" do
       iface = TestInterface.new

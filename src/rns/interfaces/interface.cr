@@ -183,6 +183,10 @@ module RNS
     # Detach state
     getter? detached : Bool = false
 
+    # Management properties
+    property management_protected : Bool = false
+    property last_state_change : Float64 = 0.0
+
     # Discovery properties
     property supports_discovery : Bool = false
     property discoverable : Bool = false
@@ -468,6 +472,42 @@ module RNS
 
     # Called after interface configuration is complete
     def final_init
+    end
+
+    # Recompute IFAC signing identity from current ifac_netname/ifac_netkey.
+    # Mirrors the IFAC computation in ReticulumInstance#interface_post_init.
+    def recompute_ifac_identity
+      if @ifac_netname.nil? && @ifac_netkey.nil?
+        @ifac_key = nil
+        @ifac_identity = nil
+        @ifac_signature = nil
+        return
+      end
+
+      ifac_origin = IO::Memory.new
+
+      if nn = @ifac_netname
+        ifac_origin.write(Identity.full_hash(nn.encode("UTF-8")))
+      end
+
+      if nk = @ifac_netkey
+        ifac_origin.write(Identity.full_hash(nk.encode("UTF-8")))
+      end
+
+      ifac_origin_hash = Identity.full_hash(ifac_origin.to_slice)
+      @ifac_key = RNS::Cryptography.hkdf(
+        length: 64,
+        derive_from: ifac_origin_hash,
+        salt: Reticulum::IFAC_SALT,
+        context: nil
+      )
+
+      if ik = @ifac_key
+        @ifac_identity = Identity.from_bytes(ik)
+        if ii = @ifac_identity
+          @ifac_signature = ii.sign(Identity.full_hash(ik))
+        end
+      end
     end
 
     # Called when the interface is being detached/removed

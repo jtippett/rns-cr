@@ -130,6 +130,16 @@ describe RNS::Rnsd do
       args.service.should be_true
       args.config.should eq "/tmp/cfg"
     end
+
+    it "parses --join with a token argument" do
+      args = RNS::Rnsd.parse_args(["--join", "AEBQ4DIZQ"])
+      args.join_token.should eq("AEBQ4DIZQ")
+    end
+
+    it "defaults join_token to nil" do
+      args = RNS::Rnsd.parse_args([] of String)
+      args.join_token.should be_nil
+    end
   end
 
   describe ".compute_verbosity" do

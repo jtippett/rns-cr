@@ -9,6 +9,7 @@ module RNS
       property interactive : Bool
       property example_config : Bool
       property version : Bool
+      property join_token : String?
 
       def initialize(
         @config = nil,
@@ -18,6 +19,7 @@ module RNS
         @interactive = false,
         @example_config = false,
         @version = false,
+        @join_token = nil,
       )
       end
     end
@@ -34,6 +36,9 @@ module RNS
         when "--config"
           i += 1
           args.config = argv[i]? || raise ArgumentError.new("--config requires a path argument")
+        when "--join"
+          i += 1
+          args.join_token = argv[i]? || raise ArgumentError.new("--join requires a token argument")
         when "--service"
           args.service = true
         when "--interactive"
@@ -134,7 +139,7 @@ module RNS
       )
     rescue ex : ArgumentError
       STDERR.puts "rnsd: #{ex.message}"
-      STDERR.puts "Usage: rnsd [--config PATH] [-v] [-q] [-s] [-i] [--exampleconfig] [--version]"
+      STDERR.puts "Usage: rnsd [--config PATH] [-v] [-q] [-s] [-i] [--join TOKEN] [--exampleconfig] [--version]"
       exit(1)
     rescue ex : Exception
       if ex.message.try(&.includes?("Interrupt"))

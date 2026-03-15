@@ -655,6 +655,7 @@ module RNS
         Reticulum.sigterm_handler
         RNS.exit(0)
       end
+      Signal::TRAP.trap { Process.exit(1) }
 
       # Start background jobs
       start_jobs if @is_shared_instance || @is_standalone_instance
@@ -1480,13 +1481,53 @@ module RNS
       interface.final_init
     end
 
-    private def wire_transport_inbound_callback(interface : Interface)
+    private def wire_transport_inbound_callback(interface : Interface) : Nil
       case interface
       when AutoInterface
         interface.owner_inbound = Transport::INBOUND_DISPATCH
+      when AutoInterfacePeer
+        interface.inbound_callback = Transport::INBOUND_DISPATCH
+      when RNodeInterface
+        interface.inbound_callback = Transport::INBOUND_DISPATCH
+      when PipeInterface
+        interface.inbound_callback = Transport::INBOUND_DISPATCH
+      when LocalClientInterface
+        interface.inbound_callback = Transport::INBOUND_DISPATCH
+      when LocalServerInterface
+        interface.inbound_callback = Transport::INBOUND_DISPATCH
+      when BackboneInterface
+        interface.inbound_callback = Transport::INBOUND_DISPATCH
+      when BackboneClientInterface
+        interface.inbound_callback = Transport::INBOUND_DISPATCH
+      when UDPInterface
+        interface.inbound_callback = Transport::INBOUND_DISPATCH
+      when SerialInterface
+        interface.inbound_callback = Transport::INBOUND_DISPATCH
+      when KISSInterface
+        interface.inbound_callback = Transport::INBOUND_DISPATCH
+      when I2PInterfacePeer
+        interface.inbound_callback = Transport::INBOUND_DISPATCH
+      when I2PInterface
+        interface.inbound_callback = Transport::INBOUND_DISPATCH
+      when RNodeMultiInterface
+        interface.inbound_callback = Transport::INBOUND_DISPATCH
+      when RNodeSubInterface
+        interface.inbound_callback = Transport::INBOUND_DISPATCH
+      when TCPClientInterface
+        interface.inbound_callback = Transport::INBOUND_DISPATCH
+      when TCPServerInterface
+        interface.inbound_callback = Transport::INBOUND_DISPATCH
+      when AX25KISSInterface
+        interface.inbound_callback = Transport::INBOUND_DISPATCH
+      when WeaveInterface
+        interface.inbound_callback = Transport::INBOUND_DISPATCH
+      when WeaveInterfacePeer
+        interface.inbound_callback = Transport::INBOUND_DISPATCH
       else
+        # Generic fallback: any Interface subclass has inbound_callback
         interface.inbound_callback = Transport::INBOUND_DISPATCH
       end
+      nil
     end
 
     # Removes a previously added interface. Deregisters from Transport,
@@ -1495,6 +1536,36 @@ module RNS
       Transport.deregister_interface(interface)
       interface.detach
       interface.teardown
+    end
+
+    # Remove an interface by name. Returns false if not found or protected.
+    def remove_interface(name : String) : Bool
+      interface = Transport.interface_objects.find { |i| i.name == name }
+      return false unless interface
+      return false if interface.management_protected
+      interface.detach
+      Transport.deregister_interface(interface)
+      true
+    end
+
+    # Replace an interface (teardown + re-add from config section).
+    def replace_interface(name : String, new_config : ConfigObj::Section) : Interface?
+      remove_interface(name)
+      synthesize_interface(new_config, name)
+      Transport.interface_objects.find { |i| i.name == name }
+    end
+
+    # Update IFAC credentials on a running interface without teardown.
+    def update_interface_ifac(name : String, *,
+                              network_name : String?, passphrase : String?,
+                              ifac_size : UInt8?) : Bool
+      interface = Transport.interface_objects.find { |i| i.name == name }
+      return false unless interface
+      interface.ifac_netname = network_name
+      interface.ifac_netkey = passphrase
+      interface.ifac_size = (ifac_size || 16_u8).to_i32
+      interface.recompute_ifac_identity
+      true
     end
 
     # Check if data should be persisted (used by other modules)

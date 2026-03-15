@@ -496,6 +496,7 @@ module RNS
     getter management_report_interval : Float64 = 30.0
     getter management_heartbeat_interval : Float64 = 10.0
     getter management : Management::Manager? = nil
+    property bootstrap_interface_name : String? = nil
 
     def initialize(
       configdir : String? = nil,
@@ -932,6 +933,7 @@ module RNS
           node_id: @management_node_id,
           report_interval: @management_report_interval,
           heartbeat_interval: @management_heartbeat_interval,
+          bootstrap_interface_name: @bootstrap_interface_name,
         )
       end
     end

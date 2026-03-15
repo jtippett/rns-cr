@@ -81,6 +81,29 @@ module RNS
             end
           end
 
+          # Validate port values
+          {"target_port", "listen_port", "port"}.each do |key|
+            if port_str = kvs[key]?
+              port = port_str.to_i rescue -1
+              if port < 1 || port > 65535
+                errors << "#{section_name}: #{key} must be between 1 and 65535 (got #{port_str})"
+              end
+            end
+          end
+
+          # Validate interface type
+          if type_str = kvs["type"]?
+            valid_types = Set{
+              "AutoInterface", "TCPClientInterface", "TCPServerInterface",
+              "UDPInterface", "SerialInterface", "RNodeInterface",
+              "PipeInterface", "KISSInterface", "I2PInterface",
+              "BackboneInterface", "BackboneClientInterface", "WeaveInterface",
+            }
+            unless valid_types.includes?(type_str)
+              errors << "#{section_name}: unknown interface type '#{type_str}'"
+            end
+          end
+
           # Validate IFAC credentials are non-empty if provided
           {"networkname", "network_name"}.each do |key|
             if val = kvs[key]?

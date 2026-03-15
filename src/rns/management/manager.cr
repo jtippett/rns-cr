@@ -30,7 +30,8 @@ module RNS
       @heartbeat_sequence : UInt32 = 0_u32
       @reconnect_delay : Float64 = RECONNECT_INITIAL
       @periodic_tasks_started : Bool = false
-      @bootstrap_interface_name : String?
+      # Set before connecting to protect the bootstrap interface from config pushes.
+      property bootstrap_interface_name : String? = nil
 
       # Set before connecting to have the manager automatically send a
       # JoinRequest once the management link is established.
@@ -110,6 +111,8 @@ module RNS
           ack.error_message = ex.message
           ack.config_hash = current_config_hash
         end
+
+        send_state_report if ack.status == ConfigAck::STATUS_APPLIED
 
         ack
       end
@@ -329,6 +332,19 @@ module RNS
               File.copy(bak, path)
             end
           end
+
+          # Re-apply previous config to undo partial in-memory changes
+          if path = @config_path
+            old_sections = current_config_sections
+            old_sections.each do |name, kvs|
+              iface = Transport.interface_objects.find { |i| i.name == name }
+              if iface
+                # Re-apply IFAC, rates, etc. from old config
+                apply_hot_reload(name, kvs.keys, kvs)
+              end
+            end
+          end
+
           raise ex
         end
       end
@@ -431,24 +447,38 @@ module RNS
             config = ConfigObj.new
           end
 
-          # Update interface sections
-          iface_root = if config.has_key?("interfaces")
-                         config.section("interfaces")
-                       else
-                         config.add_section("interfaces")
-                       end
-
-          sections.each do |name, kvs|
-            sub = if iface_root.has_key?(name)
-                     iface_root.section(name)
-                   else
-                     iface_root.add_section(name)
-                   end
-            kvs.each { |k, v| sub[k] = v }
+          sections.each do |section_name, kvs|
+            # Interface sections go under [interfaces]
+            if is_interface_section?(section_name)
+              iface_root = if config.has_key?("interfaces")
+                             config.section("interfaces")
+                           else
+                             config.add_section("interfaces")
+                           end
+              sub = if iface_root.has_key?(section_name)
+                       iface_root.section(section_name)
+                     else
+                       iface_root.add_section(section_name)
+                     end
+              kvs.each { |k, v| sub[k] = v }
+            else
+              # Top-level sections (reticulum, management, etc.)
+              top = if config.has_key?(section_name)
+                       config.section(section_name)
+                     else
+                       config.add_section(section_name)
+                     end
+              kvs.each { |k, v| top[k] = v }
+            end
           end
 
           config.write(path)
         end
+      end
+
+      private def is_interface_section?(name : String) : Bool
+        # Top-level known sections are NOT interface sections
+        !{"reticulum", "management", "logging"}.includes?(name)
       end
 
       private def send_heartbeat

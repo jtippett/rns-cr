@@ -113,6 +113,12 @@ module RNS
         logdest: logdest
       )
 
+      # Set bootstrap interface name from token before manager connects
+      if token = parsed_token
+        bootstrap_name = "Bootstrap #{token.bootstrap_type} #{token.target_host}:#{token.target_port}"
+        reticulum.bootstrap_interface_name = bootstrap_name
+      end
+
       if reticulum.is_connected_to_shared_instance
         RNS.log(
           "Started #{version_string} connected to another shared local instance, this is probably NOT what you want!",
@@ -124,6 +130,7 @@ module RNS
 
       # If joining, use the manager to send join request after link establishes
       if (token = parsed_token) && (manager = reticulum.management)
+        manager.bootstrap_interface_name = reticulum.bootstrap_interface_name
         manager.pending_join_token = token
         manager.connect(token.reticule_dest_hash)
         RNS.log("Management link initiated for join request", RNS::LOG_NOTICE)

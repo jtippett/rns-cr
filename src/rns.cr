@@ -63,6 +63,9 @@ require "./rns/interfaces/weave_interface"
 # ── 6. System integration ─────────────────────────────────────────────
 require "./rns/discovery"
 
+# ── 6b. Management protocol ─────────────────────────────────────────
+require "./rns/management/messages"
+
 # ── 7. Utilities / CLI modules ────────────────────────────────────────
 require "./rns/rnsd"
 require "./rns/rnstatus"
